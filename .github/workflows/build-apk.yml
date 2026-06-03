@@ -8,9 +8,6 @@ on:
       - "android/**"
       - ".github/workflows/build-apk.yml"
 
-permissions:
-  contents: write
-
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -35,39 +32,18 @@ jobs:
         working-directory: android
         run: ./gradlew assembleRelease
 
-      - name: 签名APK
+      - name: 签名并打包
         working-directory: android
         run: |
           APK=$(find app/build -name "*.apk" | head -1)
           echo "APK=$APK"
           test -n "$APK" || exit 1
-          keytool -genkey -v -keystore debug.keystore -alias debug \
-            -keyalg RSA -keysize 2048 -validity 10000 \
-            -storepass android -keypass android \
-            -dname "CN=Debug" 2>/dev/null || true
-          jarsigner -verbose -sigalg SHA256withRSA -digestalg SHA-256 \
-            -keystore debug.keystore -storepass android -keypass android \
-            "$APK" debug 2>/dev/null || true
+          keytool -genkey -v -keystore debug.keystore -alias debug -keyalg RSA -keysize 2048 -validity 10000 -storepass android -keypass android -dname "CN=Debug" 2>/dev/null || true
+          jarsigner -verbose -sigalg SHA256withRSA -digestalg SHA-256 -keystore debug.keystore -storepass android -keypass android "$APK" debug 2>/dev/null || true
           mkdir -p app/build/outputs/apk/release
           cp "$APK" app/build/outputs/apk/release/azusa-forest.apk
-          ls -la app/build/outputs/apk/release/
 
       - uses: actions/upload-artifact@v4
         with:
           name: azusa-forest-apk
           path: android/app/build/outputs/apk/release/azusa-forest.apk
-
-      - uses: softprops/action-gh-release@v2
-        if: success()
-        with:
-          tag_name: android-v${{ github.run_number }}
-          name: "阿梓的森林 APK (Build #${{ github.run_number }})"
-          body: |
-            ## 阿梓的森林 Android APK
-            ### 华为手机安装
-            1. 下载 azusa-forest.apk
-            2. 文件管理找到APK → 点击安装
-            3. 提示"未知来源"→设置中允许
-            4. 桌面出现图标即完成
-            WebView封装 · 数据存本地 · 适配华为
-          files: android/app/build/outputs/apk/release/azusa-forest.apk
