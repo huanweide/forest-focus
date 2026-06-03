@@ -542,9 +542,9 @@ let freeMins=filtered.filter(s=>s.taskType==='free').reduce((a,s)=>a+s.minutes,0
 // Summary
 document.getElementById('statsSummary').innerHTML=`
 <div class=stats-box><div class=val>${fmtMins(totalMin)}</div><div class=lbl>⏱ 总时长</div></div>
-<div class=stats-box><div class=val>${totalSessions}</div><div class=lbl>📅 今日</div></div>
+<div class=stats-box><div class=val>${totalSessions}</div><div class=lbl>📊 总次数</div></div>
 <div class=stats-box><div class=val>${filtered.filter(s=>s.date===today).reduce((a,s)=>a+s.minutes,0)}分钟</div><div class=lbl>📅 今日</div></div>
-<div class=stats-box><div class=val>${totalMin>0?Math.round(totalMin/totalSessions):0}分钟</div><div class=lbl>📅 今日</div></div>`;
+<div class=stats-box><div class=val>${totalMin>0?Math.round(totalMin/totalSessions):0}分钟</div><div class=lbl>📈 平均</div></div>`;
 
 // Pie chart
 let total=totalMin||1;
@@ -555,7 +555,7 @@ document.getElementById('pieChart').style.setProperty('--p3',p3+'deg');
 document.getElementById('pieLegend').innerHTML=`
 <span><span class=pie-dot style=background:#7E57C2></span>✅ 习惯 ${Math.round(habitMins/total*100)}%</span>
 <span><span class=pie-dot style=background:#FF7043></span>🎯 目标 ${Math.round(goalMins/total*100)}%</span>
-<span><span class=pie-dot style=background:#66BB6A></span>🎯 目标 ${Math.round(freeMins/total*100)}%</span>`;
+<span><span class=pie-dot style=background:#66BB6A></span>🌸 自由 ${Math.round(freeMins/total*100)}%</span>`;
 
 // Streak
 let dates=[...new Set(sessions.filter(s=>s.completed).map(s=>s.date))].sort();
@@ -573,14 +573,14 @@ let todayMins=sessions.filter(s=>s.completed&&s.date===today).reduce((a,s)=>a+s.
 let weekMins=filtered.reduce((a,s)=>a+s.minutes,0);
 document.getElementById('phaseGrid').innerHTML=`
 <div class=phase-item><span class=ph-icon>📅</span><span class=ph-val>${fmtMins(todayMins)}</span>今日</div>
-<div class=phase-item><span class=ph-icon>📅</span><span class=ph-val>${fmtMins(weekMins)}</span>今日</div>
-<div class=phase-item><span class=ph-icon>📅</span><span class=ph-val>${sessions.filter(s=>s.completed).length}</span>总次数</div>
-<div class=phase-item><span class=ph-icon>📅</span><span class=ph-val>${currentTreeIdx+1}/${AZUSA_TREES.length}</span>今日</div>`;
+<div class=phase-item><span class=ph-icon>📊</span><span class=ph-val>${fmtMins(weekMins)}</span>本期</div>
+<div class=phase-item><span class=ph-icon>🔥</span><span class=ph-val>${filtered.length}</span>总次数</div>
+<div class=phase-item><span class=ph-icon>👗</span><span class=ph-val>${currentTreeIdx+1}/${AZUSA_TREES.length}</span>衣装</div>`;
 
 // Achievements
 let ach=calcAchievements();
 let achUnlocked=ach.filter(a=>a.u).length;
-document.getElementById('achs').innerHTML='<div class=ach-header><strong>🏆 成就 ('+achUnlocked+'/'+ach.length+')</strong><span class=ach-count style=font-size:11px>'+(achUnlocked===ach.length?'全部解锁':'?'+(ach.length-achUnlocked)+'?')+'</span></div><div class=ach-grid>'+ach.map(a=>{
+document.getElementById('achs').innerHTML='<div class=ach-header><strong>🏆 成就 ('+achUnlocked+'/'+ach.length+')</strong><span class=ach-count style=font-size:11px>'+(achUnlocked===ach.length?'全部解锁':'剩'+(ach.length-achUnlocked)+'项')+'</span></div><div class=ach-grid>'+ach.map(a=>{
 let tierClass=a.tier==='legend'?'tier-legend':'';
 let tierLabel={bronze:'🥉',silver:'🥈',gold:'🥇',legend:'👑'}[a.tier]||'';
 let progressPct=a.u?100:(()=>{let idx=ach.indexOf(a);let thresholds=[1,240,5,12,20,30,40,55,70,90,110,130,155,180,7,1,100];let targets=[totalCompletions>=1?1:0,todayMins,totalCompletions,totalCompletions,totalCompletions,totalCompletions,totalCompletions,totalCompletions,totalCompletions,totalCompletions,totalCompletions,totalCompletions,totalCompletions,totalCompletions,streak,habitsDone?1:0,score];return Math.min(100,Math.round(targets[idx]/thresholds[idx]*100))})();
