@@ -13,7 +13,7 @@
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:-apple-system,'PingFang SC','Noto Sans SC',sans-serif;background:var(--bg);color:var(--t);-webkit-tap-highlight-color:transparent;user-select:none;-webkit-user-select:none;padding-bottom:72px;overscroll-behavior:none;font-size:15px;position:relative}
 body::before{content:'';position:fixed;top:0;left:0;right:0;bottom:0;background:url(src/images/azusa/azusa_transparent.png) center/contain no-repeat;opacity:.06;pointer-events:none;z-index:0;filter:blur(1px)}
-.appbar,.tabbar,.page{display:none;padding:0 12px 90px;position:relative;z-index:1}
+.appbar,.tabbar,.page{display:none;padding:0 12px 90px;position:relative;z-index:1;animation:fIn .25s ease}
 body.dark{--bg:#1a1a2e;--c:#16213e;--t:#e0e0e0;--gr:#999;--sh:0 2px 8px rgba(0,0,0,.3)}
 body.locked{overflow:hidden;position:fixed;width:100%;height:100%}
 .appbar{background:var(--gd);color:#fff;padding:14px 16px;text-align:center;font-weight:800;font-size:18px;position:sticky;top:0;z-index:10;letter-spacing:1px;box-shadow:0 2px 12px rgba(124,92,191,.2)}
@@ -21,7 +21,7 @@ body.locked{overflow:hidden;position:fixed;width:100%;height:100%}
 .tab{flex:1;text-align:center;padding:8px 0 6px;font-size:11px;color:var(--gr);transition:all .2s;cursor:pointer;position:relative}
 .tab.on{color:var(--g);font-weight:700}.tab.on::after{content:'';position:absolute;top:0;left:50%;transform:translateX(-50%);width:20px;height:3px;border-radius:2px;background:var(--gd)}
 .tab .ic{font-size:21px;display:block;margin-bottom:1px}
-.page{display:none;padding:14px;animation:fIn .25s ease;min-height:calc(100vh - 180px)}
+
 .page.on{display:block}
 @keyframes fIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
 
@@ -1066,7 +1066,7 @@ let quotes=['"阿梓在等你开始今天的专注呢~"','"种一棵树最好的
 document.getElementById('dailyQuote').textContent=quotes[Math.floor(Math.random()*quotes.length)];
 
 // Quick stats
-let today=new Date().toISOString().slice(0,10);
+today=new Date().toISOString().slice(0,10);
 let todayMins=sessions.filter(s=>s.completed&&s.date===today).reduce((a,s)=>a+s.minutes,0);
 let todayCount=sessions.filter(s=>s.completed&&s.date===today).length;
 let streak=0,cur=0;
@@ -1087,7 +1087,7 @@ var streakWarning='';
 var today=new Date().toISOString().slice(0,10);
 var hasToday=sessions.some(function(s){return s.completed&&s.date===today});
 if(!hasToday&&streak>0){
-var h=new Date().getHours();
+h=new Date().getHours();
 if(h>=18){
 streakWarning='<div class="duo-reminder duo-warning-slide"><div class=duo-title>🔥 连续'+streak+'天的记录有危险！</div><div class=duo-msg>今天还没专注呢... 阿梓一直在等你</div><button class=duo-action onclick=goTab(1)>🌱 立即拯救连续记录</button></div>';
 }else if(h>=14){
