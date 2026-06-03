@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="theme-color" content="#2E7D32">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="manifest" href="manifest.json">
+<title>自律森林</title>
+<style>
+:root{--green:#2E7D32;--green-l:#4CAF50;--bg:#f5f7f5;--card:#fff;--text:#1a1a1a;--grey:#888;--red:#e53935;--orange:#ff9800;--radius:16px}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,'Noto Sans SC',sans-serif;background:var(--bg);color:var(--text);-webkit-tap-highlight-color:transparent;user-select:none;padding-bottom:80px}
+.appbar{background:var(--green);color:#fff;padding:14px 20px;text-align:center;font-size:18px;font-weight:700;position:sticky;top:0;z-index:10}
+.tabbar{position:fixed;bottom:0;left:0;right:0;background:var(--card);display:flex;border-top:1px solid #e0e0e0;z-index:10;padding-bottom:env(safe-area-inset-bottom)}
+.tab{flex:1;text-align:center;padding:10px 0;font-size:11px;color:var(--grey);cursor:pointer;transition:.2s}
+.tab.active{color:var(--green)}
+.tab .icon{font-size:22px;display:block;margin-bottom:2px}
+.page{display:none;padding:16px;animation:fadeIn .3s}
+.page.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+
+/* Timer */
+.timer-ring{width:200px;height:200px;margin:10px auto;position:relative}
+.timer-ring canvas{width:100%;height:100%}
+.timer-text{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center}
+.timer-text .time{font-size:40px;font-weight:700;font-family:monospace}
+.timer-text .label{font-size:13px;color:var(--green);margin-top:2px}
+.tree-stage{text-align:center;font-size:60px;height:120px;line-height:120px;transition:.5s}
+.chips{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:10px 0}
+.chip{padding:8px 16px;border-radius:20px;border:2px solid #ddd;background:#fff;font-size:14px;cursor:pointer;transition:.2s}
+.chip.sel{border-color:var(--green);background:var(--green);color:#fff}
+.btn{display:block;width:100%;padding:16px;border:none;border-radius:var(--radius);font-size:18px;font-weight:600;cursor:pointer;margin:10px 0;transition:.2s}
+.btn-start{background:var(--green);color:#fff}
+.btn-stop{background:var(--red);color:#fff}
+.btn-break{background:var(--orange);color:#fff}
+.attn-row{display:flex;gap:6px;justify-content:center;margin-top:12px}
+.attn{width:50px;height:50px;border-radius:50%;border:2px solid #ddd;background:#fff;font-size:12px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-direction:column}
+.attn.sel{border-color:var(--green);background:#e8f5e9}
+
+/* Habits */
+.habit-card{background:var(--card);border-radius:var(--radius);padding:14px;margin:8px 0;display:flex;align-items:center;gap:12px}
+.habit-check{width:44px;height:44px;border-radius:50%;background:#e0e0e0;display:flex;align-items:center;justify-content:center;font-size:20px;cursor:pointer;transition:.2s}
+.habit-check.done{background:var(--green);color:#fff}
+.habit-info{flex:1}
+.habit-name{font-weight:600;font-size:15px}
+.habit-desc{font-size:12px;color:var(--grey);margin-top:2px}
+.habit-bar{height:6px;border-radius:3px;background:#e0e0e0;margin-top:6px;overflow:hidden}
+.habit-bar-fill{height:100%;border-radius:3px;transition:.3s}
+.habit-streak{font-size:20px;font-weight:700;color:var(--green);text-align:center;min-width:40px}
+.habit-streak span{display:block;font-size:10px;color:var(--grey);font-weight:400}
+.heatmap{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;margin-top:16px}
+.heatmap-cell{aspect-ratio:1;border-radius:3px;background:#e0e0e0}
+
+/* Goals */
+.goal-card{background:var(--card);border-radius:var(--radius);padding:14px;margin:8px 0;border-left:4px solid var(--green)}
+.goal-title{font-weight:600}
+.goal-sub{font-size:12px;color:var(--grey);margin:4px 0}
+.goal-bar{height:6px;border-radius:3px;background:#e0e0e0;margin-top:6px;overflow:hidden}
+.goal-bar-fill{height:100%;border-radius:3px;background:var(--green);transition:.3s}
+.goal-children{margin-left:20px}
+
+/* Forest */
+.forest-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.forest-card{background:var(--card);border-radius:var(--radius);padding:10px;text-align:center}
+.forest-card .emoji{font-size:40px}
+.forest-card .name{font-size:11px;color:var(--grey);margin-top:4px}
+.stats-row{display:flex;gap:10px;margin-bottom:16px}
+.stat-card{flex:1;background:var(--card);border-radius:var(--radius);padding:14px;text-align:center}
+.stat-card .num{font-size:28px;font-weight:700}
+.stat-card .lbl{font-size:11px;color:var(--grey)}
+
+/* Profile */
+.profile-section{background:var(--card);border-radius:var(--radius);padding:16px;margin:10px 0}
+.profile-section h3{font-size:15px;margin-bottom:10px}
+.bar-chart{display:flex;align-items:flex-end;gap:8px;height:150px;justify-content:center}
+.bar-col{display:flex;flex-direction:column;align-items:center;gap:4px}
+.bar-val{width:28px;border-radius:6px 6px 0 0;background:var(--green-l);transition:.3s}
+.bar-label{font-size:10px;color:var(--grey)}
+.ach-grid{display:flex;flex-wrap:wrap;gap:8px}
+.ach{font-size:13px;padding:6px 12px;border-radius:20px;background:#e8f5e9}
+.ach.locked{background:#eee;opacity:.5}
+
+/* Add form */
+.form-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:20;align-items:flex-end}
+.form-overlay.show{display:flex}
+.form-panel{background:#fff;width:100%;border-radius:20px 20px 0 0;padding:20px;animation:slideUp .3s}
+@keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+.form-panel input,.form-panel select{width:100%;padding:12px;border:1px solid #ddd;border-radius:10px;font-size:15px;margin:8px 0}
+.form-panel .btn{margin-top:12px}
+</style>
+</head>
+<body>
+
+<div class="appbar" id="appbar">🌳 自律森林</div>
+
+<!-- Focus Page -->
+<div class="page active" id="page-focus">
+<div class="tree-stage" id="tree">🌰</div>
+<div class="timer-ring"><canvas id="ring"></canvas><div class="timer-text"><div class="time" id="time">25:00</div><div class="label" id="status-label">准备开始</div></div></div>
+<div class="chips" id="duration-chips"></div>
+<button class="btn btn-start" id="btn-start" onclick="startFocus()">🌱 开始种树</button>
+<button class="btn btn-stop" id="btn-stop" onclick="stopFocus()" style="display:none">🥀 放弃这棵树</button>
+<div class="attn-row" id="attn-row" style="display:none">
+<div class="attn" onclick="markAttn('deep')" id="attn-deep">🔥<span style="font-size:9px">深度</span></div>
+<div class="attn" onclick="markAttn('focused')" id="attn-focused">👍<span style="font-size:9px">专注</span></div>
+<div class="attn" onclick="markAttn('drift')" id="attn-drift">😐<span style="font-size:9px">走神</span></div>
+<div class="attn" onclick="markAttn('distracted')" id="attn-distracted">📱<span style="font-size:9px">分心</span></div>
+</div>
+</div>
+
+<!-- Habits Page -->
+<div class="page" id="page-habits">
+<div style="display:flex;justify-content:space-between;align-items:center">
+<h3>习惯追踪</h3><button style="background:var(--green);color:#fff;border:none;padding:8px 16px;border-radius:20px;font-size:14px;cursor:pointer" onclick="showAddHabit()">+ 新建</button>
+</div>
+<div id="habits-list"></div>
+<div class="heatmap" id="heatmap"></div>
+</div>
+
+<!-- Plan Page -->
+<div class="page" id="page-plan">
+<h3>🎯 目标分解</h3>
+<div id="goals-list"></div>
+<button class="btn btn-start" onclick="showAddGoal()">+ 新建目标</button>
+</div>
+
+<!-- Forest Page -->
+<div class="page" id="page-forest">
+<h3>🌳 我的森林</h3>
+<div class="stats-row" id="forest-stats"></div>
+<div class="forest-grid" id="forest-grid"></div>
+</div>
+
+<!-- Profile Page -->
+<div class="page" id="page-profile">
+<div class="profile-section">
+<h3>📊 本周专注时长</h3><div class="bar-chart" id="bar-chart"></div>
+</div>
+<div class="profile-section">
+<h3>🏆 成就</h3><div class="ach-grid" id="achievements"></div>
+</div>
+<div class="profile-section">
+<h3>🌟 积分：<span id="score-display">0</span></h3>
+</div>
+<button class="btn btn-stop" onclick="resetAll()" style="font-size:14px;padding:12px">🔄 重置所有数据</button>
+</div>
+
+<!-- Tab Bar -->
+<div class="tabbar">
+<div class="tab active" onclick="switchTab(0)" id="tab0"><span class="icon">🍅</span>专注</div>
+<div class="tab" onclick="switchTab(1)" id="tab1"><span class="icon">✅</span>习惯</div>
+<div class="tab" onclick="switchTab(2)" id="tab2"><span class="icon">🎯</span>计划</div>
+<div class="tab" onclick="switchTab(3)" id="tab3"><span class="icon">🌳</span>森林</div>
+<div class="tab" onclick="switchTab(4)" id="tab4"><span class="icon">👤</span>我的</div>
+</div>
+
+<!-- Add Habit Form -->
+<div class="form-overlay" id="habit-form">
+<div class="form-panel">
+<h3>新建习惯</h3><input id="habit-name" placeholder="习惯名称"><input id="habit-desc" placeholder="简短描述"><select id="habit-tier"><option value="micro">🌱 微习惯（100%能做到）</option><option value="normal">🌿 正常（80%能做到）</option><option value="challenge">🌳 挑战（50%能做到）</option></select>
+<button class="btn btn-start" onclick="addHabit()">添加</button>
+<button class="btn" style="background:#eee" onclick="document.getElementById('habit-form').classList.remove('show')">取消</button>
+</div></div>
+
+<!-- Add Goal Form -->
+<div class="form-overlay" id="goal-form">
+<div class="form-panel">
+<h3>新建目标</h3><input id="goal-title" placeholder="目标名称"><input id="goal-sub" placeholder="简短描述"><input id="goal-tomatoes" placeholder="预估番茄钟数" type="number">
+<button class="btn btn-start" onclick="addGoal()">添加</button>
+<button class="btn" style="background:#eee" onclick="document.getElementById('goal-form').classList.remove('show')">取消</button>
+</div></div>
+
+<script>
+// === DATA ===
+const DURATIONS=[15,25,30,45,60];
+let timer=null,tickId=null,elapsed=0,total=1500,isBreak=false,interrupts=0;
+let habits=JSON.parse(localStorage.getItem('habits')||'[]');
+let goals=JSON.parse(localStorage.getItem('goals')||'[]');
+let trees=JSON.parse(localStorage.getItem('trees')||'[]');
+let score=parseInt(localStorage.getItem('score')||'0');
+updateScore(0);
+
+// === TABS ===
+function switchTab(i){
+document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+document.querySelectorAll('.tab').forEach((t,j)=>t.classList.toggle('active',j===i));
+['page-focus','page-habits','page-plan','page-forest','page-profile'][i].classList.add('active');
+document.getElementById('appbar').textContent=['🌳 自律森林','✅ 习惯追踪','🎯 目标计划','🌳 我的森林','👤 我的'][i];
+if(i===1)renderHabits();
+if(i===2)renderGoals();
+if(i===3)renderForest();
+if(i===4)renderProfile();
+}
+
+// === FOCUS TIMER ===
+(function initFocus(){
+let chips=document.getElementById('duration-chips');
+DURATIONS.forEach((d,i)=>{
+let c=document.createElement('div');c.className='chip'+(i===1?' sel':'');
+c.textContent=d+'分';c.onclick=()=>{document.querySelectorAll('.chip').forEach(x=>x.classList.remove('sel'));c.classList.add('sel');total=d*60;document.getElementById('time').textContent=d+':00';};
+chips.appendChild(c);
+});
+drawRing(0);
+})();
+
+function startFocus(){
+elapsed=0;isBreak=false;interrupts=0;
+document.getElementById('btn-start').style.display='none';
+document.getElementById('btn-stop').style.display='block';
+document.getElementById('attn-row').style.display='flex';
+document.getElementById('status-label').textContent='专注中 🔥';
+document.getElementById('tree').textContent='🌰';
+document.querySelectorAll('.chip').forEach(c=>c.style.pointerEvents='none');
+tickId=setInterval(tick,1000);
+}
+function tick(){
+elapsed++;
+let rem=total-elapsed;if(rem<0)rem=0;
+let m=Math.floor(rem/60),s=rem%60;
+document.getElementById('time').textContent=m+':'+(s<10?'0':'')+s;
+let p=Math.min(elapsed/total,1);
+drawRing(p);
+updateTree(p,false);
+if(elapsed>=total){clearInterval(tickId);onComplete();}
+}
+function onComplete(){
+document.getElementById('status-label').textContent='🎉 完成！';
+document.getElementById('tree').textContent='🌳';
+document.getElementById('btn-stop').style.display='none';
+document.getElementById('attn-row').style.display='none';
+document.getElementById('btn-start').style.display='block';
+document.getElementById('btn-start').textContent='☕ 休息5分钟';
+document.getElementById('btn-start').onclick=startBreak;
+document.querySelectorAll('.chip').forEach(c=>c.style.pointerEvents='auto');
+trees.push({date:new Date().toISOString().slice(0,10),type:'oak',stage:'mature'});
+localStorage.setItem('trees',JSON.stringify(trees));
+updateScore(10);
+}
+function startBreak(){
+elapsed=0;total=300;isBreak=true;
+document.getElementById('status-label').textContent='休息中 ☕';
+document.getElementById('tree').textContent='😴';
+document.getElementById('btn-start').style.display='none';
+document.getElementById('btn-start').textContent='🌱 开始种树';
+document.getElementById('btn-start').onclick=startFocus;
+tickId=setInterval(()=>{elapsed++;let rem=total-elapsed;let m=Math.floor(rem/60),s=rem%60;document.getElementById('time').textContent=m+':'+(s<10?'0':'')+s;drawRing(elapsed/total);if(elapsed>=total){clearInterval(tickId);document.getElementById('status-label').textContent='准备开始';document.getElementById('tree').textContent='🌰';document.getElementById('btn-start').style.display='block';drawRing(0);document.getElementById('time').textContent=total/60+':00';isBreak=false;}},1000);
+}
+function stopFocus(){
+clearInterval(tickId);
+document.getElementById('btn-start').style.display='block';
+document.getElementById('btn-stop').style.display='none';
+document.getElementById('attn-row').style.display='none';
+document.getElementById('status-label').textContent='树枯萎了 😢';
+document.getElementById('tree').textContent='🥀';
+document.getElementById('btn-start').textContent='🌱 开始种树';
+document.getElementById('btn-start').onclick=startFocus;
+document.querySelectorAll('.chip').forEach(c=>c.style.pointerEvents='auto');
+trees.push({date:new Date().toISOString().slice(0,10),type:'oak',stage:'withered'});
+localStorage.setItem('trees',JSON.stringify(trees));
+drawRing(0);
+document.getElementById('time').textContent=total/60+':00';
+}
+function markAttn(lvl){
+document.querySelectorAll('.attn').forEach(a=>a.classList.remove('sel'));
+document.getElementById('attn-'+lvl).classList.add('sel');
+}
+
+function updateTree(p,broken){
+let e=document.getElementById('tree');
+if(broken){e.textContent='🥀';return;}
+if(p<0.2)e.textContent='🌰';
+else if(p<0.4)e.textContent='🌱';
+else if(p<0.7)e.textContent='🌿';
+else if(p<0.95)e.textContent='🌸';
+else e.textContent='🌳';
+}
+
+// === CANVAS RING ===
+function drawRing(p){
+let c=document.getElementById('ring'),w=c.width=200,h=c.height=200,ctx=c.getContext('2d');
+ctx.clearRect(0,0,w,h);
+let cx=100,cy=100,r=80;
+ctx.beginPath();ctx.arc(cx,cy,r,0,Math.PI*2);ctx.strokeStyle='#e0e0e0';ctx.lineWidth=10;ctx.stroke();
+ctx.beginPath();ctx.arc(cx,cy,r,-Math.PI/2,-Math.PI/2+Math.PI*2*p);ctx.strokeStyle=isBreak?'#ff9800':'#4CAF50';ctx.lineWidth=10;ctx.lineCap='round';ctx.stroke();
+}
+
+// === HABITS ===
+function renderHabits(){
+let list=document.getElementById('habits-list');
+list.innerHTML=habits.map((h,i)=>`<div class="habit-card"><div class="habit-check ${h.done?'done':''}" onclick="toggleHabit(${i})">${h.done?'✓':'○'}</div><div class="habit-info"><div class="habit-name">${h.name}</div><div class="habit-desc">${h.desc} · ${h.tier==='micro'?'🌱微':h.tier==='normal'?'🌿常':'🌳挑'}</div><div class="habit-bar"><div class="habit-bar-fill" style="width:${h.health||50}%;background:${h.health>80?'#4CAF50':h.health>50?'#ff9800':'#e53935'}"></div></div></div><div class="habit-streak">${h.streak||0}<span>天连续</span></div></div>`).join('');
+// heatmap
+let hm=document.getElementById('heatmap'),cells=[];
+for(let i=0;i<28;i++){let v=Math.floor(Math.random()*5);cells.push(`<div class="heatmap-cell" style="background:${['#ebedf0','#c6e48b','#7bc96f','#239a3b','#196127'][v]}"></div>`)}
+hm.innerHTML=cells.join('');
+}
+function toggleHabit(i){
+habits[i].done=!habits[i].done;
+if(habits[i].done){habits[i].streak=(habits[i].streak||0)+1;habits[i].health=Math.min(100,(habits[i].health||50)+5);updateScore(5)}else{habits[i].health=Math.max(0,(habits[i].health||50)-3)}
+localStorage.setItem('habits',JSON.stringify(habits));renderHabits();
+}
+function showAddHabit(){document.getElementById('habit-form').classList.add('show')}
+function addHabit(){
+let n=document.getElementById('habit-name').value.trim(),d=document.getElementById('habit-desc').value.trim(),t=document.getElementById('habit-tier').value;
+if(!n)return;
+habits.push({name:n,desc:d,tier:t,done:false,streak:0,health:50});
+localStorage.setItem('habits',JSON.stringify(habits));
+document.getElementById('habit-form').classList.remove('show');
+document.getElementById('habit-name').value='';document.getElementById('habit-desc').value='';
+renderHabits();
+}
+
+// === GOALS ===
+function renderGoals(){
+let list=document.getElementById('goals-list');
+list.innerHTML=goals.map((g,i)=>`<div class="goal-card"><div class="goal-title">${g.title}</div><div class="goal-sub">${g.sub} · 🍅${g.done||0}/${g.tomatoes||10}</div><div class="goal-bar"><div class="goal-bar-fill" style="width:${((g.done||0)/(g.tomatoes||10)*100)}%"></div></div></div>`).join('');
+}
+function showAddGoal(){document.getElementById('goal-form').classList.add('show')}
+function addGoal(){
+let t=document.getElementById('goal-title').value.trim(),s=document.getElementById('goal-sub').value.trim(),tom=parseInt(document.getElementById('goal-tomatoes').value)||10;
+if(!t)return;
+goals.push({title:t,sub:s,tomatoes:tom,done:0});
+localStorage.setItem('goals',JSON.stringify(goals));
+document.getElementById('goal-form').classList.remove('show');
+document.getElementById('goal-title').value='';document.getElementById('goal-sub').value='';document.getElementById('goal-tomatoes').value='';
+renderGoals();updateScore(10);
+}
+
+// === FOREST ===
+function renderForest(){
+let s=document.getElementById('forest-stats');
+let total=trees.length,alive=trees.filter(t=>t.stage==='mature').length,dead=trees.filter(t=>t.stage==='withered').length;
+s.innerHTML=`<div class="stat-card"><div class="num" style="color:#4CAF50">${total}</div><div class="lbl">总种树</div></div><div class="stat-card"><div class="num" style="color:#2E7D32">${alive}</div><div class="lbl">存活</div></div><div class="stat-card"><div class="num" style="color:#e53935">${dead}</div><div class="lbl">枯萎</div></div>`;
+let types=['oak','pine','cherry','bamboo','cactus','maple','willow','redwood'];
+let names=['橡树','松树','樱花','竹子','仙人掌','枫树','柳树','红杉'];
+let emojis=['🌳','🌲','🌸','🎋','🌵','🍁','🌿','🏔️'];
+let grid=document.getElementById('forest-grid');
+grid.innerHTML=trees.slice(-12).reverse().map(t=>`<div class="forest-card"><div class="emoji">${t.stage==='mature'?emojis[Math.floor(Math.random()*8)]:'🥀'}</div><div class="name">${t.stage==='mature'?'已成熟':'已枯萎'}</div></div>`).join('');
+if(trees.length===0)grid.innerHTML='<p style="text-align:center;color:#888;grid-column:1/-1;padding:40px">还没有种过树，去专注页面种第一棵吧 🌱</p>';
+}
+
+// === PROFILE ===
+function renderProfile(){
+document.getElementById('score-display').textContent=score;
+let bc=document.getElementById('bar-chart');
+let days=['一','二','三','四','五','六','日'];
+bc.innerHTML=days.map((d,i)=>{let h=20+Math.floor(Math.random()*130);return`<div class="bar-col"><div class="bar-val" style="height:${h}px"></div><div class="bar-label">${d}</div></div>`}).join('');
+let ach=document.getElementById('achievements');
+let achievements=[{n:'🌱 初次种树',u:trees.length>0},{n:'🔥 连续7天',u:false},{n:'🌲 10棵树',u:trees.length>=10},{n:'📚 100个番茄',u:false},{n:'⭐ 1000积分',u:score>=1000},{n:'🏅 30天不间断',u:false}];
+ach.innerHTML=achievements.map(a=>`<div class="ach${a.u?'':' locked'}">${a.n}</div>`).join('');
+}
+
+function updateScore(n){score+=n;localStorage.setItem('score',score.toString());if(document.getElementById('page-profile').classList.contains('active'))renderProfile();}
+function resetAll(){if(confirm('确定要重置所有数据吗？此操作不可恢复！')){localStorage.clear();habits=[];goals=[];trees=[];score=0;updateScore(0);renderHabits();renderGoals();renderForest();renderProfile();}}
+
+// === INIT ===
+renderHabits();renderGoals();renderForest();
+
+// === SERVICE WORKER REGISTRATION ===
+if('serviceWorker' in navigator){navigator.serviceWorker.register('sw.js')}
+</script>
+</body>
+</html>
