@@ -11,7 +11,9 @@
 <style>
 :root{--g:#5C6BC0;--gl:#7986CB;--bg:#f0f2fa;--c:#fff;--t:#1a1a1a;--gr:#888;--r:#e53935;--o:#ff9800;--b:#7E57C2;--rad:14px;--sh:0 2px 8px rgba(0,0,0,.06)}
 *{margin:0;padding:0;box-sizing:border-box}
-body{font-family:-apple-system,'PingFang SC','Noto Sans SC',sans-serif;background:var(--bg);color:var(--t);-webkit-tap-highlight-color:transparent;user-select:none;-webkit-user-select:none;padding-bottom:72px;overscroll-behavior:none;font-size:15px}
+body{font-family:-apple-system,'PingFang SC','Noto Sans SC',sans-serif;background:var(--bg);color:var(--t);-webkit-tap-highlight-color:transparent;user-select:none;-webkit-user-select:none;padding-bottom:72px;overscroll-behavior:none;font-size:15px;position:relative}
+body::before{content:'';position:fixed;top:0;left:0;right:0;bottom:0;background:url(src/images/azusa/azusa_transparent.png) center/contain no-repeat;opacity:.04;pointer-events:none;z-index:0}
+.appbar,.tabbar,.page{position:relative;z-index:1}
 body.dark{--bg:#1a1a2e;--c:#16213e;--t:#e0e0e0;--gr:#999;--sh:0 2px 8px rgba(0,0,0,.3)}
 body.locked{overflow:hidden;position:fixed;width:100%;height:100%}
 .appbar{background:var(--g);color:#fff;padding:12px 16px;text-align:center;font-weight:700;font-size:17px;position:sticky;top:0;z-index:10}
@@ -23,7 +25,7 @@ body.locked{overflow:hidden;position:fixed;width:100%;height:100%}
 .page.on{display:block}
 @keyframes fIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
 
-.card{background:var(--c);border-radius:var(--rad);padding:14px;margin:8px 0;box-shadow:var(--sh)}
+.card{background:var(--c);border-radius:var(--rad);padding:14px;margin:8px 0;box-shadow:var(--sh);transition:.2s}.card:active{transform:scale(.98)}
 .btn{display:block;width:100%;padding:14px;border:none;border-radius:var(--rad);font-size:17px;font-weight:600;cursor:pointer;margin:8px 0;transition:.15s;letter-spacing:.5px}
 .btn:active{transform:scale(.97)}
 .btn-g{background:var(--g);color:#fff}
@@ -60,7 +62,7 @@ body.locked{overflow:hidden;position:fixed;width:100%;height:100%}
 
 /* Tree Gallery */
 .tree-gallery{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:8px}
-.tg-card{background:var(--c);border-radius:var(--rad);padding:16px 10px;text-align:center;box-shadow:var(--sh);transition:.3s;position:relative;overflow:hidden}
+.tg-card{background:var(--c);border-radius:var(--rad);padding:16px 10px;text-align:center;box-shadow:var(--sh);transition:.3s;position:relative;overflow:hidden;cursor:pointer}.tg-card:active{transform:scale(.95)}.tg-card.unlocked:hover{box-shadow:0 4px 16px rgba(92,107,192,.2)}
 .tg-card.locked{opacity:.55;filter:grayscale(.6)}
 .tg-card.unlocked{border:2px solid var(--g)}
 .tg-card.current{border:2px solid var(--g);box-shadow:0 0 16px rgba(92,107,192,.3)}
@@ -203,20 +205,20 @@ body.locked{overflow:hidden;position:fixed;width:100%;height:100%}
 // ==================== 阿梓树系统 ====================
 // 阿梓的8套衣服 = 8个树等级。越专注解锁越多衣服。
 const AZUSA_TREES=[
-{id:'seed',name:'?????',img:'',emoji:'??',unlock:0,sub:'??????????????',color:'#8D6E63'},
-{id:'default',name:'???????',img:'src/images/azusa/azusa_default.png',unlock:1,sub:'??1??????????',color:'#90CAF9'},
-{id:'newyear',name:'???????',img:'src/images/azusa/azusa_newyear.png',unlock:5,sub:'??5??????????',color:'#EF5350'},
-{id:'summer',name:'??????',img:'src/images/azusa/azusa_summer.jpg',unlock:12,sub:'??12??????????',color:'#FF7043'},
-{id:'panda',name:'????',img:'src/images/azusa/azusa_panda.png',unlock:20,sub:'??20???????????',color:'#4CAF50'},
-{id:'rabbit',name:'?????',img:'src/images/azusa/azusa_rabbit.jpg',unlock:30,sub:'??30??????????',color:'#FF80AB'},
-{id:'frog',name:'???????',img:'src/images/azusa/azusa_frog.jpg',unlock:40,sub:'??40??????????',color:'#66BB6A'},
-{id:'butterfly',name:'???????',img:'src/images/azusa/azusa_butterfly.jpg',unlock:55,sub:'??55??????????',color:'#CE93D8'},
-{id:'eggplant',name:'?????',img:'src/images/azusa/azusa_eggplant.png',unlock:70,sub:'??70???????????',color:'#9575CD'},
-{id:'spring',name:'???????',img:'src/images/azusa/azusa_spring.png',unlock:90,sub:'??90??????????',color:'#81C784'},
-{id:'chibi',name:'??????',img:'src/images/azusa/azusa_chibi.png',unlock:110,sub:'??110?????????',color:'#FFD700'},
-{id:'gift',name:'????????',img:'src/images/azusa/azusa_gift.gif',unlock:130,sub:'??130??????live2D',color:'#FF8A65'},
-{id:'ninja',name:'?????',img:'src/images/azusa/azusa_ninja.jpg',unlock:155,sub:'??155??????????',color:'#7E57C2'},
-{id:'ultimate',name:'???????',img:'src/images/azusa/azusa_transparent.png',unlock:180,sub:'??180???????????',color:'#E040FB'},
+{id:'seed',name:'????????',img:'',emoji:'??',unlock:0,sub:'????????????????????',color:'#8D6E63'},
+{id:'default',name:'??????????',img:'src/images/azusa/azusa_default.png',unlock:1,sub:'??1????????????????',color:'#90CAF9'},
+{id:'newyear',name:'??????????',img:'src/images/azusa/azusa_newyear.png',unlock:5,sub:'??5????????????????',color:'#EF5350'},
+{id:'summer',name:'?????????',img:'src/images/azusa/azusa_summer.jpg',unlock:12,sub:'??12????????????????',color:'#FF7043'},
+{id:'panda',name:'????',img:'src/images/azusa/azusa_panda.png',unlock:20,sub:'??20?????????????????',color:'#4CAF50'},
+{id:'rabbit',name:'????????',img:'src/images/azusa/azusa_rabbit.jpg',unlock:30,sub:'??30????????????????',color:'#FF80AB'},
+{id:'frog',name:'??????????',img:'src/images/azusa/azusa_frog.jpg',unlock:40,sub:'??40????????????????',color:'#66BB6A'},
+{id:'butterfly',name:'??????????',img:'src/images/azusa/azusa_butterfly.jpg',unlock:55,sub:'??55????????????????',color:'#CE93D8'},
+{id:'eggplant',name:'????????',img:'src/images/azusa/azusa_eggplant.png',unlock:70,sub:'??70?????????????????',color:'#9575CD'},
+{id:'spring',name:'??????????',img:'src/images/azusa/azusa_spring.png',unlock:90,sub:'??90????????????????',color:'#81C784'},
+{id:'chibi',name:'?????????',img:'src/images/azusa/azusa_chibi.png',unlock:110,sub:'??110????????????',color:'#FFD700'},
+{id:'gift',name:'???????????',img:'src/images/azusa/azusa_gift.gif',unlock:130,sub:'??130?????????live2D',color:'#FF8A65'},
+{id:'ninja',name:'????????',img:'src/images/azusa/azusa_ninja.jpg',unlock:155,sub:'??155????????????????',color:'#7E57C2'},
+{id:'ultimate',name:'??????????',img:'src/images/azusa/azusa_transparent.png',unlock:180,sub:'??180?????????????????',color:'#E040FB'},
 ];
 
 let currentTreeIdx=0; // which tree the user is currently at
@@ -436,7 +438,7 @@ streak=cur;
 let habitsDone=habits.length>0&&habits.every(h=>h.dates&&h.dates.includes(today));
 return[
 {name:'?? ????',icon:'??',tier:'bronze',u:totalCompletions>=1},
-{name:'?????',icon:'??',tier:'silver',u:todayMins>=240},
+{name:'????????',icon:'??',tier:'silver',u:todayMins>=240},
 {name:'?? ????',icon:'??',tier:'bronze',u:totalCompletions>=5},
 {name:'?? ???',icon:'??',tier:'bronze',u:totalCompletions>=12},
 {name:'?? ????',icon:'??',tier:'silver',u:totalCompletions>=20},
@@ -446,9 +448,9 @@ return[
 {name:'?? ??',icon:'??',tier:'gold',u:totalCompletions>=70},
 {name:'?? ????',icon:'??',tier:'gold',u:totalCompletions>=90},
 {name:'?? ???',icon:'??',tier:'legend',u:totalCompletions>=110},
-{name:'?? ?????',icon:'??',tier:'legend',u:totalCompletions>=130},
+{name:'?? ????????',icon:'??',tier:'legend',u:totalCompletions>=130},
 {name:'?? ??',icon:'??',tier:'legend',u:totalCompletions>=155},
-{name:'?? ?????',icon:'??',tier:'legend',u:totalCompletions>=180},
+{name:'?? ????????',icon:'??',tier:'legend',u:totalCompletions>=180},
 {name:'?? ??7?',icon:'??',tier:'gold',u:streak>=7},
 {name:'? ????',icon:'?',tier:'silver',u:habitsDone},
 {name:'?? ???',icon:'??',tier:'gold',u:score>=100},
@@ -457,6 +459,7 @@ return[
 
 // ==================== PROFILE ====================
 function rProfile(){
+document.getElementById('bar').textContent='?? ????';
 document.getElementById('scoreVal').textContent=score;
 let totalMin=sessions.filter(s=>s.completed).reduce((a,s)=>a+s.minutes,0);
 document.getElementById('totalMin').textContent=totalMin;
