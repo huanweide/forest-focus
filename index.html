@@ -200,6 +200,33 @@ body.mood-low{--mood-bg:linear-gradient(180deg,#eceff1,#e0e0f0)}
 .freeze-badge{display:inline-flex;align-items:center;gap:4px;background:linear-gradient(135deg,#e3f2fd,#bbdefb);padding:4px 10px;border-radius:14px;font-size:12px;font-weight:600;color:#1565c0}
 .streak-fire.rainbow{font-size:50px;animation:pulse .6s ease-in-out infinite,fireGlow 2s ease-in-out infinite}
 @keyframes fireGlow{0%,100%{text-shadow:0 0 10px #ff6f00}50%{text-shadow:0 0 30px #ff9800,0 0 60px #ff5722}}
+
+/* === v3.1: Home Page === */
+.home-scene{position:relative;overflow:hidden;border-radius:20px;background:linear-gradient(180deg,#e8f5e9 0%,#c8e6c9 40%,#a5d6a7 100%);min-height:280px;display:flex;flex-direction:column;align-items:center;justify-content:center;margin:8px 0;box-shadow:0 4px 20px rgba(76,175,80,.15)}
+.home-scene.night{background:linear-gradient(180deg,#1a237e 0%,#283593 50%,#3949ab 100%)}
+.home-scene .sky-stars{position:absolute;top:0;left:0;right:0;height:60%;overflow:hidden}
+.home-scene .star{position:absolute;width:3px;height:3px;background:#fff;border-radius:50%;animation:twinkle 2s ease-in-out infinite}
+@keyframes twinkle{0%,100%{opacity:.3}50%{opacity:1}}
+.home-scene .ground{position:absolute;bottom:0;left:0;right:0;height:40px;background:linear-gradient(180deg,#66bb6a,#43a047);border-radius:0 0 20px 20px}
+.home-scene .azusa-char{position:relative;z-index:2;font-size:80px;animation:azBreathe 4s ease-in-out infinite;filter:drop-shadow(0 4px 8px rgba(0,0,0,.15))}
+.home-scene .azusa-char img{width:140px;height:auto;border-radius:0}
+.home-scene .char-label{font-size:14px;font-weight:700;color:#2e7d32;margin-top:4px;background:rgba(255,255,255,.8);padding:4px 14px;border-radius:14px}
+.quick-stats{display:flex;gap:8px;margin:12px 0;flex-wrap:wrap}
+.quick-stat{flex:1;min-width:70px;background:var(--c);border-radius:14px;padding:12px 8px;text-align:center;box-shadow:var(--sh)}
+.quick-stat .qs-val{font-size:22px;font-weight:700;color:var(--g)}
+.quick-stat .qs-lbl{font-size:10px;color:var(--gr);margin-top:2px}
+.home-actions{display:flex;gap:8px;margin:8px 0}
+.home-btn{flex:1;padding:14px;border-radius:16px;border:none;font-size:15px;font-weight:700;cursor:pointer;transition:all .2s}
+.home-btn.primary{background:var(--gd);color:#fff;box-shadow:0 4px 16px rgba(124,92,191,.3)}
+.home-btn.secondary{background:var(--c);color:var(--t);border:2px solid #e0e0e0}
+.home-btn:active{transform:scale(.96)}
+.home-mood-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.85);padding:6px 14px;border-radius:20px;font-size:13px;font-weight:600;color:#333;position:absolute;top:12px;right:12px;z-index:3}
+.daily-quote{font-size:12px;color:var(--gr);text-align:center;margin:6px 0;font-style:italic;min-height:18px}
+.setting-row{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid #eee}
+.setting-row .toggle{width:48px;height:26px;background:#ccc;border-radius:13px;position:relative;cursor:pointer;transition:background .3s}
+.setting-row .toggle.on{background:var(--g)}
+.setting-row .toggle::after{content:'';position:absolute;top:3px;left:3px;width:20px;height:20px;background:#fff;border-radius:50%;transition:left .3s}
+.setting-row .toggle.on::after{left:25px}
 </style>
 </head>
 <body>
@@ -219,8 +246,36 @@ body.mood-low{--mood-bg:linear-gradient(180deg,#eceff1,#e0e0f0)}
 <div class="lock-count">今天已离开 <span id="lockCount">0</span>/3 次 · 超过3次阿梓会伤心的 😢</div>
 </div>
 
+
+<!-- ===== HOME PAGE (pg5) ===== -->
+<div class="page on" id="pg5">
+<div style="max-width:360px;margin:0 auto">
+<div class="home-scene" id="homeScene">
+<div class="sky-stars" id="homeStars"></div>
+<div class="home-mood-badge" id="homeMoodBadge">😊 阿梓心情很好</div>
+<div class="azusa-char azusa-live" id="homeAzusa">🌰</div>
+<div class="char-label" id="homeAzusaName">阿梓的种子</div>
+<div class="ground"></div>
+</div>
+<div class="daily-quote" id="dailyQuote">"阿梓在等你开始今天的专注呢~"</div>
+<div class="quick-stats" id="quickStats"></div>
+<div class="home-actions">
+<button class="home-btn primary" onclick="goTab(1)">🌱 开始专注</button>
+<button class="home-btn secondary" onclick="goTab(2)">👗 衣柜</button>
+</div>
+<div class="home-actions">
+<button class="home-btn secondary" onclick="goTab(5)">📊 统计</button>
+<button class="home-btn secondary" onclick="randomBubble()">💬 戳阿梓</button>
+</div>
+</div>
+<div style="max-width:360px;margin:12px auto;padding:12px;background:var(--c);border-radius:14px;box-shadow:var(--sh)" id="homeSettings">
+<div class="setting-row"><span style="font-size:13px">⏱ 计时页设为首页</span><div class="toggle" onclick="toggleTimerDefault()" id="timerToggle"></div></div>
+<div style="font-size:11px;color:var(--gr);margin-top:4px">开启后每次打开直接进入计时页面</div>
+</div>
+</div>
+
 <!-- ===== FOCUS PAGE ===== -->
-<div class="page on" id="pg0">
+<div class="page" id="pg0">
 <div style="max-width:360px;margin:0 auto">
 <div class="tree-box" id="tree">🌰</div>
 <div class="ring-wrap"><canvas id="ring"></canvas><div class="ring-t"><div class="tm" id="time">25:00</div><div class="lb" id="status">选个目标，阿梓陪你一起种树吧 🌸</div></div></div>
@@ -297,10 +352,12 @@ body.mood-low{--mood-bg:linear-gradient(180deg,#eceff1,#e0e0f0)}
 <div class="box-overlay hidden" id="boxOverlay"><div class="box"><div class="chest">🎁</div><div class="reward" id="boxReward"></div><div class="reward-text" id="boxText"></div><button class="box-btn" onclick="closeBox()">收下！</button></div></div>
 
 <div class="tabbar">
-<div class="tab" onclick="goTab(1)"><span class="ic">👗</span>衣柜</div>
-<div class="tab" onclick="goTab(2)"><span class="ic">✅</span>习惯</div>
-<div class="tab" onclick="goTab(3)"><span class="ic">🎯</span>目标</div>
-<div class="tab" onclick="goTab(4)"><span class="ic">👤</span>我的</div>
+<div class="tab on" onclick="goTab(0)"><span class="ic">🏠</span>首页</div>
+<div class="tab" onclick="goTab(1)"><span class="ic">⏱</span>计时</div>
+<div class="tab" onclick="goTab(2)"><span class="ic">👗</span>衣柜</div>
+<div class="tab" onclick="goTab(3)"><span class="ic">✅</span>习惯</div>
+<div class="tab" onclick="goTab(4)"><span class="ic">🎯</span>目标</div>
+<div class="tab" onclick="goTab(5)"><span class="ic">👤</span>我的</div>
 </div>
 
 <div class="toast" id="toast"></div>
@@ -361,7 +418,7 @@ function fmtMins(m){if(m<60)return m+'分钟';let h=Math.floor(m/60);let r=m%60;
 
 // ==================== TABS ====================
 let currentTab=0;
-function goTab(i){currentTab=i;document.querySelectorAll('.page').forEach(p=>p.classList.remove('on'));document.querySelectorAll('.tab').forEach((t,j)=>t.classList.toggle('on',j===i-1));document.getElementById(['pg0','pg1','pg2','pg3','pg4'][i]).classList.add('on');document.getElementById('bar').textContent=['🌸 阿梓的森林','👗 换装衣柜','✅ 习惯追踪','🎯 目标计划','👤 我的数据'][i];if(i===1)rGallery();if(i===2)rHabits();if(i===3)rGoals();if(i===4)rProfile()}
+function goTab(i){currentTab=i;document.querySelectorAll('.page').forEach(p=>p.classList.remove('on'));document.querySelectorAll('.tab').forEach((t,j)=>t.classList.toggle('on',j===i));document.getElementById(['pg5','pg0','pg1','pg2','pg3','pg4'][i]).classList.add('on');document.getElementById('bar').textContent=['🏠 阿梓的森林','⏱ 专注计时','👗 换装衣柜','✅ 习惯追踪','🎯 目标计划','👤 我的数据'][i];if(i===0)rHome();if(i===2)rGallery();if(i===3)rHabits();if(i===4)rGoals();if(i===5)rProfile()}
 
 // ==================== FOCUS TIMER ====================
 (function initFocus(){
@@ -472,7 +529,7 @@ function drawRing(p){let c=document.getElementById('ring'),dpr=window.devicePixe
 function resumeFocus(){document.getElementById('lockOverlay').classList.remove('show');document.body.classList.remove('locked')}
 function lockAbort(){document.getElementById('lockOverlay').classList.remove('show');document.body.classList.remove('locked');abort()}
 
-function wearOutfit(idx){currentOutfit=idx;localStorage.setItem('foutfit',idx);if(currentTab===1)rGallery();if(currentTab===0)updateTree(0);toast('\uD83D\uDC57 '+AZUSA_TREES[idx].name+' \u6362\u4E0A\u5566!')}
+function wearOutfit(idx){currentOutfit=idx;localStorage.setItem('foutfit',idx);if(currentTab===2)rGallery();if(currentTab===1)updateTree(0);if(currentTab===0)rHome();toast('\uD83D\uDC57 '+AZUSA_TREES[idx].name+' \u6362\u4E0A\u5566!')}
 function updateTree(p,dead){
 let e=document.getElementById('tree');
 if(dead){e.innerHTML='<span style=font-size:80px>🎨</span>';return}
@@ -664,10 +721,10 @@ let progressPct=a.u?100:(()=>{let idx=ach.indexOf(a);let thresholds=[1,240,5,12,
 let pColor=a.tier==='bronze'?'#e65100':a.tier==='silver'?'#616161':a.tier==='gold'?'#f57f17':'#6a1b9a';
 return`<div class="ach-card ${a.u?'unlocked '+tierClass:'locked'}"><span class=ach-icon>${a.u?a.icon:'🔒'}</span><div class=ach-name>${a.name}</div>${a.u?`<span class='ach-tier tier-${a.tier}'>${tierLabel}</span>`:`<div class=ach-prog><div style=width:${progressPct}%;background:${pColor}></div></div>`}</div>`}).join('')+'</div>';
 }
-function updateScore(n){score+=n;save('c');if(currentTab===4)rProfile()}
+function updateScore(n){score+=n;save('c');if(currentTab===5)rProfile()}
 function toggleDark(){dark=!dark;document.body.classList.toggle('dark',dark);document.getElementById('darkIcon').textContent=dark?'☀️':'🌙';save('d')}
 function exportData(){let data={habits,goals,sessions,score,exported:new Date().toISOString()};let b=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});let a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='azusa-forest-'+new Date().toISOString().slice(0,10)+'.json';a.click();toast('📤 已导出')}
-function resetAll(){if(!confirm('确定删除？建议先导出备份。'))return;habits=[];goals=[];sessions=[];score=0;totalCompletions=0;currentTreeIdx=0;['fh','fg','fs','fsc'].forEach(k=>localStorage.removeItem(k));save('c');if(currentTab===1)rGallery();if(currentTab===2)rHabits();if(currentTab===3)rGoals();if(currentTab===4)rProfile();updateTaskSelects();toast('🔄 已重置')}
+function resetAll(){if(!confirm('确定删除？建议先导出备份。'))return;habits=[];goals=[];sessions=[];score=0;totalCompletions=0;currentTreeIdx=0;['fh','fg','fs','fsc'].forEach(k=>localStorage.removeItem(k));save('c');if(currentTab===2)rGallery();if(currentTab===3)rHabits();if(currentTab===4)rGoals();if(currentTab===5)rProfile();updateTaskSelects();toast('🔄 已重置')}
 
 
 // ==================== v3.0: MOOD SYSTEM ====================
@@ -782,8 +839,82 @@ return true;
 }
 function closeBox(){document.getElementById('boxOverlay').classList.add('hidden');}
 
+
+// ==================== v3.1: HOME PAGE ====================
+function rHome(){
+// Update Azusa character
+let curTree=AZUSA_TREES[currentOutfit]||AZUSA_TREES[currentTreeIdx];
+let azusaEl=document.getElementById('homeAzusa');
+if(curTree.img){
+azusaEl.innerHTML='<img src='+curTree.img+' style="width:140px;height:auto;border-radius:16px" class=azusa-live>';
+}else{
+azusaEl.textContent=curTree.emoji||'🌰';
+}
+document.getElementById('homeAzusaName').textContent=curTree.name||'阿梓';
+
+// Mood badge
+let moodText=currentMood>=80?'超开心！✨':currentMood>=60?'心情不错~':currentMood>=40?'还行吧':currentMood>=20?'有点低落':'好难过😢';
+document.getElementById('homeMoodBadge').innerHTML='😊 '+moodText;
+
+// Time-based scene
+let h=new Date().getHours();
+let scene=document.getElementById('homeScene');
+let stars=document.getElementById('homeStars');
+if(h>=20||h<6){
+scene.classList.add('night');
+let shtml='';
+for(let i=0;i<20;i++){shtml+='<div class=star style=left:'+Math.random()*100+'%;top:'+Math.random()*60+'%;animation-delay:'+Math.random()*2+'s></div>';}
+stars.innerHTML=shtml;
+}else{
+scene.classList.remove('night');
+stars.innerHTML='';
+}
+
+// Daily quote
+let quotes=['"阿梓在等你开始今天的专注呢~"','"种一棵树最好的时间是十年前，其次是现在🌱"','"今天也要元气满满！"','"每一分钟专注都在靠近新衣服哦👗"','"阿梓相信你一定能做到💪"'];
+document.getElementById('dailyQuote').textContent=quotes[Math.floor(Math.random()*quotes.length)];
+
+// Quick stats
+let today=new Date().toISOString().slice(0,10);
+let todayMins=sessions.filter(s=>s.completed&&s.date===today).reduce((a,s)=>a+s.minutes,0);
+let todayCount=sessions.filter(s=>s.completed&&s.date===today).length;
+let streak=0,cur=0;
+let dates=[...new Set(sessions.filter(s=>s.completed).map(s=>s.date))].sort();
+for(let i=dates.length-1;i>=0;i--){
+if(i===dates.length-1||(new Date(dates[i+1])-new Date(dates[i]))/86400000===1)cur++;else break;
+}
+streak=cur;
+let outfitProgress=Math.round((currentTreeIdx+1)/AZUSA_TREES.length*100);
+document.getElementById('quickStats').innerHTML=
+'<div class=quick-stat><div class=qs-val>'+fmtMins(todayMins)+'</div><div class=qs-lbl>⏱ 今日</div></div>'+
+'<div class=quick-stat><div class=qs-val>'+streak+'🔥</div><div class=qs-lbl>连续</div></div>'+
+'<div class=quick-stat><div class=qs-val>'+outfitProgress+'%</div><div class=qs-lbl>👗 衣装</div></div>'+
+'<div class=quick-stat><div class=qs-val>'+streakFreezes+'🔰</div><div class=qs-lbl>护符</div></div>';
+
+// Settings toggle
+let timerDefault=localStorage.getItem('ftimerDefault')==='1';
+// Update settings toggle
+var toggle=document.getElementById('timerToggle');
+var timerDefault=localStorage.getItem('ftimerDefault')==='1';
+if(toggle)toggle.classList.toggle('on',timerDefault);
+}
+
+function toggleTimerDefault(){
+var current=localStorage.getItem('ftimerDefault')==='1';
+var next=!current;
+localStorage.setItem('ftimerDefault',next?'1':'0');
+var toggle=document.getElementById('timerToggle');
+if(toggle)toggle.classList.toggle('on',next);
+toast(next?'⏱ 计时页已设为首页':'🏠 首页已设为默认');
+}
+
+
+
 // ==================== INIT ====================
-function initAll(){rHabits();rGoals();requestNotify();checkStreakRecovery();updateMoodUI();setInterval(periodicBubble,300000);setInterval(checkReminder,600000);setTimeout(randomBubble,10000);}
+function initAll(){rHabits();rGoals();requestNotify();checkStreakRecovery();updateMoodUI();setInterval(periodicBubble,300000);setInterval(checkReminder,600000);setTimeout(randomBubble,10000);
+var timerDefault=localStorage.getItem('ftimerDefault')==='1';
+if(timerDefault){goTab(1);}else{goTab(0);rHome();}
+}
 initAll();
 if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});
 document.addEventListener('visibilitychange',()=>{if(document.hidden&&timerId&&!isBreak){lockExits++;document.getElementById('lockCount').textContent=lockExits;document.getElementById('lockLeft').textContent=Math.floor((totalSec-elapsed)/60);document.getElementById('lockOverlay').classList.add('show');document.body.classList.add('locked');if(lockExits>=3){lockAbort();toast('😢 阿梓伤心了...树枯萎了')}}})
