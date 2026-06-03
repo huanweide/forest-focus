@@ -248,11 +248,78 @@ body.mood-low{--mood-bg:linear-gradient(180deg,#eceff1,#e0e0f0)}
 .streak-lost-card .lost-btn{padding:12px 30px;border-radius:20px;border:none;font-size:16px;font-weight:600;cursor:pointer;margin:4px}
 .lost-btn.primary{background:linear-gradient(135deg,#4CAF50,#66BB6A);color:#fff}
 .lost-btn.secondary{background:#eee;color:#666}
+
+/* === v3.3: AI Chat + Betting === */
+/* Chat FAB */
+.chat-fab{position:fixed;bottom:80px;right:16px;width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,#7C5CBF,#9575CD);color:#fff;font-size:24px;border:none;cursor:pointer;z-index:150;box-shadow:0 4px 20px rgba(124,92,191,.4);transition:all .2s;display:flex;align-items:center;justify-content:center}
+.chat-fab:active{transform:scale(.9)}
+.chat-fab .badge{position:absolute;top:-4px;right:-4px;width:18px;height:18px;background:#e91e63;border-radius:50%;font-size:10px;display:flex;align-items:center;justify-content:center;animation:pulse .8s ease-in-out infinite}
+/* Chat modal */
+.chat-modal{position:fixed;bottom:0;left:0;right:0;top:0;z-index:350;display:flex;flex-direction:column;background:var(--bg,#f5f0fa);transform:translateY(100%);transition:transform .3s ease-out}
+.chat-modal.open{transform:translateY(0)}
+.chat-header{background:var(--gd);color:#fff;padding:14px 16px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 2px 10px rgba(0,0,0,.1)}
+.chat-header .ch-title{font-weight:700;font-size:16px;display:flex;align-items:center;gap:8px}
+.chat-header .ch-close{width:32px;height:32px;border-radius:50%;border:none;background:rgba(255,255,255,.2);color:#fff;font-size:18px;cursor:pointer}
+.chat-body{flex:1;overflow-y:auto;padding:12px;display:flex;flex-direction:column;gap:8px}
+.chat-msg{max-width:85%;padding:10px 14px;border-radius:16px;font-size:14px;line-height:1.5;animation:msgIn .3s ease-out}
+@keyframes msgIn{0%{opacity:0;transform:translateY(10px)}100%{opacity:1;transform:translateY(0)}}
+.chat-msg.user{align-self:flex-end;background:var(--gd);color:#fff;border-bottom-right-radius:4px}
+.chat-msg.azusa{align-self:flex-start;background:#fff;color:#333;border-bottom-left-radius:4px;box-shadow:0 2px 8px rgba(0,0,0,.06)}
+.chat-msg.azusa .az-avatar{font-size:20px;margin-right:6px}
+.chat-typing{align-self:flex-start;background:#fff;padding:10px 16px;border-radius:16px;font-size:13px;color:#999;display:flex;gap:4px}
+.chat-typing span{width:6px;height:6px;background:#ccc;border-radius:50%;animation:typeBounce 1.4s ease-in-out infinite}
+.chat-typing span:nth-child(2){animation-delay:.2s}
+.chat-typing span:nth-child(3){animation-delay:.4s}
+@keyframes typeBounce{0%,80%,100%{transform:scale(.6)}40%{transform:scale(1)}}
+.chat-input-wrap{display:flex;gap:8px;padding:10px 12px;background:#fff;border-top:1px solid #eee}
+.chat-input-wrap input{flex:1;padding:10px 14px;border-radius:20px;border:2px solid #e0e0e0;font-size:14px;outline:none;transition:border .2s}
+.chat-input-wrap input:focus{border-color:var(--g)}
+.chat-input-wrap button{width:40px;height:40px;border-radius:50%;border:none;background:var(--gd);color:#fff;font-size:18px;cursor:pointer}
+/* Betting UI */
+.bet-row{display:flex;align-items:center;gap:8px;margin:8px 0;padding:10px 14px;background:var(--c);border-radius:14px;box-shadow:var(--sh);font-size:13px}
+.bet-row select{padding:6px 10px;border-radius:8px;border:2px solid #e0e0e0;font-size:13px;background:var(--c)}
+.bet-row .bet-info{font-size:11px;color:var(--gr);margin-left:auto}
+.bet-result{text-align:center;font-size:14px;font-weight:600;padding:8px;border-radius:12px;margin:4px 0;animation:popIn .3s ease-out}
+.bet-result.win{background:#e8f5e9;color:#2e7d32}
+.bet-result.lose{background:#fce4ec;color:#c62828}
+/* Coin display */
+.coin-display{display:inline-flex;align-items:center;gap:4px;background:linear-gradient(135deg,#fff8e1,#ffecb3);padding:4px 10px;border-radius:14px;font-size:13px;font-weight:700;color:#f57f17}
+/* Shop */
+.shop-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin:8px 0}
+.shop-item{background:var(--c);border-radius:14px;padding:12px;text-align:center;box-shadow:var(--sh)}
+.shop-item .si-icon{font-size:32px;margin-bottom:4px}
+.shop-item .si-name{font-size:13px;font-weight:600}
+.shop-item .si-price{font-size:11px;color:var(--gr);margin:4px 0}
+.shop-item .si-btn{padding:6px 16px;border-radius:12px;border:none;font-size:12px;font-weight:600;cursor:pointer;margin-top:4px}
+.shop-item .si-btn.buy{background:var(--gd);color:#fff}
+.shop-item .si-btn.owned{background:#e0e0e0;color:#999;cursor:default}
 </style>
 </head>
 <body>
 
-<div class="appbar" id="bar">🌸 阿梓的森林<span style="float:right;cursor:pointer;font-size:20px" onclick="toggleDark()" id="darkIcon">🌙</span><span class="mood-face azusa-live" id="moodIcon" title="阿梓的心情">😊</span></span></div>
+<div class="appbar" id="bar">🌸 阿梓的森林 <span class="coin-display" id="coinDisplay">🪙 <span id="coinVal">0</span></span><span style="float:right;cursor:pointer;font-size:20px" onclick="toggleDark()" id="darkIcon">🌙</span><span class="mood-face azusa-live" id="moodIcon" title="阿梓的心情">😊</span></span></div>
+
+
+<!-- ===== CHAT FAB ===== -->
+<button class="chat-fab" id="chatFab" onclick="toggleChat()">💬<span class="badge" id="chatBadge" style="display:none">1</span></button>
+
+<!-- ===== CHAT MODAL ===== -->
+<div class="chat-modal" id="chatModal">
+<div class="chat-header">
+<span class="ch-title">🤖 和阿梓聊天</span>
+<div style="display:flex;gap:8px;align-items:center">
+<span style="font-size:11px;opacity:.7" id="chatStatus">离线模式</span>
+<button class="ch-close" onclick="toggleChat()">✕</button>
+</div>
+</div>
+<div class="chat-body" id="chatBody">
+<div class="chat-msg azusa"><span class="az-avatar">😊</span> 嗨！我是阿梓~ 今天想和我聊什么？</div>
+</div>
+<div class="chat-input-wrap">
+<input type="text" id="chatInput" placeholder="和阿梓说点什么..." onkeydown="if(event.key==='Enter')sendChat()">
+<button onclick="sendChat()">➤</button>
+</div>
+</div>
 
 <!-- ===== DIALOGUE BUBBLE ===== -->
 <div class="bubble-wrap" id="bubbleWrap" style="display:none"><div class="bubble" id="bubbleText"></div></div>
@@ -307,6 +374,17 @@ body.mood-low{--mood-bg:linear-gradient(180deg,#eceff1,#e0e0f0)}
 <select id="taskPick" style="display:none" onchange="onTaskPick()"></select>
 </div>
 <div id="taskHint" style="text-align:center;font-size:12px;color:var(--gr);margin:4px 0;min-height:18px"></div>
+<div class="bet-row" id="betRow">
+<span>🎲 押注</span>
+<select id="betAmount" onchange="updateBetInfo()">
+<option value="0">不押注</option>
+<option value="5">🪙5</option>
+<option value="10">🪙10</option>
+<option value="20">🪙20</option>
+<option value="50">🪙50</option>
+</select>
+<span class="bet-info" id="betInfo"></span>
+</div>
 <button class="btn btn-g" id="btnGo" onclick="start()">🌱 开始种树</button>
 <button class="btn btn-r" id="btnStop" onclick="abort()" style="display:none">放弃（树会受伤的 😢）</button>
 </div>
@@ -347,6 +425,7 @@ body.mood-low{--mood-bg:linear-gradient(180deg,#eceff1,#e0e0f0)}
 
 <!-- Summary cards -->
 <div class="stats-summary" id="statsSummary"></div>
+<div id="shopContainer"></div>
 
 <!-- Pie chart + streak -->
 <div style="display:flex;gap:8px;flex-wrap:wrap;margin:8px 0">
@@ -432,6 +511,34 @@ let goals=JSON.parse(localStorage.getItem('fg')||'[]');
 let sessions=JSON.parse(localStorage.getItem('fs')||'[]');
 let score=parseInt(localStorage.getItem('fsc')||'0');
 let dark=localStorage.getItem('fdark')==='1';
+
+let azusaCoins=parseInt(localStorage.getItem('fcoin')||'50');
+let currentBet=0;
+function updateCoinDisplay(){
+document.getElementById('coinVal').textContent=azusaCoins;
+var sel=document.getElementById('betAmount');
+if(sel){
+for(var i=0;i<sel.options.length;i++){
+sel.options[i].disabled=parseInt(sel.options[i].value)>azusaCoins;
+}
+}
+}
+function updateBetInfo(){
+currentBet=parseInt(document.getElementById('betAmount').value);
+var info=document.getElementById('betInfo');
+if(currentBet>0){
+info.textContent='完成得🪙'+Math.floor(currentBet*1.5)+' | 放弃-🪙'+currentBet;
+info.style.color='#f57f17';
+}else{
+info.textContent='';
+}
+}
+function addCoins(n){
+azusaCoins=Math.max(0,azusaCoins+n);
+localStorage.setItem('fcoin',String(azusaCoins));
+updateCoinDisplay();
+}
+
 let currentMood=parseInt(localStorage.getItem('fmood')||'70');
 let streakFreezes=parseInt(localStorage.getItem('ffreeze')||'0');
 let lastActiveDate=localStorage.getItem('flast')||'';
@@ -457,7 +564,7 @@ function fmtMins(m){if(m<60)return m+'分钟';let h=Math.floor(m/60);let r=m%60;
 
 // ==================== TABS ====================
 let currentTab=0;
-function goTab(i){currentTab=i;document.querySelectorAll('.page').forEach(p=>p.classList.remove('on'));document.querySelectorAll('.tab').forEach((t,j)=>t.classList.toggle('on',j===i));document.getElementById(['pg5','pg0','pg1','pg2','pg3','pg4'][i]).classList.add('on');document.getElementById('bar').textContent=['🏠 阿梓的森林','⏱ 专注计时','👗 换装衣柜','✅ 习惯追踪','🎯 目标计划','👤 我的数据'][i];if(i===0)rHome();if(i===2)rGallery();if(i===3)rHabits();if(i===4)rGoals();if(i===5)rProfile()}
+function goTab(i){currentTab=i;document.querySelectorAll('.page').forEach(p=>p.classList.remove('on'));document.querySelectorAll('.tab').forEach((t,j)=>t.classList.toggle('on',j===i));document.getElementById(['pg5','pg0','pg1','pg2','pg3','pg4'][i]).classList.add('on');document.getElementById('bar').textContent=['🏠 阿梓的森林','⏱ 专注计时','👗 换装衣柜','✅ 习惯追踪','🎯 目标计划','👤 我的数据'][i];if(i===0)rHome();if(i===2)rGallery();if(i===3)rHabits();if(i===4)rGoals();if(i===5)rProfile();updateCoinDisplay()}
 
 // ==================== FOCUS TIMER ====================
 (function initFocus(){
@@ -518,7 +625,7 @@ document.getElementById('taskType').disabled=false;document.getElementById('task
 
 let mins=Math.round(totalSec/60);
 sessions.push({date:new Date().toISOString().slice(0,10),minutes:mins,completed:true,taskType:selectedTask?.type||'free',taskId:selectedTask?.id||'',taskName:selectedTask?.name||'自由种树'});
-save('s');updateScore(10);updateMood(10);
+save('s');updateScore(10);updateMood(10);addCoins(5);
 totalCompletions=sessions.filter(s=>s.completed).length;
 let currentOutfit=parseInt(localStorage.getItem('foutfit')||'-1');if(currentOutfit<0||currentOutfit>currentTreeIdx)currentOutfit=currentTreeIdx;updateCurrentTree();
 
@@ -529,6 +636,17 @@ if(selectedTask&&selectedTask.type==='habit'){let h=habits.find(x=>x.id===select
 let newTree=null;
 for(let i=AZUSA_TREES.length-1;i>currentTreeIdx;i--){if(totalCompletions>=AZUSA_TREES[i].unlock){newTree=AZUSA_TREES[i];break}}
 selectedTask=null;updateTaskSelects();
+// Bet win
+if(currentBet>0){
+var win=Math.floor(currentBet*1.5);
+addCoins(win);
+var betResult=document.createElement('div');
+betResult.className='bet-result win';
+betResult.textContent='🎉 押注胜利！获得🪙'+win;
+document.getElementById('pg0').querySelector('.tree-box').after(betResult);
+setTimeout(function(){betResult.remove()},3000);
+}
+currentBet=0;updateBetInfo();
 setTimeout(function(){if(!openRewardBox()){randomBubble()}},800);
 if(newTree)toast('🌸 新衣装解锁！'+newTree.name);else toast('🎉 专注完成！离下一件衣装更近了');
 try{navigator.vibrate?.([200,100,200])}catch(e){}
@@ -561,6 +679,16 @@ if(selectedTask&&selectedTask.type==='habit'){let h=habits.find(x=>x.id===select
 selectedTask=null;updateTaskSelects();
 drawRing(0);updateTree(0,true);document.getElementById('time').textContent=totalSec/60+':00';
 document.getElementById('lockOverlay').classList.remove('show');
+// Bet loss
+if(currentBet>0){
+addCoins(-currentBet);
+var betResult=document.createElement('div');
+betResult.className='bet-result lose';
+betResult.textContent='💸 押注失败，损失🪙'+currentBet;
+document.getElementById('pg0').querySelector('.tree-box').after(betResult);
+setTimeout(function(){betResult.remove()},3000);
+}
+currentBet=0;updateBetInfo();
 toast('🌸 没关系，阿梓会等你');
 }
 
@@ -711,6 +839,14 @@ let goalMins=filtered.filter(s=>s.taskType==='goal').reduce((a,s)=>a+s.minutes,0
 let freeMins=filtered.filter(s=>s.taskType==='free').reduce((a,s)=>a+s.minutes,0);
 
 // Summary
+// Quick shop
+var shopHtml='<div class=shop-grid>'+
+'<div class=shop-item><div class=si-icon>🔰</div><div class=si-name>护符</div><div class=si-price>🪙30</div><button class="si-btn '+(azusaCoins>=30?'buy':'owned')+'" onclick=buyItem("freeze")>'+(azusaCoins>=30?'购买':'币不足')+'</button></div>'+
+'<div class=shop-item><div class=si-icon>🎁</div><div class=si-name>惊喜盒</div><div class=si-price>🪙20</div><button class="si-btn '+(azusaCoins>=20?'buy':'owned')+'" onclick=buyItem("box")>'+(azusaCoins>=20?'购买':'币不足')+'</button></div>'+
+'<div class=shop-item><div class=si-icon>💝</div><div class=si-name>心情+20</div><div class=si-price>🪙15</div><button class="si-btn '+(azusaCoins>=15?'buy':'owned')+'" onclick=buyItem("mood")>'+(azusaCoins>=15?'购买':'币不足')+'</button></div>'+
+'<div class=shop-item><div class=si-icon>🪙</div><div class=si-name>阿梓币</div><div class=si-price>'+azusaCoins+'</div><div class=si-name style=font-size:10px;color:var(--gr)>当前余额</div></div>'+
+'</div>';
+document.getElementById('shopContainer').innerHTML=shopHtml;
 document.getElementById('statsSummary').innerHTML=`
 <div class=stats-box><div class=val>${fmtMins(totalMin)}</div><div class=lbl>⏱ 总时长</div></div>
 <div class=stats-box><div class=val>${totalSessions}</div><div class=lbl>📊 总次数</div></div>
@@ -753,6 +889,11 @@ document.getElementById('phaseGrid').innerHTML=`
 // Achievements
 let ach=calcAchievements();
 let achUnlocked=ach.filter(a=>a.u).length;
+// API key setting
+var apiSetHtml='<div style=margin-top:14px;padding:12px;background:var(--c);border-radius:14px;box-shadow:var(--sh)>'+
+'<div class=setting-row><span style=font-size:13px>🤖 AI聊天设置</span><button class=btn-sm style=padding:6px 14px;background:var(--gd);color:#fff;border:none;border-radius:12px;cursor:pointer;font-size:12px onclick=setApiKey()>'+(dsApiKey?'已连接✅':'设置Key')+'</button></div>'+
+'<div style=font-size:11px;color:var(--gr);margin-top:4px>接入DeepSeek让阿梓真的会聊天 · 免费额度 · 点击设置</div></div>';
+document.getElementById('achs').insertAdjacentHTML('beforebegin',apiSetHtml);
 document.getElementById('achs').innerHTML='<div class=ach-header><strong>🏆 成就 ('+achUnlocked+'/'+ach.length+')</strong><span class=ach-count style=font-size:11px>'+(achUnlocked===ach.length?'全部解锁':'剩'+(ach.length-achUnlocked)+'项')+'</span></div><div class=ach-grid>'+ach.map(a=>{
 let tierClass=a.tier==='legend'?'tier-legend':'';
 let tierLabel={bronze:'🥉',silver:'🥈',gold:'🥇',legend:'👑'}[a.tier]||'';
@@ -1032,11 +1173,166 @@ sendNotify('🚨 最后警告','今天快过去了！连续记录危在旦夕！
 }
 }
 
+
+// ==================== v3.3: AI CHAT SYSTEM ====================
+var chatHistory=JSON.parse(localStorage.getItem('fchat')||'[]');
+var dsApiKey=localStorage.getItem('ds_key')||'';
+var chatOpen=false;
+
+function toggleChat(){
+chatOpen=!chatOpen;
+document.getElementById('chatModal').classList.toggle('open',chatOpen);
+document.getElementById('chatFab').style.display=chatOpen?'none':'flex';
+if(chatOpen){
+document.getElementById('chatInput').focus();
+document.getElementById('chatBadge').style.display='none';
+updateChatStatus();
+}
+}
+
+function updateChatStatus(){
+var el=document.getElementById('chatStatus');
+if(dsApiKey){
+el.textContent='🟢 AI在线';
+el.style.color='#a5d6a7';
+}else{
+el.textContent='⚫ 离线模式';
+el.style.color='rgba(255,255,255,.5)';
+}
+}
+
+function sendChat(){
+var input=document.getElementById('chatInput');
+var msg=input.value.trim();
+if(!msg)return;
+input.value='';
+
+// Add user message
+addChatMsg(msg,'user');
+
+// Show typing
+var body=document.getElementById('chatBody');
+var typing=document.createElement('div');
+typing.className='chat-typing';
+typing.innerHTML='<span></span><span></span><span></span>';
+body.appendChild(typing);
+body.scrollTop=body.scrollHeight;
+
+// Get response
+if(dsApiKey){
+callDeepSeek(msg).then(function(reply){
+typing.remove();
+addChatMsg(reply,'azusa');
+}).catch(function(){
+typing.remove();
+addChatMsg(localReply(msg),'azusa');
+updateChatStatus();
+});
+}else{
+setTimeout(function(){
+typing.remove();
+addChatMsg(localReply(msg),'azusa');
+},800+Math.random()*1200);
+}
+}
+
+function addChatMsg(msg,role){
+var body=document.getElementById('chatBody');
+var div=document.createElement('div');
+div.className='chat-msg '+role;
+if(role==='azusa'){
+div.innerHTML='<span class=az-avatar>😊</span> '+msg;
+}else{
+div.textContent=msg;
+}
+body.appendChild(div);
+body.scrollTop=body.scrollHeight;
+
+// Save to history
+chatHistory.push({role:role,msg:msg,time:Date.now()});
+if(chatHistory.length>50)chatHistory.shift();
+localStorage.setItem('fchat',JSON.stringify(chatHistory));
+}
+
+function localReply(msg){
+var replies={
+'你好':['嗨！今天也要加油哦~ ✨','你好呀！阿梓一直在等你~','嗨嗨！想我了吗？😊'],
+'加油':['一起加油！阿梓相信你💪','冲鸭！今天种几棵树？🌱','你最棒了！阿梓为你骄傲~'],
+'累了':['休息一下吧，阿梓陪你🌙','累了就看看窗外，或者来我这换件衣服~','抱抱！阿梓也有累的时候呢🥺'],
+'谢谢':['不用谢啦~ 记得种树就好！','嘿嘿，要谢就多种几棵树吧🌳','阿梓收到你的心意了💕'],
+'学习':['专注学习的样子最帅了！','今天学什么？阿梓好奇~','学习加油！阿梓给你泡杯虚拟咖啡☕'],
+'喜欢':['阿梓也喜欢你！','诶嘿~ 害羞😊','最喜欢认真专注的你了！'],
+'今天':['今天是美好的一天！','今天天气不错，适合种树~','今天你的专注记录很棒哦！'],
+};
+// Find best matching reply
+for(var key in replies){
+if(msg.indexOf(key)>=0){
+var arr=replies[key];
+return arr[Math.floor(Math.random()*arr.length)];
+}
+}
+var defaults=['阿梓收到你的消息了~ 快去种树吧🌱','嗯嗯！阿梓在听~ 今天要完成什么目标？','和你聊天真开心！别忘了今天的专注哦✨','阿梓觉得你一定能行！先种棵树怎么样？','嘿嘿，阿梓会一直陪着你的~'];
+return defaults[Math.floor(Math.random()*defaults.length)];
+}
+
+async function callDeepSeek(msg){
+var systemPrompt='你是阿梓，一个可爱的VTuber，也是用户的自律伙伴。说话傲娇可爱，爱用颜文字，会撒娇也会吐槽。回复简洁（50字以内）。用户今天专注'+todayMins()+'分钟，连续'+getCurrentStreak()+'天，解锁了'+(currentTreeIdx+1)+'件衣装。';
+var resp=await fetch('https://api.deepseek.com/chat/completions',{
+method:'POST',
+headers:{'Content-Type':'application/json','Authorization':'Bearer '+dsApiKey},
+body:JSON.stringify({
+model:'deepseek-chat',
+messages:[
+{role:'system',content:systemPrompt},
+{role:'user',content:msg}
+],
+max_tokens:120,
+temperature:0.9
+})
+});
+var data=await resp.json();
+if(data.choices&&data.choices[0])return data.choices[0].message.content;
+throw new Error('API error');
+}
+
+function todayMins(){
+var today=new Date().toISOString().slice(0,10);
+return sessions.filter(function(s){return s.completed&&s.date===today}).reduce(function(a,s){return a+s.minutes},0);
+}
+
+function getCurrentStreak(){
+var dates=[].concat(new Set(sessions.filter(function(s){return s.completed}).map(function(s){return s.date}))).sort();
+var cur=0;
+for(var i=dates.length-1;i>=0;i--){
+if(i===dates.length-1||(new Date(dates[i+1])-new Date(dates[i]))/86400000===1)cur++;else break;
+}
+return cur;
+}
+
+// API key setting in profile
+function setApiKey(){
+var key=prompt('请输入 DeepSeek API Key（在 platform.deepseek.com 获取）：\n留空则使用离线模式',dsApiKey);
+if(key!==null){
+dsApiKey=key.trim();
+localStorage.setItem('ds_key',dsApiKey);
+updateChatStatus();
+toast(dsApiKey?'✅ DeepSeek已连接！可以和阿梓聊天了':'⚫ 已切换到离线模式');
+}
+}
+
+
+function buyItem(type){
+if(type==='freeze'&&azusaCoins>=30){addCoins(-30);addFreeze(1);rProfile();}
+else if(type==='box'&&azusaCoins>=20){addCoins(-20);openRewardBox();rProfile();}
+else if(type==='mood'&&azusaCoins>=15){addCoins(-15);updateMood(20);toast('💝 阿梓心情变好了！');rProfile();}
+else{toast('🪙 币不够哦~ 继续专注赚币吧！');}
+}
+
 // ==================== INIT ====================
 function initAll(){rHabits();rGoals();requestNotify();checkStreakRecovery();updateMoodUI();setInterval(periodicBubble,300000);setInterval(checkReminder,600000);setTimeout(randomBubble,10000);
 checkStreakDanger();
 var timerDefault=localStorage.getItem('ftimerDefault')==='1';
-if(timerDefault){goTab(1);}else{goTab(0);rHome();}
+updateCoinDisplay();if(timerDefault){goTab(1);}else{goTab(0);rHome();}
 }
 initAll();
 if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});
