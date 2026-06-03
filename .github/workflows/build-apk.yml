@@ -38,7 +38,10 @@ jobs:
           packages: "platforms;android-34 build-tools;34.0.0 platform-tools"
 
       - name: 安装Gradle
-        uses: gradle/actions/setup-gradle@v4
+        run: |
+          wget -q https://services.gradle.org/distributions/gradle-8.5-bin.zip
+          unzip -q gradle-8.5-bin.zip
+          echo "$PWD/gradle-8.5/bin" >> $GITHUB_PATH
 
       - name: 生成Gradle Wrapper
         working-directory: android
@@ -48,26 +51,26 @@ jobs:
         working-directory: android
         run: ./gradlew assembleRelease
 
+      - name: 查看编译结果
+        working-directory: android
+        run: find . -name "*.apk" -type f
+
       - name: 签名APK
         working-directory: android
         run: |
-          APK_UNSIGNED=$(find app/build/outputs/apk/release -name "*.apk" 2>/dev/null | head -1)
-          echo "APK: $APK_UNSIGNED"
-          if [ -z "$APK_UNSIGNED" ]; then
-            echo "ERROR: No APK found!"
-            find . -name "*.apk" 2>/dev/null
-            exit 1
-          fi
-          keytool -genkey -v -keystore debug.keystore -alias debug -keyalg RSA -keysize 2048 -validity 10000 -storepass android -keypass android -dname "CN=Debug, OU=Dev, O=Forest, L=City, S=State, C=CN" 2>/dev/null || true
-          jarsigner -verbose -sigalg SHA256withRSA -digestalg SHA-256 -keystore debug.keystore -storepass android -keypass android "$APK_UNSIGNED" debug 2>/dev/null || true
-          $ANDROID_HOME/build-tools/34.0.0/zipalign -v 4 "$APK_UNSIGNED" app/build/outputs/apk/release/azusa-forest-signed.apk 2>/dev/null || cp "$APK_UNSIGNED" app/build/outputs/apk/release/azusa-forest-signed.apk
+          APK=$(find app/build/outputs/apk/release -name "*.apk" | head -1)
+          echo "Found: $APK"
+          if [ -z "$APK" ]; then echo "NO APK FOUND!"; exit 1; fi
+          keytool -genkey -v -keystore debug.keystore -alias debug -keyalg RSA -keysize 2048 -validity 10000 -storepass android -keypass android -dname "CN=Debug" 2>/dev/null || true
+          jarsigner -verbose -sigalg SHA256withRSA -digestalg SHA-256 -keystore debug.keystore -storepass android -keypass android "$APK" debug 2>/dev/null || true
+          $ANDROID_HOME/build-tools/34.0.0/zipalign -v 4 "$APK" app/build/outputs/apk/release/azusa-forest.apk 2>/dev/null || cp "$APK" app/build/outputs/apk/release/azusa-forest.apk
           ls -la app/build/outputs/apk/release/
 
       - name: 上传APK
         uses: actions/upload-artifact@v4
         with:
           name: azusa-forest-apk
-          path: android/app/build/outputs/apk/release/azusa-forest-signed.apk
+          path: android/app/build/outputs/apk/release/azusa-forest.apk
           retention-days: 30
 
       - name: 创建Release
@@ -75,23 +78,20 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           tag_name: v${{ github.event.inputs.version || '3.5.3' }}-android
-          name: "阿梓的森林 Android APK v${{ github.event.inputs.version || '3.5.3' }}"
+          name: "阿梓的森林 APK v${{ github.event.inputs.version || '3.5.3' }}"
           body: |
             ## 阿梓的森林 Android安装包
 
-            > 番茄钟 + 阿梓伙伴 + 衣装收集
-
             ### 安装方法
-            1. 下载APK文件
-            2. 华为手机：打开"文件管理"→找到下载的APK→点击安装
-            3. 如果提示"未知来源"，在设置中允许"外部来源应用安装"
-            4. 安装完成后桌面会出现"阿梓的森林"图标
+            1. 下载APK到华为手机
+            2. 文件管理→找到APK→点击安装
+            3. 若提示"未知来源"→设置中允许
+            4. 桌面出现"阿梓的森林"即完成
 
-            ### 技术说明
-            - 基于WebView封装，内部打开GitHub Pages在线版
-            - 所有数据存储在手机本地，不上传任何服务器
-            - 需要联网使用（首次加载后支持部分离线）
+            ### 说明
+            - WebView封装，内容来自GitHub Pages
+            - 数据存手机本地，不需注册
             - 适配华为/鸿蒙 Android 7.0+
-          files: android/app/build/outputs/apk/release/azusa-forest-signed.apk
+          files: android/app/build/outputs/apk/release/azusa-forest.apk
           draft: false
           prerelease: false
