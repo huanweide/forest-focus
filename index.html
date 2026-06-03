@@ -21,7 +21,7 @@ body.locked{overflow:hidden;position:fixed;width:100%;height:100%}
 .tab{flex:1;text-align:center;padding:8px 0 6px;font-size:11px;color:var(--gr);transition:all .2s;cursor:pointer;position:relative}
 .tab.on{color:var(--g);font-weight:700}.tab.on::after{content:'';position:absolute;top:0;left:50%;transform:translateX(-50%);width:20px;height:3px;border-radius:2px;background:var(--gd)}
 .tab .ic{font-size:21px;display:block;margin-bottom:1px}
-.page{display:none;padding:14px;animation:fIn .2s ease}
+.page{display:none;padding:14px;animation:fIn .25s ease;min-height:calc(100vh - 180px)}
 .page.on{display:block}
 @keyframes fIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
 
@@ -32,7 +32,7 @@ body.locked{overflow:hidden;position:fixed;width:100%;height:100%}
 .btn-r{background:var(--r);color:#fff}
 .btn-o{background:var(--o);color:#fff}
 
-.tree-box{text-align:center;height:120px;display:flex;align-items:center;justify-content:center;transition:.4s;overflow:hidden}
+.tree-box{text-align:center;height:130px;display:flex;align-items:center;justify-content:center;transition:all .5s cubic-bezier(.4,0,.2,1);overflow:hidden}
 .seed-img{width:70px;height:70px;object-fit:contain;animation:pulse 2s ease-in-out infinite;border-radius:50%}
 .tab-icon{width:24px;height:24px;object-fit:contain;display:block;margin:0 auto 2px;border-radius:4px}
 .tree-img{max-height:130px;max-width:90%;object-fit:contain;transition:all .6s cubic-bezier(.4,0,.2,1);border-radius:14px;filter:drop-shadow(0 6px 16px rgba(124,92,191,.25))}
@@ -78,7 +78,7 @@ body.locked{overflow:hidden;position:fixed;width:100%;height:100%}
 .tg-progress div{height:100%;border-radius:2px;background:var(--g);transition:.4s}
 .tg-img{width:100%;height:120px;object-fit:contain;border-radius:10px;background:rgba(0,0,0,.03);display:block;margin:0 auto}
 .tree-img{max-height:110px;max-width:100%;object-fit:contain;transition:all .5s ease;border-radius:8px}
-.tree-box{text-align:center;height:120px;display:flex;align-items:center;justify-content:center;transition:.4s;overflow:hidden}
+.tree-box{text-align:center;height:130px;display:flex;align-items:center;justify-content:center;transition:all .5s cubic-bezier(.4,0,.2,1);overflow:hidden}
 @keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}
 .pulse{animation:pulse 1.5s ease-in-out infinite;display:inline-block}
 @keyframes unlockPop{0%{transform:scale(.5);opacity:0}60%{transform:scale(1.1)}100%{transform:scale(1);opacity:1}}
@@ -159,7 +159,7 @@ body.locked{overflow:hidden;position:fixed;width:100%;height:100%}
 </head>
 <body>
 
-<div class="appbar" id="bar">🌸 阿梓的森林</div>
+<div class="appbar" id="bar">🌸 阿梓的森林<span style="float:right;cursor:pointer;font-size:20px" onclick="toggleDark()" id="darkIcon">🌙</span></div>
 
 <!-- ===== LOCK OVERLAY ===== -->
 <div class="lock-overlay" id="lockOverlay">
@@ -291,7 +291,7 @@ let dark=localStorage.getItem('fdark')==='1';
 let selectedTask=null;
 totalCompletions=sessions.filter(s=>s.completed).length;
 updateCurrentTree();
-if(dark)document.body.classList.add('dark');
+if(dark){document.body.classList.add('dark');document.getElementById('darkIcon').textContent='☀️'}
 
 function updateCurrentTree(){
 for(let i=AZUSA_TREES.length-1;i>=0;i--){if(totalCompletions>=AZUSA_TREES[i].unlock){currentTreeIdx=i;break}}
@@ -412,6 +412,10 @@ document.getElementById('lockOverlay').classList.remove('show');
 toast('🌸 没关系，阿梓会等你');
 }
 
+function drawRing(p){let c=document.getElementById('ring'),dpr=window.devicePixelRatio||1,sz=180;c.width=c.height=sz*dpr;c.style.width=c.style.height=sz+'px';let ctx=c.getContext('2d');ctx.scale(dpr,dpr);let cx=sz/2,cy=sz/2,r=72;ctx.clearRect(0,0,sz,sz);ctx.beginPath();ctx.arc(cx,cy,r,0,Math.PI*2);ctx.strokeStyle='#e8e4f0';ctx.lineWidth=10;ctx.stroke();if(p>0){ctx.beginPath();ctx.arc(cx,cy,r,-Math.PI/2,-Math.PI/2+Math.PI*2*p);let grad=ctx.createLinearGradient(0,0,sz,sz);grad.addColorStop(0,'#7C5CBF');grad.addColorStop(1,'#B39DDB');ctx.strokeStyle=isBreak?'#ff8a65':grad;ctx.lineWidth=10;ctx.lineCap='round';ctx.stroke()}}
+function resumeFocus(){document.getElementById('lockOverlay').classList.remove('show');document.body.classList.remove('locked')}
+function lockAbort(){document.getElementById('lockOverlay').classList.remove('show');document.body.classList.remove('locked');abort()}
+
 function updateTree(p,dead){
 let e=document.getElementById('tree');
 if(dead){e.innerHTML='<span style=font-size:80px>🎨</span>';return}
@@ -476,7 +480,7 @@ let el=document.getElementById('goalsList');
 let active=goals.filter(g=>!g.archived);
 if(active.length===0)el.innerHTML='<p style="text-align:center;color:var(--gr);padding:30px;font-size:13px">还没有目标<br>点右上角 + 新建</p>';
 else el.innerHTML=active.map(g=>{let pct=Math.min(100,Math.round(((g.done||0)/(g.tomatoes||10))*100));return`<div class="card g-row"><div class="g-pct">${pct}%</div><div style="flex:1;min-width:0"><div style="font-weight:600;font-size:14px">${esc(g.title)}</div><div style="font-size:11px;color:var(--gr)">🍅${g.done||0}/${g.tomatoes||10} · ${g.totalMins?fmtMins(g.totalMins):'0'}</div><div class="g-bar"><div class="g-fill" style="width:${pct}%"></div></div></div><button style="border:none;background:var(--g);color:#fff;width:30px;height:30px;border-radius:50%;font-size:15px;cursor:pointer;flex-shrink:0" onclick="incG('${g.id}')">+</button><button style="border:none;background:transparent;color:var(--gr);font-size:12px;cursor:pointer;flex-shrink:0" onclick="delG('${g.id}')">🗑</button></div>`}).join('')}
-function incG(id){let g=goals.find(x=>x.id===id);if(!g)return;g.done=(g.done||0)+1;save('g');rGoals()}
+function incG(id){let g=goals.find(x=>x.id===id);if(!g)return;g.done=(g.done||0)+1;g.totalMins=(g.totalMins||0)+25;save('g');updateScore(5);rGoals()}
 function addGoal(){let t=prompt('目标名称');if(!t||!t.trim())return;let tom=parseInt(prompt('预估番茄钟数','20'))||20;goals.push({id:uid(),title:t.trim(),tomatoes:tom,done:0,totalMins:0});save('g');rGoals();updateTaskSelects();toast('🎯 已添加')}
 function delG(id){if(!confirm('确定删除？'))return;goals=goals.filter(g=>g.id!==id);save('g');rGoals();updateTaskSelects()}
 
@@ -562,7 +566,7 @@ if(!prev||(prev-d)/86400000===1)cur++;else{if(cur>bestStreak)bestStreak=cur;cur=
 }
 if(cur>bestStreak)bestStreak=cur;streak=cur;
 document.getElementById('streakNum').textContent=streak;
-document.getElementById('streakBest').textContent='最佳: '+bestStreak+' ?';
+document.getElementById('streakBest').textContent='最佳: '+bestStreak+' 天';
 
 // Phase grid
 let todayMins=sessions.filter(s=>s.completed&&s.date===today).reduce((a,s)=>a+s.minutes,0);
@@ -584,7 +588,7 @@ let pColor=a.tier==='bronze'?'#e65100':a.tier==='silver'?'#616161':a.tier==='gol
 return`<div class="ach-card ${a.u?'unlocked '+tierClass:'locked'}"><span class=ach-icon>${a.u?a.icon:'🔒'}</span><div class=ach-name>${a.name}</div>${a.u?`<span class='ach-tier tier-${a.tier}'>${tierLabel}</span>`:`<div class=ach-prog><div style=width:${progressPct}%;background:${pColor}></div></div>`}</div>`}).join('')+'</div>';
 }
 function updateScore(n){score+=n;save('c');if(currentTab===4)rProfile()}
-function toggleDark(){dark=!dark;document.body.classList.toggle('dark',dark);save('d')}
+function toggleDark(){dark=!dark;document.body.classList.toggle('dark',dark);document.getElementById('darkIcon').textContent=dark?'☀️':'🌙';save('d')}
 function exportData(){let data={habits,goals,sessions,score,exported:new Date().toISOString()};let b=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});let a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='azusa-forest-'+new Date().toISOString().slice(0,10)+'.json';a.click();toast('📤 已导出')}
 function resetAll(){if(!confirm('确定删除？建议先导出备份。'))return;habits=[];goals=[];sessions=[];score=0;totalCompletions=0;currentTreeIdx=0;['fh','fg','fs','fsc'].forEach(k=>localStorage.removeItem(k));save('c');if(currentTab===1)rGallery();if(currentTab===2)rHabits();if(currentTab===3)rGoals();if(currentTab===4)rProfile();updateTaskSelects();toast('🔄 已重置')}
 
@@ -592,6 +596,7 @@ function resetAll(){if(!confirm('确定删除？建议先导出备份。'))retur
 function initAll(){rHabits();rGoals();}
 initAll();
 if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});
+document.addEventListener('visibilitychange',()=>{if(document.hidden&&timerId&&!isBreak){lockExits++;document.getElementById('lockCount').textContent=lockExits;document.getElementById('lockLeft').textContent=Math.floor((totalSec-elapsed)/60);document.getElementById('lockOverlay').classList.add('show');document.body.classList.add('locked');if(lockExits>=3){lockAbort();toast('😢 阿梓伤心了...树枯萎了')}}})
 </script>
 </body>
 </html>
