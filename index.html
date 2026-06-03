@@ -13,7 +13,7 @@
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:-apple-system,'PingFang SC','Noto Sans SC',sans-serif;background:var(--bg);color:var(--t);-webkit-tap-highlight-color:transparent;user-select:none;-webkit-user-select:none;padding-bottom:72px;overscroll-behavior:none;font-size:15px;position:relative}
 body::before{content:'';position:fixed;top:0;left:0;right:0;bottom:0;background:url(src/images/azusa/azusa_transparent.png) center/contain no-repeat;opacity:.06;pointer-events:none;z-index:0;filter:blur(1px)}
-.appbar,.tabbar,.page{position:relative;z-index:1}
+.appbar,.tabbar,.page{display:none;padding:0 12px 90px;position:relative;z-index:1}
 body.dark{--bg:#1a1a2e;--c:#16213e;--t:#e0e0e0;--gr:#999;--sh:0 2px 8px rgba(0,0,0,.3)}
 body.locked{overflow:hidden;position:fixed;width:100%;height:100%}
 .appbar{background:var(--gd);color:#fff;padding:14px 16px;text-align:center;font-weight:800;font-size:18px;position:sticky;top:0;z-index:10;letter-spacing:1px;box-shadow:0 2px 12px rgba(124,92,191,.2)}
@@ -251,7 +251,7 @@ body.mood-low{--mood-bg:linear-gradient(180deg,#eceff1,#e0e0f0)}
 
 /* === v3.3: AI Chat + Betting === */
 /* Chat FAB */
-.chat-fab{position:fixed;bottom:80px;right:16px;width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,#7C5CBF,#9575CD);color:#fff;font-size:24px;border:none;cursor:pointer;z-index:150;box-shadow:0 4px 20px rgba(124,92,191,.4);transition:all .2s;display:flex;align-items:center;justify-content:center}
+.chat-fab{position:fixed;bottom:70px;right:16px;width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,#7C5CBF,#9575CD);color:#fff;font-size:24px;border:none;cursor:pointer;z-index:150;box-shadow:0 4px 20px rgba(124,92,191,.4);transition:all .2s;display:flex;align-items:center;justify-content:center}
 .chat-fab:active{transform:scale(.9)}
 .chat-fab .badge{position:absolute;top:-4px;right:-4px;width:18px;height:18px;background:#e91e63;border-radius:50%;font-size:10px;display:flex;align-items:center;justify-content:center;animation:pulse .8s ease-in-out infinite}
 /* Chat modal */
@@ -276,7 +276,7 @@ body.mood-low{--mood-bg:linear-gradient(180deg,#eceff1,#e0e0f0)}
 .chat-input-wrap input:focus{border-color:var(--g)}
 .chat-input-wrap button{width:40px;height:40px;border-radius:50%;border:none;background:var(--gd);color:#fff;font-size:18px;cursor:pointer}
 /* Betting UI */
-.bet-row{display:flex;align-items:center;gap:8px;margin:8px 0;padding:10px 14px;background:var(--c);border-radius:14px;box-shadow:var(--sh);font-size:13px}
+.bet-row{display:flex;align-items:center;gap:6px;margin:8px 0;padding:8px 12px;background:linear-gradient(135deg,#fff8e1,#ffecb3);border-radius:12px;font-size:12px;border:1px solid #ffe0b2}
 .bet-row select{padding:6px 10px;border-radius:8px;border:2px solid #e0e0e0;font-size:13px;background:var(--c)}
 .bet-row .bet-info{font-size:11px;color:var(--gr);margin-left:auto}
 .bet-result{text-align:center;font-size:14px;font-weight:600;padding:8px;border-radius:12px;margin:4px 0;animation:popIn .3s ease-out}
@@ -286,18 +286,27 @@ body.mood-low{--mood-bg:linear-gradient(180deg,#eceff1,#e0e0f0)}
 .coin-display{display:inline-flex;align-items:center;gap:4px;background:linear-gradient(135deg,#fff8e1,#ffecb3);padding:4px 10px;border-radius:14px;font-size:13px;font-weight:700;color:#f57f17}
 /* Shop */
 .shop-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin:8px 0}
-.shop-item{background:var(--c);border-radius:14px;padding:12px;text-align:center;box-shadow:var(--sh)}
+.shop-item{background:var(--c);border-radius:14px;padding:10px 8px;text-align:center;box-shadow:var(--sh);transition:all .2s}.shop-item:active{transform:scale(.96)}
 .shop-item .si-icon{font-size:32px;margin-bottom:4px}
 .shop-item .si-name{font-size:13px;font-weight:600}
 .shop-item .si-price{font-size:11px;color:var(--gr);margin:4px 0}
 .shop-item .si-btn{padding:6px 16px;border-radius:12px;border:none;font-size:12px;font-weight:600;cursor:pointer;margin-top:4px}
 .shop-item .si-btn.buy{background:var(--gd);color:#fff}
 .shop-item .si-btn.owned{background:#e0e0e0;color:#999;cursor:default}
+
+body.dark .chat-body{background:#1a1a2e}
+body.dark .chat-msg.azusa{background:#16213e;color:#e0e0e0}
+body.dark .chat-input-wrap{background:#16213e;border-color:#333}
+body.dark .chat-input-wrap input{background:#1a1a2e;color:#e0e0e0;border-color:#333}
+body.dark .bet-row{background:linear-gradient(135deg,#2d2416,#3d2e1a);border-color:#4d3e2a}
+body.dark .shop-item{background:#16213e}
+body.dark .chat-typing{background:#16213e}
+body.dark .chat-modal{background:#1a1a2e}
 </style>
 </head>
 <body>
 
-<div class="appbar" id="bar">🌸 阿梓的森林 <span class="coin-display" id="coinDisplay">🪙 <span id="coinVal">0</span></span><span style="float:right;cursor:pointer;font-size:20px" onclick="toggleDark()" id="darkIcon">🌙</span><span class="mood-face azusa-live" id="moodIcon" title="阿梓的心情">😊</span></span></div>
+<div class="appbar" id="bar"><span class="mood-face azusa-live" id="moodIcon" style="font-size:22px;margin-right:4px">😊</span>阿梓的森林<span style="float:right;display:flex;align-items:center;gap:6px"><span class="coin-display" id="coinDisplay" style="font-size:11px">🪙<span id="coinVal">0</span></span><span style="cursor:pointer;font-size:18px" onclick="toggleDark()" id="darkIcon">🌙</span></span></div>
 
 
 <!-- ===== CHAT FAB ===== -->
@@ -1026,7 +1035,7 @@ function rHome(){
 let curTree=AZUSA_TREES[currentOutfit]||AZUSA_TREES[currentTreeIdx];
 let azusaEl=document.getElementById('homeAzusa');
 if(curTree.img){
-azusaEl.innerHTML='<img src='+curTree.img+' style="width:140px;height:auto;border-radius:16px" class=azusa-live>';
+azusaEl.innerHTML='<img src='+curTree.img+' style="max-width:160px;max-height:200px;width:auto;height:auto;border-radius:16px;object-fit:contain" class=azusa-live loading=lazy>';
 }else{
 azusaEl.textContent=curTree.emoji||'🌰';
 }
