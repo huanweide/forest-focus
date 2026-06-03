@@ -251,7 +251,7 @@ function fmtMins(m){if(m<60)return m+'分钟';let h=Math.floor(m/60);let r=m%60;
 
 // ==================== TABS ====================
 let currentTab=0;
-function goTab(i){currentTab=i;document.querySelectorAll('.page').forEach(p=>p.classList.remove('on'));document.querySelectorAll('.tab').forEach((t,j)=>t.classList.toggle('on',j===i));['pg0','pg1','pg2','pg3','pg4'][i].classList.add('on');document.getElementById('bar').textContent=['🌸 阿梓的森林','👗 阿梓的衣柜','✅ 习惯追踪','🎯 目标计划','👤 我的'][i];if(i===1)rGallery();if(i===2)rHabits();if(i===3)rGoals();if(i===4)rProfile()}
+function goTab(i){currentTab=i;document.querySelectorAll('.page').forEach(p=>p.classList.remove('on'));document.querySelectorAll('.tab').forEach((t,j)=>t.classList.toggle('on',j===i));document.getElementById(['pg0','pg1','pg2','pg3','pg4'][i]).classList.add('on');document.getElementById('bar').textContent=['🌸 阿梓的森林','👗 阿梓的衣柜','✅ 习惯追踪','🎯 目标计划','👤 我的'][i];if(i===1)rGallery();if(i===2)rHabits();if(i===3)rGoals();if(i===4)rProfile()}
 
 // ==================== FOCUS TIMER ====================
 (function initFocus(){
@@ -459,7 +459,6 @@ return[
 
 // ==================== PROFILE ====================
 function rProfile(){
-document.getElementById('bar').textContent='?? ????';
 document.getElementById('scoreVal').textContent=score;
 let totalMin=sessions.filter(s=>s.completed).reduce((a,s)=>a+s.minutes,0);
 document.getElementById('totalMin').textContent=totalMin;
