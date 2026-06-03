@@ -1453,8 +1453,40 @@ var body=document.getElementById('azusaBody');
 if(body&&currentOutfitFile)body.src='src/images/azusa/'+currentOutfitFile;
 })();
 
+
+// ==================== v3.5: NEWBIE GIFT SYSTEM ====================
+function checkNewbieGift(){
+var welcomed=localStorage.getItem('fwelcomed');
+if(welcomed)return;
+// First time user! Give free outfits
+var giftOutfits=[0,1,2]; // seed + default + regular
+// Set currentTreeIdx to unlock first 3 outfits
+var fakeCompletions=AZUSA_TREES[2].unlock; // unlock requirement for 3rd outfit
+// Add fake sessions to unlock
+var yesterday=new Date(Date.now()-86400000).toISOString().slice(0,10);
+var fakeSessions=[];
+for(var i=0;i<fakeCompletions;i++){
+fakeSessions.push({date:yesterday,minutes:25,completed:true,taskType:'free',taskId:'',taskName:'\u{65b0}\u{624b}\u{4e0a}\u{8def}'});
+}
+sessions=sessions.concat(fakeSessions);
+totalCompletions=sessions.filter(function(s){return s.completed}).length;
+save('s');
+// Update tree index
+updateCurrentTree();
+currentOutfit=1; // default outfit
+localStorage.setItem('foutfit','1');
+localStorage.setItem('fwelcomed','1');
+// Show welcome
+toast('🎁 欢迎来到阿梓的森林！送你3件初始衣装~');
+// Auto-wear default outfit
+changeOutfit(AZUSA_TREES[1].img.split('/').pop());
+// Refresh UI
+if(currentTab===0)rHome();
+if(currentTab===2)rGallery();
+}
+
 // ==================== INIT ====================
-function initAll(){rHabits();rGoals();requestNotify();checkStreakRecovery();updateMoodUI();setInterval(periodicBubble,300000);setInterval(checkReminder,600000);setTimeout(randomBubble,10000);
+function initAll(){rHabits();rGoals();requestNotify();checkStreakRecovery();updateMoodUI();checkNewbieGift();setInterval(periodicBubble,300000);setInterval(checkReminder,600000);setTimeout(randomBubble,10000);
 checkStreakDanger();
 var timerDefault=localStorage.getItem('ftimerDefault')==='1';
 updateCoinDisplay();initAzusaClick();if(timerDefault){goTab(1);}else{goTab(0);rHome();}
