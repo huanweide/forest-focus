@@ -2,11 +2,11 @@
 
 on:
   workflow_dispatch:
-    inputs:
-      version:
-        description: "版本号"
-        required: false
-        default: "3.5.3"
+  push:
+    branches: [master]
+    paths:
+      - "android/**"
+      - ".github/workflows/build-apk.yml"
 
 permissions:
   contents: write
@@ -20,21 +20,12 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: 查看环境
-        run: |
-          java -version
-          echo "ANDROID_HOME=$ANDROID_HOME"
-          gradle --version 2>/dev/null || echo "no gradle cmd"
-
       - name: 生成Gradle Wrapper
         working-directory: android
         run: |
           if command -v gradle &> /dev/null; then
             gradle wrapper --gradle-version 8.5
-          elif [ -f /opt/gradle/bin/gradle ]; then
-            /opt/gradle/bin/gradle wrapper --gradle-version 8.5
           else
-            # 手动下载gradle
             wget -q https://services.gradle.org/distributions/gradle-8.5-bin.zip
             unzip -q gradle-8.5-bin.zip
             ./gradle-8.5/bin/gradle wrapper --gradle-version 8.5
@@ -57,6 +48,7 @@ jobs:
           jarsigner -verbose -sigalg SHA256withRSA -digestalg SHA-256 \
             -keystore debug.keystore -storepass android -keypass android \
             "$APK" debug 2>/dev/null || true
+          mkdir -p app/build/outputs/apk/release
           cp "$APK" app/build/outputs/apk/release/azusa-forest.apk
           ls -la app/build/outputs/apk/release/
 
@@ -64,17 +56,18 @@ jobs:
         with:
           name: azusa-forest-apk
           path: android/app/build/outputs/apk/release/azusa-forest.apk
-          retention-days: 30
 
       - uses: softprops/action-gh-release@v2
         if: success()
         with:
-          tag_name: v${{ github.event.inputs.version || '3.5.3' }}-android
-          name: "阿梓的森林 APK v${{ github.event.inputs.version || '3.5.3' }}"
+          tag_name: android-v${{ github.run_number }}
+          name: "阿梓的森林 APK (Build #${{ github.run_number }})"
           body: |
             ## 阿梓的森林 Android APK
             ### 华为手机安装
-            1. 下载APK → 2. 文件管理找到 → 3. 点击安装
-            4. 若提示未知来源 → 设置中允许
-            WebView封装，数据存本地，适配华为/鸿蒙
+            1. 下载 azusa-forest.apk
+            2. 文件管理找到APK → 点击安装
+            3. 提示"未知来源"→设置中允许
+            4. 桌面出现图标即完成
+            WebView封装 · 数据存本地 · 适配华为
           files: android/app/build/outputs/apk/release/azusa-forest.apk
