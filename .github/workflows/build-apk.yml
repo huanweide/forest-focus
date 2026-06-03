@@ -7,54 +7,64 @@ on:
         description: "版本号"
         required: false
         default: "3.5.3"
-  push:
-    branches: [master]
-    paths:
-      - "android/**"
-      - ".github/workflows/build-apk.yml"
 
 permissions:
   contents: write
 
 jobs:
   build:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
+    container:
+      image: mingc/android-build-box:latest
+
     steps:
       - uses: actions/checkout@v4
 
-      - uses: actions/setup-java@v4
-        with:
-          java-version: "17"
-          distribution: "temurin"
-
-      - uses: android-actions/setup-android@v3
-        with:
-          packages: "platforms;android-34 build-tools;34.0.0 platform-tools"
-
-      - uses: gradle/actions/setup-gradle@v3
+      - name: 查看环境
+        run: |
+          java -version
+          echo "ANDROID_HOME=$ANDROID_HOME"
+          gradle --version 2>/dev/null || echo "no gradle cmd"
 
       - name: 生成Gradle Wrapper
         working-directory: android
-        run: gradle wrapper
+        run: |
+          if command -v gradle &> /dev/null; then
+            gradle wrapper --gradle-version 8.5
+          elif [ -f /opt/gradle/bin/gradle ]; then
+            /opt/gradle/bin/gradle wrapper --gradle-version 8.5
+          else
+            # 手动下载gradle
+            wget -q https://services.gradle.org/distributions/gradle-8.5-bin.zip
+            unzip -q gradle-8.5-bin.zip
+            ./gradle-8.5/bin/gradle wrapper --gradle-version 8.5
+          fi
 
-      - name: 编译Release版APK
+      - name: 编译APK
         working-directory: android
         run: ./gradlew assembleRelease
 
       - name: 签名APK
         working-directory: android
         run: |
-          APK=$(find app/build/outputs/apk/release -name "*.apk" | head -1)
+          APK=$(find app/build -name "*.apk" | head -1)
           echo "APK=$APK"
-          test -n "$APK"
-          keytool -genkey -v -keystore debug.keystore -alias debug -keyalg RSA -keysize 2048 -validity 10000 -storepass android -keypass android -dname "CN=Debug" 2>/dev/null || true
-          jarsigner -verbose -sigalg SHA256withRSA -digestalg SHA-256 -keystore debug.keystore -storepass android -keypass android "$APK" debug 2>/dev/null || true
-          $ANDROID_HOME/build-tools/34.0.0/zipalign -v 4 "$APK" app/build/outputs/apk/release/azusa-forest.apk 2>/dev/null || cp "$APK" app/build/outputs/apk/release/azusa-forest.apk
+          test -n "$APK" || exit 1
+          keytool -genkey -v -keystore debug.keystore -alias debug \
+            -keyalg RSA -keysize 2048 -validity 10000 \
+            -storepass android -keypass android \
+            -dname "CN=Debug" 2>/dev/null || true
+          jarsigner -verbose -sigalg SHA256withRSA -digestalg SHA-256 \
+            -keystore debug.keystore -storepass android -keypass android \
+            "$APK" debug 2>/dev/null || true
+          cp "$APK" app/build/outputs/apk/release/azusa-forest.apk
+          ls -la app/build/outputs/apk/release/
 
       - uses: actions/upload-artifact@v4
         with:
           name: azusa-forest-apk
           path: android/app/build/outputs/apk/release/azusa-forest.apk
+          retention-days: 30
 
       - uses: softprops/action-gh-release@v2
         if: success()
@@ -62,8 +72,9 @@ jobs:
           tag_name: v${{ github.event.inputs.version || '3.5.3' }}-android
           name: "阿梓的森林 APK v${{ github.event.inputs.version || '3.5.3' }}"
           body: |
-            ## 阿梓的森林 Android安装包
+            ## 阿梓的森林 Android APK
             ### 华为手机安装
-            1. 下载APK → 2. 文件管理找到 → 3. 点击安装 → 4. 允许未知来源
-            WebView封装，数据存本地，需联网使用
+            1. 下载APK → 2. 文件管理找到 → 3. 点击安装
+            4. 若提示未知来源 → 设置中允许
+            WebView封装，数据存本地，适配华为/鸿蒙
           files: android/app/build/outputs/apk/release/azusa-forest.apk
