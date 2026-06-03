@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#7C5CBF">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<link rel="manifest" href="manifest.json"><link rel="apple-touch-icon" href="src/images/azusa/azusa_default.png">
+<link rel="manifest" href="manifest.json"><link rel="apple-touch-icon" href="src/images/azusa/icon-192.png">
 <title>阿梓的森林</title>
 <style>
 :root{--g:#7C5CBF;--gl:#B39DDB;--gd:linear-gradient(135deg,#7C5CBF,#9575CD);--bg:#f5f3fa;--c:#fff;--t:#2d2d2d;--gr:#999;--r:#e57373;--o:#ff8a65;--b:#7C5CBF;--rad:16px;--sh:0 2px 12px rgba(124,92,191,.08);--sh-lg:0 4px 20px rgba(124,92,191,.12)}
@@ -1483,6 +1483,15 @@ changeOutfit(AZUSA_TREES[1].img.split('/').pop());
 // Refresh UI
 if(currentTab===0)rHome();
 if(currentTab===2)rGallery();
+}
+
+
+// PWA install prompt
+var deferredPrompt=null;
+window.addEventListener('beforeinstallprompt',function(e){e.preventDefault();deferredPrompt=e});
+function installApp(){
+if(deferredPrompt){deferredPrompt.prompt();deferredPrompt.userChoice.then(function(r){if(r.outcome==='accepted')toast('✅ 安装成功！');deferredPrompt=null})}
+else{toast('📱 请在浏览器菜单中选择"添加到主屏幕"')}
 }
 
 // ==================== INIT ====================
