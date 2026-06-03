@@ -6,14 +6,14 @@
 <meta name="theme-color" content="#2E7D32">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="description" content="自律森林 - 番茄钟+种树+习惯+目标">
 <link rel="manifest" href="manifest.json">
-<title>自律森林</title>
+<title>阿梓的森林</title>
 <style>
-:root{--g:#2E7D32;--gl:#4CAF50;--bg:#f0f4f0;--c:#fff;--t:#1a1a1a;--gr:#888;--r:#e53935;--o:#ff9800;--b:#2196F3;--rad:14px;--sh:0 2px 8px rgba(0,0,0,.06)}
+:root{--g:#5C6BC0;--gl:#7986CB;--bg:#f0f2fa;--c:#fff;--t:#1a1a1a;--gr:#888;--r:#e53935;--o:#ff9800;--b:#7E57C2;--rad:14px;--sh:0 2px 8px rgba(0,0,0,.06)}
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:-apple-system,'PingFang SC','Noto Sans SC',sans-serif;background:var(--bg);color:var(--t);-webkit-tap-highlight-color:transparent;user-select:none;-webkit-user-select:none;padding-bottom:72px;overscroll-behavior:none;font-size:15px}
 body.dark{--bg:#1a1a2e;--c:#16213e;--t:#e0e0e0;--gr:#999;--sh:0 2px 8px rgba(0,0,0,.3)}
+body.locked{overflow:hidden;position:fixed;width:100%;height:100%}
 .appbar{background:var(--g);color:#fff;padding:12px 16px;text-align:center;font-weight:700;font-size:17px;position:sticky;top:0;z-index:10}
 .tabbar{position:fixed;bottom:0;left:0;right:0;background:var(--c);display:flex;border-top:1px solid rgba(0,0,0,.08);z-index:10;padding-bottom:env(safe-area-inset-bottom,0)}
 .tab{flex:1;text-align:center;padding:7px 0 5px;font-size:10px;color:var(--gr);transition:.15s;cursor:pointer}
@@ -41,7 +41,6 @@ body.dark{--bg:#1a1a2e;--c:#16213e;--t:#e0e0e0;--gr:#999;--sh:0 2px 8px rgba(0,0
 .chip.sel{border-color:var(--g);background:var(--g);color:#fff}
 .task-sel{margin:8px 0;padding:10px;background:var(--c);border-radius:var(--rad);box-shadow:var(--sh);display:flex;align-items:center;gap:8px;flex-wrap:wrap}
 .task-sel select{flex:1;min-width:120px;padding:10px;border:1px solid #ddd;border-radius:10px;font-size:14px;background:var(--bg);color:var(--t)}
-.task-sel .tp{font-size:11px;color:var(--gr)}
 
 .ht-row{display:flex;align-items:center;gap:10px}
 .ht-ck{min-width:40px;height:40px;border-radius:50%;background:#e8e8e8;display:flex;align-items:center;justify-content:center;font-size:17px;cursor:pointer;transition:.15s;flex-shrink:0}
@@ -53,18 +52,35 @@ body.dark{--bg:#1a1a2e;--c:#16213e;--t:#e0e0e0;--gr:#999;--sh:0 2px 8px rgba(0,0
 .ht-fill{height:100%;border-radius:3px;transition:.4s}
 .ht-s{min-width:36px;text-align:center;font-size:17px;font-weight:700;color:var(--g)}
 .ht-s span{display:block;font-size:9px;color:var(--gr);font-weight:400}
-.ht-act button{width:26px;height:26px;border:none;border-radius:50%;background:transparent;font-size:12px;cursor:pointer;color:var(--gr);flex-shrink:0}
 
 .g-row{display:flex;align-items:center;gap:8px}
 .g-pct{font-size:14px;font-weight:700;color:var(--g);min-width:40px;text-align:center}
 .g-bar{flex:1;height:7px;border-radius:4px;background:#e8e8e8;overflow:hidden}
 .g-fill{height:100%;border-radius:4px;background:var(--g);transition:.4s}
-.g-time{font-size:11px;color:var(--gr);white-space:nowrap}
 
-.f-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
-.f-card{background:var(--c);border-radius:var(--rad);padding:12px 8px;text-align:center;box-shadow:var(--sh)}
-.f-emoji{font-size:38px}
-.f-info{font-size:10px;color:var(--gr);margin-top:4px;line-height:1.4}
+/* Tree Gallery */
+.tree-gallery{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:8px}
+.tg-card{background:var(--c);border-radius:var(--rad);padding:16px 10px;text-align:center;box-shadow:var(--sh);transition:.3s;position:relative;overflow:hidden}
+.tg-card.locked{opacity:.55;filter:grayscale(.6)}
+.tg-card.unlocked{border:2px solid var(--g)}
+.tg-card.current{border:2px solid var(--g);box-shadow:0 0 16px rgba(92,107,192,.3)}
+.tg-emoji{font-size:50px;display:block}
+.tg-name{font-weight:700;font-size:14px;margin:6px 0 2px}
+.tg-sub{font-size:11px;color:var(--gr);line-height:1.4}
+.tg-badge{position:absolute;top:8px;right:8px;background:var(--g);color:#fff;font-size:10px;padding:3px 8px;border-radius:10px}
+.tg-badge.lock{background:#ccc}
+.tg-progress{height:4px;border-radius:2px;background:#e8e8e8;margin-top:8px;overflow:hidden}
+.tg-progress div{height:100%;border-radius:2px;background:var(--g);transition:.4s}
+
+/* Lock overlay */
+.lock-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:50;flex-direction:column;align-items:center;justify-content:center;text-align:center;color:#fff;padding:20px}
+.lock-overlay.show{display:flex}
+.lock-overlay .lo-icon{font-size:80px;margin-bottom:16px}
+.lock-overlay .lo-title{font-size:22px;font-weight:700;margin-bottom:8px}
+.lock-overlay .lo-sub{font-size:14px;color:#ccc;margin-bottom:20px;line-height:1.6}
+.lock-overlay .lo-btn{padding:12px 30px;border-radius:20px;border:none;font-size:16px;font-weight:600;cursor:pointer;margin:6px}
+.lock-count{font-size:12px;color:#999;margin-top:12px}
+
 .st-row{display:flex;gap:8px;margin-bottom:12px}
 .st{flex:1;background:var(--c);border-radius:var(--rad);padding:12px;text-align:center;box-shadow:var(--sh)}
 .st .n{font-size:24px;font-weight:700}
@@ -75,246 +91,315 @@ body.dark{--bg:#1a1a2e;--c:#16213e;--t:#e0e0e0;--gr:#999;--sh:0 2px 8px rgba(0,0
 .chart .bar{width:24px;border-radius:5px 5px 0 0;background:var(--gl);min-height:4px;transition:.4s}
 .chart .lbl{font-size:10px;color:var(--gr)}
 .hm{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;margin-top:10px}
-.hm div{aspect-ratio:1;border-radius:3px;background:#e8e8e8;transition:.2s}
+.hm div{aspect-ratio:1;border-radius:3px;background:#e8e8e8}
 .achs{display:flex;flex-wrap:wrap;gap:6px}
 .ach{padding:5px 10px;border-radius:14px;font-size:12px;background:#e8f5e9}
 .ach.lk{background:#eee;opacity:.4}
 .btn-sm{font-size:13px;padding:10px;border:1px solid var(--r);color:var(--r);background:transparent;border-radius:var(--rad);cursor:pointer;margin:4px;width:100%}
-
-.toast{position:fixed;top:20px;left:50%;transform:translateX(-50%);background:#333;color:#fff;padding:10px 20px;border-radius:20px;font-size:13px;z-index:40;opacity:0;transition:opacity .3s;pointer-events:none}
+.toast{position:fixed;top:20px;left:50%;transform:translateX(-50%);background:#333;color:#fff;padding:10px 20px;border-radius:20px;font-size:13px;z-index:60;opacity:0;transition:opacity .3s;pointer-events:none}
 .toast.show{opacity:1}
+
+/* Section title */
+.sec-title{font-size:16px;font-weight:700;margin:8px 0 4px;display:flex;align-items:center;gap:8px}
+.sec-title .tip{font-size:11px;color:var(--gr);font-weight:400}
 </style>
 </head>
 <body>
 
-<div class="appbar" id="bar">🌳 自律森林</div>
+<div class="appbar" id="bar">🌸 阿梓的森林</div>
 
-<!-- FOCUS -->
+<!-- ===== LOCK OVERLAY ===== -->
+<div class="lock-overlay" id="lockOverlay">
+<div class="lo-icon">🌳</div>
+<div class="lo-title" id="lockTitle">正在种树...</div>
+<div class="lo-sub" id="lockMsg">你离开了专注页面<br>快回来！阿梓还在等你完成这棵树 🌸</div>
+<button class="lo-btn" style="background:#4CAF50;color:#fff" onclick="resumeFocus()">🌱 回去继续专注</button>
+<button class="lo-btn" style="background:rgba(255,255,255,.15);color:#fff" id="lockAbort" onclick="lockAbort()">放弃（还剩 <span id="lockLeft">0</span> 分钟）</button>
+<div class="lock-count">今天已离开 <span id="lockCount">0</span>/3 次 · 超过3次树会枯萎</div>
+</div>
+
+<!-- ===== FOCUS PAGE ===== -->
 <div class="page on" id="pg0">
 <div style="max-width:360px;margin:0 auto">
 <div class="tree-box" id="tree">🌰</div>
-<div class="ring-wrap"><canvas id="ring"></canvas><div class="ring-t"><div class="tm" id="time">25:00</div><div class="lb" id="status">准备开始</div></div></div>
+<div class="ring-wrap"><canvas id="ring"></canvas><div class="ring-t"><div class="tm" id="time">25:00</div><div class="lb" id="status">选个目标，开始种阿梓吧</div></div></div>
 <div class="chips" id="chips"></div>
-<!-- 选择当前任务 -->
-<div class="task-sel" id="taskSel">
-<select id="taskType" onchange="onTaskType()"><option value="">-- 选择任务类型 --</option><option value="habit">✅ 习惯</option><option value="goal">🎯 目标</option><option value="free">🌳 自由专注</option></select>
+<div class="task-sel">
+<select id="taskType" onchange="onTaskType()"><option value="">-- 选任务类型 --</option><option value="habit">✅ 习惯</option><option value="goal">🎯 目标</option><option value="free">🌸 自由种树</option></select>
 <select id="taskPick" style="display:none" onchange="onTaskPick()"></select>
-<div class="tp" id="taskHint"></div>
 </div>
+<div id="taskHint" style="text-align:center;font-size:12px;color:var(--gr);margin:4px 0;min-height:18px"></div>
 <button class="btn btn-g" id="btnGo" onclick="start()">🌱 开始种树</button>
-<button class="btn btn-r" id="btnStop" onclick="abort()" style="display:none">🥀 放弃（树会枯萎）</button>
+<button class="btn btn-r" id="btnStop" onclick="abort()" style="display:none">放弃（树会受伤的 😢）</button>
 </div>
 </div>
 
-<!-- HABITS -->
+<!-- ===== TREE GALLERY PAGE ===== -->
 <div class="page" id="pg1">
-<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px"><h3 style="font-size:16px">✅ 习惯追踪</h3><button style="background:var(--g);color:#fff;border:none;padding:7px 12px;border-radius:14px;font-size:12px;cursor:pointer" onclick="addHabit()">+ 新建</button></div>
+<h3 class="sec-title">🌸 阿梓树 · 升级路线 <span class="tip">| 专注就能解锁新衣服</span></h3>
+<div class="tree-gallery" id="treeGallery"></div>
+<div style="margin-top:16px">
+<h3 class="sec-title">📊 我的进度</h3>
+<div class="st-row" id="galleryStats"></div>
+</div>
+</div>
+
+<!-- ===== HABITS PAGE ===== -->
+<div class="page" id="pg2">
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px"><h3 class="sec-title">✅ 习惯追踪</h3><button style="background:var(--g);color:#fff;border:none;padding:7px 12px;border-radius:14px;font-size:12px;cursor:pointer" onclick="addHabit()">+ 新建</button></div>
 <div id="habitsList"></div>
 <div style="margin-top:12px"><strong style="font-size:12px;color:var(--gr)">📅 本月打卡热力图</strong></div>
 <div class="hm" id="heatmap"></div>
 </div>
 
-<!-- GOALS -->
-<div class="page" id="pg2">
-<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px"><h3 style="font-size:16px">🎯 目标计划</h3><button style="background:var(--g);color:#fff;border:none;padding:7px 12px;border-radius:14px;font-size:12px;cursor:pointer" onclick="addGoal()">+ 新建</button></div>
+<!-- ===== GOALS PAGE ===== -->
+<div class="page" id="pg3">
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px"><h3 class="sec-title">🎯 目标计划</h3><button style="background:var(--g);color:#fff;border:none;padding:7px 12px;border-radius:14px;font-size:12px;cursor:pointer" onclick="addGoal()">+ 新建</button></div>
 <div id="goalsList"></div>
 </div>
 
-<!-- FOREST -->
-<div class="page" id="pg3">
-<h3 style="font-size:16px;margin-bottom:10px">🌳 我的森林</h3>
-<div class="st-row" id="forestStats"></div>
-<div class="f-grid" id="forestGrid"></div>
-</div>
-
-<!-- PROFILE -->
+<!-- ===== PROFILE PAGE ===== -->
 <div class="page" id="pg4">
 <div class="card"><h3 style="font-size:15px;margin-bottom:8px">📊 本周专注（分钟）</h3><div class="chart" id="barChart"></div></div>
 <div class="card"><h3 style="font-size:15px;margin-bottom:8px">🏆 成就</h3><div class="achs" id="achs"></div></div>
-<div class="card"><h3 style="font-size:15px">🌟 积分：<b id="scoreVal">0</b></h3><p style="font-size:11px;color:var(--gr)">总专注：<b id="totalMin">0</b> 分钟 · <b id="totalSessions">0</b> 次</p></div>
-<div style="display:flex;gap:8px"><button class="btn-sm" onclick="exportData()">📤 导出</button><button class="btn-sm" onclick="toggleDark()">🌓 深色</button></div>
+<div class="card"><h3 style="font-size:15px">🌟 积分：<b id="scoreVal">0</b></h3><p style="font-size:11px;color:var(--gr)">总专注：<b id="totalMin">0</b> 分钟 · 完成 <b id="totalSessions">0</b> 次</p></div>
+<div style="display:flex;gap:8px"><button class="btn-sm" onclick="exportData()">📤 导出数据</button><button class="btn-sm" onclick="toggleDark()">🌓 深色模式</button></div>
 <button class="btn-sm" onclick="resetAll()" style="margin-top:4px">🔄 重置</button>
 </div>
 
-<!-- TAB BAR -->
+<!-- ===== TAB BAR ===== -->
 <div class="tabbar">
-<div class="tab on" onclick="goTab(0)"><span class="ic">🍅</span>专注</div>
-<div class="tab" onclick="goTab(1)"><span class="ic">✅</span>习惯</div>
-<div class="tab" onclick="goTab(2)"><span class="ic">🎯</span>目标</div>
-<div class="tab" onclick="goTab(3)"><span class="ic">🌳</span>森林</div>
+<div class="tab on" onclick="goTab(0)"><span class="ic">🌸</span>种树</div>
+<div class="tab" onclick="goTab(1)"><span class="ic">👗</span>衣柜</div>
+<div class="tab" onclick="goTab(2)"><span class="ic">✅</span>习惯</div>
+<div class="tab" onclick="goTab(3)"><span class="ic">🎯</span>目标</div>
 <div class="tab" onclick="goTab(4)"><span class="ic">👤</span>我的</div>
 </div>
 
 <div class="toast" id="toast"></div>
 
 <script>
-// ==================== STATE ====================
-const TREE_TYPES=['oak','pine','cherry','bamboo','cactus','maple','willow','redwood'];
-const TREE_NAMES=['橡树','松树','樱花','竹子','仙人掌','枫树','柳树','红杉'];
-const TREE_EMOJI=['🌳','🌲','🌸','🎋','🌵','🍁','🌿','🏔️'];
-const DURS=[20,25,30,45,60];
+// ==================== 阿梓树系统 ====================
+// 阿梓的8套衣服 = 8个树等级。越专注解锁越多衣服。
+const AZUSA_TREES=[
+{id:'seed',name:'阿梓的种子',emoji:'🌰',unlock:0,sub:'初始形态 · 第一次专注即可发芽',color:'#8D6E63'},
+{id:'sprout',name:'日常服 · 阿梓',emoji:'👧',unlock:1,sub:'完成1次专注解锁 · 阿梓的默认形象',color:'#90CAF9'},
+{id:'growing',name:'新年版 · 阿梓',emoji:'🧧',unlock:5,sub:'完成5次专注解锁 · 新年限定衣装',color:'#EF5350'},
+{id:'blooming',name:'夏日服 · 阿梓',emoji:'👗',unlock:12,sub:'完成12次专注解锁 · 清凉夏日衣装',color:'#FF7043'},
+{id:'mature',name:'偶像服 · 阿梓',emoji:'🎤',unlock:25,sub:'完成25次专注解锁 · 舞台偶像衣装',color:'#AB47BC'},
+{id:'master',name:'礼服 · 阿梓',emoji:'💎',unlock:45,sub:'完成45次专注解锁 · 华丽礼服',color:'#5C6BC0'},
+{id:'legend',name:'艾蜀酱 · 传说',emoji:'👑',unlock:80,sub:'完成80次专注解锁 · 最强形态',color:'#FFD700'},
+{id:'god',name:'阿梓 · 万花镜',emoji:'🌈',unlock:150,sub:'完成150次专注解锁 · 全部衣装收集达成',color:'#E040FB'},
+];
 
-let timerId=null,elapsed=0,totalSec=1500,isBreak=false;
+let currentTreeIdx=0; // which tree the user is currently at
+let totalCompletions=0; // total completed sessions
+
+// ==================== STATE ====================
+const DURS=[20,25,30,45,60];
+let timerId=null,elapsed=0,totalSec=1500,isBreak=false,lockExits=0;
 let habits=JSON.parse(localStorage.getItem('fh')||'[]');
 let goals=JSON.parse(localStorage.getItem('fg')||'[]');
 let sessions=JSON.parse(localStorage.getItem('fs')||'[]');
 let score=parseInt(localStorage.getItem('fsc')||'0');
 let dark=localStorage.getItem('fdark')==='1';
-let selectedTask=null; // {type:'habit'|'goal'|'free', id:string, name:string}
+let selectedTask=null;
+totalCompletions=sessions.filter(s=>s.completed).length;
+updateCurrentTree();
 if(dark)document.body.classList.add('dark');
 
+function updateCurrentTree(){
+for(let i=AZUSA_TREES.length-1;i>=0;i--){if(totalCompletions>=AZUSA_TREES[i].unlock){currentTreeIdx=i;break}}
+}
 function save(k){
 let map={h:['fh',JSON.stringify(habits)],g:['fg',JSON.stringify(goals)],s:['fs',JSON.stringify(sessions)],c:['fsc',String(score)],d:['fdark',dark?'1':'0']};
 let[key,val]=map[k];localStorage.setItem(key,val)
 }
-function toast(m){let t=document.getElementById('toast');t.textContent=m;t.classList.add('show');clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('show'),1800)}
+function toast(m){let t=document.getElementById('toast');t.textContent=m;t.classList.add('show');clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('show'),2000)}
 function esc(s){let d=document.createElement('div');d.textContent=s;return d.innerHTML}
 function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,6)}
 function fmtMins(m){if(m<60)return m+'分钟';let h=Math.floor(m/60);let r=m%60;return h+'小时'+(r>0?r+'分钟':'')}
-function fmtDate(d){return d.slice(5)}
 
 // ==================== TABS ====================
 let currentTab=0;
-function goTab(i){
-currentTab=i;
-document.querySelectorAll('.page').forEach(p=>p.classList.remove('on'));
-document.querySelectorAll('.tab').forEach((t,j)=>t.classList.toggle('on',j===i));
-let pages=['pg0','pg1','pg2','pg3','pg4'];
-document.getElementById(pages[i]).classList.add('on');
-document.getElementById('bar').textContent=['🌳 自律森林','✅ 习惯追踪','🎯 目标计划','🌳 我的森林','👤 我的'][i];
-if(i===1)rHabits();
-if(i===2)rGoals();
-if(i===3)rForest();
-if(i===4)rProfile();
-}
+function goTab(i){currentTab=i;document.querySelectorAll('.page').forEach(p=>p.classList.remove('on'));document.querySelectorAll('.tab').forEach((t,j)=>t.classList.toggle('on',j===i));['pg0','pg1','pg2','pg3','pg4'][i].classList.add('on');document.getElementById('bar').textContent=['🌸 阿梓的森林','👗 阿梓的衣柜','✅ 习惯追踪','🎯 目标计划','👤 我的'][i];if(i===1)rGallery();if(i===2)rHabits();if(i===3)rGoals();if(i===4)rProfile()}
 
 // ==================== FOCUS TIMER ====================
 (function initFocus(){
 let c=document.getElementById('chips');
 DURS.forEach((d,i)=>{let e=document.createElement('div');e.className='chip'+(i===1?' sel':'');e.textContent=d+'分钟';e.onclick=()=>{c.querySelectorAll('.chip').forEach(x=>x.classList.remove('sel'));e.classList.add('sel');totalSec=d*60;if(!timerId)document.getElementById('time').textContent=d+':00'};c.appendChild(e)});
 updateTaskSelects();drawRing(0);
+document.getElementById('lockLeft').textContent=Math.floor(totalSec/60);
 })();
 
 function onTaskType(){
 let t=document.getElementById('taskType').value;
 let pick=document.getElementById('taskPick');pick.style.display='none';pick.innerHTML='';
 selectedTask=null;document.getElementById('taskHint').textContent='';
-if(t==='habit'){
-pick.style.display='block';pick.innerHTML='<option value="">-- 选习惯 --</option>'+habits.filter(h=>!h.archived).map(h=>`<option value="${h.id}">${esc(h.name)} · 🔥${h.streak||0}天</option>`).join('');
-}else if(t==='goal'){
-pick.style.display='block';pick.innerHTML='<option value="">-- 选目标 --</option>'+goals.filter(g=>!g.archived).map(g=>`<option value="${g.id}">${esc(g.title)} · ${Math.round((g.done||0)/(g.tomatoes||10)*100)}%</option>`).join('');
-}else if(t==='free'){selectedTask={type:'free',id:'',name:'自由专注'};document.getElementById('taskHint').textContent='🌳 自由专注模式'}
+if(t==='habit'){pick.style.display='block';pick.innerHTML='<option value="">-- 选习惯 --</option>'+habits.filter(h=>!h.archived).map(h=>`<option value="${h.id}">${esc(h.name)} · 🔥${h.streak||0}天</option>`).join('')}
+else if(t==='goal'){pick.style.display='block';pick.innerHTML='<option value="">-- 选目标 --</option>'+goals.filter(g=>!g.archived).map(g=>`<option value="${g.id}">${esc(g.title)} · ${Math.round((g.done||0)/(g.tomatoes||10)*100)}%</option>`).join('')}
+else if(t==='free'){selectedTask={type:'free',id:'',name:'自由种树'};document.getElementById('taskHint').textContent='🌸 自由种树模式 · 为阿梓收集衣装'}
 }
 function onTaskPick(){
-let type=document.getElementById('taskType').value;
-let id=document.getElementById('taskPick').value;
+let type=document.getElementById('taskType').value,id=document.getElementById('taskPick').value;
 if(!id){selectedTask=null;document.getElementById('taskHint').textContent='';return}
-if(type==='habit'){let h=habits.find(x=>x.id===id);if(h)selectedTask={type:'habit',id:h.id,name:h.name};document.getElementById('taskHint').textContent='✅ '+h.name+' · 🔥'+h.streak+'天 · 健康度'+Math.round(h.health)+'%'}
-else if(type==='goal'){let g=goals.find(x=>x.id===id);if(g)selectedTask={type:'goal',id:g.id,name:g.title};document.getElementById('taskHint').textContent='🎯 '+g.title+' · 进度'+Math.round((g.done||0)/(g.tomatoes||10)*100)+'%'}
+if(type==='habit'){let h=habits.find(x=>x.id===id);if(h)selectedTask={type:'habit',id:h.id,name:h.name};document.getElementById('taskHint').textContent='✅ '+h.name+' · 坚持就是胜利'}
+else if(type==='goal'){let g=goals.find(x=>x.id===id);if(g)selectedTask={type:'goal',id:g.id,name:g.title};document.getElementById('taskHint').textContent='🎯 '+g.title+' · 加油！'}
 }
-function updateTaskSelects(){onTaskType();}
+function updateTaskSelects(){onTaskType()}
 
 function start(){
 if(timerId||isBreak)return;
-elapsed=0;isBreak=false;
-document.getElementById('btnGo').style.display='none';
-document.getElementById('btnStop').style.display='block';
-document.getElementById('status').textContent=selectedTask?'专注中 · '+selectedTask.name:'专注中';
+elapsed=0;isBreak=false;lockExits=0;
+document.getElementById('btnGo').style.display='none';document.getElementById('btnStop').style.display='block';
+document.getElementById('status').textContent=selectedTask?'和阿梓一起专注 · '+selectedTask.name:'和阿梓一起专注';
 document.getElementById('tree').textContent='🌰';
 document.querySelectorAll('#chips .chip').forEach(c=>c.style.pointerEvents='none');
 document.getElementById('taskType').disabled=true;document.getElementById('taskPick').disabled=true;
+document.getElementById('lockLeft').textContent=Math.floor(totalSec/60);
+document.getElementById('lockCount').textContent='0';
 drawRing(0);updateTree(0);
 timerId=setInterval(tick,1000);
 }
 
 function tick(){
 elapsed++;
-let rem=Math.max(0,totalSec-elapsed);
-let m=Math.floor(rem/60),s=rem%60;
+let rem=Math.max(0,totalSec-elapsed);let m=Math.floor(rem/60),s=rem%60;
 document.getElementById('time').textContent=m+':'+(s<10?'0':'')+s;
-let p=Math.min(elapsed/totalSec,1);
-drawRing(p);updateTree(p);
+document.getElementById('lockLeft').textContent=m;
+let p=Math.min(elapsed/totalSec,1);drawRing(p);updateTree(p);
 if(elapsed>=totalSec){clearInterval(timerId);timerId=null;onDone();}
 }
 
 function onDone(){
-document.getElementById('status').textContent='🎉 完成！';
-document.getElementById('tree').textContent='🌳';
-document.getElementById('btnStop').style.display='none';
-document.getElementById('btnGo').style.display='block';
-document.getElementById('btnGo').textContent='☕ 休息5分钟';
-document.getElementById('btnGo').onclick=startBreak;
+document.getElementById('status').textContent='🎉 太棒了！';
+// Current tree emoji based on what was unlocked
+let treeEmoji=AZUSA_TREES[Math.min(currentTreeIdx+1,AZUSA_TREES.length-1)].emoji;
+document.getElementById('tree').textContent=treeEmoji;
+document.getElementById('btnStop').style.display='none';document.getElementById('btnGo').style.display='block';
+document.getElementById('btnGo').textContent='☕ 休息一下';document.getElementById('btnGo').onclick=startBreak;
 document.querySelectorAll('#chips .chip').forEach(c=>c.style.pointerEvents='auto');
 document.getElementById('taskType').disabled=false;document.getElementById('taskPick').disabled=false;
 
-// Determine tree type based on task
-let treeType='oak';
-if(selectedTask&&selectedTask.type==='goal')treeType=TREE_TYPES[Math.min(Math.floor((goals.find(g=>g.id===selectedTask.id)?.done||0)/(goals.find(g=>g.id===selectedTask.id)?.tomatoes||10)*8),7)];
-else if(selectedTask&&selectedTask.type==='habit'){let h=habits.find(x=>x.id===selectedTask.id);if(h)treeType=TREE_TYPES[Math.min(Math.floor(h.streak/7),7)]}
-
-// Save session
 let mins=Math.round(totalSec/60);
-sessions.push({date:new Date().toISOString().slice(0,10),minutes:mins,completed:true,treeType,taskType:selectedTask?.type||'free',taskId:selectedTask?.id||'',taskName:selectedTask?.name||'自由专注'});
+sessions.push({date:new Date().toISOString().slice(0,10),minutes:mins,completed:true,taskType:selectedTask?.type||'free',taskId:selectedTask?.id||'',taskName:selectedTask?.name||'自由种树'});
 save('s');updateScore(10);
+totalCompletions=sessions.filter(s=>s.completed).length;updateCurrentTree();
 
-// Auto-update linked goal/habit
-if(selectedTask&&selectedTask.type==='goal'){let g=goals.find(x=>x.id===selectedTask.id);if(g){g.done=(g.done||0)+1;save('g')}}
-if(selectedTask&&selectedTask.type==='habit'){let h=habits.find(x=>x.id===selectedTask.id);if(h){h.done=true;h.streak=(h.streak||0)+1;h.health=Math.min(100,(h.health||50)+5);h.dates=h.dates||[];let today=new Date().toISOString().slice(0,10);if(!h.dates.includes(today))h.dates.push(today);h.totalMins=(h.totalMins||0)+mins;save('h');updateScore(5)}}
+if(selectedTask&&selectedTask.type==='goal'){let g=goals.find(x=>x.id===selectedTask.id);if(g){g.done=(g.done||0)+1;g.totalMins=(g.totalMins||0)+mins;save('g')}}
+if(selectedTask&&selectedTask.type==='habit'){let h=habits.find(x=>x.id===selectedTask.id);if(h){h.done=true;h.streak=(h.streak||0)+1;h.health=Math.min(100,(h.health||50)+5);h.dates=h.dates||[];let t=new Date().toISOString().slice(0,10);if(!h.dates.includes(t))h.dates.push(t);h.totalMins=(h.totalMins||0)+mins;h.totalSessions=(h.totalSessions||0)+1;save('h');updateScore(5)}}
 
+// Check if new tree unlocked
+let newTree=null;
+for(let i=AZUSA_TREES.length-1;i>currentTreeIdx;i--){if(totalCompletions>=AZUSA_TREES[i].unlock){newTree=AZUSA_TREES[i];break}}
 selectedTask=null;updateTaskSelects();
-toast('🎉 完成！+10积分 · 种了一棵'+TREE_NAMES[TREE_TYPES.indexOf(treeType)]);try{navigator.vibrate?.([200,100,200])}catch(e){}
+if(newTree)toast('🌸 新衣装解锁！'+newTree.name);else toast('🎉 专注完成！离下一件衣装更近了');
+try{navigator.vibrate?.([200,100,200])}catch(e){}
 }
 
 function startBreak(){
 if(timerId)return;
 elapsed=0;totalSec=300;isBreak=true;
-document.getElementById('status').textContent='休息中 ☕';
-document.getElementById('tree').textContent='😴';
-document.getElementById('btnGo').style.display='none';
-document.getElementById('btnGo').textContent='🌱 开始种树';
-document.getElementById('btnGo').onclick=start;
+document.getElementById('status').textContent='休息一下 ☕';document.getElementById('tree').textContent='😴';
+document.getElementById('btnGo').style.display='none';document.getElementById('btnGo').textContent='🌱 开始种树';document.getElementById('btnGo').onclick=start;
 drawRing(0);updateTree(0);
 timerId=setInterval(()=>{
 elapsed++;let rem=Math.max(0,totalSec-elapsed);let m=Math.floor(rem/60),s=rem%60;
 document.getElementById('time').textContent=m+':'+(s<10?'0':'')+s;drawRing(elapsed/totalSec);
-if(elapsed>=totalSec){clearInterval(timerId);timerId=null;isBreak=false;document.getElementById('status').textContent='准备开始';document.getElementById('tree').textContent='🌰';document.getElementById('btnGo').style.display='block';document.getElementById('btnGo').textContent='🌱 开始种树';document.getElementById('btnGo').onclick=start;drawRing(0);document.getElementById('time').textContent=totalSec/60+':00';toast('☕ 休息结束');try{navigator.vibrate?.([300])}catch(e){}}
+if(elapsed>=totalSec){clearInterval(timerId);timerId=null;isBreak=false;document.getElementById('status').textContent='准备开始';document.getElementById('tree').textContent='🌰';document.getElementById('btnGo').style.display='block';document.getElementById('btnGo').textContent='🌱 开始种树';document.getElementById('btnGo').onclick=start;drawRing(0);document.getElementById('time').textContent=totalSec/60+':00';toast('☕ 休息好了，继续加油！');try{navigator.vibrate?.([300])}catch(e){}}
 },1000);
 }
 
 function abort(){
 if(!timerId)return;clearInterval(timerId);timerId=null;
 document.getElementById('btnGo').style.display='block';document.getElementById('btnStop').style.display='none';
-document.getElementById('status').textContent='🥀 枯萎';document.getElementById('tree').textContent='🥀';
-document.getElementById('btnGo').textContent='🌱 开始种树';document.getElementById('btnGo').onclick=start;
+document.getElementById('status').textContent='没关系，下次一定可以的 🌸';
+document.getElementById('tree').textContent='😢';document.getElementById('btnGo').textContent='🌱 重新开始';
+document.getElementById('btnGo').onclick=start;
 document.querySelectorAll('#chips .chip').forEach(c=>c.style.pointerEvents='auto');
 document.getElementById('taskType').disabled=false;document.getElementById('taskPick').disabled=false;
-sessions.push({date:new Date().toISOString().slice(0,10),minutes:Math.floor(elapsed/60),completed:false,treeType:'withered',taskType:selectedTask?.type||'free',taskId:selectedTask?.id||'',taskName:selectedTask?.name||''});
+sessions.push({date:new Date().toISOString().slice(0,10),minutes:Math.floor(elapsed/60),completed:false,taskType:selectedTask?.type||'free',taskId:selectedTask?.id||''});
 save('s');
-// If linked to habit, +1 interruption
-if(selectedTask&&selectedTask.type==='habit'){let h=habits.find(x=>x.id===selectedTask.id);if(h){h.health=Math.max(5,(h.health||50)-5);h.streak=Math.max(0,(h.streak||1)-1);save('h')}}
+if(selectedTask&&selectedTask.type==='habit'){let h=habits.find(x=>x.id===selectedTask.id);if(h){h.health=Math.max(5,(h.health||50)-3);save('h')}}
 selectedTask=null;updateTaskSelects();
 drawRing(0);updateTree(0,true);document.getElementById('time').textContent=totalSec/60+':00';
-toast('🥀 枯了 · 下次坚持住');
+document.getElementById('lockOverlay').classList.remove('show');
+toast('🌸 没关系，阿梓会等你');
 }
 
-function updateTree(p,dead){let e=document.getElementById('tree');if(dead){e.textContent='🥀';return}e.textContent=p<0.2?'🌰':p<0.4?'🌱':p<0.65?'🌿':p<0.9?'🌸':'🌳'}
-function drawRing(p){let c=document.getElementById('ring'),dpr=window.devicePixelRatio||1,sz=180;c.width=c.height=sz*dpr;c.style.width=c.style.height=sz+'px';let ctx=c.getContext('2d');ctx.scale(dpr,dpr);let cx=sz/2,cy=sz/2,r=70;ctx.clearRect(0,0,sz,sz);ctx.beginPath();ctx.arc(cx,cy,r,0,Math.PI*2);ctx.strokeStyle='#e0e0e0';ctx.lineWidth=9;ctx.stroke();if(p>0){ctx.beginPath();ctx.arc(cx,cy,r,-Math.PI/2,-Math.PI/2+Math.PI*2*p);ctx.strokeStyle=isBreak?'#ff9800':'#4CAF50';ctx.lineWidth=9;ctx.lineCap='round';ctx.stroke()}}
+function updateTree(p,dead){let e=document.getElementById('tree');if(dead){e.textContent='😢';return}let tree=AZUSA_TREES[currentTreeIdx];e.textContent=p<0.15?'🌰':p<0.35?'🌱':p<0.55?AZUSA_TREES[Math.min(currentTreeIdx+1,AZUSA_TREES.length-1)].emoji:p<0.8?AZUSA_TREES[Math.min(currentTreeIdx+2,AZUSA_TREES.length-1)].emoji:AZUSA_TREES[Math.min(currentTreeIdx+3,AZUSA_TREES.length-1)].emoji}
+
+function drawRing(p){let c=document.getElementById('ring'),dpr=window.devicePixelRatio||1,sz=180;c.width=c.height=sz*dpr;c.style.width=c.style.height=sz+'px';let ctx=c.getContext('2d');ctx.scale(dpr,dpr);let cx=sz/2,cy=sz/2,r=70;ctx.clearRect(0,0,sz,sz);ctx.beginPath();ctx.arc(cx,cy,r,0,Math.PI*2);ctx.strokeStyle='#e0e0e0';ctx.lineWidth=9;ctx.stroke();if(p>0){ctx.beginPath();ctx.arc(cx,cy,r,-Math.PI/2,-Math.PI/2+Math.PI*2*p);ctx.strokeStyle=isBreak?'#ff9800':'#7E57C2';ctx.lineWidth=9;ctx.lineCap='round';ctx.stroke()}}
+
+// ==================== APP LOCK ====================
+let lockTimer=null;
+document.addEventListener('visibilitychange',()=>{
+if(document.hidden&&timerId&&!isBreak){
+lockExits++;
+document.getElementById('lockCount').textContent=lockExits;
+document.getElementById('lockLeft').textContent=Math.floor((totalSec-elapsed)/60);
+if(lockExits>=3){
+clearInterval(timerId);timerId=null;
+document.getElementById('lockTitle').textContent='树受伤了 😢';
+document.getElementById('lockMsg').textContent='你已经离开3次了...\n没关系，下次专注一点就好';
+document.getElementById('lockAbort').style.display='none';
+document.getElementById('lockOverlay').classList.add('show');
+setTimeout(()=>{
+document.getElementById('lockOverlay').classList.remove('show');
+abort();
+},4000);
+}else{
+document.getElementById('lockTitle').textContent='第'+lockExits+'次离开';
+document.getElementById('lockMsg').textContent='阿梓还在等你回来！\n快回来完成这次专注 🌸';
+document.getElementById('lockAbort').style.display='block';
+document.getElementById('lockOverlay').classList.add('show');
+}
+}
+});
+
+function resumeFocus(){
+document.getElementById('lockOverlay').classList.remove('show');
+toast('🌸 欢迎回来！继续加油');
+}
+function lockAbort(){
+document.getElementById('lockOverlay').classList.remove('show');
+if(timerId){clearInterval(timerId);timerId=null}
+document.getElementById('btnGo').style.display='block';document.getElementById('btnStop').style.display='none';
+document.getElementById('status').textContent='树受伤了，下次加油 🌸';document.getElementById('tree').textContent='😢';
+document.getElementById('btnGo').textContent='🌱 重新开始';document.getElementById('btnGo').onclick=start;
+document.querySelectorAll('#chips .chip').forEach(c=>c.style.pointerEvents='auto');
+document.getElementById('taskType').disabled=false;document.getElementById('taskPick').disabled=false;
+toast('🌸 下次一定会更好的');
+}
+
+// ==================== TREE GALLERY ====================
+function rGallery(){
+let el=document.getElementById('treeGallery');
+el.innerHTML=AZUSA_TREES.map((t,i)=>{
+let unlocked=i<=currentTreeIdx;
+let isNext=i===currentTreeIdx+1;
+let progress=unlocked?100:isNext?Math.round((totalCompletions-AZUSA_TREES[currentTreeIdx].unlock)/(t.unlock-AZUSA_TREES[currentTreeIdx].unlock)*100):0;
+let cls=unlocked?(i===currentTreeIdx?'current':'unlocked'):'locked';
+let badge=unlocked?(i===currentTreeIdx?'🌸 当前':'✅ 已解锁'):'🔒 '+(isNext?'进行中':'需'+t.unlock+'次');
+return`<div class="tg-card ${cls}"><span class="tg-badge ${unlocked?'':'lock'}">${badge}</span><span class="tg-emoji">${t.emoji}</span><div class="tg-name">${t.name}</div><div class="tg-sub">${t.sub}</div>${!unlocked?`<div class="tg-progress"><div style="width:${isNext?progress:0}%"></div></div>`:''}</div>`}).join('');
+
+let stats=document.getElementById('galleryStats');
+let nextTree=AZUSA_TREES[Math.min(currentTreeIdx+1,AZUSA_TREES.length-1)];
+let remaining=nextTree.unlock-totalCompletions;
+stats.innerHTML=`<div class="st"><div class="n" style="color:#5C6BC0">${totalCompletions}</div><div class="l">🌸 完成次数</div></div><div class="st"><div class="n" style="color:#7E57C2">${currentTreeIdx+1}/${AZUSA_TREES.length}</div><div class="l">👗 已解锁衣装</div></div><div class="st"><div class="n" style="color:#FF7043">${remaining>0?remaining:0}</div><div class="l">下次解锁还需</div></div>`;
+}
 
 // ==================== HABITS ====================
 function rHabits(){
 let el=document.getElementById('habitsList');
 let active=habits.filter(h=>!h.archived);
-if(active.length===0){el.innerHTML='<p style="text-align:center;color:var(--gr);padding:30px;font-size:13px">还没有习惯<br>点右上角 + 新建一个吧</p>'}
-else el.innerHTML=active.map(h=>`<div class="card ht-row"><div class="ht-ck ${h.done?'done':''}" onclick="togH('${h.id}')">${h.done?'✓':'○'}</div><div class="ht-info"><div class="ht-n">${esc(h.name)}</div><div class="ht-d">${h.tier==='micro'?'🌱微':h.tier==='normal'?'🌿常':'🌳挑'} · ${h.totalMins?fmtMins(h.totalMins):'0分钟'} · 🍅${h.totalSessions||0}次</div><div class="ht-bar"><div class="ht-fill" style="width:${h.health||50}%;background:${(h.health||50)>80?'#4CAF50':(h.health||50)>50?'#ff9800':'#e53935'}"></div></div></div><div class="ht-s">${h.streak||0}<span>天连续</span></div><div class="ht-act"><button onclick="editH('${h.id}')" title="编辑">✏️</button><button onclick="delH('${h.id}')" title="删除">🗑</button></div></div>`).join('');
+if(active.length===0)el.innerHTML='<p style="text-align:center;color:var(--gr);padding:30px;font-size:13px">还没有习惯<br>点右上角 + 新建</p>';
+else el.innerHTML=active.map(h=>`<div class="card ht-row"><div class="ht-ck ${h.done?'done':''}" onclick="togH('${h.id}')">${h.done?'✓':'○'}</div><div class="ht-info"><div class="ht-n">${esc(h.name)}</div><div class="ht-d">${h.tier==='micro'?'🌱微':h.tier==='normal'?'🌿常':'🌳挑'} · ${h.totalMins?fmtMins(h.totalMins):'0'} · 🍅${h.totalSessions||0}次</div><div class="ht-bar"><div class="ht-fill" style="width:${h.health||50}%;background:${(h.health||50)>80?'#4CAF50':(h.health||50)>50?'#ff9800':'#e53935'}"></div></div></div><div class="ht-s">${h.streak||0}<span>天</span></div><div class="ht-act"><button onclick="delH('${h.id}')">🗑</button></div></div>`).join('');
 rHeatmap();
 }
-
-function togH(id){let h=habits.find(x=>x.id===id);if(!h)return;h.done=!h.done;if(h.done){h.streak=(h.streak||0)+1;h.health=Math.min(100,(h.health||50)+5);h.totalSessions=(h.totalSessions||0)+1;h.dates=h.dates||[];let t=new Date().toISOString().slice(0,10);if(!h.dates.includes(t))h.dates.push(t);updateScore(3)}else{h.streak=Math.max(0,(h.streak||1)-1);h.health=Math.max(5,(h.health||50)-3);h.totalSessions=Math.max(0,(h.totalSessions||1)-1)}save('h');rHabits()}
-
-function addHabit(){let n=prompt('习惯名称（如：每日编程）');if(!n||!n.trim())return;let t=prompt('难度：\n1 = 🌱 微习惯\n2 = 🌿 正常\n3 = 🌳 挑战\n\n输入 1/2/3','2');habits.push({id:uid(),name:n.trim(),tier:t==='1'?'micro':t==='3'?'challenge':'normal',done:false,streak:0,health:50,dates:[],totalMins:0,totalSessions:0});save('h');rHabits();updateTaskSelects();toast('✅ 习惯已添加')}
-function editH(id){let h=habits.find(x=>x.id===id);if(!h)return;let n=prompt('修改名称',h.name);if(n&&n.trim())h.name=n.trim();save('h');rHabits();updateTaskSelects();toast('✏️ 已更新')}
-function delH(id){if(!confirm('确定删除这个习惯？'))return;habits=habits.filter(h=>h.id!==id);save('h');rHabits();updateTaskSelects();toast('🗑 已删除')}
-
+function togH(id){let h=habits.find(x=>x.id===id);if(!h)return;h.done=!h.done;if(h.done){h.streak=(h.streak||0)+1;h.health=Math.min(100,(h.health||50)+5);h.totalSessions=(h.totalSessions||0)+1;h.dates=h.dates||[];let t=new Date().toISOString().slice(0,10);if(!h.dates.includes(t))h.dates.push(t);updateScore(3)}else{h.streak=Math.max(0,(h.streak||1)-1);h.health=Math.max(5,(h.health||50)-3)}save('h');rHabits()}
+function addHabit(){let n=prompt('习惯名称');if(!n||!n.trim())return;let t=prompt('难度：1=🌱微习惯 2=🌿正常 3=🌳挑战','2');habits.push({id:uid(),name:n.trim(),tier:t==='1'?'micro':t==='3'?'challenge':'normal',done:false,streak:0,health:50,dates:[],totalMins:0,totalSessions:0});save('h');rHabits();updateTaskSelects();toast('✅ 习惯已添加')}
+function delH(id){if(!confirm('确定删除？'))return;habits=habits.filter(h=>h.id!==id);save('h');rHabits();updateTaskSelects()}
 function rHeatmap(){
 let hm=document.getElementById('heatmap'),now=new Date(),cells=[];
 let start=new Date(now.getFullYear(),now.getMonth(),1);
@@ -324,8 +409,7 @@ for(let i=0;i<dayOff;i++)cells.push('<div></div>');
 for(let d=1;d<=totalDays;d++){
 let ds=`${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
 let cnt=habits.reduce((s,h)=>s+((h.dates||[]).includes(ds)?1:0),0);
-let cl=['#ebedf0','#c6e48b','#7bc96f','#239a3b','#196127'];
-cells.push(`<div style="background:${cl[Math.min(cnt,4)]}" title="${ds}: ${cnt}完成"></div>`);
+cells.push(`<div style="background:${['#ebedf0','#c6e48b','#7bc96f','#239a3b','#196127'][Math.min(cnt,4)]}" title="${ds}: ${cnt}完成"></div>`);
 }
 hm.innerHTML=cells.join('');
 }
@@ -334,23 +418,11 @@ hm.innerHTML=cells.join('');
 function rGoals(){
 let el=document.getElementById('goalsList');
 let active=goals.filter(g=>!g.archived);
-if(active.length===0){el.innerHTML='<p style="text-align:center;color:var(--gr);padding:30px;font-size:13px">还没有目标<br>点右上角 + 新建一个吧</p>'}
-else el.innerHTML=active.map(g=>{let pct=Math.min(100,Math.round(((g.done||0)/(g.tomatoes||10))*100));return`<div class="card g-row"><div class="g-pct">${pct}%</div><div style="flex:1;min-width:0"><div style="font-weight:600;font-size:14px">${esc(g.title)}</div><div style="font-size:11px;color:var(--gr);margin:2px 0">🍅${g.done||0}/${g.tomatoes||10} · ${g.totalMins?fmtMins(g.totalMins):'0分钟'}</div><div class="g-bar"><div class="g-fill" style="width:${pct}%"></div></div></div><div class="g-time">${g.deadline?'⏰ '+g.deadline:''}</div><button style="border:none;background:var(--g);color:#fff;width:30px;height:30px;border-radius:50%;font-size:15px;cursor:pointer;flex-shrink:0" onclick="incG('${g.id}')">+</button><button style="border:none;background:transparent;color:var(--gr);font-size:12px;cursor:pointer;flex-shrink:0" onclick="delG('${g.id}')">🗑</button></div>`}).join('');
-}
-
-function incG(id){let g=goals.find(x=>x.id===id);if(!g)return;g.done=(g.done||0)+1;save('g');rGoals();toast('🍅 +1 · 进度'+Math.round((g.done)/(g.tomatoes||10)*100)+'%')}
-function addGoal(){let t=prompt('目标名称（如：有机化学85分）');if(!t||!t.trim())return;let tom=parseInt(prompt('预估需要几个番茄钟？','20'))||20;let dl=prompt('截止日期（可选，如：2026-07-01）');goals.push({id:uid(),title:t.trim(),tomatoes:tom,done:0,totalMins:0,deadline:dl||''});save('g');rGoals();updateTaskSelects();toast('🎯 目标已添加')}
-function delG(id){if(!confirm('确定删除？'))return;goals=goals.filter(g=>g.id!==id);save('g');rGoals();updateTaskSelects();toast('🗑 已删除')}
-
-// ==================== FOREST ====================
-function rForest(){
-let total=sessions.length,alive=sessions.filter(s=>s.completed).length;
-let dead=total-alive,totalMin=sessions.reduce((a,s)=>a+s.minutes,0);
-document.getElementById('forestStats').innerHTML=`<div class="st"><div class="n" style="color:#4CAF50">${total}</div><div class="l">总次数</div></div><div class="st"><div class="n" style="color:#2E7D32">${alive}</div><div class="l">🌳成活</div></div><div class="st"><div class="n" style="color:#e53935">${dead}</div><div class="l">🥀枯萎</div></div><div class="st"><div class="n" style="color:#ff9800">${fmtMins(totalMin)}</div><div class="l">总时长</div></div>`;
-let grid=document.getElementById('forestGrid');
-if(sessions.length===0){grid.innerHTML='<p style="text-align:center;color:var(--gr);padding:30px;grid-column:1/-1;font-size:13px">还没有种过树<br>去专注页面选个任务开始吧 🌱</p>';return}
-grid.innerHTML=sessions.slice(-15).reverse().map(s=>{let idx=TREE_TYPES.indexOf(s.treeType);let emoji=idx>=0?TREE_EMOJI[idx]:'🥀';return`<div class="f-card"><div class="f-emoji">${emoji}</div><div class="f-info">${s.taskName||'自由专注'}<br>${fmtDate(s.date)} · ${s.minutes}分钟<br>${s.completed?'✅完成':'❌中断'}</div></div>`}).join('');
-}
+if(active.length===0)el.innerHTML='<p style="text-align:center;color:var(--gr);padding:30px;font-size:13px">还没有目标<br>点右上角 + 新建</p>';
+else el.innerHTML=active.map(g=>{let pct=Math.min(100,Math.round(((g.done||0)/(g.tomatoes||10))*100));return`<div class="card g-row"><div class="g-pct">${pct}%</div><div style="flex:1;min-width:0"><div style="font-weight:600;font-size:14px">${esc(g.title)}</div><div style="font-size:11px;color:var(--gr)">🍅${g.done||0}/${g.tomatoes||10} · ${g.totalMins?fmtMins(g.totalMins):'0'}</div><div class="g-bar"><div class="g-fill" style="width:${pct}%"></div></div></div><button style="border:none;background:var(--g);color:#fff;width:30px;height:30px;border-radius:50%;font-size:15px;cursor:pointer;flex-shrink:0" onclick="incG('${g.id}')">+</button><button style="border:none;background:transparent;color:var(--gr);font-size:12px;cursor:pointer;flex-shrink:0" onclick="delG('${g.id}')">🗑</button></div>`}).join('')}
+function incG(id){let g=goals.find(x=>x.id===id);if(!g)return;g.done=(g.done||0)+1;save('g');rGoals()}
+function addGoal(){let t=prompt('目标名称');if(!t||!t.trim())return;let tom=parseInt(prompt('预估番茄钟数','20'))||20;goals.push({id:uid(),title:t.trim(),tomatoes:tom,done:0,totalMins:0});save('g');rGoals();updateTaskSelects();toast('🎯 已添加')}
+function delG(id){if(!confirm('确定删除？'))return;goals=goals.filter(g=>g.id!==id);save('g');rGoals();updateTaskSelects()}
 
 // ==================== PROFILE ====================
 function rProfile(){
@@ -359,27 +431,24 @@ let totalMin=sessions.filter(s=>s.completed).reduce((a,s)=>a+s.minutes,0);
 document.getElementById('totalMin').textContent=totalMin;
 document.getElementById('totalSessions').textContent=sessions.filter(s=>s.completed).length;
 
-let bc=document.getElementById('barChart');
-let days=['一','二','三','四','五','六','日'];
+let bc=document.getElementById('barChart'),days=['一','二','三','四','五','六','日'];
 let wd=days.map((_,i)=>{let d=new Date();d.setDate(d.getDate()-(6-i));let ds=d.toISOString().slice(0,10);return sessions.filter(s=>s.date===ds&&s.completed).reduce((a,s)=>a+s.minutes,0)});
 let mx=Math.max(...wd,10);
-bc.innerHTML=wd.map((v,i)=>`<div class="col"><div class="bar" style="height:${Math.max(4,(v/mx)*110)}px;background:${i===6?'#81C784':'#4CAF50'}"></div><div class="lbl">${days[i]}</div></div>`).join('');
+bc.innerHTML=wd.map((v,i)=>`<div class="col"><div class="bar" style="height:${Math.max(4,(v/mx)*110)}px;background:${i===6?'#81C784':'#5C6BC0'}"></div><div class="lbl">${days[i]}</div></div>`).join('');
 
-let streaks=[];if(sessions.length>0){let dates=[...new Set(sessions.filter(s=>s.completed).map(s=>s.date))].sort().reverse();let s=1;for(let i=1;i<dates.length;i++){let d1=new Date(dates[i-1]),d2=new Date(dates[i]);if((d1-d2)/864e5===1)s++;else break}streaks=[s]}
-let ach=[{n:'🌱 初次种树',u:sessions.some(s=>s.completed)},{n:'🔥 连续3天',u:streaks[0]>=3},{n:'🌲 10棵树',u:sessions.filter(s=>s.completed).length>=10},{n:'📚 1000分钟',u:totalMin>=1000},{n:'⭐ 500积分',u:score>=500},{n:'🏅 连续7天',u:streaks[0]>=7}];
+let ach=[{n:'🌸 初次种树',u:totalCompletions>=1},{n:'🧧 阿梓新年版',u:totalCompletions>=5},{n:'👗 阿梓夏日服',u:totalCompletions>=12},{n:'🎤 阿梓偶像服',u:totalCompletions>=25},{n:'💎 阿梓礼服',u:totalCompletions>=45},{n:'👑 艾蜀酱传说',u:totalCompletions>=80}];
 document.getElementById('achs').innerHTML=ach.map(a=>`<div class="ach${a.u?'':' lk'}">${a.n}</div>`).join('');
 }
 
 function updateScore(n){score+=n;save('c');if(currentTab===4)rProfile()}
 function toggleDark(){dark=!dark;document.body.classList.toggle('dark',dark);save('d')}
-function exportData(){let data={habits,goals,sessions,score,exported:new Date().toISOString()};let b=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});let a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='forest-'+new Date().toISOString().slice(0,10)+'.json';a.click();toast('📤 已导出')}
-function resetAll(){if(!confirm('确定删除所有数据？建议先导出备份。'))return;habits=[];goals=[];sessions=[];score=0;['fh','fg','fs','fsc'].forEach(k=>localStorage.removeItem(k));save('c');if(currentTab===1)rHabits();if(currentTab===2)rGoals();if(currentTab===3)rForest();if(currentTab===4)rProfile();updateTaskSelects();toast('🔄 已重置')}
+function exportData(){let data={habits,goals,sessions,score,exported:new Date().toISOString()};let b=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});let a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='azusa-forest-'+new Date().toISOString().slice(0,10)+'.json';a.click();toast('📤 已导出')}
+function resetAll(){if(!confirm('确定删除？建议先导出备份。'))return;habits=[];goals=[];sessions=[];score=0;totalCompletions=0;currentTreeIdx=0;['fh','fg','fs','fsc'].forEach(k=>localStorage.removeItem(k));save('c');if(currentTab===1)rGallery();if(currentTab===2)rHabits();if(currentTab===3)rGoals();if(currentTab===4)rProfile();updateTaskSelects();toast('🔄 已重置')}
 
 // ==================== INIT ====================
-function initAll(){rHabits();rGoals();rForest();}
+function initAll(){rHabits();rGoals();}
 initAll();
 if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});
-document.addEventListener('visibilitychange',()=>{if(!document.hidden&&timerId)toast('⏰ 计时器运行中')});
 </script>
 </body>
 </html>
