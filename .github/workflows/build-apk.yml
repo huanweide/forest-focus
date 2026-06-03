@@ -10,40 +10,77 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
-    container:
-      image: mingc/android-build-box:latest
+    runs-on: ubuntu-22.04
 
     steps:
       - uses: actions/checkout@v4
 
-      - name: 生成Gradle Wrapper
+      - name: 安装Java
+        uses: actions/setup-java@v4
+        with:
+          java-version: "17"
+          distribution: "temurin"
+
+      - name: 安装Android SDK
+        run: |
+          set -e
+          echo "=== 下载Android命令行工具 ==="
+          wget -q https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip
+          unzip -q commandlinetools-linux-11076708_latest.zip
+          mkdir -p ~/android-sdk/cmdline-tools/latest
+          mv cmdline-tools/* ~/android-sdk/cmdline-tools/latest/ 2>/dev/null || true
+          echo "ANDROID_HOME=$HOME/android-sdk" >> $GITHUB_ENV
+          echo "ANDROID_SDK_ROOT=$HOME/android-sdk" >> $GITHUB_ENV
+          echo "=== 接受许可 ==="
+          yes | ~/android-sdk/cmdline-tools/latest/bin/sdkmanager --licenses
+          echo "=== 安装SDK组件 ==="
+          ~/android-sdk/cmdline-tools/latest/bin/sdkmanager "platforms;android-34" "build-tools;34.0.0" "platform-tools"
+          echo "=== SDK安装完成 ==="
+
+      - name: 安装Gradle
+        run: |
+          wget -q https://services.gradle.org/distributions/gradle-8.5-bin.zip
+          unzip -q gradle-8.5-bin.zip
+          echo "$PWD/gradle-8.5/bin" >> $GITHUB_PATH
+          gradle-8.5/bin/gradle --version
+
+      - name: 查看环境
+        run: |
+          echo "JAVA_HOME=$JAVA_HOME"
+          echo "ANDROID_HOME=$ANDROID_HOME"
+          java -version
+          ls $ANDROID_HOME/platforms/
+          ls $ANDROID_HOME/build-tools/
+
+      - name: 生成Wrapper并编译
         working-directory: android
         run: |
-          if command -v gradle &> /dev/null; then
-            gradle wrapper --gradle-version 8.5
-          else
-            wget -q https://services.gradle.org/distributions/gradle-8.5-bin.zip
-            unzip -q gradle-8.5-bin.zip
-            ./gradle-8.5/bin/gradle wrapper --gradle-version 8.5
-          fi
+          gradle wrapper --gradle-version 8.5
+          ./gradlew assembleRelease --stacktrace --info 2>&1 | tail -100
 
-      - name: 编译APK
-        working-directory: android
-        run: ./gradlew assembleRelease
-
-      - name: 签名并打包
+      - name: 签名APK
         working-directory: android
         run: |
-          APK=$(find app/build -name "*.apk" | head -1)
-          echo "APK=$APK"
-          test -n "$APK" || exit 1
-          keytool -genkey -v -keystore debug.keystore -alias debug -keyalg RSA -keysize 2048 -validity 10000 -storepass android -keypass android -dname "CN=Debug" 2>/dev/null || true
-          jarsigner -verbose -sigalg SHA256withRSA -digestalg SHA-256 -keystore debug.keystore -storepass android -keypass android "$APK" debug 2>/dev/null || true
-          mkdir -p app/build/outputs/apk/release
-          cp "$APK" app/build/outputs/apk/release/azusa-forest.apk
+          echo "=== 查找APK ==="
+          find . -name "*.apk" -type f
+          APK=$(find app/build -name "*.apk" -type f | head -1)
+          if [ -z "$APK" ]; then echo "没找到APK!"; exit 1; fi
+          echo "APK: $APK"
+          echo "=== 生成签名 ==="
+          keytool -genkey -v -keystore debug.keystore -alias debug \
+            -keyalg RSA -keysize 2048 -validity 10000 \
+            -storepass android -keypass android \
+            -dname "CN=Debug" 2>/dev/null || true
+          echo "=== 签名 ==="
+          jarsigner -verbose -sigalg SHA256withRSA -digestalg SHA-256 \
+            -keystore debug.keystore -storepass android -keypass android \
+            "$APK" debug
+          echo "=== 打包 ==="
+          mkdir -p output
+          cp "$APK" output/azusa-forest.apk
+          ls -la output/
 
       - uses: actions/upload-artifact@v4
         with:
           name: azusa-forest-apk
-          path: android/app/build/outputs/apk/release/azusa-forest.apk
+          path: android/output/azusa-forest.apk
