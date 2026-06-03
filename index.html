@@ -6,359 +6,397 @@
 <meta name="theme-color" content="#2E7D32">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="description" content="自律森林 - 番茄钟+种树+习惯打卡+目标计划">
 <link rel="manifest" href="manifest.json">
+<link rel="preconnect" href="https://huanweide.github.io">
 <title>自律森林</title>
 <style>
-:root{--green:#2E7D32;--green-l:#4CAF50;--bg:#f5f7f5;--card:#fff;--text:#1a1a1a;--grey:#888;--red:#e53935;--orange:#ff9800;--radius:16px}
+:root{--g:#2E7D32;--gl:#4CAF50;--bg:#f0f4f0;--c:#fff;--t:#1a1a1a;--gr:#888;--r:#e53935;--o:#ff9800;--b:#2196F3;--rad:14px;--sh:0 2px 8px rgba(0,0,0,.06)}
 *{margin:0;padding:0;box-sizing:border-box}
-body{font-family:-apple-system,'Noto Sans SC',sans-serif;background:var(--bg);color:var(--text);-webkit-tap-highlight-color:transparent;user-select:none;padding-bottom:80px}
-.appbar{background:var(--green);color:#fff;padding:14px 20px;text-align:center;font-size:18px;font-weight:700;position:sticky;top:0;z-index:10}
-.tabbar{position:fixed;bottom:0;left:0;right:0;background:var(--card);display:flex;border-top:1px solid #e0e0e0;z-index:10;padding-bottom:env(safe-area-inset-bottom)}
-.tab{flex:1;text-align:center;padding:10px 0;font-size:11px;color:var(--grey);cursor:pointer;transition:.2s}
-.tab.active{color:var(--green)}
-.tab .icon{font-size:22px;display:block;margin-bottom:2px}
-.page{display:none;padding:16px;animation:fadeIn .3s}
-.page.active{display:block}
-@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+body{font-family:-apple-system,'PingFang SC','Noto Sans SC',sans-serif;background:var(--bg);color:var(--t);-webkit-tap-highlight-color:transparent;user-select:none;-webkit-user-select:none;padding-bottom:75px;overscroll-behavior:none;font-size:15px}
+body.dark{--bg:#1a1a2e;--c:#16213e;--t:#e0e0e0;--gr:#999;--sh:0 2px 8px rgba(0,0,0,.3)}
+.appbar{background:var(--g);color:#fff;padding:12px 16px;text-align:center;font-weight:700;font-size:17px;position:sticky;top:0;z-index:10;letter-spacing:.5px}
+.tabbar{position:fixed;bottom:0;left:0;right:0;background:var(--c);display:flex;border-top:1px solid rgba(0,0,0,.08);z-index:10;padding-bottom:env(safe-area-inset-bottom,0)}
+.tab{flex:1;text-align:center;padding:8px 0 6px;font-size:10px;color:var(--gr);transition:.15s;cursor:pointer}
+.tab.on{color:var(--g)}
+.tab .ic{font-size:21px;display:block;margin-bottom:1px}
+.page{display:none;padding:14px;animation:fIn .25s ease}
+.page.on{display:block}
+@keyframes fIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
 
 /* Timer */
-.timer-ring{width:200px;height:200px;margin:10px auto;position:relative}
-.timer-ring canvas{width:100%;height:100%}
-.timer-text{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center}
-.timer-text .time{font-size:40px;font-weight:700;font-family:monospace}
-.timer-text .label{font-size:13px;color:var(--green);margin-top:2px}
-.tree-stage{text-align:center;font-size:60px;height:120px;line-height:120px;transition:.5s}
+.timer-wrap{max-width:340px;margin:0 auto}
+.tree-box{text-align:center;font-size:70px;height:100px;line-height:100px;transition:.4s}
+.ring-wrap{width:190px;height:190px;margin:0 auto;position:relative}
+.ring-wrap canvas{width:100%;height:100%}
+.ring-time{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center}
+.ring-time .t{font-size:38px;font-weight:700;font-family:'SF Mono','Cascadia Code',monospace;letter-spacing:2px}
+.ring-time .l{font-size:12px;color:var(--g);margin-top:1px}
 .chips{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:10px 0}
-.chip{padding:8px 16px;border-radius:20px;border:2px solid #ddd;background:#fff;font-size:14px;cursor:pointer;transition:.2s}
-.chip.sel{border-color:var(--green);background:var(--green);color:#fff}
-.btn{display:block;width:100%;padding:16px;border:none;border-radius:var(--radius);font-size:18px;font-weight:600;cursor:pointer;margin:10px 0;transition:.2s}
-.btn-start{background:var(--green);color:#fff}
-.btn-stop{background:var(--red);color:#fff}
-.btn-break{background:var(--orange);color:#fff}
-.attn-row{display:flex;gap:6px;justify-content:center;margin-top:12px}
-.attn{width:50px;height:50px;border-radius:50%;border:2px solid #ddd;background:#fff;font-size:12px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-direction:column}
-.attn.sel{border-color:var(--green);background:#e8f5e9}
+.chip{padding:7px 14px;border-radius:18px;border:2px solid #ddd;background:var(--c);font-size:13px;font-weight:500;transition:.15s;cursor:pointer}
+.chip.sel{border-color:var(--g);background:var(--g);color:#fff}
+.btn{display:block;width:100%;padding:14px;border:none;border-radius:var(--rad);font-size:17px;font-weight:600;cursor:pointer;margin:8px 0;transition:.15s;letter-spacing:.5px}
+.btn:active{transform:scale(.98)}
+.bs{background:var(--g);color:#fff}
+.bd{background:var(--r);color:#fff}
+.bo{background:var(--o);color:#fff}
+.row{display:flex;gap:8px;justify-content:center;margin-top:8px}
+.attn{width:44px;height:44px;border-radius:50%;border:2px solid #ddd;background:var(--c);font-size:12px;display:flex;align-items:center;justify-content:center;flex-direction:column;transition:.15s;cursor:pointer}
+.attn.on{border-color:var(--b);background:#e3f2fd}
+.attn span{font-size:9px;color:var(--gr);margin-top:-2px}
 
-/* Habits */
-.habit-card{background:var(--card);border-radius:var(--radius);padding:14px;margin:8px 0;display:flex;align-items:center;gap:12px}
-.habit-check{width:44px;height:44px;border-radius:50%;background:#e0e0e0;display:flex;align-items:center;justify-content:center;font-size:20px;cursor:pointer;transition:.2s}
-.habit-check.done{background:var(--green);color:#fff}
-.habit-info{flex:1}
-.habit-name{font-weight:600;font-size:15px}
-.habit-desc{font-size:12px;color:var(--grey);margin-top:2px}
-.habit-bar{height:6px;border-radius:3px;background:#e0e0e0;margin-top:6px;overflow:hidden}
-.habit-bar-fill{height:100%;border-radius:3px;transition:.3s}
-.habit-streak{font-size:20px;font-weight:700;color:var(--green);text-align:center;min-width:40px}
-.habit-streak span{display:block;font-size:10px;color:var(--grey);font-weight:400}
-.heatmap{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;margin-top:16px}
-.heatmap-cell{aspect-ratio:1;border-radius:3px;background:#e0e0e0}
+/* Cards */
+.card{background:var(--c);border-radius:var(--rad);padding:14px;margin:8px 0;box-shadow:var(--sh)}
+.habit-row{display:flex;align-items:center;gap:12px}
+.habit-check{min-width:42px;height:42px;border-radius:50%;background:#e8e8e8;display:flex;align-items:center;justify-content:center;font-size:18px;cursor:pointer;transition:.15s}
+.habit-check.done{background:var(--g);color:#fff}
+.habit-info{flex:1;min-width:0}
+.habit-info .n{font-weight:600;font-size:14px}
+.habit-info .d{font-size:11px;color:var(--gr);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hp-bar{height:5px;border-radius:3px;background:#e8e8e8;margin-top:6px}
+.hp-fill{height:100%;border-radius:3px;transition:.4s}
+.habit-streak{min-width:38px;text-align:center}
+.habit-streak .sn{font-size:18px;font-weight:700;color:var(--g)}
+.habit-streak .sl{font-size:9px;color:var(--gr);display:block}
+.habit-actions{display:flex;gap:4px;margin-left:4px}
+.habit-actions button{width:26px;height:26px;border:none;border-radius:50%;background:transparent;font-size:12px;cursor:pointer;color:var(--gr)}
 
-/* Goals */
-.goal-card{background:var(--card);border-radius:var(--radius);padding:14px;margin:8px 0;border-left:4px solid var(--green)}
-.goal-title{font-weight:600}
-.goal-sub{font-size:12px;color:var(--grey);margin:4px 0}
-.goal-bar{height:6px;border-radius:3px;background:#e0e0e0;margin-top:6px;overflow:hidden}
-.goal-bar-fill{height:100%;border-radius:3px;background:var(--green);transition:.3s}
-.goal-children{margin-left:20px}
+.heatmap{margin-top:12px;display:grid;grid-template-columns:repeat(7,1fr);gap:3px}
+.heatmap div{aspect-ratio:1;border-radius:3px;background:#e8e8e8;transition:.2s}
+.heatmap-label{font-size:10px;color:var(--gr);margin-top:8px;text-align:center}
 
-/* Forest */
+.goal-row{display:flex;align-items:center;gap:8px}
+.goal-row .pct{font-size:14px;font-weight:700;color:var(--g);min-width:42px;text-align:center}
+.goal-bar{flex:1;height:8px;border-radius:4px;background:#e8e8e8;overflow:hidden}
+.goal-fill{height:100%;border-radius:4px;background:var(--g);transition:.4s}
+
 .forest-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
-.forest-card{background:var(--card);border-radius:var(--radius);padding:10px;text-align:center}
-.forest-card .emoji{font-size:40px}
-.forest-card .name{font-size:11px;color:var(--grey);margin-top:4px}
-.stats-row{display:flex;gap:10px;margin-bottom:16px}
-.stat-card{flex:1;background:var(--card);border-radius:var(--radius);padding:14px;text-align:center}
-.stat-card .num{font-size:28px;font-weight:700}
-.stat-card .lbl{font-size:11px;color:var(--grey)}
+.ft-card{background:var(--c);border-radius:var(--rad);padding:12px 8px;text-align:center;box-shadow:var(--sh)}
+.ft-emoji{font-size:38px}
+.ft-name{font-size:11px;color:var(--gr);margin-top:4px}
+.stats-row{display:flex;gap:8px;margin-bottom:14px}
+.st{flex:1;background:var(--c);border-radius:var(--rad);padding:12px;text-align:center;box-shadow:var(--sh)}
+.st .sn{font-size:26px;font-weight:700}
+.st .sl{font-size:10px;color:var(--gr);margin-top:2px}
 
-/* Profile */
-.profile-section{background:var(--card);border-radius:var(--radius);padding:16px;margin:10px 0}
-.profile-section h3{font-size:15px;margin-bottom:10px}
-.bar-chart{display:flex;align-items:flex-end;gap:8px;height:150px;justify-content:center}
-.bar-col{display:flex;flex-direction:column;align-items:center;gap:4px}
-.bar-val{width:28px;border-radius:6px 6px 0 0;background:var(--green-l);transition:.3s}
-.bar-label{font-size:10px;color:var(--grey)}
-.ach-grid{display:flex;flex-wrap:wrap;gap:8px}
-.ach{font-size:13px;padding:6px 12px;border-radius:20px;background:#e8f5e9}
-.ach.locked{background:#eee;opacity:.5}
+.bar-chart{display:flex;align-items:flex-end;gap:6px;height:130px;justify-content:center}
+.bar-col{display:flex;flex-direction:column;align-items:center;gap:3px}
+.bar-col .bv{width:26px;border-radius:5px 5px 0 0;background:var(--gl);min-height:4px;transition:.4s}
+.bar-col .bl{font-size:10px;color:var(--gr)}
+.achs{display:flex;flex-wrap:wrap;gap:6px}
+.ach{padding:5px 10px;border-radius:14px;font-size:12px;background:#e8f5e9}
+.ach.lk{background:#eee;opacity:.4}
+.btn-sm{font-size:13px;padding:10px;background:transparent;border:1px solid var(--r);color:var(--r);border-radius:var(--rad);cursor:pointer;margin-top:8px;width:100%}
 
-/* Add form */
-.form-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:20;align-items:flex-end}
-.form-overlay.show{display:flex}
-.form-panel{background:#fff;width:100%;border-radius:20px 20px 0 0;padding:20px;animation:slideUp .3s}
-@keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
-.form-panel input,.form-panel select{width:100%;padding:12px;border:1px solid #ddd;border-radius:10px;font-size:15px;margin:8px 0}
-.form-panel .btn{margin-top:12px}
+.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:30;align-items:flex-end}
+.overlay.show{display:flex}
+.panel{background:var(--c);width:100%;border-radius:18px 18px 0 0;padding:18px;animation:sUp .25s ease}
+@keyframes sUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+.panel h3{font-size:16px;margin-bottom:10px}
+.panel input,.panel select{width:100%;padding:11px;border:1px solid #ddd;border-radius:10px;font-size:14px;margin:6px 0;background:var(--bg)}
+.panel .btn{margin-top:10px}
+
+.toast{position:fixed;top:20px;left:50%;transform:translateX(-50%);background:#333;color:#fff;padding:10px 20px;border-radius:20px;font-size:13px;z-index:40;opacity:0;transition:opacity .3s;pointer-events:none}
+.toast.show{opacity:1}
 </style>
 </head>
 <body>
 
-<div class="appbar" id="appbar">🌳 自律森林</div>
+<div class="appbar" id="bar">🌳 自律森林</div>
 
-<!-- Focus Page -->
-<div class="page active" id="page-focus">
-<div class="tree-stage" id="tree">🌰</div>
-<div class="timer-ring"><canvas id="ring"></canvas><div class="timer-text"><div class="time" id="time">25:00</div><div class="label" id="status-label">准备开始</div></div></div>
-<div class="chips" id="duration-chips"></div>
-<button class="btn btn-start" id="btn-start" onclick="startFocus()">🌱 开始种树</button>
-<button class="btn btn-stop" id="btn-stop" onclick="stopFocus()" style="display:none">🥀 放弃这棵树</button>
-<div class="attn-row" id="attn-row" style="display:none">
-<div class="attn" onclick="markAttn('deep')" id="attn-deep">🔥<span style="font-size:9px">深度</span></div>
-<div class="attn" onclick="markAttn('focused')" id="attn-focused">👍<span style="font-size:9px">专注</span></div>
-<div class="attn" onclick="markAttn('drift')" id="attn-drift">😐<span style="font-size:9px">走神</span></div>
-<div class="attn" onclick="markAttn('distracted')" id="attn-distracted">📱<span style="font-size:9px">分心</span></div>
+<!-- FOCUS PAGE -->
+<div class="page on" id="page-focus">
+<div class="timer-wrap">
+<div class="tree-box" id="tree">🌰</div>
+<div class="ring-wrap"><canvas id="ring"></canvas><div class="ring-time"><div class="t" id="time">25:00</div><div class="l" id="status">准备开始</div></div></div>
+<div class="chips" id="chips"></div>
+<button class="btn bs" id="btnGo" onclick="start()">🌱 开始种树</button>
+<button class="btn bd" id="btnStop" onclick="abort()" style="display:none">🥀 放弃（树会枯萎）</button>
+<div class="row" id="attnRow" style="display:none">
+<div class="attn" onclick="mark('deep')">🔥<span>深度</span></div>
+<div class="attn" onclick="mark('ok')">👍<span>专注</span></div>
+<div class="attn" onclick="mark('drift')">😐<span>走神</span></div>
+<div class="attn" onclick="mark('off')">📱<span>分心</span></div>
 </div>
 </div>
+</div>
 
-<!-- Habits Page -->
+<!-- HABITS PAGE -->
 <div class="page" id="page-habits">
-<div style="display:flex;justify-content:space-between;align-items:center">
-<h3>习惯追踪</h3><button style="background:var(--green);color:#fff;border:none;padding:8px 16px;border-radius:20px;font-size:14px;cursor:pointer" onclick="showAddHabit()">+ 新建</button>
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+<h3 style="font-size:16px">✅ 习惯追踪</h3>
+<button style="background:var(--g);color:#fff;border:none;padding:8px 14px;border-radius:16px;font-size:13px;cursor:pointer" onclick="showForm('habit')">+ 新建</button>
 </div>
-<div id="habits-list"></div>
+<div id="habitsList"></div>
+<div style="margin-top:16px"><strong style="font-size:13px;color:var(--gr)">📅 本月打卡</strong></div>
 <div class="heatmap" id="heatmap"></div>
+<div class="heatmap-label">每个格子=一天 · 颜色越深=完成越多</div>
 </div>
 
-<!-- Plan Page -->
-<div class="page" id="page-plan">
-<h3>🎯 目标分解</h3>
-<div id="goals-list"></div>
-<button class="btn btn-start" onclick="showAddGoal()">+ 新建目标</button>
+<!-- GOALS PAGE -->
+<div class="page" id="page-goals">
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+<h3 style="font-size:16px">🎯 目标计划</h3>
+<button style="background:var(--g);color:#fff;border:none;padding:8px 14px;border-radius:16px;font-size:13px;cursor:pointer" onclick="showForm('goal')">+ 新建</button>
+</div>
+<div id="goalsList"></div>
 </div>
 
-<!-- Forest Page -->
+<!-- FOREST PAGE -->
 <div class="page" id="page-forest">
-<h3>🌳 我的森林</h3>
-<div class="stats-row" id="forest-stats"></div>
-<div class="forest-grid" id="forest-grid"></div>
+<h3 style="font-size:16px;margin-bottom:10px">🌳 我的森林</h3>
+<div class="stats-row" id="forestStats"></div>
+<div class="forest-grid" id="forestGrid"></div>
 </div>
 
-<!-- Profile Page -->
+<!-- PROFILE PAGE -->
 <div class="page" id="page-profile">
-<div class="profile-section">
-<h3>📊 本周专注时长</h3><div class="bar-chart" id="bar-chart"></div>
+<div class="card"><h3 style="font-size:15px;margin-bottom:8px">📊 本周专注（分钟）</h3><div class="bar-chart" id="barChart"></div></div>
+<div class="card"><h3 style="font-size:15px;margin-bottom:8px">🏆 成就</h3><div class="achs" id="achs"></div></div>
+<div class="card"><h3 style="font-size:15px">🌟 积分：<b id="scoreVal">0</b></h3></div>
+<div style="display:flex;gap:8px;margin-top:8px">
+<button class="btn-sm" onclick="exportData()">📤 导出数据</button>
+<button class="btn-sm" onclick="toggleDark()">🌓 深色模式</button>
 </div>
-<div class="profile-section">
-<h3>🏆 成就</h3><div class="ach-grid" id="achievements"></div>
-</div>
-<div class="profile-section">
-<h3>🌟 积分：<span id="score-display">0</span></h3>
-</div>
-<button class="btn btn-stop" onclick="resetAll()" style="font-size:14px;padding:12px">🔄 重置所有数据</button>
+<button class="btn-sm" onclick="resetAll()" style="margin-top:4px">🔄 重置所有数据</button>
 </div>
 
-<!-- Tab Bar -->
+<!-- TAB BAR -->
 <div class="tabbar">
-<div class="tab active" onclick="switchTab(0)" id="tab0"><span class="icon">🍅</span>专注</div>
-<div class="tab" onclick="switchTab(1)" id="tab1"><span class="icon">✅</span>习惯</div>
-<div class="tab" onclick="switchTab(2)" id="tab2"><span class="icon">🎯</span>计划</div>
-<div class="tab" onclick="switchTab(3)" id="tab3"><span class="icon">🌳</span>森林</div>
-<div class="tab" onclick="switchTab(4)" id="tab4"><span class="icon">👤</span>我的</div>
+<div class="tab on" onclick="goTab(0)"><span class="ic">🍅</span>专注</div>
+<div class="tab" onclick="goTab(1)"><span class="ic">✅</span>习惯</div>
+<div class="tab" onclick="goTab(2)"><span class="ic">🎯</span>目标</div>
+<div class="tab" onclick="goTab(3)"><span class="ic">🌳</span>森林</div>
+<div class="tab" onclick="goTab(4)"><span class="ic">👤</span>我的</div>
 </div>
 
-<!-- Add Habit Form -->
-<div class="form-overlay" id="habit-form">
-<div class="form-panel">
-<h3>新建习惯</h3><input id="habit-name" placeholder="习惯名称"><input id="habit-desc" placeholder="简短描述"><select id="habit-tier"><option value="micro">🌱 微习惯（100%能做到）</option><option value="normal">🌿 正常（80%能做到）</option><option value="challenge">🌳 挑战（50%能做到）</option></select>
-<button class="btn btn-start" onclick="addHabit()">添加</button>
-<button class="btn" style="background:#eee" onclick="document.getElementById('habit-form').classList.remove('show')">取消</button>
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<!-- HABIT FORM -->
+<div class="overlay" id="habitForm"><div class="panel">
+<h3>新建习惯</h3>
+<input id="hfName" placeholder="习惯名称（如：每日编程）" maxlength="30">
+<input id="hfDesc" placeholder="简短描述（可选）" maxlength="50">
+<select id="hfTier"><option value="micro">🌱 微习惯（100%能做到）</option><option value="normal" selected>🌿 正常（80%能做到）</option><option value="challenge">🌳 挑战（50%能做到）</option></select>
+<button class="btn bs" onclick="addHabit()">✅ 添加习惯</button>
+<button class="btn" style="background:#eee;color:#333" onclick="hideForm('habit')">取消</button>
 </div></div>
 
-<!-- Add Goal Form -->
-<div class="form-overlay" id="goal-form">
-<div class="form-panel">
-<h3>新建目标</h3><input id="goal-title" placeholder="目标名称"><input id="goal-sub" placeholder="简短描述"><input id="goal-tomatoes" placeholder="预估番茄钟数" type="number">
-<button class="btn btn-start" onclick="addGoal()">添加</button>
-<button class="btn" style="background:#eee" onclick="document.getElementById('goal-form').classList.remove('show')">取消</button>
+<!-- GOAL FORM -->
+<div class="overlay" id="goalForm"><div class="panel">
+<h3>新建目标</h3>
+<input id="gfName" placeholder="目标名称（如：有机化学85分）" maxlength="40">
+<input id="gfDesc" placeholder="简短描述（可选）" maxlength="60">
+<input id="gfTomatoes" type="number" placeholder="预估需要几个番茄钟？" min="1" max="999" value="20">
+<button class="btn bs" onclick="addGoal()">🎯 添加目标</button>
+<button class="btn" style="background:#eee;color:#333" onclick="hideForm('goal')">取消</button>
 </div></div>
 
 <script>
-// === DATA ===
-const DURATIONS=[15,25,30,45,60];
-let timer=null,tickId=null,elapsed=0,total=1500,isBreak=false,interrupts=0;
-let habits=JSON.parse(localStorage.getItem('habits')||'[]');
-let goals=JSON.parse(localStorage.getItem('goals')||'[]');
-let trees=JSON.parse(localStorage.getItem('trees')||'[]');
-let score=parseInt(localStorage.getItem('score')||'0');
-updateScore(0);
+// ============ STATE ============
+const DURS=[20,25,30,45,60];
+let timerId=null,elapsed=0,totalSec=1500,isBreak=false,interruptCount=0;
+let habits=JSON.parse(localStorage.getItem('fh')||'[]');
+let goals=JSON.parse(localStorage.getItem('fg')||'[]');
+let sessions=JSON.parse(localStorage.getItem('fs')||'[]'); // [{date,minutes,completed}]
+let score=parseInt(localStorage.getItem('fsc')||'0');
+let darkMode=localStorage.getItem('fdark')==='1';
+if(darkMode)document.body.classList.add('dark');
 
-// === TABS ===
-function switchTab(i){
-document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-document.querySelectorAll('.tab').forEach((t,j)=>t.classList.toggle('active',j===i));
-['page-focus','page-habits','page-plan','page-forest','page-profile'][i].classList.add('active');
-document.getElementById('appbar').textContent=['🌳 自律森林','✅ 习惯追踪','🎯 目标计划','🌳 我的森林','👤 我的'][i];
+// ============ UTILS ============
+function save(s){localStorage.setItem(s==='h'?'fh':s==='g'?'fg':s==='s'?'fs':s==='c'?'fsc':'fdark',s==='h'?JSON.stringify(habits):s==='g'?JSON.stringify(goals):s==='s'?JSON.stringify(sessions):s==='c'?score.toString():darkMode?'1':'0')}
+function toast(msg){let t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');clearTimeout(t._tid);t._tid=setTimeout(()=>t.classList.remove('show'),2000)}
+function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,6)}
+
+// ============ TABS ============
+function goTab(i){
+document.querySelectorAll('.page').forEach(p=>p.classList.remove('on'));
+document.querySelectorAll('.tab').forEach((t,j)=>t.classList.toggle('on',j===i));
+['page-focus','page-habits','page-goals','page-forest','page-profile'][i].classList.add('on');
+document.getElementById('bar').textContent=['🌳 自律森林','✅ 习惯追踪','🎯 目标计划','🌳 我的森林','👤 我的'][i];
 if(i===1)renderHabits();
 if(i===2)renderGoals();
 if(i===3)renderForest();
 if(i===4)renderProfile();
 }
 
-// === FOCUS TIMER ===
+// ============ FOCUS TIMER ============
 (function initFocus(){
-let chips=document.getElementById('duration-chips');
-DURATIONS.forEach((d,i)=>{
-let c=document.createElement('div');c.className='chip'+(i===1?' sel':'');
-c.textContent=d+'分';c.onclick=()=>{document.querySelectorAll('.chip').forEach(x=>x.classList.remove('sel'));c.classList.add('sel');total=d*60;document.getElementById('time').textContent=d+':00';};
-chips.appendChild(c);
-});
+let c=document.getElementById('chips');
+DURS.forEach((d,i)=>{let el=document.createElement('div');el.className='chip'+(i===1?' sel':'');el.textContent=d+'分钟';el.onclick=()=>{c.querySelectorAll('.chip').forEach(x=>x.classList.remove('sel'));el.classList.add('sel');totalSec=d*60;if(!timerId)document.getElementById('time').textContent=d+':00'};c.appendChild(el)});
 drawRing(0);
+requestAnimationFrame(()=>drawRing(0));
 })();
 
-function startFocus(){
-elapsed=0;isBreak=false;interrupts=0;
-document.getElementById('btn-start').style.display='none';
-document.getElementById('btn-stop').style.display='block';
-document.getElementById('attn-row').style.display='flex';
-document.getElementById('status-label').textContent='专注中 🔥';
+function start(){
+if(timerId)return;
+elapsed=0;isBreak=false;interruptCount=0;
+document.getElementById('btnGo').style.display='none';
+document.getElementById('btnStop').style.display='block';
+document.getElementById('attnRow').style.display='flex';
+document.getElementById('status').textContent='专注中';
 document.getElementById('tree').textContent='🌰';
-document.querySelectorAll('.chip').forEach(c=>c.style.pointerEvents='none');
-tickId=setInterval(tick,1000);
+document.querySelectorAll('#chips .chip').forEach(c=>c.style.pointerEvents='none');
+drawRing(0);
+updateTree(0);
+timerId=setInterval(tick,1000);
+if(document.hidden)toast('⏰ 计时器在后台也会继续运行');
 }
+
 function tick(){
 elapsed++;
-let rem=total-elapsed;if(rem<0)rem=0;
+let rem=Math.max(0,totalSec-elapsed);
 let m=Math.floor(rem/60),s=rem%60;
 document.getElementById('time').textContent=m+':'+(s<10?'0':'')+s;
-let p=Math.min(elapsed/total,1);
+let p=Math.min(elapsed/totalSec,1);
 drawRing(p);
-updateTree(p,false);
-if(elapsed>=total){clearInterval(tickId);onComplete();}
+updateTree(p);
+if(elapsed>=totalSec){clearInterval(timerId);timerId=null;onDone();}
 }
-function onComplete(){
-document.getElementById('status-label').textContent='🎉 完成！';
+
+function onDone(){
+document.getElementById('status').textContent='完成！';
 document.getElementById('tree').textContent='🌳';
-document.getElementById('btn-stop').style.display='none';
-document.getElementById('attn-row').style.display='none';
-document.getElementById('btn-start').style.display='block';
-document.getElementById('btn-start').textContent='☕ 休息5分钟';
-document.getElementById('btn-start').onclick=startBreak;
-document.querySelectorAll('.chip').forEach(c=>c.style.pointerEvents='auto');
-trees.push({date:new Date().toISOString().slice(0,10),type:'oak',stage:'mature'});
-localStorage.setItem('trees',JSON.stringify(trees));
-updateScore(10);
+document.getElementById('btnStop').style.display='none';
+document.getElementById('attnRow').style.display='none';
+document.getElementById('btnGo').style.display='block';
+document.getElementById('btnGo').textContent='☕ 休息5分钟';
+document.getElementById('btnGo').onclick=startBreak;
+document.querySelectorAll('#chips .chip').forEach(c=>c.style.pointerEvents='auto');
+sessions.push({date:new Date().toISOString().slice(0,10),minutes:Math.round(totalSec/60),completed:true});
+save('s');updateScore(10);
+toast('🎉 专注完成！+10积分');
+try{navigator.vibrate?.([200,100,200])}catch(e){}
 }
+
 function startBreak(){
-elapsed=0;total=300;isBreak=true;
-document.getElementById('status-label').textContent='休息中 ☕';
+if(timerId)return;
+elapsed=0;totalSec=300;isBreak=true;
+document.getElementById('status').textContent='休息中 ☕';
 document.getElementById('tree').textContent='😴';
-document.getElementById('btn-start').style.display='none';
-document.getElementById('btn-start').textContent='🌱 开始种树';
-document.getElementById('btn-start').onclick=startFocus;
-tickId=setInterval(()=>{elapsed++;let rem=total-elapsed;let m=Math.floor(rem/60),s=rem%60;document.getElementById('time').textContent=m+':'+(s<10?'0':'')+s;drawRing(elapsed/total);if(elapsed>=total){clearInterval(tickId);document.getElementById('status-label').textContent='准备开始';document.getElementById('tree').textContent='🌰';document.getElementById('btn-start').style.display='block';drawRing(0);document.getElementById('time').textContent=total/60+':00';isBreak=false;}},1000);
+document.getElementById('btnGo').style.display='none';
+document.getElementById('btnGo').textContent='🌱 开始种树';
+document.getElementById('btnGo').onclick=start;
+drawRing(0);updateTree(0);
+timerId=setInterval(()=>{
+elapsed++;let rem=Math.max(0,totalSec-elapsed);let m=Math.floor(rem/60),s=rem%60;
+document.getElementById('time').textContent=m+':'+(s<10?'0':'')+s;drawRing(elapsed/totalSec);
+if(elapsed>=totalSec){clearInterval(timerId);timerId=null;isBreak=false;document.getElementById('status').textContent='准备开始';document.getElementById('tree').textContent='🌰';document.getElementById('btnGo').style.display='block';drawRing(0);document.getElementById('time').textContent=totalSec/60+':00';toast('☕ 休息结束，开始下一轮吧');try{navigator.vibrate?.([300])}catch(e){}}
+},1000);
 }
-function stopFocus(){
-clearInterval(tickId);
-document.getElementById('btn-start').style.display='block';
-document.getElementById('btn-stop').style.display='none';
-document.getElementById('attn-row').style.display='none';
-document.getElementById('status-label').textContent='树枯萎了 😢';
+
+function abort(){
+if(!timerId)return;
+clearInterval(timerId);timerId=null;
+document.getElementById('btnGo').style.display='block';
+document.getElementById('btnStop').style.display='none';
+document.getElementById('attnRow').style.display='none';
+document.getElementById('status').textContent='树枯萎了';
 document.getElementById('tree').textContent='🥀';
-document.getElementById('btn-start').textContent='🌱 开始种树';
-document.getElementById('btn-start').onclick=startFocus;
-document.querySelectorAll('.chip').forEach(c=>c.style.pointerEvents='auto');
-trees.push({date:new Date().toISOString().slice(0,10),type:'oak',stage:'withered'});
-localStorage.setItem('trees',JSON.stringify(trees));
-drawRing(0);
-document.getElementById('time').textContent=total/60+':00';
-}
-function markAttn(lvl){
-document.querySelectorAll('.attn').forEach(a=>a.classList.remove('sel'));
-document.getElementById('attn-'+lvl).classList.add('sel');
+document.getElementById('btnGo').textContent='🌱 开始种树';
+document.getElementById('btnGo').onclick=start;
+document.querySelectorAll('#chips .chip').forEach(c=>c.style.pointerEvents='auto');
+sessions.push({date:new Date().toISOString().slice(0,10),minutes:Math.floor(elapsed/60),completed:false});
+save('s');
+drawRing(0);updateTree(0,true);
+document.getElementById('time').textContent=totalSec/60+':00';
+toast('🥀 树枯萎了，下次坚持住！');
 }
 
-function updateTree(p,broken){
-let e=document.getElementById('tree');
-if(broken){e.textContent='🥀';return;}
-if(p<0.2)e.textContent='🌰';
-else if(p<0.4)e.textContent='🌱';
-else if(p<0.7)e.textContent='🌿';
-else if(p<0.95)e.textContent='🌸';
-else e.textContent='🌳';
-}
+function mark(lvl){document.querySelectorAll('.attn').forEach(a=>a.classList.remove('on'));let m={deep:'attn-deep',ok:'attn-ok',drift:'attn-drift',off:'attn-off'};if(m[lvl])document.getElementById(m[lvl]).classList.add('on');}
+function updateTree(p,dead){let e=document.getElementById('tree');if(dead){e.textContent='🥀';return}e.textContent=p<0.2?'🌰':p<0.4?'🌱':p<0.65?'🌿':p<0.9?'🌸':'🌳'}
+function drawRing(p){let c=document.getElementById('ring'),dpr=window.devicePixelRatio||1,size=190;c.width=c.height=size*dpr;c.style.width=c.style.height=size+'px';let ctx=c.getContext('2d');ctx.scale(dpr,dpr);let cx=size/2,cy=size/2,r=75;ctx.clearRect(0,0,size,size);ctx.beginPath();ctx.arc(cx,cy,r,0,Math.PI*2);ctx.strokeStyle='#e0e0e0';ctx.lineWidth=9;ctx.stroke();if(p>0){ctx.beginPath();ctx.arc(cx,cy,r,-Math.PI/2,-Math.PI/2+Math.PI*2*p);ctx.strokeStyle=isBreak?'#ff9800':'#4CAF50';ctx.lineWidth=9;ctx.lineCap='round';ctx.stroke()}}
 
-// === CANVAS RING ===
-function drawRing(p){
-let c=document.getElementById('ring'),w=c.width=200,h=c.height=200,ctx=c.getContext('2d');
-ctx.clearRect(0,0,w,h);
-let cx=100,cy=100,r=80;
-ctx.beginPath();ctx.arc(cx,cy,r,0,Math.PI*2);ctx.strokeStyle='#e0e0e0';ctx.lineWidth=10;ctx.stroke();
-ctx.beginPath();ctx.arc(cx,cy,r,-Math.PI/2,-Math.PI/2+Math.PI*2*p);ctx.strokeStyle=isBreak?'#ff9800':'#4CAF50';ctx.lineWidth=10;ctx.lineCap='round';ctx.stroke();
-}
-
-// === HABITS ===
+// ============ HABITS ============
 function renderHabits(){
-let list=document.getElementById('habits-list');
-list.innerHTML=habits.map((h,i)=>`<div class="habit-card"><div class="habit-check ${h.done?'done':''}" onclick="toggleHabit(${i})">${h.done?'✓':'○'}</div><div class="habit-info"><div class="habit-name">${h.name}</div><div class="habit-desc">${h.desc} · ${h.tier==='micro'?'🌱微':h.tier==='normal'?'🌿常':'🌳挑'}</div><div class="habit-bar"><div class="habit-bar-fill" style="width:${h.health||50}%;background:${h.health>80?'#4CAF50':h.health>50?'#ff9800':'#e53935'}"></div></div></div><div class="habit-streak">${h.streak||0}<span>天连续</span></div></div>`).join('');
-// heatmap
-let hm=document.getElementById('heatmap'),cells=[];
-for(let i=0;i<28;i++){let v=Math.floor(Math.random()*5);cells.push(`<div class="heatmap-cell" style="background:${['#ebedf0','#c6e48b','#7bc96f','#239a3b','#196127'][v]}"></div>`)}
+let el=document.getElementById('habitsList');
+if(habits.length===0){el.innerHTML='<p style="text-align:center;color:var(--gr);padding:30px">还没有习惯，点右上角 + 新建</p>';}
+else el.innerHTML=habits.map((h,i)=>`<div class="card habit-row"><div class="habit-check ${h.done?'done':''}" onclick="toggleHabit('${h.id}')">${h.done?'✓':'○'}</div><div class="habit-info"><div class="n">${esc(h.name)}</div><div class="d">${esc(h.desc||'')} · ${h.tier==='micro'?'🌱微':h.tier==='normal'?'🌿常':'🌳挑'}</div><div class="hp-bar"><div class="hp-fill" style="width:${h.health||50}%;background:${h.health>80?'#4CAF50':h.health>50?'#ff9800':'#e53935'}"></div></div></div><div class="habit-streak"><div class="sn">${h.streak||0}</div><div class="sl">天连续</div></div><div class="habit-actions"><button onclick="delHabit('${h.id}')" title="删除">🗑</button></div></div>`).join('');
+renderHeatmap();
+}
+function toggleHabit(id){
+let h=habits.find(x=>x.id===id);if(!h)return;
+h.done=!h.done;
+if(h.done){h.streak=(h.streak||0)+1;h.health=Math.min(100,(h.health||50)+5);h.dates=h.dates||[];let today=new Date().toISOString().slice(0,10);if(!h.dates.includes(today))h.dates.push(today);updateScore(5)}else{h.streak=Math.max(0,(h.streak||1)-1);h.health=Math.max(5,(h.health||50)-3)}
+save('h');renderHabits();
+}
+function delHabit(id){habits=habits.filter(h=>h.id!==id);save('h');renderHabits();toast('习惯已删除')}
+function addHabit(){
+let n=document.getElementById('hfName').value.trim();if(!n)return toast('请输入习惯名称');
+habits.push({id:uid(),name:n,desc:document.getElementById('hfDesc').value.trim(),tier:document.getElementById('hfTier').value,done:false,streak:0,health:50,dates:[]});
+save('h');hideForm('habit');document.getElementById('hfName').value='';document.getElementById('hfDesc').value='';renderHabits();toast('✅ 习惯已添加');
+}
+function renderHeatmap(){
+let hm=document.getElementById('heatmap'),now=new Date(),cells=[];
+let startDate=new Date(now.getFullYear(),now.getMonth(),1);
+let totalDays=new Date(now.getFullYear(),now.getMonth()+1,0).getDate();
+let dayOffset=startDate.getDay();dayOffset=dayOffset===0?6:dayOffset-1;
+for(let i=0;i<dayOffset;i++)cells.push('<div></div>');
+for(let d=1;d<=totalDays;d++){
+let ds=`${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+let count=habits.reduce((sum,h)=>sum+((h.dates||[]).includes(ds)?1:0),0);
+let colors=['#ebedf0','#c6e48b','#7bc96f','#239a3b','#196127'];
+let ci=Math.min(count,colors.length-1);
+cells.push(`<div style="background:${colors[ci]}" title="${ds}: ${count}完成"></div>`);
+}
 hm.innerHTML=cells.join('');
 }
-function toggleHabit(i){
-habits[i].done=!habits[i].done;
-if(habits[i].done){habits[i].streak=(habits[i].streak||0)+1;habits[i].health=Math.min(100,(habits[i].health||50)+5);updateScore(5)}else{habits[i].health=Math.max(0,(habits[i].health||50)-3)}
-localStorage.setItem('habits',JSON.stringify(habits));renderHabits();
-}
-function showAddHabit(){document.getElementById('habit-form').classList.add('show')}
-function addHabit(){
-let n=document.getElementById('habit-name').value.trim(),d=document.getElementById('habit-desc').value.trim(),t=document.getElementById('habit-tier').value;
-if(!n)return;
-habits.push({name:n,desc:d,tier:t,done:false,streak:0,health:50});
-localStorage.setItem('habits',JSON.stringify(habits));
-document.getElementById('habit-form').classList.remove('show');
-document.getElementById('habit-name').value='';document.getElementById('habit-desc').value='';
-renderHabits();
-}
 
-// === GOALS ===
+// ============ GOALS ============
 function renderGoals(){
-let list=document.getElementById('goals-list');
-list.innerHTML=goals.map((g,i)=>`<div class="goal-card"><div class="goal-title">${g.title}</div><div class="goal-sub">${g.sub} · 🍅${g.done||0}/${g.tomatoes||10}</div><div class="goal-bar"><div class="goal-bar-fill" style="width:${((g.done||0)/(g.tomatoes||10)*100)}%"></div></div></div>`).join('');
+let el=document.getElementById('goalsList');
+if(goals.length===0){el.innerHTML='<p style="text-align:center;color:var(--gr);padding:30px">还没有目标，点右上角 + 新建</p>';}
+else el.innerHTML=goals.map(g=>{let pct=Math.min(100,Math.round(((g.done||0)/(g.tomatoes||10))*100));return`<div class="card goal-row"><div class="pct">${pct}%</div><div style="flex:1;min-width:0"><div style="font-weight:600;font-size:14px">${esc(g.title)}</div><div style="font-size:11px;color:var(--gr);margin:2px 0">${esc(g.sub||'')} · 🍅${g.done||0}/${g.tomatoes||10}</div><div class="goal-bar"><div class="goal-fill" style="width:${pct}%"></div></div></div><button style="border:none;background:var(--g);color:#fff;width:32px;height:32px;border-radius:50%;font-size:16px;cursor:pointer;flex-shrink:0" onclick="addTomato('${g.id}')" title="手动+1番茄钟">+</button><button style="border:none;background:transparent;color:var(--gr);font-size:14px;cursor:pointer;flex-shrink:0;margin-left:2px" onclick="delGoal('${g.id}')" title="删除">🗑</button></div>`}).join('');
 }
-function showAddGoal(){document.getElementById('goal-form').classList.add('show')}
+function addTomato(id){let g=goals.find(x=>x.id===id);if(!g)return;g.done=(g.done||0)+1;save('g');renderGoals();toast('🍅 +1')}
+function delGoal(id){goals=goals.filter(g=>g.id!==id);save('g');renderGoals();toast('目标已删除')}
 function addGoal(){
-let t=document.getElementById('goal-title').value.trim(),s=document.getElementById('goal-sub').value.trim(),tom=parseInt(document.getElementById('goal-tomatoes').value)||10;
-if(!t)return;
-goals.push({title:t,sub:s,tomatoes:tom,done:0});
-localStorage.setItem('goals',JSON.stringify(goals));
-document.getElementById('goal-form').classList.remove('show');
-document.getElementById('goal-title').value='';document.getElementById('goal-sub').value='';document.getElementById('goal-tomatoes').value='';
-renderGoals();updateScore(10);
+let t=document.getElementById('gfName').value.trim();if(!t)return toast('请输入目标名称');
+goals.push({id:uid(),title:t,sub:document.getElementById('gfDesc').value.trim(),tomatoes:parseInt(document.getElementById('gfTomatoes').value)||20,done:0});
+save('g');hideForm('goal');document.getElementById('gfName').value='';document.getElementById('gfDesc').value='';renderGoals();toast('🎯 目标已添加');
 }
 
-// === FOREST ===
+// ============ FOREST ============
 function renderForest(){
-let s=document.getElementById('forest-stats');
-let total=trees.length,alive=trees.filter(t=>t.stage==='mature').length,dead=trees.filter(t=>t.stage==='withered').length;
-s.innerHTML=`<div class="stat-card"><div class="num" style="color:#4CAF50">${total}</div><div class="lbl">总种树</div></div><div class="stat-card"><div class="num" style="color:#2E7D32">${alive}</div><div class="lbl">存活</div></div><div class="stat-card"><div class="num" style="color:#e53935">${dead}</div><div class="lbl">枯萎</div></div>`;
-let types=['oak','pine','cherry','bamboo','cactus','maple','willow','redwood'];
-let names=['橡树','松树','樱花','竹子','仙人掌','枫树','柳树','红杉'];
-let emojis=['🌳','🌲','🌸','🎋','🌵','🍁','🌿','🏔️'];
-let grid=document.getElementById('forest-grid');
-grid.innerHTML=trees.slice(-12).reverse().map(t=>`<div class="forest-card"><div class="emoji">${t.stage==='mature'?emojis[Math.floor(Math.random()*8)]:'🥀'}</div><div class="name">${t.stage==='mature'?'已成熟':'已枯萎'}</div></div>`).join('');
-if(trees.length===0)grid.innerHTML='<p style="text-align:center;color:#888;grid-column:1/-1;padding:40px">还没有种过树，去专注页面种第一棵吧 🌱</p>';
+let total=sessions.length,alive=sessions.filter(s=>s.completed).length,dead=total-alive;
+document.getElementById('forestStats').innerHTML=`<div class="st"><div class="sn" style="color:#4CAF50">${total}</div><div class="sl">总次数</div></div><div class="st"><div class="sn" style="color:#2E7D32">${alive}</div><div class="sl">🌳完成</div></div><div class="st"><div class="sn" style="color:#e53935">${dead}</div><div class="sl">🥀中断</div></div>`;
+let emojis=['🌳','🌲','🌸','🎋','🌵','🍁','🌿','🏔️','🌴','🪴'];
+let grid=document.getElementById('forestGrid');
+if(sessions.length===0){grid.innerHTML='<p style="text-align:center;color:var(--gr);padding:30px;grid-column:1/-1">还没有种过树，去专注页面种第一棵吧 🌱</p>';return}
+grid.innerHTML=sessions.slice(-15).reverse().map(s=>`<div class="ft-card"><div class="ft-emoji">${s.completed?emojis[Math.floor(Math.random()*emojis.length)]:'🥀'}</div><div class="ft-name">${s.date} · ${s.minutes}分钟<br>${s.completed?'✅完成':'❌中断'}</div></div>`).join('');
 }
 
-// === PROFILE ===
+// ============ PROFILE ============
 function renderProfile(){
-document.getElementById('score-display').textContent=score;
-let bc=document.getElementById('bar-chart');
-let days=['一','二','三','四','五','六','日'];
-bc.innerHTML=days.map((d,i)=>{let h=20+Math.floor(Math.random()*130);return`<div class="bar-col"><div class="bar-val" style="height:${h}px"></div><div class="bar-label">${d}</div></div>`}).join('');
-let ach=document.getElementById('achievements');
-let achievements=[{n:'🌱 初次种树',u:trees.length>0},{n:'🔥 连续7天',u:false},{n:'🌲 10棵树',u:trees.length>=10},{n:'📚 100个番茄',u:false},{n:'⭐ 1000积分',u:score>=1000},{n:'🏅 30天不间断',u:false}];
-ach.innerHTML=achievements.map(a=>`<div class="ach${a.u?'':' locked'}">${a.n}</div>`).join('');
+document.getElementById('scoreVal').textContent=score;
+let bc=document.getElementById('barChart'),days=['一','二','三','四','五','六','日'];
+let weekData=days.map((_,i)=>{let d=new Date();d.setDate(d.getDate()-(6-i));let ds=d.toISOString().slice(0,10);return sessions.filter(s=>s.date===ds&&s.completed).reduce((sum,s)=>sum+s.minutes,0)});
+let maxVal=Math.max(...weekData,10);
+bc.innerHTML=weekData.map((v,i)=>`<div class="bar-col"><div class="bv" style="height:${Math.max(4,(v/maxVal)*120)}px;background:${i===6?'#81C784':'#4CAF50'}"></div><div class="bl">${days[i]}</div></div>`).join('');
+let achs=[{n:'🌱 初次种树',u:sessions.length>0},{n:'🔥 连续3天',u:hasStreak(3)},{n:'🌲 10次完成',u:sessions.filter(s=>s.completed).length>=10},{n:'📚 50个番茄',u:sessions.filter(s=>s.completed).reduce((a,s)=>a+s.minutes,0)>=1250},{n:'⭐ 500积分',u:score>=500},{n:'🏅 7天连续',u:hasStreak(7)}];
+document.getElementById('achs').innerHTML=achs.map(a=>`<div class="ach${a.u?'':' lk'}">${a.n}</div>`).join('');
 }
+function hasStreak(n){let dates=[...new Set(sessions.filter(s=>s.completed).map(s=>s.date))].sort().reverse();if(dates.length<n)return false;let streak=1;for(let i=1;i<dates.length;i++){let d1=new Date(dates[i-1]),d2=new Date(dates[i]);if((d1-d2)/(86400000)===1)streak++;else break}return streak>=n}
+function updateScore(n){score+=n;save('c');if(document.getElementById('page-profile').classList.contains('on'))renderProfile()}
+function toggleDark(){darkMode=!darkMode;document.body.classList.toggle('dark',darkMode);save('d')}
+function exportData(){let data={habits,goals,sessions,score,exportedAt:new Date().toISOString()};let blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});let a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='forest-backup-'+new Date().toISOString().slice(0,10)+'.json';a.click();toast('📤 数据已导出')}
+function resetAll(){if(!confirm('确定删除所有数据？此操作不可恢复！\n\n建议先导出数据备份。'))return;habits=[];goals=[];sessions=[];score=0;['fh','fg','fs','fsc'].forEach(k=>localStorage.removeItem(k));save('c');renderAll();toast('🔄 已重置')}
 
-function updateScore(n){score+=n;localStorage.setItem('score',score.toString());if(document.getElementById('page-profile').classList.contains('active'))renderProfile();}
-function resetAll(){if(confirm('确定要重置所有数据吗？此操作不可恢复！')){localStorage.clear();habits=[];goals=[];trees=[];score=0;updateScore(0);renderHabits();renderGoals();renderForest();renderProfile();}}
+// ============ FORMS ============
+function showForm(t){document.getElementById(t==='habit'?'habitForm':'goalForm').classList.add('show')}
+function hideForm(t){document.getElementById(t==='habit'?'habitForm':'goalForm').classList.remove('show')}
 
-// === INIT ===
-renderHabits();renderGoals();renderForest();
+// ============ HELPERS ============
+function esc(s){let d=document.createElement('div');d.textContent=s;return d.innerHTML}
+function renderAll(){renderHabits();renderGoals();renderForest();renderProfile()}
 
-// === SERVICE WORKER REGISTRATION ===
-if('serviceWorker' in navigator){navigator.serviceWorker.register('sw.js')}
+// ============ VISIBILITY ============
+document.addEventListener('visibilitychange',()=>{if(!document.hidden&&timerId){toast('⏰ 计时器仍在运行')}});
+
+// ============ INIT ============
+renderAll();
+if('serviceWorker' in navigator){navigator.serviceWorker.register('sw.js').catch(()=>{})}
 </script>
 </body>
 </html>
