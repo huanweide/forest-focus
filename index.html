@@ -303,24 +303,36 @@ body.dark .shop-item{background:#16213e}
 body.dark .chat-typing{background:#16213e}
 body.dark .chat-modal{background:#1a1a2e}
 
-/* === v3.4: Forest-style Growth Animations === */
-.tree-box .tree-img{transition:opacity .6s ease,transform .6s ease,filter .5s ease}
-.tree-box .seed-img{width:60px;height:auto;opacity:.6;animation:seedBounce 2s ease-in-out infinite}
-@keyframes seedBounce{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-8px) scale(1.1)}}
-/* Growing stage */
-.tree-box.growing .tree-img{animation:growPulse 3s ease-in-out infinite}
-@keyframes growPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.04)}}
-/* Full bloom */
-.tree-box.full .tree-img{animation:azBreathe 4s ease-in-out infinite;filter:drop-shadow(0 4px 12px rgba(124,92,191,.3))}
-/* Celebrate on completion */
-.tree-box.celebrate .tree-img{animation:celebrateBounce .5s ease-out 3}
-@keyframes celebrateBounce{0%,100%{transform:translateY(0) scale(1)}30%{transform:translateY(-20px) scale(1.1)}60%{transform:translateY(-8px) scale(1.05)}}
-/* Wilt on abandon */
-.tree-box.wilt .tree-img{filter:grayscale(1) brightness(.7);animation:wiltShake .4s ease-in-out 2}
+
+/* === v3.5: Azusa 2D Character System === */
+.azusa-character{position:relative;width:200px;height:280px;margin:0 auto;transition:filter .5s}
+.azusa-character .layer{position:absolute;left:0;top:0;width:100%;height:100%;object-fit:contain;pointer-events:none}
+.azusa-character .body-outfit{transition:opacity .8s ease,transform .8s ease,filter .5s ease}
+/* Face bubble */
+.face-bubble{position:absolute;top:-8px;right:-16px;width:44px;height:44px;background:#fff;border-radius:50%;background-size:auto 44px;background-repeat:no-repeat;border:2px solid #7C5CBF;box-shadow:0 2px 8px rgba(0,0,0,.15);z-index:10;transition:background-position .3s ease;display:flex;align-items:center;justify-content:center;font-size:22px}
+/* Speech bubble */
+.speech-bubble{position:absolute;top:-50px;left:50%;transform:translateX(-50%);background:#fff;border-radius:12px;padding:6px 14px;font-size:13px;color:#333;box-shadow:0 2px 12px rgba(0,0,0,.15);white-space:nowrap;z-index:20;animation:popIn .3s ease-out}
+@keyframes popIn{0%{transform:translateX(-50%) scale(0);opacity:0}100%{transform:translateX(-50%) scale(1);opacity:1}}
+/* Growth states */
+.azusa-character.seed .body-outfit{opacity:0;transform:scale(.25)}
+.azusa-character.growing .body-outfit{opacity:.65;transform:scale(.75);animation:growPulse 3s ease-in-out infinite}
+@keyframes growPulse{0%,100%{transform:scale(.75)}50%{transform:scale(.8)}}
+.azusa-character.full .body-outfit{opacity:1;transform:scale(1);animation:breathe 4s ease-in-out infinite}
+@keyframes breathe{0%,100%{transform:scale(1)}50%{transform:scale(1.03)}}
+/* Celebrate */
+.azusa-character.celebrate .body-outfit{animation:nod .4s ease-in-out 3}
+@keyframes nod{0%{transform:translateY(0)}50%{transform:translateY(-10px)}100%{transform:translateY(0)}}
+/* Wilt */
+.azusa-character.wilt .body-outfit{filter:grayscale(1) brightness(.7);opacity:.6;animation:wiltShake .4s ease-in-out 2}
 @keyframes wiltShake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
-/* Star particles on celebrate */
-.tree-box.celebrate::after{content:'✨';position:absolute;font-size:24px;animation:starBurst .8s ease-out forwards}
-@keyframes starBurst{0%{opacity:1;transform:scale(.5) translateY(0)}100%{opacity:0;transform:scale(2) translateY(-40px)}}
+/* Angry */
+.azusa-character.angry .body-outfit{filter:hue-rotate(-20deg) saturate(1.5);animation:angryShake .2s ease-in-out 3}
+@keyframes angryShake{0%,100%{transform:translateX(0)}50%{transform:translateX(-8px)}}
+/* Surprised */
+.azusa-character.surprised .body-outfit{animation:surprise .5s ease-out}
+@keyframes surprise{0%{transform:scale(1)}50%{transform:scale(1.12)}100%{transform:scale(1)}}
+/* Click feedback pulse */
+.azusa-character:active .body-outfit{transform:scale(.95);transition:transform .1s}
 </style>
 </head>
 <body>
@@ -394,7 +406,11 @@ body.dark .chat-modal{background:#1a1a2e}
 <!-- ===== FOCUS PAGE ===== -->
 <div class="page" id="pg0">
 <div style="max-width:360px;margin:0 auto">
-<div class="tree-box" id="tree">🌰</div>
+<div class="azusa-character seed" id="azusaChar">
+<img class="layer body-outfit" id="azusaBody" src="src/images/azusa/azusa_default_hd.jpg" alt="阿梓">
+<div class="face-bubble" id="azusaFace">😊</div>
+<div class="speech-bubble" id="speechBubble" style="display:none"></div>
+</div>
 <div class="ring-wrap"><canvas id="ring"></canvas><div class="ring-t"><div class="tm" id="time">25:00</div><div class="lb" id="status">选个目标，阿梓陪你一起种树吧 🌸</div></div></div>
 <div class="chips" id="chips"></div>
 <div class="task-sel">
@@ -623,12 +639,12 @@ if(timerId||isBreak)return;
 elapsed=0;isBreak=false;lockExits=0;
 document.getElementById('btnGo').style.display='none';document.getElementById('btnStop').style.display='block';
 document.getElementById('status').textContent=selectedTask?'阿梓陪你一起 · '+selectedTask.name:'阿梓陪你一起专注 🌸';
-document.getElementById('tree').textContent='🌰';
+var char=document.getElementById('azusaChar');if(char){char.classList.remove('full','celebrate','wilt','angry','surprised');char.classList.add('seed');setExpression('sleepy');}
 document.querySelectorAll('#chips .chip').forEach(c=>c.style.pointerEvents='none');
 document.getElementById('taskType').disabled=true;document.getElementById('taskPick').disabled=true;
 document.getElementById('lockLeft').textContent=Math.floor(totalSec/60);
 document.getElementById('lockCount').textContent='0';
-drawRing(0);updateTree(0);
+drawRing(0);updateAzusaGrowth(0);
 timerId=setInterval(tick,1000);
 }
 
@@ -637,7 +653,7 @@ elapsed++;
 let rem=Math.max(0,totalSec-elapsed);let m=Math.floor(rem/60),s=rem%60;
 document.getElementById('time').textContent=m+':'+(s<10?'0':'')+s;
 document.getElementById('lockLeft').textContent=m;
-let p=Math.min(elapsed/totalSec,1);drawRing(p);updateTree(p);
+let p=Math.min(elapsed/totalSec,1);drawRing(p);updateAzusaGrowth(p);
 if(elapsed>=totalSec){clearInterval(timerId);timerId=null;onDone();}
 }
 
@@ -645,10 +661,7 @@ function onDone(){
 document.getElementById('status').textContent='🎉 阿梓为你骄傲！';
 // Current tree emoji based on what was unlocked
 let curTree=AZUSA_TREES[currentOutfit]||AZUSA_TREES[currentTreeIdx];
-var treeEl=document.getElementById('tree');
-if(curTree.img){treeEl.innerHTML='<img src='+curTree.img+' class=tree-img>';treeEl.classList.add('full','celebrate');
-setTimeout(function(){treeEl.classList.remove('celebrate')},2000);}
-else treeEl.textContent=curTree.emoji||'\u{1f332}';
+azusaCelebrate();
 document.getElementById('btnStop').style.display='none';document.getElementById('btnGo').style.display='block';
 document.getElementById('btnGo').textContent='☕ 阿梓陪你休息';document.getElementById('btnGo').onclick=startBreak;
 document.querySelectorAll('#chips .chip').forEach(c=>c.style.pointerEvents='auto');
@@ -674,7 +687,7 @@ addCoins(win);
 var betResult=document.createElement('div');
 betResult.className='bet-result win';
 betResult.textContent='🎉 押注胜利！获得🪙'+win;
-document.getElementById('pg0').querySelector('.tree-box').after(betResult);
+document.getElementById('azusaChar').after(betResult);
 setTimeout(function(){betResult.remove()},3000);
 }
 currentBet=0;updateBetInfo();
@@ -686,13 +699,13 @@ try{navigator.vibrate?.([200,100,200])}catch(e){}
 function startBreak(){
 if(timerId)return;
 elapsed=0;totalSec=300;isBreak=true;
-document.getElementById('status').textContent='阿梓陪你歇一会 ☕';document.getElementById('tree').textContent='😴';
+document.getElementById('status').textContent='阿梓陪你歇一会 ☕';var char=document.getElementById('azusaChar');if(char){char.classList.remove('full','growing');char.classList.add('seed');setExpression('sleepy');}
 document.getElementById('btnGo').style.display='none';document.getElementById('btnGo').textContent='🌱 和阿梓一起种树';document.getElementById('btnGo').onclick=start;
-drawRing(0);updateTree(0);
+drawRing(0);updateAzusaGrowth(0);
 timerId=setInterval(()=>{
 elapsed++;let rem=Math.max(0,totalSec-elapsed);let m=Math.floor(rem/60),s=rem%60;
 document.getElementById('time').textContent=m+':'+(s<10?'0':'')+s;drawRing(elapsed/totalSec);
-if(elapsed>=totalSec){clearInterval(timerId);timerId=null;isBreak=false;document.getElementById('status').textContent='阿梓在等你开始呢~';document.getElementById('tree').textContent='🌰';document.getElementById('btnGo').style.display='block';document.getElementById('btnGo').textContent='🌱 和阿梓一起种树';document.getElementById('btnGo').onclick=start;drawRing(0);document.getElementById('time').textContent=totalSec/60+':00';toast('☕ 阿梓说休息好啦~继续加油！');try{navigator.vibrate?.([300])}catch(e){}}
+if(elapsed>=totalSec){clearInterval(timerId);timerId=null;isBreak=false;document.getElementById('status').textContent='阿梓在等你开始呢~';var char=document.getElementById('azusaChar');if(char){char.classList.remove('full','celebrate','wilt','angry','surprised');char.classList.add('seed');setExpression('sleepy');}document.getElementById('btnGo').style.display='block';document.getElementById('btnGo').textContent='🌱 和阿梓一起种树';document.getElementById('btnGo').onclick=start;drawRing(0);document.getElementById('time').textContent=totalSec/60+':00';toast('☕ 阿梓说休息好啦~继续加油！');try{navigator.vibrate?.([300])}catch(e){}}
 },1000);
 }
 
@@ -700,7 +713,7 @@ function abort(){
 if(!timerId)return;clearInterval(timerId);timerId=null;
 document.getElementById('btnGo').style.display='block';document.getElementById('btnStop').style.display='none';
 document.getElementById('status').textContent='没关系，下次一定可以的 🌸';
-var tEl=document.getElementById('tree');tEl.innerHTML='<span style=font-size:70px>'+AZUSA_TREES[currentTreeIdx].emoji+'</span>';tEl.classList.add('wilt');document.getElementById('btnGo').textContent='🌱 和阿梓重新开始';
+azusaWilt();document.getElementById('btnGo').textContent='🌱 和阿梓重新开始';
 document.getElementById('btnGo').onclick=start;
 document.querySelectorAll('#chips .chip').forEach(c=>c.style.pointerEvents='auto');
 document.getElementById('taskType').disabled=false;document.getElementById('taskPick').disabled=false;
@@ -708,7 +721,7 @@ sessions.push({date:new Date().toISOString().slice(0,10),minutes:Math.floor(elap
 save('s');
 if(selectedTask&&selectedTask.type==='habit'){let h=habits.find(x=>x.id===selectedTask.id);if(h){h.health=Math.max(5,(h.health||50)-3);save('h')}}
 selectedTask=null;updateTaskSelects();
-drawRing(0);updateTree(0,true);document.getElementById('time').textContent=totalSec/60+':00';
+drawRing(0);azusaWilt();document.getElementById('time').textContent=totalSec/60+':00';
 document.getElementById('lockOverlay').classList.remove('show');
 // Bet loss
 if(currentBet>0){
@@ -716,7 +729,7 @@ addCoins(-currentBet);
 var betResult=document.createElement('div');
 betResult.className='bet-result lose';
 betResult.textContent='💸 押注失败，损失🪙'+currentBet;
-document.getElementById('pg0').querySelector('.tree-box').after(betResult);
+document.getElementById('azusaChar').after(betResult);
 setTimeout(function(){betResult.remove()},3000);
 }
 currentBet=0;updateBetInfo();
@@ -727,31 +740,9 @@ function drawRing(p){let c=document.getElementById('ring'),dpr=window.devicePixe
 function resumeFocus(){document.getElementById('lockOverlay').classList.remove('show');document.body.classList.remove('locked')}
 function lockAbort(){document.getElementById('lockOverlay').classList.remove('show');document.body.classList.remove('locked');abort()}
 
-function wearOutfit(idx){currentOutfit=idx;localStorage.setItem('foutfit',idx);if(currentTab===2)rGallery();if(currentTab===1)updateTree(0);if(currentTab===0)rHome();toast('\uD83D\uDC57 '+AZUSA_TREES[idx].name+' \u6362\u4E0A\u5566!')}
-function updateTree(p,dead){
-var e=document.getElementById('tree');
-e.classList.remove('growing','full','celebrate','wilt');
-var stage,img;
-if(dead){e.innerHTML='<span style=font-size:80px>'+AZUSA_TREES[currentTreeIdx].emoji+'</span>';e.classList.add('wilt');return}
-var stage,img;
-if(p<0.15){
-e.innerHTML='<img src=src/images/azusa/azusa_box.png class=seed-img alt=seed>'
-}else if(p<0.4){
-stage=Math.min(currentTreeIdx+1,AZUSA_TREES.length-1);
-img=AZUSA_TREES[stage].img;
-if(img){e.innerHTML='<img src='+img+' class=tree-img style=opacity:.5;transform:scale(.7)>';e.classList.add('growing')}
-else e.innerHTML='<span style=font-size:60px>'+AZUSA_TREES[stage].emoji+'</span>'
-}else if(p<0.7){
-stage=Math.min(currentTreeIdx+2,AZUSA_TREES.length-1);
-img=AZUSA_TREES[stage].img;
-if(img){e.innerHTML='<img src='+img+' class=tree-img style=opacity:.8;transform:scale(.85)>';e.classList.add('growing')}
-else e.innerHTML='<span style=font-size:70px>'+AZUSA_TREES[stage].emoji+'</span>'
-}else{
-var outfit=AZUSA_TREES[currentOutfit]||AZUSA_TREES[currentTreeIdx];
-img=outfit.img;
-if(img){e.innerHTML='<img src='+img+' class=tree-img style=opacity:1;transform:scale(1)>';e.classList.add('full')}
-else e.innerHTML='<span style=font-size:80px>'+outfit.emoji+'</span>'
-}}
+function wearOutfit(idx){currentOutfit=idx;localStorage.setItem('foutfit',idx);if(currentTab===2)rGallery();if(currentTab===1)updateAzusaGrowth(0);if(currentTab===0)rHome();toast('\uD83D\uDC57 '+AZUSA_TREES[idx].name+' \u6362\u4E0A\u5566!')}
+// updateTree removed - replaced by updateAzusaGrowth
+
 function rGallery(){
 let el=document.getElementById('treeGallery');
 let uc=currentTreeIdx+1;
@@ -949,6 +940,7 @@ updateMoodUI();
 function updateMoodUI(){
 var face=currentMood>=80?'😄':currentMood>=60?'😊':currentMood>=40?'😐':currentMood>=20?'😔':'😢';
 document.getElementById('moodIcon').textContent=face;
+setExpression(autoExpression(currentMood));
 document.body.classList.remove('mood-high','mood-mid','mood-low');
 if(currentMood>=70)document.body.classList.add('mood-high');
 else if(currentMood>=30)document.body.classList.add('mood-mid');
@@ -1361,11 +1353,111 @@ else if(type==='mood'&&azusaCoins>=15){addCoins(-15);updateMood(20);toast('💝 
 else{toast('🪙 币不够哦~ 继续专注赚币吧！');}
 }
 
+
+// ==================== v3.5: AZUSA 2D CHARACTER SYSTEM ====================
+var currentOutfitFile=localStorage.getItem('foutfitfile')||'azusa_default_hd';
+
+function changeOutfit(filename){
+currentOutfitFile=filename;
+localStorage.setItem('foutfitfile',filename);
+var body=document.getElementById('azusaBody');
+if(body)body.src='src/images/azusa/'+filename;
+// Update home page too
+var homeAzusa=document.getElementById('homeAzusa');
+if(homeAzusa&&currentTab===0)rHome();
+}
+
+// Expression via emoji (Q-version face bubble)
+var currentExpression='smile';
+function setExpression(type){
+currentExpression=type;
+var face=document.getElementById('azusaFace');
+if(!face)return;
+var map={happy:'😄',smile:'😊',sleepy:'😴',angry:'😡',surprised:'😲',shy:'😳',expect:'🤩',cry:'😢',star:'🤩',normal:'🙂',love:'😍',proud:'😎'};
+face.textContent=map[type]||'😊';
+}
+
+function autoExpression(mood){
+if(mood>=80)return'star';
+if(mood>=60)return'happy';
+if(mood>=40)return'smile';
+if(mood>=20)return'sleepy';
+return'cry';
+}
+
+// Growth driven by focus progress
+function updateAzusaGrowth(progress){
+var char=document.getElementById('azusaChar');
+if(!char)return;
+char.classList.remove('seed','growing','full');
+if(progress<0.12){char.classList.add('seed');setExpression('sleepy')}
+else if(progress<0.7){char.classList.add('growing');setExpression('expect')}
+else{char.classList.add('full');setExpression('smile')}
+}
+
+// Completion celebration
+function azusaCelebrate(){
+var char=document.getElementById('azusaChar');
+if(!char)return;
+char.classList.remove('seed','growing');
+char.classList.add('full','celebrate');
+setExpression('happy');
+showAzusaSpeech('完成了！阿梓好开心 ✨',2000);
+setTimeout(function(){char.classList.remove('celebrate')},2000);
+}
+
+// Abandon wilt
+function azusaWilt(){
+var char=document.getElementById('azusaChar');
+if(!char)return;
+char.classList.add('wilt');
+setExpression('cry');
+showAzusaSpeech('怎么可以放弃... 😢',2500);
+setTimeout(function(){char.classList.remove('wilt');char.classList.add('full')},2500);
+}
+
+// Speech bubble
+var speechTimer=null;
+function showAzusaSpeech(text,duration){
+var bubble=document.getElementById('speechBubble');
+if(!bubble)return;
+bubble.textContent=text;bubble.style.display='block';
+clearTimeout(speechTimer);
+speechTimer=setTimeout(function(){bubble.style.display='none'},duration||3000);
+}
+
+// Click interaction
+var _azusaClickInit=false;
+function initAzusaClick(){
+if(_azusaClickInit)return;_azusaClickInit=true;
+var char=document.getElementById('azusaChar');
+if(!char)return;
+char.style.cursor='pointer';
+char.addEventListener('click',function(){
+var actions=['celebrate','surprised',null];
+var rand=actions[Math.floor(Math.random()*actions.length)];
+if(rand){char.classList.add(rand);setTimeout(function(){char.classList.remove(rand)},1500)}
+var msgs=['别戳我啦~','在呢！要专注哦','嗯？想我了？','阿梓陪着你呢 ✨','加油加油！'];
+showAzusaSpeech(msgs[Math.floor(Math.random()*msgs.length)],2000);
+setExpression(rand==='surprised'?'surprised':rand==='celebrate'?'happy':'smile');
+});
+}
+
+// Init outfit on load
+(function(){
+var saved=localStorage.getItem('foutfitfile');
+if(saved&&saved!==currentOutfitFile){
+currentOutfitFile=saved;
+}
+var body=document.getElementById('azusaBody');
+if(body&&currentOutfitFile)body.src='src/images/azusa/'+currentOutfitFile;
+})();
+
 // ==================== INIT ====================
 function initAll(){rHabits();rGoals();requestNotify();checkStreakRecovery();updateMoodUI();setInterval(periodicBubble,300000);setInterval(checkReminder,600000);setTimeout(randomBubble,10000);
 checkStreakDanger();
 var timerDefault=localStorage.getItem('ftimerDefault')==='1';
-updateCoinDisplay();if(timerDefault){goTab(1);}else{goTab(0);rHome();}
+updateCoinDisplay();initAzusaClick();if(timerDefault){goTab(1);}else{goTab(0);rHome();}
 }
 initAll();
 if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});
