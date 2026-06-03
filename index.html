@@ -9,10 +9,10 @@
 <link rel="manifest" href="manifest.json">
 <title>阿梓的森林</title>
 <style>
-:root{--g:#5C6BC0;--gl:#7986CB;--bg:#f0f2fa;--c:#fff;--t:#1a1a1a;--gr:#888;--r:#e53935;--o:#ff9800;--b:#7E57C2;--rad:14px;--sh:0 2px 8px rgba(0,0,0,.06)}
+:root{--g:#7E57C2;--gl:#9575CD;--bg:#f0f2fa;--c:#fff;--t:#1a1a1a;--gr:#888;--r:#e53935;--o:#ff9800;--b:#7E57C2;--rad:14px;--sh:0 2px 8px rgba(0,0,0,.06)}
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:-apple-system,'PingFang SC','Noto Sans SC',sans-serif;background:var(--bg);color:var(--t);-webkit-tap-highlight-color:transparent;user-select:none;-webkit-user-select:none;padding-bottom:72px;overscroll-behavior:none;font-size:15px;position:relative}
-body::before{content:'';position:fixed;top:0;left:0;right:0;bottom:0;background:url(src/images/azusa/azusa_transparent.png) center/contain no-repeat;opacity:.04;pointer-events:none;z-index:0}
+body::before{content:'';position:fixed;top:0;left:0;right:0;bottom:0;background:url(src/images/azusa/azusa_transparent.png) center/contain no-repeat;opacity:.05;pointer-events:none;z-index:0}
 .appbar,.tabbar,.page{position:relative;z-index:1}
 body.dark{--bg:#1a1a2e;--c:#16213e;--t:#e0e0e0;--gr:#999;--sh:0 2px 8px rgba(0,0,0,.3)}
 body.locked{overflow:hidden;position:fixed;width:100%;height:100%}
@@ -33,6 +33,9 @@ body.locked{overflow:hidden;position:fixed;width:100%;height:100%}
 .btn-o{background:var(--o);color:#fff}
 
 .tree-box{text-align:center;height:120px;display:flex;align-items:center;justify-content:center;transition:.4s;overflow:hidden}
+.seed-img{width:70px;height:70px;object-fit:contain;animation:pulse 2s ease-in-out infinite;border-radius:50%}
+.tab-icon{width:24px;height:24px;object-fit:contain;display:block;margin:0 auto 2px;border-radius:4px}
+.tree-img{max-height:120px;max-width:90%;object-fit:contain;transition:all .6s ease;border-radius:12px;filter:drop-shadow(0 4px 8px rgba(92,107,192,.2))}
 .ring-wrap{width:180px;height:180px;margin:0 auto;position:relative}
 .ring-wrap canvas{width:100%;height:100%}
 .ring-t{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center}
@@ -361,7 +364,7 @@ let e=document.getElementById('tree');
 if(dead){e.innerHTML='<span style=font-size:80px>??</span>';return}
 let stage,img;
 if(p<0.15){
-e.innerHTML='<span style=font-size:70px class=pulse>??</span>'
+e.innerHTML='<img src=src/images/azusa/azusa_box.png class=seed-img alt=??>'
 }else if(p<0.4){
 stage=Math.min(currentTreeIdx+1,AZUSA_TREES.length-1);
 img=AZUSA_TREES[stage].img;
