@@ -97,6 +97,33 @@ body.locked{overflow:hidden;position:fixed;width:100%;height:100%}
 .tier-legend{background:#f3e5f5;color:#6a1b9a}
 .ach-header{display:flex;justify-content:space-between;align-items:center;margin:12px 0 6px}
 .ach-count{font-size:13px;color:var(--g);font-weight:600}
+/* Stats Dashboard */
+.stats-bar{display:flex;gap:6px;margin:8px 0;flex-wrap:wrap}
+.stats-chip{padding:6px 12px;border-radius:16px;border:1.5px solid #ddd;font-size:12px;font-weight:500;cursor:pointer;background:var(--c);transition:.15s}
+.stats-chip.sel{border-color:var(--g);background:var(--g);color:#fff}
+.stats-summary{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin:10px 0}
+.stats-box{background:var(--c);border-radius:var(--rad);padding:12px;text-align:center;box-shadow:var(--sh)}
+.stats-box .val{font-size:28px;font-weight:700;color:var(--g);font-family:monospace}
+.stats-box .lbl{font-size:11px;color:var(--gr);margin-top:2px}
+.pie-wrap{display:flex;align-items:center;gap:12px;padding:8px 0;justify-content:center;flex-wrap:wrap}
+.pie-chart{width:100px;height:100px;border-radius:50%;background:conic-gradient(var(--g) 0deg,var(--g) var(--p1),#FF7043 var(--p1),#FF7043 var(--p2),#66BB6A var(--p2),#66BB6A var(--p3),#e0e0e0 var(--p3));flex-shrink:0}
+.pie-legend{font-size:11px;display:flex;flex-direction:column;gap:4px}
+.pie-legend span{display:flex;align-items:center;gap:6px}
+.pie-dot{width:10px;height:10px;border-radius:50%;display:inline-block;flex-shrink:0}
+/* Streak fire */
+.streak-box{background:linear-gradient(135deg,#fff3e0,#fce4ec);border-radius:var(--rad);padding:14px;text-align:center;margin:8px 0;box-shadow:var(--sh)}
+.streak-fire{font-size:40px;display:block;animation:pulse .8s ease-in-out infinite}
+.streak-num{font-size:32px;font-weight:700;color:#e65100;font-family:monospace}
+.streak-lbl{font-size:12px;color:var(--gr);margin-top:2px}
+/* Achievement progress bars */
+.ach-prog{height:4px;border-radius:2px;background:#e8e8e8;margin-top:4px}
+.ach-prog div{height:100%;border-radius:2px;transition:.4s}
+/* Phase icon */
+.phase-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;margin:10px 0}
+.phase-item{text-align:center;padding:8px 4px;border-radius:10px;background:var(--c);box-shadow:var(--sh);font-size:11px}
+.phase-item .ph-icon{font-size:24px;display:block;margin-bottom:2px}
+.phase-item .ph-val{font-weight:700;color:var(--g);font-size:14px}
+
 
 /* Lock overlay */
 .lock-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:50;flex-direction:column;align-items:center;justify-content:center;text-align:center;color:#fff;padding:20px}
@@ -186,17 +213,42 @@ body.locked{overflow:hidden;position:fixed;width:100%;height:100%}
 
 <!-- ===== PROFILE PAGE ===== -->
 <div class="page" id="pg4">
-<div class="card"><h3 style="font-size:15px;margin-bottom:8px">📊 本周专注（分钟）</h3><div class="chart" id="barChart"></div></div>
-<div class="card"><h3 style="font-size:15px;margin-bottom:8px">🏆 成就</h3><div class="achs" id="achs"></div></div>
-<div class="card"><h3 style="font-size:15px">🌟 积分：<b id="scoreVal">0</b></h3><p style="font-size:11px;color:var(--gr)">总专注：<b id="totalMin">0</b> 分钟 · 完成 <b id="totalSessions">0</b> 次</p></div>
-<div style="display:flex;gap:8px"><button class="btn-sm" onclick="exportData()">📤 导出数据</button><button class="btn-sm" onclick="toggleDark()">🌓 深色模式</button></div>
-<button class="btn-sm" onclick="resetAll()" style="margin-top:4px">🔄 重置</button>
+<h3 class="sec-title">?? ???? <span class="tip">| ??????</span></h3>
+
+<!-- Period selector -->
+<div class="stats-bar" id="periodBar">
+<span class="stats-chip sel" onclick="setPeriod(0)">?? ??</span>
+<span class="stats-chip" onclick="setPeriod(1)">?? ??</span>
+<span class="stats-chip" onclick="setPeriod(2)">?? ??</span>
+<span class="stats-chip" onclick="setPeriod(3)">?? ??</span>
 </div>
 
-<!-- ===== TAB BAR ===== -->
-<div class="tabbar">
-<div class="tab on" onclick="goTab(0)"><span class="ic">🌸</span>种树</div>
-<div class="tab" onclick="goTab(1)"><span class="ic">👗</span>衣柜</div>
+<!-- Summary cards -->
+<div class="stats-summary" id="statsSummary"></div>
+
+<!-- Pie chart + streak -->
+<div style="display:flex;gap:8px;flex-wrap:wrap;margin:8px 0">
+<div class="card" style="flex:1;min-width:140px">
+<div class="pie-wrap">
+<div class="pie-chart" id="pieChart"></div>
+<div class="pie-legend" id="pieLegend"></div>
+</div>
+</div>
+<div class="streak-box" style="flex:1;min-width:120px">
+<span class="streak-fire">??</span>
+<div class="streak-num" id="streakNum">0</div>
+<div class="streak-lbl">?????</div>
+<div style="font-size:11px;color:var(--gr);margin-top:2px" id="streakBest"></div>
+</div>
+</div>
+
+<!-- Phase indicators -->
+<div class="phase-grid" id="phaseGrid"></div>
+
+<!-- Achievement progress -->
+<div id="achs"></div>
+</div></div>
+="tab" onclick="goTab(1)"><span class="ic">👗</span>衣柜</div>
 <div class="tab" onclick="goTab(2)"><span class="ic">✅</span>习惯</div>
 <div class="tab" onclick="goTab(3)"><span class="ic">🎯</span>目标</div>
 <div class="tab" onclick="goTab(4)"><span class="ic">👤</span>我的</div>
@@ -462,21 +514,74 @@ return[
 
 // ==================== PROFILE ====================
 function rProfile(){
-document.getElementById('scoreVal').textContent=score;
-let totalMin=sessions.filter(s=>s.completed).reduce((a,s)=>a+s.minutes,0);
-document.getElementById('totalMin').textContent=totalMin;
-document.getElementById('totalSessions').textContent=sessions.filter(s=>s.completed).length;
+let period=getPeriod();
+let now=new Date();let today=now.toISOString().slice(0,10);
+let filtered=sessions.filter(s=>s.completed&&s.date>=period.start&&s.date<=today);
+let totalMin=filtered.reduce((a,s)=>a+s.minutes,0);
+let totalSessions=filtered.length;
+let habitMins=filtered.filter(s=>s.taskType==='habit').reduce((a,s)=>a+s.minutes,0);
+let goalMins=filtered.filter(s=>s.taskType==='goal').reduce((a,s)=>a+s.minutes,0);
+let freeMins=filtered.filter(s=>s.taskType==='free').reduce((a,s)=>a+s.minutes,0);
 
-let bc=document.getElementById('barChart'),days=['一','二','三','四','五','六','日'];
-let wd=days.map((_,i)=>{let d=new Date();d.setDate(d.getDate()-(6-i));let ds=d.toISOString().slice(0,10);return sessions.filter(s=>s.date===ds&&s.completed).reduce((a,s)=>a+s.minutes,0)});
-let mx=Math.max(...wd,10);
-bc.innerHTML=wd.map((v,i)=>`<div class="col"><div class="bar" style="height:${Math.max(4,(v/mx)*110)}px;background:${i===6?'#81C784':'#5C6BC0'}"></div><div class="lbl">${days[i]}</div></div>`).join('');
+// Summary
+document.getElementById('statsSummary').innerHTML=`
+<div class=stats-box><div class=val>${fmtMins(totalMin)}</div><div class=lbl>? ???</div></div>
+<div class=stats-box><div class=val>${totalSessions}</div><div class=lbl>?? ????</div></div>
+<div class=stats-box><div class=val>${filtered.filter(s=>s.date===today).reduce((a,s)=>a+s.minutes,0)}??</div><div class=lbl>?? ??</div></div>
+<div class=stats-box><div class=val>${totalMin>0?Math.round(totalMin/totalSessions):0}?</div><div class=lbl>?? ????</div></div>`;
 
+// Pie chart
+let total=totalMin||1;
+let p1=(habitMins/total)*360,p2=((habitMins+goalMins)/total)*360,p3=((habitMins+goalMins+freeMins)/total)*360;
+document.getElementById('pieChart').style.setProperty('--p1',p1+'deg');
+document.getElementById('pieChart').style.setProperty('--p2',p2+'deg');
+document.getElementById('pieChart').style.setProperty('--p3',p3+'deg');
+document.getElementById('pieLegend').innerHTML=`
+<span><span class=pie-dot style=background:#7E57C2></span>?? ${Math.round(habitMins/total*100)}%</span>
+<span><span class=pie-dot style=background:#FF7043></span>?? ${Math.round(goalMins/total*100)}%</span>
+<span><span class=pie-dot style=background:#66BB6A></span>?? ${Math.round(freeMins/total*100)}%</span>`;
+
+// Streak
+let dates=[...new Set(sessions.filter(s=>s.completed).map(s=>s.date))].sort();
+let streak=0,bestStreak=0,cur=0;
+for(let i=dates.length-1;i>=0;i--){
+let d=new Date(dates[i]);let prev=i<dates.length-1?new Date(dates[i+1]):null;
+if(!prev||(prev-d)/86400000===1)cur++;else{if(cur>bestStreak)bestStreak=cur;cur=1}
+}
+if(cur>bestStreak)bestStreak=cur;streak=cur;
+document.getElementById('streakNum').textContent=streak;
+document.getElementById('streakBest').textContent='????: '+bestStreak+' ?';
+
+// Phase grid
+let todayMins=sessions.filter(s=>s.completed&&s.date===today).reduce((a,s)=>a+s.minutes,0);
+let weekMins=filtered.reduce((a,s)=>a+s.minutes,0);
+document.getElementById('phaseGrid').innerHTML=`
+<div class=phase-item><span class=ph-icon>??</span><span class=ph-val>${fmtMins(todayMins)}</span>??</div>
+<div class=phase-item><span class=ph-icon>??</span><span class=ph-val>${fmtMins(weekMins)}</span>??</div>
+<div class=phase-item><span class=ph-icon>??</span><span class=ph-val>${sessions.filter(s=>s.completed).length}</span>???</div>
+<div class=phase-item><span class=ph-icon>??</span><span class=ph-val>${currentTreeIdx+1}/${AZUSA_TREES.length}</span>??</div>`;
+
+// Achievements
 let ach=calcAchievements();
-document.getElementById('achs').innerHTML='<div class=ach-header><strong>?? ??</strong><span class=ach-count>'+ach.filter(a=>a.u).length+'/'+ach.length+'</span></div><div class=ach-grid>'+ach.map(a=>{let tierClass=a.tier==='legend'?'tier-legend':'';let tierLabel={bronze:'?',silver:'?',gold:'?',legend:'??'}[a.tier]||'';return`<div class="ach-card ${a.u?'unlocked '+tierClass:'locked'}"><span class=ach-icon>${a.u?a.icon:'?'}</span><div class=ach-name>${a.name}</div>${a.u?`<span class='ach-tier tier-${a.tier}'>${tierLabel}</span>`:''}</div>`}).join('')+'</div>';
+let achUnlocked=ach.filter(a=>a.u).length;
+document.getElementById('achs').innerHTML='<div class=ach-header><strong>?? ?? ('+achUnlocked+'/'+ach.length+')</strong><span class=ach-count style=font-size:11px>'+(achUnlocked===ach.length?'?? ??????':'??'+(ach.length-achUnlocked)+'?')+'</span></div><div class=ach-grid>'+ach.map(a=>{
+let tierClass=a.tier==='legend'?'tier-legend':'';
+let tierLabel={bronze:'?',silver:'?',gold:'?',legend:'??'}[a.tier]||'';
+let progressPct=a.u?100:a.name.includes('??')?Math.min(100,Math.round(totalCompletions/5*100)):a.name.includes('??')?Math.min(100,Math.round(totalCompletions/12*100)):a.name.includes('??')?Math.min(100,Math.round(totalCompletions/20*100)):a.name.includes('??')?Math.min(100,Math.round(totalCompletions/30*100)):a.name.includes('??')?Math.min(100,Math.round(totalCompletions/40*100)):a.name.includes('??')?Math.min(100,Math.round(totalCompletions/55*100)):a.name.includes('??')?Math.min(100,Math.round(totalCompletions/70*100)):a.name.includes('??')?Math.min(100,Math.round(totalCompletions/90*100)):a.name.includes('??')?Math.min(100,Math.round(totalCompletions/110*100)):a.name.includes('??')?Math.min(100,Math.round(totalCompletions/130*100)):a.name.includes('??')?Math.min(100,Math.round(totalCompletions/155*100)):a.name.includes('??')?Math.min(100,Math.round(totalCompletions/180*100)):a.name.includes('???')?Math.min(100,Math.round(todayMins/240*100)):a.name.includes('??7')?Math.min(100,Math.round(streak/7*100)):a.name.includes('????')?(habitsDone?100:0):a.name.includes('???')?Math.min(100,Math.round(score/100*100)):0;
+let pColor=a.tier==='bronze'?'#e65100':a.tier==='silver'?'#616161':a.tier==='gold'?'#f57f17':'#6a1b9a';
+return`<div class="ach-card ${a.u?'unlocked '+tierClass:'locked'}"><span class=ach-icon>${a.u?a.icon:'?'}</span><div class=ach-name>${a.name}</div>${a.u?`<span class='ach-tier tier-${a.tier}'>${tierLabel}</span>`:`<div class=ach-prog><div style=width:${progressPct}%;background:${pColor}></div></div>`}</div>`}).join('')+'</div>';
 }
 
-function updateScore(n){score+=n;save('c');if(currentTab===4)rProfile()}
+// Period helpers
+let currentPeriod=0;
+function setPeriod(i){currentPeriod=i;document.querySelectorAll('.stats-chip').forEach((c,j)=>c.classList.toggle('sel',j===i));rProfile()}
+function getPeriod(){
+let now=new Date();let today=now.toISOString().slice(0,10);
+if(currentPeriod===0){let d=new Date(now);d.setDate(d.getDate()-d.getDay()+1);return{start:d.toISOString().slice(0,10),label:'??'}}
+if(currentPeriod===1){return{start:now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0')+'-01',label:'??'}}
+if(currentPeriod===2){return{start:now.getFullYear()+'-01-01',label:'??'}}
+return{start:'2020-01-01',label:'??'};
+}function updateScore(n){score+=n;save('c');if(currentTab===4)rProfile()}
 function toggleDark(){dark=!dark;document.body.classList.toggle('dark',dark);save('d')}
 function exportData(){let data={habits,goals,sessions,score,exported:new Date().toISOString()};let b=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});let a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='azusa-forest-'+new Date().toISOString().slice(0,10)+'.json';a.click();toast('📤 已导出')}
 function resetAll(){if(!confirm('确定删除？建议先导出备份。'))return;habits=[];goals=[];sessions=[];score=0;totalCompletions=0;currentTreeIdx=0;['fh','fg','fs','fsc'].forEach(k=>localStorage.removeItem(k));save('c');if(currentTab===1)rGallery();if(currentTab===2)rHabits();if(currentTab===3)rGoals();if(currentTab===4)rProfile();updateTaskSelects();toast('🔄 已重置')}
