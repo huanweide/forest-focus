@@ -1,6 +1,4 @@
-﻿plugins {
-    id "com.android.application"
-}
+﻿apply plugin: "com.android.application"
 
 android {
     namespace "com.huanweide.azusaforest"
@@ -12,32 +10,19 @@ android {
         targetSdk 34
         versionCode 1
         versionName "3.5.3"
-        // 多语言支持
         resConfigs "zh"
     }
 
     buildTypes {
         release {
-            minifyEnabled true
-            shrinkResources true
-            proguardFiles getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
-        }
-        debug {
-            applicationIdSuffix ".debug"
-            versionNameSuffix "-debug"
+            minifyEnabled false
+            shrinkResources false
         }
     }
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_17
         targetCompatibility JavaVersion.VERSION_17
-    }
-
-    // APK输出命名
-    applicationVariants.all { variant ->
-        variant.outputs.all {
-            outputFileName = "azusa-forest-${variant.versionName}.apk"
-        }
     }
 }
 
