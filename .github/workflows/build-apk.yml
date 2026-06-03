@@ -10,72 +10,55 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
+    container:
+      image: mingc/android-build-box:latest
 
     steps:
       - uses: actions/checkout@v4
 
-      - name: 安装Java
-        uses: actions/setup-java@v4
-        with:
-          java-version: "17"
-          distribution: "temurin"
-
-      - name: 安装Android SDK
+      - name: 定位Android SDK
+        working-directory: android
         run: |
-          set -e
-          echo "=== 下载Android命令行工具 ==="
-          wget -q https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip
-          unzip -q commandlinetools-linux-11076708_latest.zip
-          mkdir -p ~/android-sdk/cmdline-tools/latest
-          mv cmdline-tools/* ~/android-sdk/cmdline-tools/latest/ 2>/dev/null || true
-          echo "ANDROID_HOME=$HOME/android-sdk" >> $GITHUB_ENV
-          echo "ANDROID_SDK_ROOT=$HOME/android-sdk" >> $GITHUB_ENV
-          echo "=== 接受许可 ==="
-          yes | ~/android-sdk/cmdline-tools/latest/bin/sdkmanager --licenses
-          echo "=== 安装SDK组件 ==="
-          ~/android-sdk/cmdline-tools/latest/bin/sdkmanager "platforms;android-34" "build-tools;34.0.0" "platform-tools"
-          echo "=== SDK安装完成 ==="
-
-      - name: 安装Gradle
-        run: |
-          wget -q https://services.gradle.org/distributions/gradle-8.5-bin.zip
-          unzip -q gradle-8.5-bin.zip
-          echo "$PWD/gradle-8.5/bin" >> $GITHUB_PATH
-          gradle-8.5/bin/gradle --version
+          for d in "$ANDROID_HOME" /opt/android-sdk /usr/local/android-sdk /opt/android /home/android/android-sdk; do
+            if [ -d "$d/platforms" ]; then
+              echo "找到SDK: $d"
+              echo "sdk.dir=$d" > local.properties
+              exit 0
+            fi
+          done
+          echo "ERROR: 找不到Android SDK!"
+          find / -name "platforms" -type d 2>/dev/null | head -5
+          exit 1
 
       - name: 查看环境
         run: |
-          echo "JAVA_HOME=$JAVA_HOME"
           echo "ANDROID_HOME=$ANDROID_HOME"
-          java -version
-          ls $ANDROID_HOME/platforms/
-          ls $ANDROID_HOME/build-tools/
+          echo "JAVA_HOME=$JAVA_HOME"
+          java -version 2>&1
+          cat android/local.properties
+          which gradle && gradle --version || echo "gradle not in PATH"
 
-      - name: 生成Wrapper并编译
+      - name: 生成Gradle Wrapper
+        working-directory: android
+        run: gradle wrapper --gradle-version 8.5
+
+      - name: 编译APK
+        working-directory: android
+        run: ./gradlew assembleRelease --stacktrace
+
+      - name: 签名
         working-directory: android
         run: |
-          gradle wrapper --gradle-version 8.5
-          ./gradlew assembleRelease --stacktrace --info 2>&1 | tail -100
-
-      - name: 签名APK
-        working-directory: android
-        run: |
-          echo "=== 查找APK ==="
-          find . -name "*.apk" -type f
           APK=$(find app/build -name "*.apk" -type f | head -1)
-          if [ -z "$APK" ]; then echo "没找到APK!"; exit 1; fi
-          echo "APK: $APK"
-          echo "=== 生成签名 ==="
-          keytool -genkey -v -keystore debug.keystore -alias debug \
+          echo "APK=$APK"
+          keytool -genkey -keystore debug.keystore -alias debug \
             -keyalg RSA -keysize 2048 -validity 10000 \
             -storepass android -keypass android \
             -dname "CN=Debug" 2>/dev/null || true
-          echo "=== 签名 ==="
-          jarsigner -verbose -sigalg SHA256withRSA -digestalg SHA-256 \
-            -keystore debug.keystore -storepass android -keypass android \
-            "$APK" debug
-          echo "=== 打包 ==="
+          jarsigner -keystore debug.keystore \
+            -storepass android -keypass android \
+            "$APK" debug 2>/dev/null
           mkdir -p output
           cp "$APK" output/azusa-forest.apk
           ls -la output/
