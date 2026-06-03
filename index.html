@@ -125,6 +125,23 @@ body.locked{overflow:hidden;position:fixed;width:100%;height:100%}
 .phase-item .ph-val{font-weight:700;color:var(--g);font-size:14px}
 
 
+/* Wardrobe */
+.wardrobe-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin:8px 0}
+.wcard{background:var(--c);border-radius:14px;padding:10px 8px;text-align:center;box-shadow:var(--sh);transition:all .25s;cursor:pointer;position:relative;overflow:hidden;border:2px solid transparent;animation:fIn .3s ease}
+.wcard:active{transform:scale(.95)}
+.wcard.wearing{border-color:var(--g);background:linear-gradient(135deg,#f5f0fa,#ede4f5);box-shadow:0 0 16px rgba(124,92,191,.2);animation:wGlow 2s ease-in-out infinite}
+@keyframes wGlow{0%,100%{box-shadow:0 0 8px rgba(124,92,191,.15)}50%{box-shadow:0 0 20px rgba(124,92,191,.3)}}
+.wcard.locked{opacity:.45;filter:grayscale(.8);cursor:default}
+.wcard.locked:active{transform:none}
+.wimg{max-height:100px;max-width:100%;object-fit:contain;border-radius:8px;transition:transform .3s}
+.wcard:not(.locked):hover .wimg{transform:scale(1.08)}
+.wemoji{font-size:60px;display:block}
+.wname{font-weight:700;font-size:12px;margin:6px 0 2px;color:var(--t)}
+.wsub{font-size:10px;color:var(--gr)}
+.wbadge{position:absolute;top:6px;right:6px;background:var(--gd);color:#fff;font-size:10px;padding:2px 8px;border-radius:10px;font-weight:600;z-index:2;animation:wBadgePulse 1.5s ease-in-out infinite}
+@keyframes wBadgePulse{0%,100%{opacity:1}50%{opacity:.7}}
+.wbtn{display:block;width:100%;margin-top:6px;padding:6px;border:none;border-radius:8px;background:var(--gd);color:#fff;font-size:12px;font-weight:600;cursor:pointer;transition:all .2s}
+.wbtn:active{transform:scale(.94);filter:brightness(.9)}
 /* Lock overlay */
 .lock-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:50;flex-direction:column;align-items:center;justify-content:center;text-align:center;color:#fff;padding:20px}
 .lock-overlay.show{display:flex}
@@ -189,12 +206,9 @@ body.locked{overflow:hidden;position:fixed;width:100%;height:100%}
 
 <!-- ===== TREE GALLERY PAGE ===== -->
 <div class="page" id="pg1">
-<h3 class="sec-title">🌸 阿梓树 · 升级路线 <span class="tip">| 每次专注都在收集阿梓的新衣服</span></h3>
+<h3 class="sec-title">👗 换装衣柜 <span class="tip">| 点击卡片穿上·已解锁的衣服随时换</span></h3>
 <div class="tree-gallery" id="treeGallery"></div>
-<div style="margin-top:16px">
-<h3 class="sec-title">📊 我的进度</h3>
-<div class="st-row" id="galleryStats"></div>
-</div>
+
 </div>
 
 <!-- ===== HABITS PAGE ===== -->
@@ -290,6 +304,7 @@ let score=parseInt(localStorage.getItem('fsc')||'0');
 let dark=localStorage.getItem('fdark')==='1';
 let selectedTask=null;
 totalCompletions=sessions.filter(s=>s.completed).length;
+let currentOutfit=parseInt(localStorage.getItem('foutfit')||'-1');if(currentOutfit<0||currentOutfit>currentTreeIdx)currentOutfit=currentTreeIdx;
 updateCurrentTree();
 if(dark){document.body.classList.add('dark');document.getElementById('darkIcon').textContent='☀️'}
 
@@ -307,7 +322,7 @@ function fmtMins(m){if(m<60)return m+'分钟';let h=Math.floor(m/60);let r=m%60;
 
 // ==================== TABS ====================
 let currentTab=0;
-function goTab(i){currentTab=i;document.querySelectorAll('.page').forEach(p=>p.classList.remove('on'));document.querySelectorAll('.tab').forEach((t,j)=>t.classList.toggle('on',j===i-1));document.getElementById(['pg0','pg1','pg2','pg3','pg4'][i]).classList.add('on');document.getElementById('bar').textContent=['🌸 阿梓的森林','👗 阿梓衣柜','✅ 习惯追踪','🎯 目标计划','👤 我的数据'][i];if(i===1)rGallery();if(i===2)rHabits();if(i===3)rGoals();if(i===4)rProfile()}
+function goTab(i){currentTab=i;document.querySelectorAll('.page').forEach(p=>p.classList.remove('on'));document.querySelectorAll('.tab').forEach((t,j)=>t.classList.toggle('on',j===i-1));document.getElementById(['pg0','pg1','pg2','pg3','pg4'][i]).classList.add('on');document.getElementById('bar').textContent=['🌸 阿梓的森林','👗 换装衣柜','✅ 习惯追踪','🎯 目标计划','👤 我的数据'][i];if(i===1)rGallery();if(i===2)rHabits();if(i===3)rGoals();if(i===4)rProfile()}
 
 // ==================== FOCUS TIMER ====================
 (function initFocus(){
@@ -359,7 +374,7 @@ if(elapsed>=totalSec){clearInterval(timerId);timerId=null;onDone();}
 function onDone(){
 document.getElementById('status').textContent='🎉 阿梓为你骄傲！';
 // Current tree emoji based on what was unlocked
-let curTree=AZUSA_TREES[Math.min(currentTreeIdx+1,AZUSA_TREES.length-1)];
+let curTree=AZUSA_TREES[currentOutfit]||AZUSA_TREES[currentTreeIdx];
 if(curTree.img)document.getElementById('tree').innerHTML='<img src='+curTree.img+' class=tree-img>';else document.getElementById('tree').textContent=curTree.emoji||'🌲';
 document.getElementById('btnStop').style.display='none';document.getElementById('btnGo').style.display='block';
 document.getElementById('btnGo').textContent='☕ 阿梓陪你休息';document.getElementById('btnGo').onclick=startBreak;
@@ -369,7 +384,8 @@ document.getElementById('taskType').disabled=false;document.getElementById('task
 let mins=Math.round(totalSec/60);
 sessions.push({date:new Date().toISOString().slice(0,10),minutes:mins,completed:true,taskType:selectedTask?.type||'free',taskId:selectedTask?.id||'',taskName:selectedTask?.name||'自由种树'});
 save('s');updateScore(10);
-totalCompletions=sessions.filter(s=>s.completed).length;updateCurrentTree();
+totalCompletions=sessions.filter(s=>s.completed).length;
+let currentOutfit=parseInt(localStorage.getItem('foutfit')||'-1');if(currentOutfit<0||currentOutfit>currentTreeIdx)currentOutfit=currentTreeIdx;updateCurrentTree();
 
 if(selectedTask&&selectedTask.type==='goal'){let g=goals.find(x=>x.id===selectedTask.id);if(g){g.done=(g.done||0)+1;g.totalMins=(g.totalMins||0)+mins;save('g')}}
 if(selectedTask&&selectedTask.type==='habit'){let h=habits.find(x=>x.id===selectedTask.id);if(h){h.done=true;h.streak=(h.streak||0)+1;h.health=Math.min(100,(h.health||50)+5);h.dates=h.dates||[];let t=new Date().toISOString().slice(0,10);if(!h.dates.includes(t))h.dates.push(t);h.totalMins=(h.totalMins||0)+mins;h.totalSessions=(h.totalSessions||0)+1;save('h');updateScore(5)}}
@@ -416,6 +432,7 @@ function drawRing(p){let c=document.getElementById('ring'),dpr=window.devicePixe
 function resumeFocus(){document.getElementById('lockOverlay').classList.remove('show');document.body.classList.remove('locked')}
 function lockAbort(){document.getElementById('lockOverlay').classList.remove('show');document.body.classList.remove('locked');abort()}
 
+function wearOutfit(idx){currentOutfit=idx;localStorage.setItem('foutfit',idx);if(currentTab===1)rGallery();if(currentTab===0)updateTree(0);toast('\uD83D\uDC57 '+AZUSA_TREES[idx].name+' \u6362\u4E0A\u5566!')}
 function updateTree(p,dead){
 let e=document.getElementById('tree');
 if(dead){e.innerHTML='<span style=font-size:80px>🎨</span>';return}
@@ -433,21 +450,39 @@ img=AZUSA_TREES[stage].img;
 if(img)e.innerHTML='<img src='+img+' class=tree-img style=opacity:.8;transform:scale(.85)>';
 else e.innerHTML='<span style=font-size:70px>'+AZUSA_TREES[stage].emoji+'</span>'
 }else{
-stage=Math.min(currentTreeIdx+3,AZUSA_TREES.length-1);
-img=AZUSA_TREES[stage].img;
+let outfit=AZUSA_TREES[currentOutfit]||AZUSA_TREES[currentTreeIdx];
+img=outfit.img;
 if(img)e.innerHTML='<img src='+img+' class=tree-img style=opacity:1;transform:scale(1)>';
-else e.innerHTML='<span style=font-size:80px>'+AZUSA_TREES[stage].emoji+'</span>'
+else e.innerHTML='<span style=font-size:80px>'+outfit.emoji+'</span>'
 }}
 function rGallery(){
 let el=document.getElementById('treeGallery');
-el.innerHTML=AZUSA_TREES.map((t,i)=>{
-let unlocked=i<=currentTreeIdx;
-let isNext=i===currentTreeIdx+1;
-let progress=unlocked?100:isNext?Math.round((totalCompletions-AZUSA_TREES[currentTreeIdx].unlock)/(t.unlock-AZUSA_TREES[currentTreeIdx].unlock)*100):0;
-let cls=unlocked?(i===currentTreeIdx?'current':'unlocked'):'locked';
-let badge=unlocked?(i===currentTreeIdx?'📅 当前':'✔ 已解锁'):(isNext?'🔒 需'+(t.unlock-totalCompletions)+'次':'🔒 需'+t.unlock+'次专注');
-let visual=t.img?`<img src="${t.img}" class="tg-img" alt="${t.name}" loading="lazy">`:`<span class="tg-emoji">${t.emoji}</span>`;
-return`<div class="tg-card ${cls}"><span class="tg-badge ${unlocked?'':'lock'}">${badge}</span>${visual}<div class="tg-name">${t.name}</div><div class="tg-sub">${t.sub}</div>${!unlocked?`<div class="tg-progress"><div style="width:${isNext?progress:0}%"></div></div>`:''}</div>`}).join('')}
+let uc=currentTreeIdx+1;
+let html='<div style="text-align:center;margin:6px 0;font-size:13px;color:var(--gr)">\u2728 \u5DF2\u89E3\u9501 <b style="color:var(--g)">'+uc+'</b>/'+(AZUSA_TREES.length-1)+' \u5957\u8863\u88C5 \u00B7 \u70B9\u51FB\u5361\u7247\u7A7F\u4E0A</div>';
+html+='<div class="wardrobe-grid">';
+for(let i=0;i<AZUSA_TREES.length;i++){
+let t=AZUSA_TREES[i];let unlocked=i<=currentTreeIdx;let worn=i===currentOutfit;
+if(!unlocked)continue;
+html+='<div class="wcard'+(worn?' wearing':'')+'" onclick="wearOutfit('+i+')">';
+if(worn)html+='<span class="wbadge">\u2728 \u7A7F\u7740\u4E2D</span>';
+html+=t.img?'<img src="'+t.img+'" class="wimg" alt="'+t.name+'" loading="lazy">':'<span class="wemoji">'+t.emoji+'</span>';
+html+='<div class="wname">'+t.name+'</div>';
+if(!worn)html+='<button class="wbtn" onclick="event.stopPropagation();wearOutfit('+i+')">\u2728 \u6362\u4E0A</button>';
+html+='</div>';
+}
+html+='</div>';
+let rem=AZUSA_TREES.length-1-currentTreeIdx;
+if(rem>0){
+html+='<div style="margin:16px 0 8px;font-size:13px;color:var(--gr)">\uD83D\uDD12 \u8FD8\u6709 <b>'+rem+'</b> \u5957\u5F85\u89E3\u9501...</div>';
+html+='<div class="wardrobe-grid">';
+for(let i=currentTreeIdx+1;i<AZUSA_TREES.length;i++){
+let t=AZUSA_TREES[i];let isNext=i===currentTreeIdx+1;
+html+='<div class="wcard locked"><span style="font-size:32px">\uD83D\uDD12</span><div class="wname">'+t.name+'</div><div class="wsub">'+(isNext?'\u9700'+(t.unlock-totalCompletions)+'\u6B21\u4E13\u6CE8':'\u9700'+t.unlock+'\u6B21\u4E13\u6CE8')+'</div></div>';
+}
+html+='</div>';
+}
+el.innerHTML=html;
+}
 
 // ==================== HABITS ====================
 function rHabits(){
