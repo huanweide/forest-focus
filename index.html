@@ -227,6 +227,27 @@ body.mood-low{--mood-bg:linear-gradient(180deg,#eceff1,#e0e0f0)}
 .setting-row .toggle.on{background:var(--g)}
 .setting-row .toggle::after{content:'';position:absolute;top:3px;left:3px;width:20px;height:20px;background:#fff;border-radius:50%;transition:left .3s}
 .setting-row .toggle.on::after{left:25px}
+
+/* === v3.1: Duolingo-style urgency === */
+.streak-danger{animation:streakPulse .5s ease-in-out infinite;color:#e53935 !important}
+@keyframes streakPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.15)}}
+.streak-warning-badge{display:inline-flex;align-items:center;gap:4px;background:linear-gradient(135deg,#fff3e0,#ffe0b2);color:#e65100;padding:6px 14px;border-radius:20px;font-size:13px;font-weight:700;animation:warningShake 2s ease-in-out infinite}
+@keyframes warningShake{0%,100%{transform:translateX(0)}10%{transform:translateX(-3px)}20%{transform:translateX(3px)}30%{transform:translateX(-3px)}40%{transform:translateX(3px)}50%{transform:translateX(0)}}
+.duo-reminder{background:linear-gradient(135deg,#fce4ec,#f8bbd0);border:2px solid #e91e63;border-radius:16px;padding:14px;margin:10px 0;text-align:center;animation:duoGlow 2s ease-in-out infinite}
+@keyframes duoGlow{0%,100%{box-shadow:0 0 8px rgba(233,30,99,.2)}50%{box-shadow:0 0 20px rgba(233,30,99,.4)}}
+.duo-reminder .duo-title{font-size:15px;font-weight:700;color:#c62828;margin-bottom:4px}
+.duo-reminder .duo-msg{font-size:12px;color:#666;line-height:1.5}
+.duo-reminder .duo-action{padding:8px 20px;border-radius:20px;border:none;background:linear-gradient(135deg,#e91e63,#f06292);color:#fff;font-size:14px;font-weight:600;cursor:pointer;margin-top:8px;box-shadow:0 3px 12px rgba(233,30,99,.3)}
+.streak-lost-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.7);z-index:400;display:flex;align-items:center;justify-content:center}
+.streak-lost-overlay.hidden{display:none}
+.streak-lost-card{background:#fff;border-radius:24px;padding:30px;text-align:center;max-width:320px;box-shadow:0 8px 40px rgba(0,0,0,.3);animation:dropIn .5s ease-out}
+@keyframes dropIn{0%{opacity:0;transform:translateY(-60px)}100%{opacity:1;transform:translateY(0)}}
+.streak-lost-card .lost-icon{font-size:64px;margin-bottom:8px}
+.streak-lost-card .lost-title{font-size:18px;font-weight:700;color:#c62828;margin:8px 0}
+.streak-lost-card .lost-msg{font-size:13px;color:#666;margin:8px 0;line-height:1.5}
+.streak-lost-card .lost-btn{padding:12px 30px;border-radius:20px;border:none;font-size:16px;font-weight:600;cursor:pointer;margin:4px}
+.lost-btn.primary{background:linear-gradient(135deg,#4CAF50,#66BB6A);color:#fff}
+.lost-btn.secondary{background:#eee;color:#666}
 </style>
 </head>
 <body>
@@ -259,6 +280,7 @@ body.mood-low{--mood-bg:linear-gradient(180deg,#eceff1,#e0e0f0)}
 </div>
 <div class="daily-quote" id="dailyQuote">"阿梓在等你开始今天的专注呢~"</div>
 <div class="quick-stats" id="quickStats"></div>
+<div id="duoWarning"></div>
 <div class="home-actions">
 <button class="home-btn primary" onclick="goTab(1)">🌱 开始专注</button>
 <button class="home-btn secondary" onclick="goTab(2)">👗 衣柜</button>
@@ -348,6 +370,18 @@ body.mood-low{--mood-bg:linear-gradient(180deg,#eceff1,#e0e0f0)}
 <!-- Achievement progress -->
 <div id="achs"></div>
 </div>
+
+<!-- ===== STREAK LOST OVERLAY ===== -->
+<div class="streak-lost-overlay hidden" id="streakLostOverlay">
+<div class="streak-lost-card">
+<div class="lost-icon">😢</div>
+<div class="lost-title" id="lostTitle">阿梓很伤心...</div>
+<div class="lost-msg" id="lostMsg">你已经3天没有专注了！<br>你的连续记录即将清空</div>
+<button class="lost-btn primary" onclick="useFreezeRecovery()">🔰 使用护符保护 (剩余 <span id="lostFreezeCount">0</span>)</button>
+<button class="lost-btn secondary" onclick="acceptStreakLoss()">接受断签 😔</button>
+</div>
+</div>
+
 <!-- ===== REWARD BOX ===== -->
 <div class="box-overlay hidden" id="boxOverlay"><div class="box"><div class="chest">🎁</div><div class="reward" id="boxReward"></div><div class="reward-text" id="boxText"></div><button class="box-btn" onclick="closeBox()">收下！</button></div></div>
 
@@ -858,6 +892,8 @@ document.getElementById('homeMoodBadge').innerHTML='😊 '+moodText;
 
 // Time-based scene
 let h=new Date().getHours();
+var today=new Date().toISOString().slice(0,10);
+var hasToday=sessions.some(function(s){return s.completed&&s.date===today});
 let scene=document.getElementById('homeScene');
 let stars=document.getElementById('homeStars');
 if(h>=20||h<6){
@@ -887,13 +923,28 @@ streak=cur;
 let outfitProgress=Math.round((currentTreeIdx+1)/AZUSA_TREES.length*100);
 document.getElementById('quickStats').innerHTML=
 '<div class=quick-stat><div class=qs-val>'+fmtMins(todayMins)+'</div><div class=qs-lbl>⏱ 今日</div></div>'+
-'<div class=quick-stat><div class=qs-val>'+streak+'🔥</div><div class=qs-lbl>连续</div></div>'+
+'<div class=quick-stat><div class=qs-val'+(hasToday?'':(h>=14?' class=streak-danger':''))+'>'+streak+'🔥</div><div class=qs-lbl>连续</div></div>'+
 '<div class=quick-stat><div class=qs-val>'+outfitProgress+'%</div><div class=qs-lbl>👗 衣装</div></div>'+
 '<div class=quick-stat><div class=qs-val>'+streakFreezes+'🔰</div><div class=qs-lbl>护符</div></div>';
 
+// Duolingo-style streak urgency
+var streakWarning='';
+var today=new Date().toISOString().slice(0,10);
+var hasToday=sessions.some(function(s){return s.completed&&s.date===today});
+if(!hasToday&&streak>0){
+var h=new Date().getHours();
+if(h>=18){
+streakWarning='<div class="duo-reminder duo-warning-slide"><div class=duo-title>🔥 连续'+streak+'天的记录有危险！</div><div class=duo-msg>今天还没专注呢... 阿梓一直在等你</div><button class=duo-action onclick=goTab(1)>🌱 立即拯救连续记录</button></div>';
+}else if(h>=14){
+streakWarning='<div class="duo-reminder duo-warning-slide"><div class=duo-title>⏰ 别忘了今天的专注！</div><div class=duo-msg>已经下午了，阿梓有点担心你的连续'+streak+'天记录...</div><button class=duo-action onclick=goTab(1)>🌱 开始专注</button></div>';
+}else{
+streakWarning='<div class="duo-reminder duo-warning-slide"><div class=duo-title>🌅 新的一天开始了！</div><div class=duo-msg>保持连续'+streak+'天的记录，今天也和阿梓一起加油吧~</div></div>';
+}
+}
+var warningEl=document.getElementById('duoWarning');
+if(warningEl)warningEl.innerHTML=streakWarning||'';
+
 // Settings toggle
-let timerDefault=localStorage.getItem('ftimerDefault')==='1';
-// Update settings toggle
 var toggle=document.getElementById('timerToggle');
 var timerDefault=localStorage.getItem('ftimerDefault')==='1';
 if(toggle)toggle.classList.toggle('on',timerDefault);
@@ -910,8 +961,75 @@ toast(next?'⏱ 计时页已设为首页':'🏠 首页已设为默认');
 
 
 
+
+// ==================== v3.1: DUOLINGO-STYLE STREAK RECOVERY ====================
+var streakLostDays=0;
+function checkStreakDanger(){
+var today=new Date().toISOString().slice(0,10);
+var dates=[].concat(new Set(sessions.filter(function(s){return s.completed}).map(function(s){return s.date}))).sort();
+// Count consecutive missed days
+var missed=0;
+var check=new Date();
+check.setDate(check.getDate()-1);
+while(missed<7){
+var ds=check.toISOString().slice(0,10);
+if(dates.indexOf(ds)>=0)break;
+missed++;
+check.setDate(check.getDate()-1);
+}
+if(missed>=3&&!localStorage.getItem('flostShown'+today)){
+streakLostDays=missed;
+showStreakLostOverlay();
+}
+}
+
+function showStreakLostOverlay(){
+var overlay=document.getElementById('streakLostOverlay');
+if(!overlay)return;
+var today=new Date().toISOString().slice(0,10);
+document.getElementById('lostTitle').textContent=streakLostDays>=7?'阿梓已经快忘记你了...':'阿梓很伤心...';
+document.getElementById('lostMsg').innerHTML='你已经'+streakLostDays+'天没有专注了！<br>你的连续记录即将清空';
+document.getElementById('lostFreezeCount').textContent=streakFreezes;
+overlay.classList.remove('hidden');
+localStorage.setItem('flostShown'+today,'1');
+}
+
+function useFreezeRecovery(){
+if(streakFreezes<=0){toast('没有护符了...');return;}
+streakFreezes--;
+localStorage.setItem('ffreeze',String(streakFreezes));
+document.getElementById('streakLostOverlay').classList.add('hidden');
+toast('🔀 护符保护了你的连续记录！快去种棵树吧~');
+goTab(1);
+}
+
+function acceptStreakLoss(){
+document.getElementById('streakLostOverlay').classList.add('hidden');
+updateMood(-25);
+toast('💔 连续记录清空了... 明天重新开始吧');
+}
+
+// Enhanced checkReminder with Duolingo-style urgency
+var _origCheckReminder=checkReminder;
+checkReminder=function(){
+_origCheckReminder();
+// Additional Duolingo-style checks
+var today=new Date().toISOString().slice(0,10);
+var todayDone=sessions.filter(function(s){return s.completed&&s.date===today}).length;
+var h=new Date().getHours();
+// Evening urgency
+if(h>=19&&h<=21&&todayDone===0){
+sendNotify('🔥 连续记录危机','你今天还没学习！阿梓正在焦急地等你...');
+}
+// Late night panic
+if(h>=22&&todayDone===0){
+sendNotify('🚨 最后警告','今天快过去了！连续记录危在旦夕！');
+}
+}
+
 // ==================== INIT ====================
 function initAll(){rHabits();rGoals();requestNotify();checkStreakRecovery();updateMoodUI();setInterval(periodicBubble,300000);setInterval(checkReminder,600000);setTimeout(randomBubble,10000);
+checkStreakDanger();
 var timerDefault=localStorage.getItem('ftimerDefault')==='1';
 if(timerDefault){goTab(1);}else{goTab(0);rHome();}
 }
