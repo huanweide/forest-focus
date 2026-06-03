@@ -32,7 +32,7 @@ body.locked{overflow:hidden;position:fixed;width:100%;height:100%}
 .btn-r{background:var(--r);color:#fff}
 .btn-o{background:var(--o);color:#fff}
 
-.tree-box{text-align:center;height:130px;display:flex;align-items:center;justify-content:center;transition:all .5s cubic-bezier(.4,0,.2,1);overflow:hidden}
+.tree-box{text-align:center;height:150px;display:flex;align-items:center;justify-content:center;transition:all .5s cubic-bezier(.4,0,.2,1);overflow:visible;position:relative}
 .seed-img{width:70px;height:70px;object-fit:contain;animation:pulse 2s ease-in-out infinite;border-radius:50%}
 .tab-icon{width:24px;height:24px;object-fit:contain;display:block;margin:0 auto 2px;border-radius:4px}
 .tree-img{max-height:130px;max-width:90%;object-fit:contain;transition:all .6s cubic-bezier(.4,0,.2,1);border-radius:14px;filter:drop-shadow(0 6px 16px rgba(124,92,191,.25))}
@@ -78,7 +78,7 @@ body.locked{overflow:hidden;position:fixed;width:100%;height:100%}
 .tg-progress div{height:100%;border-radius:2px;background:var(--g);transition:.4s}
 .tg-img{width:100%;height:120px;object-fit:contain;border-radius:10px;background:rgba(0,0,0,.03);display:block;margin:0 auto}
 .tree-img{max-height:110px;max-width:100%;object-fit:contain;transition:all .5s ease;border-radius:8px}
-.tree-box{text-align:center;height:130px;display:flex;align-items:center;justify-content:center;transition:all .5s cubic-bezier(.4,0,.2,1);overflow:hidden}
+.tree-box{text-align:center;height:150px;display:flex;align-items:center;justify-content:center;transition:all .5s cubic-bezier(.4,0,.2,1);overflow:visible;position:relative}
 @keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}
 .pulse{animation:pulse 1.5s ease-in-out infinite;display:inline-block}
 @keyframes unlockPop{0%{transform:scale(.5);opacity:0}60%{transform:scale(1.1)}100%{transform:scale(1);opacity:1}}
@@ -302,6 +302,25 @@ body.dark .bet-row{background:linear-gradient(135deg,#2d2416,#3d2e1a);border-col
 body.dark .shop-item{background:#16213e}
 body.dark .chat-typing{background:#16213e}
 body.dark .chat-modal{background:#1a1a2e}
+
+/* === v3.4: Forest-style Growth Animations === */
+.tree-box .tree-img{transition:opacity .6s ease,transform .6s ease,filter .5s ease}
+.tree-box .seed-img{width:60px;height:auto;opacity:.6;animation:seedBounce 2s ease-in-out infinite}
+@keyframes seedBounce{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-8px) scale(1.1)}}
+/* Growing stage */
+.tree-box.growing .tree-img{animation:growPulse 3s ease-in-out infinite}
+@keyframes growPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.04)}}
+/* Full bloom */
+.tree-box.full .tree-img{animation:azBreathe 4s ease-in-out infinite;filter:drop-shadow(0 4px 12px rgba(124,92,191,.3))}
+/* Celebrate on completion */
+.tree-box.celebrate .tree-img{animation:celebrateBounce .5s ease-out 3}
+@keyframes celebrateBounce{0%,100%{transform:translateY(0) scale(1)}30%{transform:translateY(-20px) scale(1.1)}60%{transform:translateY(-8px) scale(1.05)}}
+/* Wilt on abandon */
+.tree-box.wilt .tree-img{filter:grayscale(1) brightness(.7);animation:wiltShake .4s ease-in-out 2}
+@keyframes wiltShake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+/* Star particles on celebrate */
+.tree-box.celebrate::after{content:'✨';position:absolute;font-size:24px;animation:starBurst .8s ease-out forwards}
+@keyframes starBurst{0%{opacity:1;transform:scale(.5) translateY(0)}100%{opacity:0;transform:scale(2) translateY(-40px)}}
 </style>
 </head>
 <body>
@@ -626,7 +645,10 @@ function onDone(){
 document.getElementById('status').textContent='🎉 阿梓为你骄傲！';
 // Current tree emoji based on what was unlocked
 let curTree=AZUSA_TREES[currentOutfit]||AZUSA_TREES[currentTreeIdx];
-if(curTree.img)document.getElementById('tree').innerHTML='<img src='+curTree.img+' class=tree-img>';else document.getElementById('tree').textContent=curTree.emoji||'🌲';
+var treeEl=document.getElementById('tree');
+if(curTree.img){treeEl.innerHTML='<img src='+curTree.img+' class=tree-img>';treeEl.classList.add('full','celebrate');
+setTimeout(function(){treeEl.classList.remove('celebrate')},2000);}
+else treeEl.textContent=curTree.emoji||'\u{1f332}';
 document.getElementById('btnStop').style.display='none';document.getElementById('btnGo').style.display='block';
 document.getElementById('btnGo').textContent='☕ 阿梓陪你休息';document.getElementById('btnGo').onclick=startBreak;
 document.querySelectorAll('#chips .chip').forEach(c=>c.style.pointerEvents='auto');
@@ -678,7 +700,7 @@ function abort(){
 if(!timerId)return;clearInterval(timerId);timerId=null;
 document.getElementById('btnGo').style.display='block';document.getElementById('btnStop').style.display='none';
 document.getElementById('status').textContent='没关系，下次一定可以的 🌸';
-document.getElementById('tree').textContent='😢';document.getElementById('btnGo').textContent='🌱 和阿梓重新开始';
+var tEl=document.getElementById('tree');tEl.innerHTML='<span style=font-size:70px>'+AZUSA_TREES[currentTreeIdx].emoji+'</span>';tEl.classList.add('wilt');document.getElementById('btnGo').textContent='🌱 和阿梓重新开始';
 document.getElementById('btnGo').onclick=start;
 document.querySelectorAll('#chips .chip').forEach(c=>c.style.pointerEvents='auto');
 document.getElementById('taskType').disabled=false;document.getElementById('taskPick').disabled=false;
@@ -707,25 +729,27 @@ function lockAbort(){document.getElementById('lockOverlay').classList.remove('sh
 
 function wearOutfit(idx){currentOutfit=idx;localStorage.setItem('foutfit',idx);if(currentTab===2)rGallery();if(currentTab===1)updateTree(0);if(currentTab===0)rHome();toast('\uD83D\uDC57 '+AZUSA_TREES[idx].name+' \u6362\u4E0A\u5566!')}
 function updateTree(p,dead){
-let e=document.getElementById('tree');
-if(dead){e.innerHTML='<span style=font-size:80px>🎨</span>';return}
-let stage,img;
+var e=document.getElementById('tree');
+e.classList.remove('growing','full','celebrate','wilt');
+var stage,img;
+if(dead){e.innerHTML='<span style=font-size:80px>'+AZUSA_TREES[currentTreeIdx].emoji+'</span>';e.classList.add('wilt');return}
+var stage,img;
 if(p<0.15){
-e.innerHTML='<img src=src/images/azusa/azusa_box.png class=seed-img alt=🎨>'
+e.innerHTML='<img src=src/images/azusa/azusa_box.png class=seed-img alt=seed>'
 }else if(p<0.4){
 stage=Math.min(currentTreeIdx+1,AZUSA_TREES.length-1);
 img=AZUSA_TREES[stage].img;
-if(img)e.innerHTML='<img src='+img+' class=tree-img style=opacity:.5;transform:scale(.7)>';
-else e.innerHTML='<span style=font-size:60px>🎨</span>'
+if(img){e.innerHTML='<img src='+img+' class=tree-img style=opacity:.5;transform:scale(.7)>';e.classList.add('growing')}
+else e.innerHTML='<span style=font-size:60px>'+AZUSA_TREES[stage].emoji+'</span>'
 }else if(p<0.7){
 stage=Math.min(currentTreeIdx+2,AZUSA_TREES.length-1);
 img=AZUSA_TREES[stage].img;
-if(img)e.innerHTML='<img src='+img+' class=tree-img style=opacity:.8;transform:scale(.85)>';
+if(img){e.innerHTML='<img src='+img+' class=tree-img style=opacity:.8;transform:scale(.85)>';e.classList.add('growing')}
 else e.innerHTML='<span style=font-size:70px>'+AZUSA_TREES[stage].emoji+'</span>'
 }else{
-let outfit=AZUSA_TREES[currentOutfit]||AZUSA_TREES[currentTreeIdx];
+var outfit=AZUSA_TREES[currentOutfit]||AZUSA_TREES[currentTreeIdx];
 img=outfit.img;
-if(img)e.innerHTML='<img src='+img+' class=tree-img style=opacity:1;transform:scale(1)>';
+if(img){e.innerHTML='<img src='+img+' class=tree-img style=opacity:1;transform:scale(1)>';e.classList.add('full')}
 else e.innerHTML='<span style=font-size:80px>'+outfit.emoji+'</span>'
 }}
 function rGallery(){
