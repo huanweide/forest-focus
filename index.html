@@ -30,7 +30,7 @@ body.locked{overflow:hidden;position:fixed;width:100%;height:100%}
 .btn-r{background:var(--r);color:#fff}
 .btn-o{background:var(--o);color:#fff}
 
-.tree-box{text-align:center;font-size:80px;height:110px;line-height:110px;transition:.4s}
+.tree-box{text-align:center;height:120px;display:flex;align-items:center;justify-content:center;transition:.4s;overflow:hidden}
 .ring-wrap{width:180px;height:180px;margin:0 auto;position:relative}
 .ring-wrap canvas{width:100%;height:100%}
 .ring-t{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center}
@@ -71,6 +71,27 @@ body.locked{overflow:hidden;position:fixed;width:100%;height:100%}
 .tg-badge.lock{background:#ccc}
 .tg-progress{height:4px;border-radius:2px;background:#e8e8e8;margin-top:8px;overflow:hidden}
 .tg-progress div{height:100%;border-radius:2px;background:var(--g);transition:.4s}
+.tg-img{width:100%;height:120px;object-fit:contain;border-radius:10px;background:rgba(0,0,0,.03);display:block;margin:0 auto}
+.tree-img{max-height:110px;max-width:100%;object-fit:contain;transition:all .5s ease;border-radius:8px}
+.tree-box{text-align:center;height:120px;display:flex;align-items:center;justify-content:center;transition:.4s;overflow:hidden}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}
+.pulse{animation:pulse 1.5s ease-in-out infinite;display:inline-block}
+@keyframes unlockPop{0%{transform:scale(.5);opacity:0}60%{transform:scale(1.1)}100%{transform:scale(1);opacity:1}}
+.unlock-pop{animation:unlockPop .6s ease}
+.ach-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}
+.ach-card{background:var(--c);border-radius:10px;padding:10px 6px;text-align:center;box-shadow:var(--sh);transition:.2s;position:relative}
+.ach-card.locked{opacity:.45;filter:grayscale(.8)}
+.ach-card.unlocked{border:1px solid var(--g)}
+.ach-card.tier-legend{background:linear-gradient(135deg,#fce4ec,#f3e5f5)}
+.ach-icon{font-size:28px;display:block;margin-bottom:2px}
+.ach-name{font-weight:600;font-size:11px;line-height:1.3}
+.ach-tier{font-size:9px;margin-top:2px;padding:1px 6px;border-radius:8px;display:inline-block}
+.tier-bronze{background:#ffe0b2;color:#e65100}
+.tier-silver{background:#e0e0e0;color:#424242}
+.tier-gold{background:#fff8e1;color:#f57f17}
+.tier-legend{background:#f3e5f5;color:#6a1b9a}
+.ach-header{display:flex;justify-content:space-between;align-items:center;margin:12px 0 6px}
+.ach-count{font-size:13px;color:var(--g);font-weight:600}
 
 /* Lock overlay */
 .lock-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:50;flex-direction:column;align-items:center;justify-content:center;text-align:center;color:#fff;padding:20px}
@@ -182,14 +203,20 @@ body.locked{overflow:hidden;position:fixed;width:100%;height:100%}
 // ==================== 阿梓树系统 ====================
 // 阿梓的8套衣服 = 8个树等级。越专注解锁越多衣服。
 const AZUSA_TREES=[
-{id:'seed',name:'阿梓的种子',emoji:'🌰',unlock:0,sub:'初始形态 · 第一次专注即可发芽',color:'#8D6E63'},
-{id:'sprout',name:'日常服 · 阿梓',emoji:'👧',unlock:1,sub:'完成1次专注解锁 · 阿梓的默认形象',color:'#90CAF9'},
-{id:'growing',name:'新年版 · 阿梓',emoji:'🧧',unlock:5,sub:'完成5次专注解锁 · 新年限定衣装',color:'#EF5350'},
-{id:'blooming',name:'夏日服 · 阿梓',emoji:'👗',unlock:12,sub:'完成12次专注解锁 · 清凉夏日衣装',color:'#FF7043'},
-{id:'mature',name:'偶像服 · 阿梓',emoji:'🎤',unlock:25,sub:'完成25次专注解锁 · 舞台偶像衣装',color:'#AB47BC'},
-{id:'master',name:'礼服 · 阿梓',emoji:'💎',unlock:45,sub:'完成45次专注解锁 · 华丽礼服',color:'#5C6BC0'},
-{id:'legend',name:'艾蜀酱 · 传说',emoji:'👑',unlock:80,sub:'完成80次专注解锁 · 最强形态',color:'#FFD700'},
-{id:'god',name:'阿梓 · 万花镜',emoji:'🌈',unlock:150,sub:'完成150次专注解锁 · 全部衣装收集达成',color:'#E040FB'},
+{id:'seed',name:'?????',img:'',emoji:'??',unlock:0,sub:'??????????????',color:'#8D6E63'},
+{id:'default',name:'???????',img:'src/images/azusa/azusa_default.png',unlock:1,sub:'??1??????????',color:'#90CAF9'},
+{id:'newyear',name:'???????',img:'src/images/azusa/azusa_newyear.png',unlock:5,sub:'??5??????????',color:'#EF5350'},
+{id:'summer',name:'??????',img:'src/images/azusa/azusa_summer.jpg',unlock:12,sub:'??12??????????',color:'#FF7043'},
+{id:'panda',name:'????',img:'src/images/azusa/azusa_panda.png',unlock:20,sub:'??20???????????',color:'#4CAF50'},
+{id:'rabbit',name:'?????',img:'src/images/azusa/azusa_rabbit.jpg',unlock:30,sub:'??30??????????',color:'#FF80AB'},
+{id:'frog',name:'???????',img:'src/images/azusa/azusa_frog.jpg',unlock:40,sub:'??40??????????',color:'#66BB6A'},
+{id:'butterfly',name:'???????',img:'src/images/azusa/azusa_butterfly.jpg',unlock:55,sub:'??55??????????',color:'#CE93D8'},
+{id:'eggplant',name:'?????',img:'src/images/azusa/azusa_eggplant.png',unlock:70,sub:'??70???????????',color:'#9575CD'},
+{id:'spring',name:'???????',img:'src/images/azusa/azusa_spring.png',unlock:90,sub:'??90??????????',color:'#81C784'},
+{id:'chibi',name:'??????',img:'src/images/azusa/azusa_chibi.png',unlock:110,sub:'??110?????????',color:'#FFD700'},
+{id:'gift',name:'????????',img:'src/images/azusa/azusa_gift.gif',unlock:130,sub:'??130??????live2D',color:'#FF8A65'},
+{id:'ninja',name:'?????',img:'src/images/azusa/azusa_ninja.jpg',unlock:155,sub:'??155??????????',color:'#7E57C2'},
+{id:'ultimate',name:'???????',img:'src/images/azusa/azusa_transparent.png',unlock:180,sub:'??180???????????',color:'#E040FB'},
 ];
 
 let currentTreeIdx=0; // which tree the user is currently at
@@ -274,8 +301,8 @@ if(elapsed>=totalSec){clearInterval(timerId);timerId=null;onDone();}
 function onDone(){
 document.getElementById('status').textContent='🎉 太棒了！';
 // Current tree emoji based on what was unlocked
-let treeEmoji=AZUSA_TREES[Math.min(currentTreeIdx+1,AZUSA_TREES.length-1)].emoji;
-document.getElementById('tree').textContent=treeEmoji;
+let curTree=AZUSA_TREES[Math.min(currentTreeIdx+1,AZUSA_TREES.length-1)];
+if(curTree.img)document.getElementById('tree').innerHTML='<img src='+curTree.img+' class=tree-img>';else document.getElementById('tree').textContent=curTree.emoji||'??';
 document.getElementById('btnStop').style.display='none';document.getElementById('btnGo').style.display='block';
 document.getElementById('btnGo').textContent='☕ 休息一下';document.getElementById('btnGo').onclick=startBreak;
 document.querySelectorAll('#chips .chip').forEach(c=>c.style.pointerEvents='auto');
@@ -327,52 +354,28 @@ document.getElementById('lockOverlay').classList.remove('show');
 toast('🌸 没关系，阿梓会等你');
 }
 
-function updateTree(p,dead){let e=document.getElementById('tree');if(dead){e.textContent='😢';return}let tree=AZUSA_TREES[currentTreeIdx];e.textContent=p<0.15?'🌰':p<0.35?'🌱':p<0.55?AZUSA_TREES[Math.min(currentTreeIdx+1,AZUSA_TREES.length-1)].emoji:p<0.8?AZUSA_TREES[Math.min(currentTreeIdx+2,AZUSA_TREES.length-1)].emoji:AZUSA_TREES[Math.min(currentTreeIdx+3,AZUSA_TREES.length-1)].emoji}
-
-function drawRing(p){let c=document.getElementById('ring'),dpr=window.devicePixelRatio||1,sz=180;c.width=c.height=sz*dpr;c.style.width=c.style.height=sz+'px';let ctx=c.getContext('2d');ctx.scale(dpr,dpr);let cx=sz/2,cy=sz/2,r=70;ctx.clearRect(0,0,sz,sz);ctx.beginPath();ctx.arc(cx,cy,r,0,Math.PI*2);ctx.strokeStyle='#e0e0e0';ctx.lineWidth=9;ctx.stroke();if(p>0){ctx.beginPath();ctx.arc(cx,cy,r,-Math.PI/2,-Math.PI/2+Math.PI*2*p);ctx.strokeStyle=isBreak?'#ff9800':'#7E57C2';ctx.lineWidth=9;ctx.lineCap='round';ctx.stroke()}}
-
-// ==================== APP LOCK ====================
-let lockTimer=null;
-document.addEventListener('visibilitychange',()=>{
-if(document.hidden&&timerId&&!isBreak){
-lockExits++;
-document.getElementById('lockCount').textContent=lockExits;
-document.getElementById('lockLeft').textContent=Math.floor((totalSec-elapsed)/60);
-if(lockExits>=3){
-clearInterval(timerId);timerId=null;
-document.getElementById('lockTitle').textContent='树受伤了 😢';
-document.getElementById('lockMsg').textContent='你已经离开3次了...\n没关系，下次专注一点就好';
-document.getElementById('lockAbort').style.display='none';
-document.getElementById('lockOverlay').classList.add('show');
-setTimeout(()=>{
-document.getElementById('lockOverlay').classList.remove('show');
-abort();
-},4000);
+function updateTree(p,dead){
+let e=document.getElementById('tree');
+if(dead){e.innerHTML='<span style=font-size:80px>??</span>';return}
+let stage,img;
+if(p<0.15){
+e.innerHTML='<span style=font-size:70px class=pulse>??</span>'
+}else if(p<0.4){
+stage=Math.min(currentTreeIdx+1,AZUSA_TREES.length-1);
+img=AZUSA_TREES[stage].img;
+if(img)e.innerHTML='<img src='+img+' class=tree-img style=opacity:.5;transform:scale(.7)>';
+else e.innerHTML='<span style=font-size:60px>??</span>'
+}else if(p<0.7){
+stage=Math.min(currentTreeIdx+2,AZUSA_TREES.length-1);
+img=AZUSA_TREES[stage].img;
+if(img)e.innerHTML='<img src='+img+' class=tree-img style=opacity:.8;transform:scale(.85)>';
+else e.innerHTML='<span style=font-size:70px>'+AZUSA_TREES[stage].emoji+'</span>'
 }else{
-document.getElementById('lockTitle').textContent='第'+lockExits+'次离开';
-document.getElementById('lockMsg').textContent='阿梓还在等你回来！\n快回来完成这次专注 🌸';
-document.getElementById('lockAbort').style.display='block';
-document.getElementById('lockOverlay').classList.add('show');
-}
-}
-});
-
-function resumeFocus(){
-document.getElementById('lockOverlay').classList.remove('show');
-toast('🌸 欢迎回来！继续加油');
-}
-function lockAbort(){
-document.getElementById('lockOverlay').classList.remove('show');
-if(timerId){clearInterval(timerId);timerId=null}
-document.getElementById('btnGo').style.display='block';document.getElementById('btnStop').style.display='none';
-document.getElementById('status').textContent='树受伤了，下次加油 🌸';document.getElementById('tree').textContent='😢';
-document.getElementById('btnGo').textContent='🌱 重新开始';document.getElementById('btnGo').onclick=start;
-document.querySelectorAll('#chips .chip').forEach(c=>c.style.pointerEvents='auto');
-document.getElementById('taskType').disabled=false;document.getElementById('taskPick').disabled=false;
-toast('🌸 下次一定会更好的');
-}
-
-// ==================== TREE GALLERY ====================
+stage=Math.min(currentTreeIdx+3,AZUSA_TREES.length-1);
+img=AZUSA_TREES[stage].img;
+if(img)e.innerHTML='<img src='+img+' class=tree-img style=opacity:1;transform:scale(1)>';
+else e.innerHTML='<span style=font-size:80px>'+AZUSA_TREES[stage].emoji+'</span>'
+}}
 function rGallery(){
 let el=document.getElementById('treeGallery');
 el.innerHTML=AZUSA_TREES.map((t,i)=>{
@@ -380,14 +383,9 @@ let unlocked=i<=currentTreeIdx;
 let isNext=i===currentTreeIdx+1;
 let progress=unlocked?100:isNext?Math.round((totalCompletions-AZUSA_TREES[currentTreeIdx].unlock)/(t.unlock-AZUSA_TREES[currentTreeIdx].unlock)*100):0;
 let cls=unlocked?(i===currentTreeIdx?'current':'unlocked'):'locked';
-let badge=unlocked?(i===currentTreeIdx?'🌸 当前':'✅ 已解锁'):'🔒 '+(isNext?'进行中':'需'+t.unlock+'次');
-return`<div class="tg-card ${cls}"><span class="tg-badge ${unlocked?'':'lock'}">${badge}</span><span class="tg-emoji">${t.emoji}</span><div class="tg-name">${t.name}</div><div class="tg-sub">${t.sub}</div>${!unlocked?`<div class="tg-progress"><div style="width:${isNext?progress:0}%"></div></div>`:''}</div>`}).join('');
-
-let stats=document.getElementById('galleryStats');
-let nextTree=AZUSA_TREES[Math.min(currentTreeIdx+1,AZUSA_TREES.length-1)];
-let remaining=nextTree.unlock-totalCompletions;
-stats.innerHTML=`<div class="st"><div class="n" style="color:#5C6BC0">${totalCompletions}</div><div class="l">🌸 完成次数</div></div><div class="st"><div class="n" style="color:#7E57C2">${currentTreeIdx+1}/${AZUSA_TREES.length}</div><div class="l">👗 已解锁衣装</div></div><div class="st"><div class="n" style="color:#FF7043">${remaining>0?remaining:0}</div><div class="l">下次解锁还需</div></div>`;
-}
+let badge=unlocked?(i===currentTreeIdx?'?? ??':'? ???'):'?? '+(isNext?'???':'?'+t.unlock+'?');
+let visual=t.img?`<img src="${t.img}" class="tg-img" alt="${t.name}" loading="lazy">`:`<span class="tg-emoji">${t.emoji}</span>`;
+return`<div class="tg-card ${cls}"><span class="tg-badge ${unlocked?'':'lock'}">${badge}</span>${visual}<div class="tg-name">${t.name}</div><div class="tg-sub">${t.sub}</div>${!unlocked?`<div class="tg-progress"><div style="width:${isNext?progress:0}%"></div></div>`:''}</div>`}).join('')
 
 // ==================== HABITS ====================
 function rHabits(){
@@ -424,6 +422,39 @@ function incG(id){let g=goals.find(x=>x.id===id);if(!g)return;g.done=(g.done||0)
 function addGoal(){let t=prompt('目标名称');if(!t||!t.trim())return;let tom=parseInt(prompt('预估番茄钟数','20'))||20;goals.push({id:uid(),title:t.trim(),tomatoes:tom,done:0,totalMins:0});save('g');rGoals();updateTaskSelects();toast('🎯 已添加')}
 function delG(id){if(!confirm('确定删除？'))return;goals=goals.filter(g=>g.id!==id);save('g');rGoals();updateTaskSelects()}
 
+// ==================== ACHIEVEMENTS ====================
+function calcAchievements(){
+let today=new Date().toISOString().slice(0,10);
+let todayMins=sessions.filter(s=>s.completed&&s.date===today).reduce((a,s)=>a+s.minutes,0);
+let dates=[...new Set(sessions.filter(s=>s.completed).map(s=>s.date))].sort();
+let streak=0,cur=0;
+for(let i=dates.length-1;i>=0;i--){
+let d=new Date(dates[i]);let prev=new Date(dates[i+1]||'');
+if(i===dates.length-1||(new Date(dates[i+1])-d)/86400000===1)cur++;else break;
+}
+streak=cur;
+let habitsDone=habits.length>0&&habits.every(h=>h.dates&&h.dates.includes(today));
+return[
+{name:'?? ????',icon:'??',tier:'bronze',u:totalCompletions>=1},
+{name:'?????',icon:'??',tier:'silver',u:todayMins>=240},
+{name:'?? ????',icon:'??',tier:'bronze',u:totalCompletions>=5},
+{name:'?? ???',icon:'??',tier:'bronze',u:totalCompletions>=12},
+{name:'?? ????',icon:'??',tier:'silver',u:totalCompletions>=20},
+{name:'?? ??',icon:'??',tier:'silver',u:totalCompletions>=30},
+{name:'?? ????',icon:'??',tier:'gold',u:totalCompletions>=40},
+{name:'?? ????',icon:'??',tier:'gold',u:totalCompletions>=55},
+{name:'?? ??',icon:'??',tier:'gold',u:totalCompletions>=70},
+{name:'?? ????',icon:'??',tier:'gold',u:totalCompletions>=90},
+{name:'?? ???',icon:'??',tier:'legend',u:totalCompletions>=110},
+{name:'?? ?????',icon:'??',tier:'legend',u:totalCompletions>=130},
+{name:'?? ??',icon:'??',tier:'legend',u:totalCompletions>=155},
+{name:'?? ?????',icon:'??',tier:'legend',u:totalCompletions>=180},
+{name:'?? ??7?',icon:'??',tier:'gold',u:streak>=7},
+{name:'? ????',icon:'?',tier:'silver',u:habitsDone},
+{name:'?? ???',icon:'??',tier:'gold',u:score>=100},
+];
+}
+
 // ==================== PROFILE ====================
 function rProfile(){
 document.getElementById('scoreVal').textContent=score;
@@ -436,8 +467,8 @@ let wd=days.map((_,i)=>{let d=new Date();d.setDate(d.getDate()-(6-i));let ds=d.t
 let mx=Math.max(...wd,10);
 bc.innerHTML=wd.map((v,i)=>`<div class="col"><div class="bar" style="height:${Math.max(4,(v/mx)*110)}px;background:${i===6?'#81C784':'#5C6BC0'}"></div><div class="lbl">${days[i]}</div></div>`).join('');
 
-let ach=[{n:'🌸 初次种树',u:totalCompletions>=1},{n:'🧧 阿梓新年版',u:totalCompletions>=5},{n:'👗 阿梓夏日服',u:totalCompletions>=12},{n:'🎤 阿梓偶像服',u:totalCompletions>=25},{n:'💎 阿梓礼服',u:totalCompletions>=45},{n:'👑 艾蜀酱传说',u:totalCompletions>=80}];
-document.getElementById('achs').innerHTML=ach.map(a=>`<div class="ach${a.u?'':' lk'}">${a.n}</div>`).join('');
+let ach=calcAchievements();
+document.getElementById('achs').innerHTML='<div class=ach-header><strong>?? ??</strong><span class=ach-count>'+ach.filter(a=>a.u).length+'/'+ach.length+'</span></div><div class=ach-grid>'+ach.map(a=>{let tierClass=a.tier==='legend'?'tier-legend':'';let tierLabel={bronze:'?',silver:'?',gold:'?',legend:'??'}[a.tier]||'';return`<div class="ach-card ${a.u?'unlocked '+tierClass:'locked'}"><span class=ach-icon>${a.u?a.icon:'?'}</span><div class=ach-name>${a.name}</div>${a.u?`<span class='ach-tier tier-${a.tier}'>${tierLabel}</span>`:''}</div>`}).join('')+'</div>';
 }
 
 function updateScore(n){score+=n;save('c');if(currentTab===4)rProfile()}
