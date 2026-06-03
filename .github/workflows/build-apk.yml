@@ -8,9 +8,9 @@ on:
         description: "版本号"
         required: false
         default: "3.5.3"
-  # 推送到main分支自动构建
+  # 推送到master分支自动构建
   push:
-    branches: [main]
+    branches: [master]
     paths:
       - "android/**"
       - ".github/workflows/build-apk.yml"
@@ -91,7 +91,7 @@ jobs:
 
       # 8. 创建GitHub Release
       - name: 创建Release
-        if: github.event_name == 'workflow_dispatch' || github.ref == 'refs/heads/main'
+        if: github.event_name == 'workflow_dispatch' || github.ref == 'refs/heads/master'
         uses: softprops/action-gh-release@v2
         with:
           tag_name: v${{ github.event.inputs.version || '3.5.3' }}-android
