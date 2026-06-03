@@ -307,7 +307,7 @@ function fmtMins(m){if(m<60)return m+'分钟';let h=Math.floor(m/60);let r=m%60;
 
 // ==================== TABS ====================
 let currentTab=0;
-function goTab(i){currentTab=i;document.querySelectorAll('.page').forEach(p=>p.classList.remove('on'));document.querySelectorAll('.tab').forEach((t,j)=>t.classList.toggle('on',j===i));document.getElementById(['pg0','pg1','pg2','pg3','pg4'][i]).classList.add('on');document.getElementById('bar').textContent=['🌸 阿梓的森林','👗 阿梓衣柜','✅ 习惯追踪','🎯 目标计划','👤 我的数据'][i];if(i===1)rGallery();if(i===2)rHabits();if(i===3)rGoals();if(i===4)rProfile()}
+function goTab(i){currentTab=i;document.querySelectorAll('.page').forEach(p=>p.classList.remove('on'));document.querySelectorAll('.tab').forEach((t,j)=>t.classList.toggle('on',j===i-1));document.getElementById(['pg0','pg1','pg2','pg3','pg4'][i]).classList.add('on');document.getElementById('bar').textContent=['🌸 阿梓的森林','👗 阿梓衣柜','✅ 习惯追踪','🎯 目标计划','👤 我的数据'][i];if(i===1)rGallery();if(i===2)rHabits();if(i===3)rGoals();if(i===4)rProfile()}
 
 // ==================== FOCUS TIMER ====================
 (function initFocus(){
@@ -441,7 +441,7 @@ let unlocked=i<=currentTreeIdx;
 let isNext=i===currentTreeIdx+1;
 let progress=unlocked?100:isNext?Math.round((totalCompletions-AZUSA_TREES[currentTreeIdx].unlock)/(t.unlock-AZUSA_TREES[currentTreeIdx].unlock)*100):0;
 let cls=unlocked?(i===currentTreeIdx?'current':'unlocked'):'locked';
-let badge=unlocked?(i===currentTreeIdx?'📅 今日':'📈 未来':'✔ 已解锁'+(isNext?'🔒 未解锁':'🔒'+t.unlock+'?');
+let badge=unlocked?(i===currentTreeIdx?'📅 当前':'✔ 已解锁'):(isNext?'🔒 需'+(t.unlock-totalCompletions)+'次':'🔒 需'+t.unlock+'次专注');
 let visual=t.img?`<img src="${t.img}" class="tg-img" alt="${t.name}" loading="lazy">`:`<span class="tg-emoji">${t.emoji}</span>`;
 return`<div class="tg-card ${cls}"><span class="tg-badge ${unlocked?'':'lock'}">${badge}</span>${visual}<div class="tg-name">${t.name}</div><div class="tg-sub">${t.sub}</div>${!unlocked?`<div class="tg-progress"><div style="width:${isNext?progress:0}%"></div></div>`:''}</div>`}).join('')}
 
