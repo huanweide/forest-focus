@@ -1271,10 +1271,10 @@ updateChatStatus();
 function updateChatStatus(){
 var el=document.getElementById('chatStatus');
 if(dsApiKey){
-el.textContent='🟢 AI在线';
+el.textContent='🟢 阿梓在家';
 el.style.color='#a5d6a7';
 }else{
-el.textContent='⚫ 离线模式';
+el.textContent='⚫ 阿梓出门了';
 el.style.color='rgba(255,255,255,.5)';
 }
 }
@@ -1334,27 +1334,49 @@ localStorage.setItem('fchat',JSON.stringify(chatHistory));
 
 function localReply(msg){
 var replies={
-'你好':['嗨！今天也要加油哦~ ✨','你好呀！阿梓一直在等你~','嗨嗨！想我了吗？😊'],
-'加油':['一起加油！阿梓相信你💪','冲鸭！今天种几棵树？🌱','你最棒了！阿梓为你骄傲~'],
-'累了':['休息一下吧，阿梓陪你🌙','累了就看看窗外，或者来我这换件衣服~','抱抱！阿梓也有累的时候呢🥺'],
-'谢谢':['不用谢啦~ 记得种树就好！','嘿嘿，要谢就多种几棵树吧🌳','阿梓收到你的心意了💕'],
-'学习':['专注学习的样子最帅了！','今天学什么？阿梓好奇~','学习加油！阿梓给你泡杯虚拟咖啡☕'],
-'喜欢':['阿梓也喜欢你！','诶嘿~ 害羞😊','最喜欢认真专注的你了！'],
-'今天':['今天是美好的一天！','今天天气不错，适合种树~','今天你的专注记录很棒哦！'],
+'你好':['哟 来了啊','嗨嗨','哦哈哟','来啦？'],
+'加油':['冲','干就完了','别墨迹 快去','行吧 算你努力'],
+'累了':['那歇会 别硬撑','摸会鱼 别让我看见就行','累就对了 舒服是留给死人的','躺 我陪你躺'],
+'谢谢':['嗯','行 收到了','别光谢 多种树','客气啥'],
+'学习':['学啥 让我康康','装起来了是吧','别是打开书就刷B站','学吧 学无止境 太草了'],
+'喜欢':['？','少来这套','你倒是多种几棵树啊','...还行吧'],
+'今天':['还行吧 普通的一天','你猜我今天干啥了','今天直播打游戏 输麻了','别问 问就是摆烂'],
+'种树':['种啊 等啥呢','你的森林都快秃了','多种点 我看好你','树呢？'],
+'阿梓':['干嘛','叫我干啥','在呢 啥事','？'],
+'烦':['我也烦','烦就种树','种棵树就好了 真的','比我还烦？'],
+'菜':['你才菜','练呗 还能咋的','谁不是从菜鸡过来的'],
+'晚安':['睡吧 明天继续种','晚安 梦里别偷懒','嗯'],
+'早上':['醒了？快种树','早 今天冲多少分钟','早啊 别赖床了'],
+'考试':['冲！挂科别找我','考完回来种树','怕啥 大不了重修 开玩笑的'],
 };
-// Find best matching reply
 for(var key in replies){
 if(msg.indexOf(key)>=0){
 var arr=replies[key];
 return arr[Math.floor(Math.random()*arr.length)];
 }
 }
-var defaults=['阿梓收到你的消息了~ 快去种树吧🌱','嗯嗯！阿梓在听~ 今天要完成什么目标？','和你聊天真开心！别忘了今天的专注哦✨','阿梓觉得你一定能行！先种棵树怎么样？','嘿嘿，阿梓会一直陪着你的~'];
+var defaults=[
+'嗯？',
+'说人话',
+'哈？',
+'行吧',
+'6',
+'种树去 别聊了',
+'你专注时长都快归零了还搁这聊天呢',
+'阿梓今天直播输了 心情不好 你最好是有正事',
+'今天种几棵了？',
+'我看看你的森林...啧啧 还得练',
+];
 return defaults[Math.floor(Math.random()*defaults.length)];
 }
 
 async function callDeepSeek(msg){
-var systemPrompt='你是阿梓，一个可爱的VTuber，也是用户的自律伙伴。说话傲娇可爱，爱用颜文字，会撒娇也会吐槽。回复简洁（50字以内）。用户今天专注'+todayMins()+'分钟，连续'+getCurrentStreak()+'天，解锁了'+(currentTreeIdx+1)+'件衣装。';
+var ctx='';
+var mins=todayMins(),streak=getCurrentStreak(),outfits=currentTreeIdx+1;
+if(mins>0)ctx='（这小子今天专注了'+mins+'分钟，连续'+streak+'天了，解锁了'+outfits+'件衣服）';
+else if(streak>0)ctx='（他连续专注'+streak+'天了，有'+outfits+'件衣服）';
+else ctx='（他今天还没开始专注，可以催催他）';
+var systemPrompt='你是阿梓，VirtuaReal的VUP，一个爱唱歌打游戏、偶尔摆烂但心地善良的普通女孩。现在兼职一个"自律森林"番茄钟App的看板娘。你的性格：傲娇、毒舌但关心人、会吐槽自己也会吐槽对方、说话像真人朋友而不是AI客服。你绝不说什么"让我们一起努力""你是最棒的""相信自己"这种AI套话。你说人话。你可以说脏话（草、妈的、淦）、用网络用语（绷不住了、6、绝了）、用B站弹幕梗。你不用每句话都鼓励对方。你回复很短——像微信聊天，不是写小作文。不超过35字。别用波浪线装可爱。对方摆烂你就骂，对方努力你就傲娇地夸一句。你是活人，不是客服。'+ctx;
 var resp=await fetch('https://api.deepseek.com/chat/completions',{
 method:'POST',
 headers:{'Content-Type':'application/json','Authorization':'Bearer '+dsApiKey},
@@ -1364,8 +1386,8 @@ messages:[
 {role:'system',content:systemPrompt},
 {role:'user',content:msg}
 ],
-max_tokens:120,
-temperature:0.9
+max_tokens:80,
+temperature:1.2
 })
 });
 var data=await resp.json();
@@ -1394,7 +1416,7 @@ if(key!==null){
 dsApiKey=key.trim();
 localStorage.setItem('ds_key',dsApiKey);
 updateChatStatus();
-toast(dsApiKey?'✅ DeepSeek已连接！可以和阿梓聊天了':'⚫ 已切换到离线模式');
+toast(dsApiKey?'✅ 阿梓在家了！':'⚫ 阿梓出门了（离线）');
 }
 }
 
