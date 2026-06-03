@@ -387,7 +387,7 @@ let progress=unlocked?100:isNext?Math.round((totalCompletions-AZUSA_TREES[curren
 let cls=unlocked?(i===currentTreeIdx?'current':'unlocked'):'locked';
 let badge=unlocked?(i===currentTreeIdx?'?? ??':'? ???'):'?? '+(isNext?'???':'?'+t.unlock+'?');
 let visual=t.img?`<img src="${t.img}" class="tg-img" alt="${t.name}" loading="lazy">`:`<span class="tg-emoji">${t.emoji}</span>`;
-return`<div class="tg-card ${cls}"><span class="tg-badge ${unlocked?'':'lock'}">${badge}</span>${visual}<div class="tg-name">${t.name}</div><div class="tg-sub">${t.sub}</div>${!unlocked?`<div class="tg-progress"><div style="width:${isNext?progress:0}%"></div></div>`:''}</div>`}).join('')
+return`<div class="tg-card ${cls}"><span class="tg-badge ${unlocked?'':'lock'}">${badge}</span>${visual}<div class="tg-name">${t.name}</div><div class="tg-sub">${t.sub}</div>${!unlocked?`<div class="tg-progress"><div style="width:${isNext?progress:0}%"></div></div>`:''}</div>`}).join('')}
 
 // ==================== HABITS ====================
 function rHabits(){
