@@ -84,7 +84,7 @@ body.locked{overflow:hidden;position:fixed;width:100%;height:100%}
 @keyframes unlockPop{0%{transform:scale(.5);opacity:0}60%{transform:scale(1.1)}100%{transform:scale(1);opacity:1}}
 .unlock-pop{animation:unlockPop .6s ease}
 .ach-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}
-.ach-card{background:var(--c);border-radius:10px;padding:10px 6px;text-align:center;box-shadow:var(--sh);transition:.2s;position:relative}
+.ach-card{background:var(--c);border-radius:10px;padding:10px 6px;text-align:center;box-shadow:var(--sh);transition:.2s;position:relative}.ach-card.unlocked{transform:scale(1)}.ach-card:active{transform:scale(.94)}
 .ach-card.locked{opacity:.45;filter:grayscale(.8)}
 .ach-card.unlocked{border:1px solid var(--g)}
 .ach-card.tier-legend{background:linear-gradient(135deg,#fce4ec,#f3e5f5)}
@@ -102,16 +102,16 @@ body.locked{overflow:hidden;position:fixed;width:100%;height:100%}
 .stats-chip{padding:6px 12px;border-radius:16px;border:1.5px solid #ddd;font-size:12px;font-weight:500;cursor:pointer;background:var(--c);transition:.15s}
 .stats-chip.sel{border-color:var(--g);background:var(--g);color:#fff}
 .stats-summary{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin:10px 0}
-.stats-box{background:var(--c);border-radius:var(--rad);padding:12px;text-align:center;box-shadow:var(--sh)}
+.stats-box{background:var(--c);border-radius:var(--rad);padding:14px 10px;text-align:center;box-shadow:var(--sh);transition:.2s}.stats-box:active{transform:scale(.97)}
 .stats-box .val{font-size:28px;font-weight:700;color:var(--g);font-family:monospace}
 .stats-box .lbl{font-size:11px;color:var(--gr);margin-top:2px}
 .pie-wrap{display:flex;align-items:center;gap:12px;padding:8px 0;justify-content:center;flex-wrap:wrap}
-.pie-chart{width:100px;height:100px;border-radius:50%;background:conic-gradient(var(--g) 0deg,var(--g) var(--p1),#FF7043 var(--p1),#FF7043 var(--p2),#66BB6A var(--p2),#66BB6A var(--p3),#e0e0e0 var(--p3));flex-shrink:0}
+.pie-chart{width:110px;height:110px;border-radius:50%;background:conic-gradient(#7E57C2 0deg,#7E57C2 var(--p1),#FF7043 var(--p1),#FF7043 var(--p2),#66BB6A var(--p2),#66BB6A var(--p3),#f0f0f0 var(--p3));flex-shrink:0;box-shadow:0 4px 12px rgba(0,0,0,.08)}
 .pie-legend{font-size:11px;display:flex;flex-direction:column;gap:4px}
 .pie-legend span{display:flex;align-items:center;gap:6px}
 .pie-dot{width:10px;height:10px;border-radius:50%;display:inline-block;flex-shrink:0}
 /* Streak fire */
-.streak-box{background:linear-gradient(135deg,#fff3e0,#fce4ec);border-radius:var(--rad);padding:14px;text-align:center;margin:8px 0;box-shadow:var(--sh)}
+.streak-box{background:linear-gradient(135deg,#f3e5f5,#ede7f6);border-radius:var(--rad);padding:16px;text-align:center;margin:8px 0;box-shadow:var(--sh);border:1px solid rgba(126,87,194,.15)}
 .streak-fire{font-size:40px;display:block;animation:pulse .8s ease-in-out infinite}
 .streak-num{font-size:32px;font-weight:700;color:#e65100;font-family:monospace}
 .streak-lbl{font-size:12px;color:var(--gr);margin-top:2px}
@@ -120,7 +120,7 @@ body.locked{overflow:hidden;position:fixed;width:100%;height:100%}
 .ach-prog div{height:100%;border-radius:2px;transition:.4s}
 /* Phase icon */
 .phase-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;margin:10px 0}
-.phase-item{text-align:center;padding:8px 4px;border-radius:10px;background:var(--c);box-shadow:var(--sh);font-size:11px}
+.phase-item{text-align:center;padding:10px 4px;border-radius:12px;background:var(--c);box-shadow:var(--sh);font-size:11px;transition:.2s}.phase-item:active{transform:scale(.96)}
 .phase-item .ph-icon{font-size:24px;display:block;margin-bottom:2px}
 .phase-item .ph-val{font-weight:700;color:var(--g);font-size:14px}
 
@@ -479,6 +479,17 @@ function incG(id){let g=goals.find(x=>x.id===id);if(!g)return;g.done=(g.done||0)
 function addGoal(){let t=prompt('目标名称');if(!t||!t.trim())return;let tom=parseInt(prompt('预估番茄钟数','20'))||20;goals.push({id:uid(),title:t.trim(),tomatoes:tom,done:0,totalMins:0});save('g');rGoals();updateTaskSelects();toast('🎯 已添加')}
 function delG(id){if(!confirm('确定删除？'))return;goals=goals.filter(g=>g.id!==id);save('g');rGoals();updateTaskSelects()}
 
+// ==================== PERIOD HELPERS ====================
+let currentPeriod=0;
+function setPeriod(i){currentPeriod=i;document.querySelectorAll('.stats-chip').forEach((c,j)=>c.classList.toggle('sel',j===i));rProfile()}
+function getPeriod(){
+let now=new Date();let today=now.toISOString().slice(0,10);
+if(currentPeriod===0){let d=new Date(now);d.setDate(d.getDate()-d.getDay()+1);return{start:d.toISOString().slice(0,10),label:'??'}}
+if(currentPeriod===1){return{start:now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0')+'-01',label:'??'}}
+if(currentPeriod===2){return{start:now.getFullYear()+'-01-01',label:'??'}}
+return{start:'2020-01-01',label:'??'};
+}
+
 // ==================== ACHIEVEMENTS ====================
 function calcAchievements(){
 let today=new Date().toISOString().slice(0,10);
@@ -571,17 +582,7 @@ let progressPct=a.u?100:a.name.includes('??')?Math.min(100,Math.round(totalCompl
 let pColor=a.tier==='bronze'?'#e65100':a.tier==='silver'?'#616161':a.tier==='gold'?'#f57f17':'#6a1b9a';
 return`<div class="ach-card ${a.u?'unlocked '+tierClass:'locked'}"><span class=ach-icon>${a.u?a.icon:'?'}</span><div class=ach-name>${a.name}</div>${a.u?`<span class='ach-tier tier-${a.tier}'>${tierLabel}</span>`:`<div class=ach-prog><div style=width:${progressPct}%;background:${pColor}></div></div>`}</div>`}).join('')+'</div>';
 }
-
-// Period helpers
-let currentPeriod=0;
-function setPeriod(i){currentPeriod=i;document.querySelectorAll('.stats-chip').forEach((c,j)=>c.classList.toggle('sel',j===i));rProfile()}
-function getPeriod(){
-let now=new Date();let today=now.toISOString().slice(0,10);
-if(currentPeriod===0){let d=new Date(now);d.setDate(d.getDate()-d.getDay()+1);return{start:d.toISOString().slice(0,10),label:'??'}}
-if(currentPeriod===1){return{start:now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0')+'-01',label:'??'}}
-if(currentPeriod===2){return{start:now.getFullYear()+'-01-01',label:'??'}}
-return{start:'2020-01-01',label:'??'};
-}function updateScore(n){score+=n;save('c');if(currentTab===4)rProfile()}
+function updateScore(n){score+=n;save('c');if(currentTab===4)rProfile()}
 function toggleDark(){dark=!dark;document.body.classList.toggle('dark',dark);save('d')}
 function exportData(){let data={habits,goals,sessions,score,exported:new Date().toISOString()};let b=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});let a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='azusa-forest-'+new Date().toISOString().slice(0,10)+'.json';a.click();toast('📤 已导出')}
 function resetAll(){if(!confirm('确定删除？建议先导出备份。'))return;habits=[];goals=[];sessions=[];score=0;totalCompletions=0;currentTreeIdx=0;['fh','fg','fs','fsc'].forEach(k=>localStorage.removeItem(k));save('c');if(currentTab===1)rGallery();if(currentTab===2)rHabits();if(currentTab===3)rGoals();if(currentTab===4)rProfile();updateTaskSelects();toast('🔄 已重置')}
