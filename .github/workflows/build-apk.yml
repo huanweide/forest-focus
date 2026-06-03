@@ -1,0 +1,120 @@
+﻿name: 构建阿梓森林APK
+
+on:
+  # 手动触发（在GitHub网页上点按钮）
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "版本号"
+        required: false
+        default: "3.5.3"
+  # 推送到main分支自动构建
+  push:
+    branches: [main]
+    paths:
+      - "android/**"
+      - ".github/workflows/build-apk.yml"
+
+# 权限设置：允许写入Release
+permissions:
+  contents: write
+  actions: read
+
+jobs:
+  build:
+    name: 编译APK
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. 检出代码
+      - name: 检出仓库
+        uses: actions/checkout@v4
+
+      # 2. 安装Java 17（Android编译必需）
+      - name: 安装Java
+        uses: actions/setup-java@v4
+        with:
+          java-version: "17"
+          distribution: "temurin"
+
+      # 3. 安装Android SDK
+      - name: 安装Android SDK
+        uses: android-actions/setup-android@v3
+        with:
+          packages: "platforms;android-34 build-tools;34.0.0 platform-tools"
+
+      # 4. 生成Gradle Wrapper
+      - name: 配置Gradle
+        working-directory: android
+        run: |
+          if [ ! -f gradlew ]; then
+            gradle wrapper --gradle-version 8.5
+          fi
+          chmod +x gradlew
+
+      # 5. 编译Release版APK
+      - name: 编译APK
+        working-directory: android
+        run: ./gradlew assembleRelease
+
+      # 6. 签名APK（用debug key，因为没有正式签名）
+      - name: 对齐和签名
+        working-directory: android
+        run: |
+          APK_UNSIGNED=$(find app/build/outputs/apk/release -name "*.apk" | head -1)
+          echo "Unsigned APK: $APK_UNSIGNED"
+
+          # 用debug keystore签名（华为手机允许安装debug签名的APK）
+          if [ -f ~/.android/debug.keystore ]; then
+            jarsigner -verbose -sigalg SHA256withRSA -digestalg SHA-256 \
+              -keystore ~/.android/debug.keystore \
+              -storepass android \
+              -keypass android \
+              "$APK_UNSIGNED" androiddebugkey
+
+            # 对齐优化
+            zipalign -v 4 "$APK_UNSIGNED" app/build/outputs/apk/release/azusa-forest-signed.apk
+            echo "Signed APK created"
+          else
+            # 无签名也保留，用户可以用MT管理器等工具签名
+            cp "$APK_UNSIGNED" app/build/outputs/apk/release/azusa-forest-signed.apk
+            echo "No keystore, copied unsigned APK"
+          fi
+
+      # 7. 上传APK为构建产物
+      - name: 上传APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: azusa-forest-apk
+          path: android/app/build/outputs/apk/release/azusa-forest-signed.apk
+          retention-days: 30
+
+      # 8. 创建GitHub Release
+      - name: 创建Release
+        if: github.event_name == 'workflow_dispatch' || github.ref == 'refs/heads/main'
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ github.event.inputs.version || '3.5.3' }}-android
+          name: "阿梓的森林 Android APK v${{ github.event.inputs.version || '3.5.3' }}"
+          body: |
+            ## 阿梓的森林 · Android安装包
+
+            > 番茄钟 + 阿梓伙伴 + 衣装收集
+
+            ### 安装方法
+            1. 下载APK文件
+            2. 华为手机：打开"文件管理"→找到下载的APK→点击安装
+            3. 如果提示"未知来源"，在设置中允许"外部来源应用安装"
+            4. 安装完成后桌面会出现"阿梓的森林"图标
+
+            ### 技术说明
+            - 基于WebView封装，内部打开GitHub Pages在线版
+            - 所有数据存储在手机本地，不上传任何服务器
+            - 需要联网使用（首次加载后支持部分离线）
+
+            ### 版本信息
+            - 构建时间：${{ github.event.repository.updated_at }}
+            - 目标：华为/鸿蒙 Android 7.0+
+          files: android/app/build/outputs/apk/release/azusa-forest-signed.apk
+          draft: false
+          prerelease: false

@@ -1,0 +1,47 @@
+﻿plugins {
+    id "com.android.application"
+}
+
+android {
+    namespace "com.huanweide.azusaforest"
+    compileSdk 34
+
+    defaultConfig {
+        applicationId "com.huanweide.azusaforest"
+        minSdk 24
+        targetSdk 34
+        versionCode 1
+        versionName "3.5.3"
+        // 多语言支持
+        resConfigs "zh"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled true
+            shrinkResources true
+            proguardFiles getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
+        }
+        debug {
+            applicationIdSuffix ".debug"
+            versionNameSuffix "-debug"
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+
+    // APK输出命名
+    applicationVariants.all { variant ->
+        variant.outputs.all {
+            outputFileName = "azusa-forest-${variant.versionName}.apk"
+        }
+    }
+}
+
+dependencies {
+    implementation "androidx.appcompat:appcompat:1.6.1"
+    implementation "androidx.webkit:webkit:1.9.0"
+}

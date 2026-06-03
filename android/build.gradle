@@ -1,0 +1,10 @@
+﻿// 项目级构建配置 - 告诉Android SDK用哪些插件和仓库
+buildscript {
+    repositories {
+        google()
+        mavenCentral()
+    }
+    dependencies {
+        classpath "com.android.tools.build:gradle:8.2.2"
+    }
+}
