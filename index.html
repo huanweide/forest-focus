@@ -333,6 +333,26 @@ body.dark .chat-modal{background:#1a1a2e}
 @keyframes surprise{0%{transform:scale(1)}50%{transform:scale(1.12)}100%{transform:scale(1)}}
 /* Click feedback pulse */
 .azusa-character:active .body-outfit{transform:scale(.95);transition:transform .1s}
+
+/* Install button */
+.install-bar{background:linear-gradient(135deg,#7C5CBF,#9575CD);color:#fff;padding:10px 16px;display:flex;align-items:center;gap:10px;border-radius:14px;margin:10px 0;box-shadow:0 4px 16px rgba(124,92,191,.3);cursor:pointer;animation:slideDown .4s ease-out;font-size:13px}
+.install-bar.hidden{display:none}
+.install-bar .inst-icon{font-size:28px}
+.install-bar .inst-text{flex:1}
+.install-bar .inst-title{font-weight:700;font-size:14px}
+.install-bar .inst-sub{font-size:11px;opacity:.8;margin-top:1px}
+.install-bar .inst-btn{background:#fff;color:#7C5CBF;padding:8px 16px;border-radius:20px;font-weight:700;font-size:13px;border:none;cursor:pointer;white-space:nowrap}
+/* Install guide modal */
+.install-guide{position:fixed;bottom:0;left:0;right:0;background:#fff;border-radius:20px 20px 0 0;padding:20px;z-index:400;box-shadow:0 -4px 30px rgba(0,0,0,.2);transform:translateY(100%);transition:transform .3s ease-out;max-height:70vh;overflow-y:auto}
+.install-guide.show{transform:translateY(0)}
+.install-guide .ig-close{float:right;width:28px;height:28px;border-radius:50%;border:none;background:#eee;font-size:16px;cursor:pointer}
+.install-guide h3{font-size:17px;margin:8px 0 14px}
+.install-guide .step{margin:10px 0;display:flex;gap:10px;align-items:start}
+.install-guide .step-num{width:24px;height:24px;background:var(--gd);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0}
+.install-guide .step-text{font-size:14px;line-height:1.5;color:#333;flex:1}
+.install-guide .browser-pick{display:flex;gap:8px;margin:12px 0}
+.install-guide .browser-pick button{flex:1;padding:12px;border-radius:12px;border:2px solid #e0e0e0;background:#fff;font-size:14px;cursor:pointer;text-align:center}
+.install-guide .browser-pick button.sel{border-color:var(--g);background:#f5f0fa}
 </style>
 </head>
 <body>
@@ -388,9 +408,41 @@ body.dark .chat-modal{background:#1a1a2e}
 <div class="daily-quote" id="dailyQuote">"阿梓在等你开始今天的专注呢~"</div>
 <div class="quick-stats" id="quickStats"></div>
 <div id="duoWarning"></div>
+<div class="install-bar hidden" id="installBar" onclick="installApp()">
+<div class="inst-icon">📲</div>
+<div class="inst-text">
+<div class="inst-title">添加到手机桌面</div>
+<div class="inst-sub">像App一样使用，无需每次打开浏览器</div>
+</div>
+<button class="inst-btn" onclick="event.stopPropagation();installApp()">安装</button>
+</div>
+<div class="install-guide" id="installGuide">
+<button class="ig-close" onclick="closeInstallGuide()">✕</button>
+<h3>📱 华为手机安装指南</h3>
+<div class="step"><span class="step-num">1</span><span class="step-text">推荐使用 <b>Edge浏览器</b> 打开此页面（华为应用市场可下载）</span></div>
+<div class="step"><span class="step-num">2</span><span class="step-text">点击上方紫色「安装」按钮，或浏览器底部菜单 → <b>添加到主屏幕</b></span></div>
+<div class="step"><span class="step-num">3</span><span class="step-text">确认后桌面会出现「阿梓森林」图标，点击即可全屏使用</span></div>
+<div style="font-size:12px;color:#999;margin-top:12px;text-align:center">华为自带浏览器可能不支持PWA，建议用Edge打开</div>
+</div>
 <div class="home-actions">
 <button class="home-btn primary" onclick="goTab(1)">🌱 开始专注</button>
 <button class="home-btn secondary" onclick="goTab(2)">👗 衣柜</button>
+</div>
+<div class="install-bar hidden" id="installBar" onclick="installApp()">
+<div class="inst-icon">📲</div>
+<div class="inst-text">
+<div class="inst-title">添加到手机桌面</div>
+<div class="inst-sub">像App一样使用，无需每次打开浏览器</div>
+</div>
+<button class="inst-btn" onclick="event.stopPropagation();installApp()">安装</button>
+</div>
+<div class="install-guide" id="installGuide">
+<button class="ig-close" onclick="closeInstallGuide()">✕</button>
+<h3>📱 华为手机安装指南</h3>
+<div class="step"><span class="step-num">1</span><span class="step-text">推荐使用 <b>Edge浏览器</b> 打开此页面（华为应用市场可下载）</span></div>
+<div class="step"><span class="step-num">2</span><span class="step-text">点击上方紫色「安装」按钮，或浏览器底部菜单 → <b>添加到主屏幕</b></span></div>
+<div class="step"><span class="step-num">3</span><span class="step-text">确认后桌面会出现「阿梓森林」图标，点击即可全屏使用</span></div>
+<div style="font-size:12px;color:#999;margin-top:12px;text-align:center">华为自带浏览器可能不支持PWA，建议用Edge打开</div>
 </div>
 <div class="home-actions">
 <button class="home-btn secondary" onclick="goTab(5)">📊 统计</button>
@@ -1119,6 +1171,7 @@ if(warningEl)warningEl.innerHTML=streakWarning||'';
 var toggle=document.getElementById('timerToggle');
 var timerDefault=localStorage.getItem('ftimerDefault')==='1';
 if(toggle)toggle.classList.toggle('on',timerDefault);
+checkInstallAvailable();
 }
 
 function toggleTimerDefault(){
@@ -1490,15 +1543,49 @@ if(currentTab===2)rGallery();
 var deferredPrompt=null;
 window.addEventListener('beforeinstallprompt',function(e){e.preventDefault();deferredPrompt=e});
 function installApp(){
-if(deferredPrompt){deferredPrompt.prompt();deferredPrompt.userChoice.then(function(r){if(r.outcome==='accepted')toast('✅ 安装成功！');deferredPrompt=null})}
-else{toast('📱 请在浏览器菜单中选择"添加到主屏幕"')}
+if(deferredPrompt){
+deferredPrompt.prompt();
+deferredPrompt.userChoice.then(function(r){
+if(r.outcome==='accepted'){
+toast('\u2705 \u5b89\u88c5\u6210\u529f\uff01');
+document.getElementById('installBar').classList.add('hidden');
+}else{
+showInstallGuide();
+}
+deferredPrompt=null;
+});
+}else{
+showInstallGuide();
+}
+}
+function showInstallGuide(){
+document.getElementById('installGuide').classList.add('show');
+}
+function closeInstallGuide(){
+document.getElementById('installGuide').classList.remove('show');
+}
+// Show install bar if PWA is available
+function checkInstallAvailable(){
+var bar=document.getElementById('installBar');
+if(!bar)return;
+// Show bar if: has deferredPrompt OR on mobile
+var isMobile=/Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+var isStandalone=window.matchMedia('(display-mode: standalone)').matches;
+if(isStandalone){bar.classList.add('hidden');return}
+if(deferredPrompt||isMobile){
+bar.classList.remove('hidden');
+}
+// If mobile but no deferredPrompt, still show with guide
+if(isMobile&&!deferredPrompt){
+bar.querySelector('.inst-sub').textContent='华为手机推荐用Edge浏览器打开安装';
+}
 }
 
 // ==================== INIT ====================
 function initAll(){rHabits();rGoals();requestNotify();checkStreakRecovery();updateMoodUI();checkNewbieGift();setInterval(periodicBubble,300000);setInterval(checkReminder,600000);setTimeout(randomBubble,10000);
 checkStreakDanger();
 var timerDefault=localStorage.getItem('ftimerDefault')==='1';
-updateCoinDisplay();initAzusaClick();if(timerDefault){goTab(1);}else{goTab(0);rHome();}
+updateCoinDisplay();initAzusaClick();setTimeout(checkInstallAvailable,3000);if(timerDefault){goTab(1);}else{goTab(0);rHome();}
 }
 initAll();
 if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});
