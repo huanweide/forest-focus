@@ -12,7 +12,7 @@
 :root{--g:#5C6BC0;--gl:#7986CB;--bg:#f0f2fa;--c:#fff;--t:#1a1a1a;--gr:#888;--r:#e53935;--o:#ff9800;--b:#7E57C2;--rad:14px;--sh:0 2px 8px rgba(0,0,0,.06)}
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:-apple-system,'PingFang SC','Noto Sans SC',sans-serif;background:var(--bg);color:var(--t);-webkit-tap-highlight-color:transparent;user-select:none;-webkit-user-select:none;padding-bottom:72px;overscroll-behavior:none;font-size:15px;position:relative}
-body::before{content:'';position:fixed;top:0;left:0;right:0;bottom:0;background:url(src/images/azusa/azusa_transparent.png) center/contain no-repeat;opacity:.04;pointer-events:none;z-index:0}
+body::before{content:'';position:fixed;top:0;left:0;right:0;bottom:0;background:url(src/images/azusa/renders/azusa_front.png?v=11) center/contain no-repeat;opacity:.05;pointer-events:none;z-index:0}
 .appbar,.tabbar,.page{position:relative;z-index:1}
 body.dark{--bg:#1a1a2e;--c:#16213e;--t:#e0e0e0;--gr:#999;--sh:0 2px 8px rgba(0,0,0,.3)}
 body.locked{overflow:hidden;position:fixed;width:100%;height:100%}
@@ -63,7 +63,7 @@ body.locked{overflow:hidden;position:fixed;width:100%;height:100%}
 /* Tree Gallery */
 .tree-gallery{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:8px}
 .tg-card{background:var(--c);border-radius:var(--rad);padding:10px 8px 12px;text-align:center;box-shadow:var(--sh);transition:.3s;position:relative;overflow:hidden;cursor:pointer}.tg-card:active{transform:scale(.95)}.tg-card.unlocked:hover{box-shadow:0 4px 16px rgba(92,107,192,.2)}
-.tg-card.locked{opacity:.78}
+.tg-card.locked{opacity:.85}.tg-card.locked .tg-img{filter:brightness(.7) saturate(.5)}
 .tg-card.unlocked{border:2px solid var(--g)}
 .tg-card.current{border:2px solid var(--g);box-shadow:0 0 16px rgba(92,107,192,.3)}
 .tg-emoji{font-size:50px;display:block}
@@ -73,8 +73,8 @@ body.locked{overflow:hidden;position:fixed;width:100%;height:100%}
 .tg-badge.lock{background:#ccc}
 .tg-progress{height:4px;border-radius:2px;background:#e8e8e8;margin-top:8px;overflow:hidden}
 .tg-progress div{height:100%;border-radius:2px;background:var(--g);transition:.4s}
-.tg-img{width:100%;height:220px;object-fit:contain;border-radius:10px;background:linear-gradient(135deg,rgba(124,92,191,.08),rgba(206,147,216,.05));display:block;margin:0 auto}
-.tree-img{max-height:200px;max-width:100%;object-fit:contain;transition:all .5s ease;border-radius:8px}
+.tg-img{width:100%;height:220px;object-fit:contain;border-radius:10px;background:linear-gradient(135deg,#f5f0ff,#faf5ff);display:block;margin:0 auto;filter:brightness(1.05) saturate(1.1)}
+.tree-img{max-height:200px;max-width:100%;object-fit:contain;transition:all .5s ease;border-radius:8px;filter:brightness(1.05) saturate(1.05)}
 .tree-box{text-align:center;height:180px;display:flex;align-items:center;justify-content:center;transition:.4s;overflow:hidden}
 @keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}
 .pulse{animation:pulse 1.5s ease-in-out infinite;display:inline-block}
@@ -452,7 +452,7 @@ body.locked{overflow:hidden;position:fixed;width:100%;height:100%}
 
 <!-- ===== 阿梓小精灵 ===== -->
 <div class="mascot-wrap mascot-idle" id="mascotWrap" title="拖拽移动 · 双击归位 · 戳戳互动">
-<img class="mascot-body" id="mascotBody" src="src/images/azusa/azusa_chibi.png" alt="阿梓小精灵">
+<img class="mascot-body" id="mascotBody" src="src/images/azusa/renders/azusa_chibi.png?v=11" alt="阿梓小精灵">
 <span class="mascot-skin-badge" id="mascotSkinBadge"></span>
 <div class="mascot-expression" id="mascotExpression"></div>
 <div class="mascot-bubble" id="mascotBubble"></div>
@@ -1029,15 +1029,23 @@ function rHandbook() {
 // 阿梓的8套衣服 = 8个树等级。越专注解锁越多衣服。
 const AZUSA_TREES=[
 {id:'seed',name:'阿梓的种子',img:'',emoji:'🌰',unlock:0,sub:'初始形态·第一次专注即可发芽',color:'#8D6E63'},
-{id:'default',name:'默认衣装',img:'src/images/azusa/azusa_default.png',emoji:'🌸',unlock:1,sub:'完成1次·阿梓日常默认形象',color:'#90CAF9'},
-{id:'newyear',name:'新年衣装',img:'src/images/azusa/azusa_newyear.png',emoji:'🎊',unlock:5,sub:'完成5次·新年限定和服',color:'#EF5350'},
-{id:'summer',name:'夏日衣装',img:'src/images/azusa/azusa_summer.jpg',emoji:'🏖️',unlock:12,sub:'完成12次·清凉夏日',color:'#FF7043'},
-{id:'panda',name:'熊猫阿梓',img:'src/images/azusa/azusa_panda.png',emoji:'🐼',unlock:20,sub:'完成20次·超萌熊猫外套',color:'#4CAF50'},
-{id:'rabbit',name:'兔兔阿梓',img:'src/images/azusa/azusa_rabbit.jpg',emoji:'🐰',unlock:30,sub:'完成30次·软萌兔耳',color:'#FF80AB'},
-{id:'frog',name:'青蛙阿梓',img:'src/images/azusa/azusa_frog.jpg',emoji:'🐸',unlock:40,sub:'完成40次·呱娃子青蛙装',color:'#66BB6A'},
-{id:'butterfly',name:'蝴蝶阿梓',img:'src/images/azusa/azusa_butterfly.jpg',emoji:'🦋',unlock:55,sub:'完成55次·蝴蝶精灵',color:'#CE93D8'},
-{id:'eggplant',name:'茄子阿梓',img:'src/images/azusa/azusa_eggplant.png',emoji:'🍆',unlock:70,sub:'完成70次·紫色茄子主题',color:'#9575CD'},
-{id:'spring',name:'春装阿梓',img:'src/images/azusa/azusa_spring.png',emoji:'🌿',unlock:90,sub:'完成90次·春日樱花限定',color:'#81C784'},
+{id:'3d_front',name:'3D阿梓·正面',img:'src/images/azusa/renders/azusa_front.png?v=11',emoji:'🎭',unlock:1,sub:'3D模型正面·800px高清渲染',color:'#90CAF9'},
+{id:'3d_portrait',name:'3D阿梓·全身',img:'src/images/azusa/renders/azusa_portrait.png?v=11',emoji:'🎭',unlock:3,sub:'3D模型全身立绘·完整形象',color:'#81D4FA'},
+{id:'3d_34r',name:'3D阿梓·右前侧',img:'src/images/azusa/renders/azusa_front_right.png?v=11',emoji:'🎭',unlock:6,sub:'3D模型右前侧·最优展示角度',color:'#4FC3F7'},
+{id:'3d_34l',name:'3D阿梓·左前侧',img:'src/images/azusa/renders/azusa_front_left.png?v=11',emoji:'🎭',unlock:9,sub:'3D模型左前侧·对称视角',color:'#29B6F6'},
+{id:'3d_left',name:'3D阿梓·左侧',img:'src/images/azusa/renders/azusa_left.png?v=11',emoji:'🎭',unlock:12,sub:'3D模型左侧面·展示侧面细节',color:'#03A9F4'},
+{id:'3d_right',name:'3D阿梓·右侧',img:'src/images/azusa/renders/azusa_right.png?v=11',emoji:'🎭',unlock:14,sub:'3D模型右侧面·展示发型细节',color:'#0288D1'},
+{id:'3d_back',name:'3D阿梓·背面',img:'src/images/azusa/renders/azusa_back.png?v=11',emoji:'🎭',unlock:16,sub:'3D模型背面·完整背部展示',color:'#0277BD'},
+{id:'3d_chibi',name:'3D阿梓·Q版',img:'src/images/azusa/renders/azusa_chibi.png?v=11',emoji:'🎭',unlock:18,sub:'3D模型俯视Q版·超可爱视角',color:'#01579B'},
+{id:'default',name:'默认衣装',img:'src/images/azusa/azusa_default.png',emoji:'🌸',unlock:20,sub:'完成20次·阿梓日常默认形象',color:'#90CAF9'},
+{id:'newyear',name:'新年衣装',img:'src/images/azusa/azusa_newyear.png',emoji:'🎊',unlock:28,sub:'完成28次·新年限定和服',color:'#EF5350'},
+{id:'summer',name:'夏日衣装',img:'src/images/azusa/azusa_summer.jpg',emoji:'🏖️',unlock:36,sub:'完成36次·清凉夏日',color:'#FF7043'},
+{id:'panda',name:'熊猫阿梓',img:'src/images/azusa/azusa_panda.png',emoji:'🐼',unlock:44,sub:'完成44次·超萌熊猫外套',color:'#4CAF50'},
+{id:'rabbit',name:'兔兔阿梓',img:'src/images/azusa/azusa_rabbit.jpg',emoji:'🐰',unlock:52,sub:'完成52次·软萌兔耳',color:'#FF80AB'},
+{id:'frog',name:'青蛙阿梓',img:'src/images/azusa/azusa_frog.jpg',emoji:'🐸',unlock:60,sub:'完成60次·呱娃子青蛙装',color:'#66BB6A'},
+{id:'butterfly',name:'蝴蝶阿梓',img:'src/images/azusa/azusa_butterfly.jpg',emoji:'🦋',unlock:70,sub:'完成70次·蝴蝶精灵',color:'#CE93D8'},
+{id:'eggplant',name:'茄子阿梓',img:'src/images/azusa/azusa_eggplant.png',emoji:'🍆',unlock:80,sub:'完成80次·紫色茄子主题',color:'#9575CD'},
+{id:'spring',name:'春装阿梓',img:'src/images/azusa/azusa_spring.png',emoji:'🌿',unlock:92,sub:'完成92次·春日樱花限定',color:'#81C784'},
 {id:'chibi',name:'Q版阿梓',img:'src/images/azusa/azusa_chibi.png',emoji:'💎',unlock:110,sub:'完成110次·超Q小呡梓',color:'#FFD700'},
 {id:'gift',name:'微信表情阿梓',img:'src/images/azusa/azusa_wechat1.jpg',emoji:'💬',unlock:130,sub:'完成130次·微信表情包限定',color:'#FF8A65'},
 {id:'ninja',name:'忍者阿梓',img:'src/images/azusa/azusa_ninja.jpg',emoji:'🥷',unlock:155,sub:'完成155次·暗夜忍者',color:'#7E57C2'},
@@ -1046,7 +1054,7 @@ const AZUSA_TREES=[
 {id:'box',name:'盒蛋阿梓',img:'src/images/azusa/azusa_box.png',emoji:'📦',unlock:210,sub:'完成210次·超Q弹盒蛋',color:'#FFCC80'},
 {id:'rabbit24',name:'兔兔2024',img:'src/images/azusa/azusa_rabbit_2024.jpg',emoji:'🐇',unlock:230,sub:'完成230次·2024兔年限定',color:'#F48FB1'},
 {id:'summer2',name:'夏日祭阿梓',img:'src/images/azusa/azusa_summer_festival.jpg',emoji:'🎆',unlock:250,sub:'完成250次·夏日祭典限定',color:'#B39DDB'},
-];;;;
+];;;;;
 
 let currentTreeIdx=0; // 最高已解锁的衣装索引
 let currentOutfit=0; // 当前穿着的衣装索引（可自由切换已解锁的）
@@ -1462,10 +1470,12 @@ const Mascot = {
   bubbleTimer: null,
   // Q版皮套库（对应衣柜衣装索引范围）
   skinMap: [
-    {name:'默认Q版',img:'src/images/azusa/azusa_chibi.png',upTo:3},
-    {name:'Q版2号',img:'src/images/azusa/azusa_chibi4.png',upTo:7},
-    {name:'盒蛋版',img:'src/images/azusa/azusa_box.png',upTo:11},
-    {name:'进阶Q版',img:'src/images/azusa/azusa_chibi4.png',upTo:17},
+    {name:'3D阿梓·Q版',img:'src/images/azusa/renders/azusa_chibi.png?v=11',upTo:7},
+    {name:'默认Q版',img:'src/images/azusa/azusa_chibi.png',upTo:11},
+    {name:'Q版2号',img:'src/images/azusa/azusa_chibi4.png',upTo:15},
+    {name:'盒蛋版',img:'src/images/azusa/azusa_box.png',upTo:19},
+    {name:'进阶Q版',img:'src/images/azusa/azusa_chibi4.png',upTo:24},
+    {name:'终极3D',img:'src/images/azusa/renders/azusa_chibi.png?v=11',upTo:999},
   ],
   curSkin: 0,
   // 表情映射
