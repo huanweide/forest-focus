@@ -1237,13 +1237,7 @@ stats.innerHTML=`<div class="st"><div class="n" style="color:#5C6BC0">${totalCom
 }
 
 currentOutfit=idx;
-save('o');
-rGallery();
-// 如果在种树页，刷新树显示
-if(currentTab===0)updateTree(0);
-// 同步小精灵
-toast('👗 换装成功！'+AZUSA_TREES[idx].name);
-}
+
 
 // ==================== HABITS ====================
 function rHabits(){
