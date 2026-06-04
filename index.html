@@ -320,7 +320,7 @@ body.locked{overflow:hidden;position:fixed;width:100%;height:100%}
 .todo-est{font-size:11px;color:var(--g);font-weight:600;white-space:nowrap}
 .todo-group{margin:12px 0}
 .todo-group-title{font-size:13px;font-weight:600;color:var(--gr);margin-bottom:6px;text-transform:uppercase}
-</style>
+.focus-motto{text-align:center;font-size:14px;color:var(--g);margin:8px 0;min-height:20px;font-style:italic;transition:.3s}</style>
 </head>
 <body>
 
@@ -342,7 +342,7 @@ body.locked{overflow:hidden;position:fixed;width:100%;height:100%}
 <div class="tree-box" id="tree">🌰</div>
 <div class="ring-wrap"><canvas id="ring"></canvas><div class="ring-t"><div class="tm" id="time">25:00</div><div class="lb" id="status">选个目标，开始种阿梓吧</div></div></div>
 <div class="chips" id="chips"></div>
-<div class="task-sel">
+<div class="focus-motto" id="focusMotto">千里之行，始于足下</div><div class="task-sel">
 <select id="taskType" onchange="onTaskType()"><option value="">-- 选任务类型 --</option><option value="habit">✅ 习惯</option><option value="goal">🎯 目标</option><option value="free">🌸 自由种树</option></select>
 <select id="taskPick" style="display:none" onchange="onTaskPick()"></select>
 </div>
@@ -1498,6 +1498,36 @@ function onFocusDone(){completedRounds++;if(completedRounds%4===0){toast("完成
 function startShortBreak(){var bm=parseInt(localStorage.getItem("fbreak")||"5");pomodoroPhase="shortBreak";elapsed=0;totalSec=bm*60;isBreak=true;document.getElementById("time").textContent=bm+":00";document.getElementById("status").textContent="短休";document.getElementById("tree").textContent="😴";document.getElementById("btnGo").style.display="none";document.getElementById("btnStop").style.display="block";timerId=setInterval(tickBreak,1000)}
 function startLongBreak(){pomodoroPhase="longBreak";elapsed=0;totalSec=900;isBreak=true;document.getElementById("time").textContent="15:00";document.getElementById("status").textContent="长休";document.getElementById("tree").textContent="☕";document.getElementById("btnGo").style.display="none";document.getElementById("btnStop").style.display="block";timerId=setInterval(tickBreak,1000)}
 function tickBreak(){elapsed++;var rem=Math.max(0,totalSec-elapsed);var m=Math.floor(rem/60),s=rem%60;document.getElementById("time").textContent=m+":"+(s<10?"0":"")+s;drawRing(elapsed/totalSec);if(elapsed>=totalSec){clearInterval(timerId);timerId=null;isBreak=false;pomodoroPhase="idle";document.getElementById("status").textContent="准备开始";document.getElementById("tree").textContent="🌰";document.getElementById("btnGo").style.display="block";document.getElementById("btnStop").style.display="none";document.getElementById("time").textContent=totalSec/60+":00";drawRing(0);toast("休息结束！开始下一轮吧")}}
+
+
+// ========== TODO COLLECTIONS ==========
+var todoCollections=JSON.parse(localStorage.getItem("ftcol")||"["默认"]");
+function addCollection(){var n=prompt("待办集名称");if(!n||!n.trim())return;todoCollections.push(n.trim());saveCol();updateColSelect();toast("待办集已创建")}
+function saveCol(){localStorage.setItem("ftcol",JSON.stringify(todoCollections))}
+function updateColSelect(){var sel=document.getElementById("todoCollection");if(!sel)return;sel.innerHTML="<option value=''>全部待办集</option>"+todoCollections.map(function(c){return"<option>"+c+"</option>"}).join("")}
+updateColSelect();
+
+// ========== BACKGROUNDS ==========
+var bgs=["linear-gradient(135deg,#E8EAF6,#C5CAE9)","linear-gradient(135deg,#E8F5E9,#C8E6C9)","linear-gradient(135deg,#FFF3E0,#FFE0B2)","linear-gradient(135deg,#FCE4EC,#F8BBD0)","linear-gradient(135deg,#E0F7FA,#B2EBF2)","linear-gradient(135deg,#F3E5F5,#E1BEE7)"];
+var currentBg=parseInt(localStorage.getItem("fbg")||"0");
+function applyBg(){document.body.style.background=bgs[currentBg];document.body.style.backgroundAttachment="fixed"}
+function cycleBg(){currentBg=(currentBg+1)%bgs.length;localStorage.setItem("fbg",currentBg);applyBg();renderBgPicker();toast("背景已切换")}
+function renderBgPicker(){var el=document.getElementById("bgPicker");if(!el)return;el.innerHTML=bgs.map(function(b,i){return"<div onclick='selectBg("+i+")' style='width:36px;height:36px;border-radius:50%;background:"+b+";cursor:pointer;border:3px solid "+(i===currentBg?"var(--g)":"transparent")+"'></div>"}).join("")}
+function selectBg(i){currentBg=i;localStorage.setItem("fbg",i);applyBg();renderBgPicker()}
+applyBg();
+
+// ========== MOTTOS ==========
+var mottos=["千里之行，始于足下","不积跬步，无以至千里","专注当下，未来自来","种一棵树最好的时间是十年前，其次是现在","每一次专注，都在成为更好的自己","你专注的样子很耀眼","今天比昨天多坚持一分钟"];  
+function randomMotto(){var i=Math.floor(Math.random()*mottos.length);var el=document.getElementById("focusMotto");if(el)el.textContent=mottos[i]}
+randomMotto();
+
+// ========== WEEKLY SUMMARY ==========
+function renderWeeklySummary(){var el=document.getElementById("weeklySummary");if(!el)return;var weekStart=new Date();weekStart.setDate(weekStart.getDate()-weekStart.getDay()+1);weekStart.setHours(0,0,0,0);var weekSessions=sessions.filter(function(s){return s.completed&&new Date(s.date)>=weekStart});var totalMins=weekSessions.reduce(function(a,s){return a+s.minutes},0);var totalTrees=weekSessions.length;var daysWithFocus=new Set(weekSessions.map(function(s){return s.date})).size;var habitsWeek=habits.filter(function(h){return h.done}).length;var summary=["本周专注 "+totalMins+" 分钟","种了 "+totalTrees+" 棵树","打卡 "+daysWithFocus+" 天","完成 "+habitsWeek+" 个习惯"].join(" · ");el.innerHTML="<div style=font-weight:600;color:var(--g);margin-bottom:4px>"+summary+"</div>"+(totalMins>300?"<div>阿梓点评：这周表现超棒！继续保持~</div>":totalMins>100?"<div>阿梓点评：还不错！下周可以再进一步</div>":"<div>阿梓点评：下周一起加油吧！</div>")}
+
+// ========== TOOLBOX ==========  
+function calcPomo(){var h=parseInt(prompt("剩余小时数"))||0;var m=parseInt(prompt("剩余分钟数"))||0;var total=h*60+m;var pomos=Math.floor(total/25);toast("约需要 "+pomos+" 个番茄钟（25分钟/个）")}
+function showStudyRoom(){toast("自习室功能开发中... 敬请期待")}
+function importData(){var input=document.createElement("input");input.type="file";input.accept=".json";input.onchange=function(e){var file=e.target.files[0];var reader=new FileReader();reader.onload=function(ev){try{var data=JSON.parse(ev.target.result);if(data.habits)habits=data.habits;if(data.goals)goals=data.goals;if(data.sessions)sessions=data.sessions;if(data.score)score=data.score;if(data.todos)todos=data.todos;["fh","fg","fs","fsc","ftodos"].forEach(function(k){localStorage.removeItem(k)});save("h");save("g");save("s");save("c");saveTodos();rTodos();rHabits();rGoals();rForest();toast("数据已导入！请刷新页面")}catch(ex){toast("文件格式错误")}};reader.readAsText(file)};input.click()}
 
 // ==================== INIT ====================
 function initAll(){rTodos();rHabits();rGoals();rForest()}
