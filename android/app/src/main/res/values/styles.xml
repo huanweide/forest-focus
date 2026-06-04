@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- 全屏无标题栏主题，阿梓森林主打沉浸感 -->
     <style name="Theme.AzusaForest" parent="Theme.AppCompat.DayNight.NoActionBar">
-        <item name="android:statusBarColor">#5C6BC0</item>
-        <item name="android:navigationBarColor">#FFFFFF</item>
-        <item name="android:windowBackground">#F0F2FA</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">#7C5CBF</item>
+        <item name="android:windowBackground">#f5f3fa</item>
     </style>
 </resources>

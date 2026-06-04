@@ -1,6 +1,6 @@
-# Add project specific ProGuard rules here.
--keepattributes *Annotation*
--keep class com.huanweide.azusaforest.** { *; }
--keepclassmembers class com.huanweide.azusaforest.MainActivity$AzusaBridge {
+# 保留WebView相关类
+-keep class * extends android.webkit.WebViewClient
+-keep class * extends android.webkit.WebChromeClient
+-keepclassmembers class * {
     @android.webkit.JavascriptInterface <methods>;
 }

@@ -1,1 +1,39 @@
-{"name":"阿梓的森林 - 番茄钟+衣柜收集","short_name":"阿梓森林","description":"番茄钟计时+种树收集阿梓全部衣装+习惯打卡+成就系统。每完成专注解锁阿梓新皮肤！","start_url":".","display":"standalone","background_color":"#f0f2fa","theme_color":"#5C6BC0","orientation":"portrait","icons":[{"src":"src/images/azusa/azusa_default.png","sizes":"192x192","type":"image/png"}]}
+﻿{
+  "name": "阿梓的森林 - 番茄钟 · 衣装收集",
+  "short_name": "阿梓森林",
+  "description": "番茄钟计时 · 种树收集阿梓全部衣装+习惯打卡+成就系统。每次完成专注解锁阿梓新皮肤！",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#f5f3fa",
+  "theme_color": "#7C5CBF",
+  "orientation": "portrait",
+  "lang": "zh-CN",
+  "dir": "ltr",
+  "scope": ".",
+  "categories": ["productivity", "lifestyle"],
+  "iarc_rating_id": "e.g. IARC rating ID",
+  "prefer_related_applications": false,
+  "icons": [
+    {
+      "src": "src/images/azusa/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "src/images/azusa/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "src/images/azusa/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "display_override": ["standalone", "fullscreen", "minimal-ui"],
+  "edge_side_panel": {},
+  "screenshots": []
+}
