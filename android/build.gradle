@@ -1,4 +1,4 @@
-﻿// 项目级构建配置 - 告诉Android SDK用哪些插件和仓库
+// 项目级构建配置 - 告诉Android SDK用哪些插件和仓库
 buildscript {
     repositories {
         google()

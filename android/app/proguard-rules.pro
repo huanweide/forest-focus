@@ -1,4 +1,4 @@
-﻿# 保留WebView相关类
+# 保留WebView相关类
 -keep class * extends android.webkit.WebViewClient
 -keep class * extends android.webkit.WebChromeClient
 -keepclassmembers class * {
