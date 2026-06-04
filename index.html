@@ -462,11 +462,10 @@ body.locked{overflow:hidden;position:fixed;width:100%;height:100%}
 <!-- ===== TAB BAR ===== -->
 <div class="tabbar">
 <div class="tab on" onclick="goTab(0)"><span class="ic">🌸</span>种树</div>
-<div class="tab" onclick="goTab(1)"><span class="ic">📋</span>待办</div>
-<div class="tab" onclick="goTab(2)"><span class="ic">👗</span>衣柜</div>
+<div class="tab" onclick="goTab(1)"><span class="ic">👗</span>衣柜</div>
 <div class="tab" onclick="goTab(2)"><span class="ic">✅</span>习惯</div>
 <div class="tab" onclick="goTab(3)"><span class="ic">🎯</span>目标</div>
-<div class="tab" onclick="goTab(4)"><span class="ic">📒</span>手帳</div>
+<div class="tab" onclick="goTab(4)"><span class="ic">👤</span>我的</div>
 </div>
 
 <div class="toast" id="toast"></div>
@@ -1440,7 +1439,7 @@ function renderLockSettings(){try{var b=document.getElementById("lockToggle");if
 
 function toggleDark(){dark=!dark;document.body.classList.toggle('dark',dark);save('d')}
 function exportData(){let data={habits,goals,sessions,score,exported:new Date().toISOString()};let b=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});let a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='azusa-forest-'+new Date().toISOString().slice(0,10)+'.json';a.click();toast('📤 已导出')}
-function resetAll(){if(!confirm('确定删除？建议先导出备份。'))return;habits=[];goals=[];sessions=[];score=0;totalCompletions=0;currentTreeIdx=0;currentOutfit=0;['fh','fg','fs','fsc','fco'].forEach(k=>localStorage.removeItem(k));save('c');if(currentTab===1)rTodos();if(currentTab===2)rGallery();if(currentTab===3)rHabits();if(currentTab===4)rGoals();rForest();updateTaskSelects();toast('🔄 已重置')}
+function resetAll(){if(!confirm('确定删除？建议先导出备份。'))return;habits=[];goals=[];sessions=[];score=0;totalCompletions=0;currentTreeIdx=0;currentOutfit=0;['fh','fg','fs','fsc','fco'].forEach(k=>localStorage.removeItem(k));save('c');if(currentTab===1)rGallery();if(currentTab===2)rHabits();if(currentTab===3)rGoals();rForest();updateTaskSelects();toast('🔄 已重置')}
 
   
 // 全局闲置监听
@@ -1535,11 +1534,11 @@ function goTab(i){
   currentTab=i;
   document.querySelectorAll(".page").forEach(function(p){p.classList.remove("on")});
   document.querySelectorAll(".tab").forEach(function(t,j){t.classList.toggle("on",j===i)});
-  var pages=["pg0","pgTodo","pg1","pg2","pg3","pg4"];
-  var titles=["🌸 阿梓的森林","📋 待办清单","👗 衣柜","✅ 习惯","🎯 目标","👤 我的"];
+  var pages=["pg0","pg1","pg2","pg3","pg4"];
+  var titles=["🌸 阿梓的森林","👗 衣柜","✅ 习惯","🎯 目标","👤 我的"];
   var el=document.getElementById(pages[i]);if(el)el.classList.add("on");
   document.getElementById("bar").textContent=titles[i]||"阿梓的森林";
-  if(i===1)rTodos();if(i===2)rGallery();if(i===3)rHabits();if(i===4)rGoals();if(i===5)rProfile();
+  if(i===1)rGallery();if(i===2)rHabits();if(i===3)rGoals();if(i===4)rProfile();
 }
 function rProfile(){
   document.getElementById("scoreVal").textContent=score;
