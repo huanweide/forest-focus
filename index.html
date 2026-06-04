@@ -32,7 +32,7 @@ body.locked{overflow:hidden;position:fixed;width:100%;height:100%}
 .btn-r{background:var(--r);color:#fff}
 .btn-o{background:var(--o);color:#fff}
 
-.tree-box{text-align:center;height:120px;display:flex;align-items:center;justify-content:center;transition:.4s;overflow:hidden}
+.tree-box{text-align:center;height:150px;display:flex;align-items:center;justify-content:center;transition:.4s;overflow:hidden}
 .ring-wrap{width:180px;height:180px;margin:0 auto;position:relative}
 .ring-wrap canvas{width:100%;height:100%}
 .ring-t{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center}
@@ -62,7 +62,7 @@ body.locked{overflow:hidden;position:fixed;width:100%;height:100%}
 
 /* Tree Gallery */
 .tree-gallery{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:8px}
-.tg-card{background:var(--c);border-radius:var(--rad);padding:16px 10px;text-align:center;box-shadow:var(--sh);transition:.3s;position:relative;overflow:hidden;cursor:pointer}.tg-card:active{transform:scale(.95)}.tg-card.unlocked:hover{box-shadow:0 4px 16px rgba(92,107,192,.2)}
+.tg-card{background:var(--c);border-radius:var(--rad);padding:10px 8px 12px;text-align:center;box-shadow:var(--sh);transition:.3s;position:relative;overflow:hidden;cursor:pointer}.tg-card:active{transform:scale(.95)}.tg-card.unlocked:hover{box-shadow:0 4px 16px rgba(92,107,192,.2)}
 .tg-card.locked{opacity:.55;filter:grayscale(.6)}
 .tg-card.unlocked{border:2px solid var(--g)}
 .tg-card.current{border:2px solid var(--g);box-shadow:0 0 16px rgba(92,107,192,.3)}
@@ -73,9 +73,9 @@ body.locked{overflow:hidden;position:fixed;width:100%;height:100%}
 .tg-badge.lock{background:#ccc}
 .tg-progress{height:4px;border-radius:2px;background:#e8e8e8;margin-top:8px;overflow:hidden}
 .tg-progress div{height:100%;border-radius:2px;background:var(--g);transition:.4s}
-.tg-img{width:100%;height:120px;object-fit:contain;border-radius:10px;background:rgba(0,0,0,.03);display:block;margin:0 auto}
-.tree-img{max-height:110px;max-width:100%;object-fit:contain;transition:all .5s ease;border-radius:8px}
-.tree-box{text-align:center;height:120px;display:flex;align-items:center;justify-content:center;transition:.4s;overflow:hidden}
+.tg-img{width:100%;height:160px;object-fit:cover;object-position:top;border-radius:10px;background:rgba(124,92,191,.04);display:block;margin:0 auto}
+.tree-img{max-height:140px;max-width:100%;object-fit:contain;object-position:top;transition:all .5s ease;border-radius:8px}
+.tree-box{text-align:center;height:150px;display:flex;align-items:center;justify-content:center;transition:.4s;overflow:hidden}
 @keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}
 .pulse{animation:pulse 1.5s ease-in-out infinite;display:inline-block}
 @keyframes unlockPop{0%{transform:scale(.5);opacity:0}60%{transform:scale(1.1)}100%{transform:scale(1);opacity:1}}
@@ -125,6 +125,191 @@ body.locked{overflow:hidden;position:fixed;width:100%;height:100%}
 /* Section title */
 .sec-title{font-size:16px;font-weight:700;margin:8px 0 4px;display:flex;align-items:center;gap:8px}
 .sec-title .tip{font-size:11px;color:var(--gr);font-weight:400}
+
+/* ===== 阿梓の手帳 - Dashboard Styles ===== */
+/* Period selector */
+.period-bar{display:flex;gap:6px;justify-content:center;margin:0 0 12px}
+.period-chip{flex:1;max-width:72px;text-align:center;padding:8px 0;border-radius:20px;font-size:12px;font-weight:600;cursor:pointer;transition:all .2s;background:var(--c);color:var(--gr);border:2px solid transparent;box-shadow:var(--sh)}
+.period-chip.on{background:var(--b);color:#fff;border-color:var(--b);box-shadow:0 2px 12px rgba(126,87,194,.3)}
+.period-chip:active{transform:scale(.94)}
+
+/* Stat cards 2x2 */
+.stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}
+.stat-card{background:var(--c);border-radius:var(--rad);padding:12px 10px;text-align:center;box-shadow:var(--sh);transition:.2s;position:relative;overflow:hidden}
+.stat-card::after{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--b),#CE93D8)}
+.stat-card .val{font-size:26px;font-weight:800;color:var(--b);line-height:1.1}
+.stat-card .val small{font-size:14px;font-weight:500}
+.stat-card .lbl{font-size:10px;color:var(--gr);margin-top:4px;text-transform:uppercase;letter-spacing:.5px}
+
+/* Chart containers */
+.chart-box{background:var(--c);border-radius:var(--rad);padding:14px;margin-bottom:12px;box-shadow:var(--sh)}
+.chart-box .chart-title{font-size:14px;font-weight:700;margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.chart-box canvas{display:block;margin:0 auto;max-width:100%}
+
+/* Pie sub-tabs */
+.pie-tabs{display:flex;gap:4px;margin-bottom:10px;justify-content:center}
+.pie-tab{padding:4px 10px;border-radius:12px;font-size:11px;cursor:pointer;background:var(--bg);color:var(--gr);border:1px solid transparent;transition:.15s;font-weight:500}
+.pie-tab.on{background:var(--b);color:#fff;border-color:var(--b)}
+
+/* Year heatmap */
+.heatmap-year{overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:4px}
+.heatmap-year-table{border-collapse:separate;border-spacing:3px;margin:0 auto}
+.heatmap-year-table td{width:13px;height:13px;border-radius:3px;transition:.15s;cursor:default;position:relative}
+.heatmap-year-table td:hover{transform:scale(1.4);z-index:2;box-shadow:0 2px 8px rgba(0,0,0,.2)}
+.heatmap-legend{display:flex;align-items:center;gap:3px;justify-content:flex-end;font-size:9px;color:var(--gr);margin-top:4px}
+.heatmap-legend span{width:11px;height:11px;border-radius:2px;display:inline-block}
+.heatmap-months{display:flex;justify-content:space-around;font-size:10px;color:var(--gr);margin-bottom:4px;padding:0 20px}
+.heatmap-weekdays{display:flex;flex-direction:column;gap:3px;margin-right:3px}
+.heatmap-weekdays span{font-size:9px;color:var(--gr);height:13px;line-height:13px}
+
+/* Achievement detail modal */
+.ach-modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:40;align-items:center;justify-content:center}
+.ach-modal-overlay.show{display:flex}
+.ach-modal{background:var(--c);border-radius:16px;padding:20px;width:280px;text-align:center;box-shadow:0 8px 32px rgba(0,0,0,.2);animation:unlockPop .3s ease}
+.ach-modal .ach-m-icon{font-size:56px;display:block;margin-bottom:8px}
+.ach-modal .ach-m-name{font-size:18px;font-weight:700;margin-bottom:4px}
+.ach-modal .ach-m-tier{font-size:12px;padding:3px 12px;border-radius:10px;display:inline-block;margin-bottom:8px}
+.ach-modal .ach-m-cond{font-size:12px;color:var(--gr);line-height:1.5;margin-bottom:12px}
+.ach-modal .ach-m-btn{padding:10px 32px;border-radius:20px;border:none;background:var(--b);color:#fff;font-size:14px;font-weight:600;cursor:pointer}
+.ach-modal .ach-m-date{font-size:10px;color:var(--gr);margin-top:6px}
+
+/* Achievement 2-col grid (handbook) */
+.ach-grid-hb{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+.ach-card-hb{background:var(--c);border-radius:var(--rad);padding:10px;display:flex;align-items:center;gap:8px;border:2px solid #e0e0e0;cursor:pointer;transition:all .2s;position:relative;overflow:hidden}
+.ach-card-hb:active{transform:scale(.96)}
+.ach-card-hb.earned{border-color:var(--b);background:linear-gradient(135deg,#F5F3FA,var(--c))}
+.ach-card-hb.earned.tier-gold{border-color:#FFD700;background:linear-gradient(135deg,#FFFDE7,var(--c))}
+.ach-card-hb.earned.tier-legend{border-color:#E040FB;background:linear-gradient(135deg,#FCE4EC,#F3E5F5)}
+.ach-card-hb.locked{opacity:.55;filter:grayscale(.5)}
+.ach-card-hb .ach-hb-icon{font-size:24px;flex-shrink:0;width:32px;text-align:center}
+.ach-card-hb .ach-hb-info{flex:1;min-width:0}
+.ach-card-hb .ach-hb-name{font-size:12px;font-weight:700;line-height:1.3}
+.ach-card-hb .ach-hb-tier{font-size:9px;margin-top:1px;display:inline-block;padding:1px 6px;border-radius:8px}
+.ach-card-hb .ach-hb-check{color:var(--b);font-size:14px;flex-shrink:0}
+
+/* Ach summary bar */
+.ach-summary{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.ach-summary .ach-total{font-size:13px;font-weight:700;color:var(--b)}
+.ach-summary .ach-tiers{font-size:10px;color:var(--gr);display:flex;gap:6px}
+.ach-summary .ach-tiers span{display:inline-flex;align-items:center;gap:1px}
+
+/* Period stat highlight */
+.period-highlight{color:var(--b);font-weight:700}
+
+/* ===== 阿梓小精灵 (Mascot) ===== */
+.mascot-wrap{position:fixed;bottom:74px;right:6px;z-index:50;pointer-events:none;cursor:grab;user-select:none;-webkit-tap-highlight-color:transparent;touch-action:none;-webkit-user-drag:none;display:none!important}
+.mascot-wrap.dragging{cursor:grabbing;transition:none;z-index:60;opacity:.85}
+.mascot-wrap.dragging .mascot-body{transform:scale(1.08)}
+.mascot-body{width:72px;height:84px;object-fit:contain;display:block;transition:filter .4s,transform .3s;image-rendering:auto;filter:none}
+/* 皮套切换提示 */
+.mascot-skin-badge{position:absolute;top:-6px;right:-8px;background:var(--b);color:#fff;font-size:8px;padding:1px 5px;border-radius:8px;font-weight:700;pointer-events:none;opacity:0;transition:opacity .3s}
+.mascot-skin-badge.show{opacity:1}
+/* 待机浮动 */
+.mascot-idle{animation:mFloat 3.2s ease-in-out infinite}
+@keyframes mFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+/* 庆祝跳跃 */
+.mascot-jump{animation:mJump .5s ease-in-out 3}
+@keyframes mJump{0%,100%{transform:translateY(0)}30%{transform:translateY(-18px) rotate(-5deg)}60%{transform:translateY(-8px) rotate(3deg)}}
+/* 生气抖动 */
+.mascot-shake{animation:mShake .18s ease-in-out 5}
+@keyframes mShake{0%,100%{transform:translateX(0)}50%{transform:translateX(-7px)}}
+/* 思考歪头 */
+.mascot-tilt{animation:mTilt 2s ease-in-out infinite}
+@keyframes mTilt{0%,100%{transform:rotate(0)}30%{transform:rotate(-8deg)}70%{transform:rotate(5deg)}}
+/* 困倦摇摆 */
+.mascot-sway{animation:mSway 4s ease-in-out infinite}
+@keyframes mSway{0%,100%{transform:rotate(0) translateY(0)}25%{transform:rotate(-3deg) translateY(-2px)}75%{transform:rotate(3deg) translateY(-1px)}}
+/* 星星眼脉冲 */
+.mascot-pulse{animation:mPulse 1s ease-in-out infinite}
+@keyframes mPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.12)}}
+/* 专注呼吸 */
+.mascot-breathe{animation:mBreathe 1.5s ease-in-out infinite}
+@keyframes mBreathe{0%,100%{transform:scale(1)}50%{transform:scale(1.06)}}
+/* 难过缩小 */
+.mascot-shrink{transform:scale(.85);filter:brightness(.8) saturate(.5)}
+/* 对话气泡 */
+.mascot-bubble{position:absolute;bottom:100%;left:50%;transform:translateX(-50%);background:var(--c);color:var(--t);border:2px solid var(--b);border-radius:14px;padding:5px 10px;font-size:11px;white-space:nowrap;box-shadow:0 3px 12px rgba(124,92,191,.2);opacity:0;pointer-events:none;transition:opacity .3s;max-width:160px;text-align:center;line-height:1.4}
+.mascot-bubble.show{opacity:1}
+.mascot-bubble::after{content:'';position:absolute;top:100%;left:50%;transform:translateX(-50%);border:6px solid transparent;border-top-color:var(--b)}
+/* 粒子特效容器 */
+.mascot-particles{position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none}
+.m-particle{position:absolute;font-size:14px;animation:mParticle .8s ease-out forwards;pointer-events:none}
+@keyframes mParticle{0%{opacity:1;transform:translate(0,0) scale(1)}100%{opacity:0;transform:translate(var(--dx),var(--dy)) scale(.3)}}
+/* 戳一戳反馈 */
+.mascot-poke{animation:mPoke .4s ease}
+@keyframes mPoke{0%{transform:scale(1)}30%{transform:scale(1.2) rotate(5deg)}60%{transform:scale(.9) rotate(-3deg)}100%{transform:scale(1) rotate(0)}}
+/* 移动端优化 */
+@media(max-width:400px){.mascot-body{width:60px;height:70px}.mascot-wrap{bottom:70px;right:2px}.mascot-bubble{font-size:10px;max-width:130px}}
+
+/* ===== 习惯 + 目标 重设计 ===== */
+.hb-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.hb-add-btn{background:var(--b);color:#fff;border:none;padding:7px 14px;border-radius:16px;font-size:12px;font-weight:600;cursor:pointer;box-shadow:0 2px 8px rgba(124,92,191,.25);transition:.15s}
+.hb-add-btn:active{transform:scale(.94)}
+.hb-summary{background:var(--c);border-radius:var(--rad);padding:10px 12px;margin-bottom:10px;box-shadow:var(--sh);display:flex;gap:12px;align-items:center;font-size:12px;color:var(--t);flex-wrap:wrap}
+.hb-summary .hs-stat{text-align:center;flex:1;min-width:50px}
+.hb-summary .hs-stat .hs-val{font-size:18px;font-weight:800;color:var(--b)}
+.hb-summary .hs-stat .hs-lbl{font-size:10px;color:var(--gr);margin-top:1px}
+
+/* 习惯卡片 */
+.habit-card{background:var(--c);border-radius:var(--rad);padding:12px;margin-bottom:8px;box-shadow:var(--sh);display:flex;gap:10px;align-items:center;border-left:4px solid #ddd;transition:.2s;position:relative}
+.habit-card.t-micro{border-left-color:#81C784}
+.habit-card.t-normal{border-left-color:#FFB74D}
+.habit-card.t-challenge{border-left-color:#E57373}
+.habit-card.done-today{background:linear-gradient(135deg,#f1f8e9,var(--c))}
+.hb-left{display:flex;flex-direction:column;align-items:center;gap:2px;flex-shrink:0;min-width:36px}
+.hb-check{width:34px;height:34px;border-radius:50%;border:2px solid #ddd;display:flex;align-items:center;justify-content:center;font-size:16px;cursor:pointer;transition:.2s;background:#fafafa}
+.hb-check.done{background:var(--b);border-color:var(--b);color:#fff}
+.hb-check:active{transform:scale(.9)}
+.hb-mid{flex:1;min-width:0}
+.hb-name{font-weight:700;font-size:14px;display:flex;align-items:center;gap:6px}
+.hb-meta{font-size:11px;color:var(--gr);margin-top:2px;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.hb-meta span{display:inline-flex;align-items:center;gap:2px}
+.hb-bar-wrap{height:5px;border-radius:3px;background:#e8e8e8;margin-top:5px;overflow:hidden}
+.hb-bar-fill{height:100%;border-radius:3px;transition:.4s}
+.hb-right{text-align:center;flex-shrink:0;min-width:40px}
+.hb-streak{font-size:20px;font-weight:800;color:var(--b);line-height:1}
+.hb-streak span{display:block;font-size:9px;color:var(--gr);font-weight:400}
+.hb-mini-week{display:flex;gap:2px;margin-top:3px;justify-content:flex-end}
+.hb-mini-week span{width:8px;height:8px;border-radius:50%;background:#e0e0e0}
+.hb-mini-week span.done{background:var(--b)}
+.hb-delete{position:absolute;top:6px;right:8px;font-size:16px;cursor:pointer;opacity:.4;transition:.2s;background:none;border:none}
+.hb-delete:hover{opacity:1}
+
+/* 预设标签 */
+.hb-presets{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-top:8px;padding:8px 0}
+.hb-preset-label{font-size:11px;color:var(--gr);flex-shrink:0}
+.hb-preset-chip{padding:5px 12px;border-radius:14px;font-size:11px;font-weight:500;background:var(--c);color:var(--t);cursor:pointer;border:1.5px solid #e0e0e0;transition:.15s;box-shadow:var(--sh)}
+.hb-preset-chip:active{transform:scale(.94);border-color:var(--b);background:#F5F3FA}
+
+/* 目标卡片 */
+.goal-card{background:var(--c);border-radius:var(--rad);padding:14px;margin-bottom:8px;box-shadow:var(--sh);position:relative}
+.goal-top{display:flex;align-items:flex-start;gap:10px;margin-bottom:8px}
+.goal-progress-ring{flex-shrink:0;position:relative;width:52px;height:52px}
+.goal-progress-ring canvas{width:100%;height:100%}
+.goal-ring-pct{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:13px;font-weight:800;color:var(--b)}
+.goal-info{flex:1;min-width:0}
+.goal-title{font-weight:700;font-size:14px}
+.goal-meta{font-size:11px;color:var(--gr);margin-top:3px;display:flex;gap:10px;flex-wrap:wrap}
+.goal-meta span{display:inline-flex;align-items:center;gap:3px}
+.goal-deadline{color:#e53935;font-weight:600}
+.goal-actions{display:flex;gap:6px;margin-top:8px}
+.goal-actions button{padding:5px 12px;border-radius:12px;border:none;font-size:11px;font-weight:600;cursor:pointer;transition:.15s}
+.goal-inc-btn{background:var(--b);color:#fff}
+.goal-inc-btn:active{transform:scale(.9)}
+.goal-del-btn{background:transparent;color:var(--gr)}
+/* 子任务 */
+.goal-subtasks{margin-top:8px;padding-top:8px;border-top:1px solid #eee}
+.goal-subtask{display:flex;align-items:center;gap:6px;padding:3px 0;font-size:12px;cursor:pointer}
+.goal-subtask .gs-ck{width:18px;height:18px;border-radius:50%;border:2px solid #ccc;display:flex;align-items:center;justify-content:center;font-size:10px;flex-shrink:0;transition:.15s;background:#fafafa}
+.goal-subtask .gs-ck.done{background:var(--b);border-color:var(--b);color:#fff}
+.goal-subtask.done .gs-text{text-decoration:line-through;color:var(--gr)}
+.goal-add-sub{padding:3px 8px;border-radius:10px;border:1px dashed #ccc;font-size:10px;cursor:pointer;color:var(--gr);background:transparent;margin-top:4px;transition:.15s}
+.goal-add-sub:active{border-color:var(--b);color:var(--b)}
+
+/* 空状态 */
+.empty-state{text-align:center;color:var(--gr);padding:40px 20px;font-size:13px;line-height:1.8}
+.empty-state .empty-icon{font-size:48px;display:block;margin-bottom:10px;opacity:.6}
+.empty-state .empty-hint{font-size:11px;margin-top:4px;color:#aaa}
 </style>
 </head>
 <body>
@@ -169,25 +354,105 @@ body.locked{overflow:hidden;position:fixed;width:100%;height:100%}
 
 <!-- ===== HABITS PAGE ===== -->
 <div class="page" id="pg2">
-<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px"><h3 class="sec-title">✅ 习惯追踪</h3><button style="background:var(--g);color:#fff;border:none;padding:7px 12px;border-radius:14px;font-size:12px;cursor:pointer" onclick="addHabit()">+ 新建</button></div>
+<div class="hb-header"><h3 class="sec-title" style="margin:0">✅ 习惯追踪</h3><button class="hb-add-btn" onclick="addHabit()">+ 新建</button></div>
+<div class="hb-summary" id="habitsSummary"></div>
 <div id="habitsList"></div>
-<div style="margin-top:12px"><strong style="font-size:12px;color:var(--gr)">📅 本月打卡热力图</strong></div>
-<div class="hm" id="heatmap"></div>
+<div class="hb-presets">
+<span class="hb-preset-label">⚡ 快速添加：</span>
+<span class="hb-preset-chip" onclick="addHabitPreset('喝水','micro')">💧 喝水</span>
+<span class="hb-preset-chip" onclick="addHabitPreset('阅读','normal')">📖 阅读</span>
+<span class="hb-preset-chip" onclick="addHabitPreset('运动','challenge')">🏃 运动</span>
+<span class="hb-preset-chip" onclick="addHabitPreset('早睡','micro')">😴 早睡</span>
+<span class="hb-preset-chip" onclick="addHabitPreset('冥想','normal')">🧘 冥想</span>
+<span class="hb-preset-chip" onclick="addHabitPreset('背单词','challenge')">📝 背单词</span>
+</div>
+<div style="margin-top:14px"><div class="chart-box"><div class="chart-title">📅 本月打卡热力图</div><div class="hm" id="heatmap"></div></div></div>
 </div>
 
 <!-- ===== GOALS PAGE ===== -->
 <div class="page" id="pg3">
-<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px"><h3 class="sec-title">🎯 目标计划</h3><button style="background:var(--g);color:#fff;border:none;padding:7px 12px;border-radius:14px;font-size:12px;cursor:pointer" onclick="addGoal()">+ 新建</button></div>
+<div class="hb-header"><h3 class="sec-title" style="margin:0">🎯 目标计划</h3><button class="hb-add-btn" onclick="addGoal()">+ 新建</button></div>
+<div class="hb-summary" id="goalsSummary"></div>
 <div id="goalsList"></div>
 </div>
 
-<!-- ===== PROFILE PAGE ===== -->
+<!-- ===== HANDBOOK PAGE (手帳) ===== -->
 <div class="page" id="pg4">
-<div class="card"><h3 style="font-size:15px;margin-bottom:8px">📊 本周专注（分钟）</h3><div class="chart" id="barChart"></div></div>
-<div class="card"><h3 style="font-size:15px;margin-bottom:8px">🏆 成就</h3><div class="achs" id="achs"></div></div>
-<div class="card"><h3 style="font-size:15px">🌟 积分：<b id="scoreVal">0</b></h3><p style="font-size:11px;color:var(--gr)">总专注：<b id="totalMin">0</b> 分钟 · 完成 <b id="totalSessions">0</b> 次</p></div>
-<div style="display:flex;gap:8px"><button class="btn-sm" onclick="exportData()">📤 导出数据</button><button class="btn-sm" onclick="toggleDark()">🌓 深色模式</button></div>
-<button class="btn-sm" onclick="resetAll()" style="margin-top:4px">🔄 重置</button>
+<!-- Period selector -->
+<div class="period-bar">
+<div class="period-chip on" data-p="today" onclick="switchPeriod('today')">📅 今日</div>
+<div class="period-chip" data-p="week" onclick="switchPeriod('week')">📆 本周</div>
+<div class="period-chip" data-p="month" onclick="switchPeriod('month')">📋 本月</div>
+<div class="period-chip" data-p="year" onclick="switchPeriod('year')">📊 本年</div>
+</div>
+
+<!-- Stat cards 2x2 -->
+<div class="stat-grid">
+<div class="stat-card"><div class="val" id="statTotal">0<small>h</small></div><div class="lbl">📊 总专注时长</div></div>
+<div class="stat-card"><div class="val" id="statToday">0<small>min</small></div><div class="lbl">🌸 周期专注</div></div>
+<div class="stat-card"><div class="val" id="statSessions">0</div><div class="lbl">✅ 完成任务</div></div>
+<div class="stat-card"><div class="val" id="statStreak">0<small>天</small></div><div class="lbl">🔥 连续天数</div></div>
+</div>
+
+<!-- Pie chart -->
+<div class="chart-box">
+<div class="chart-title">📊 时间分布</div>
+<div class="pie-tabs">
+<div class="pie-tab on" data-pt="type" onclick="switchPieTab('type')">按类型</div>
+<div class="pie-tab" data-pt="difficulty" onclick="switchPieTab('difficulty')">按难度</div>
+<div class="pie-tab" data-pt="timeofday" onclick="switchPieTab('timeofday')">按时段</div>
+</div>
+<canvas id="pieChart" width="200" height="200"></canvas>
+</div>
+
+<!-- Line chart -->
+<div class="chart-box">
+<div class="chart-title">📈 专注趋势</div>
+<canvas id="lineChart" width="340" height="150"></canvas>
+</div>
+
+<!-- Year heatmap -->
+<div class="chart-box">
+<div class="chart-title">🗓️ 年度热力图</div>
+<div class="heatmap-year" id="heatmapYear"></div>
+<div class="heatmap-legend">少<span style="background:#ebedf0"></span><span style="background:#E8D5F5"></span><span style="background:#B39DDB"></span><span style="background:#7C5CBF"></span><span style="background:#512DA8"></span>多</div>
+</div>
+
+<!-- Achievements -->
+<div class="chart-box">
+<div class="ach-summary"><span class="ach-total">🏆 成就 <span id="achUnlocked">0</span>/<span id="achTotal">0</span></span><span class="ach-tiers" id="achTiers"></span></div>
+<div class="ach-grid-hb" id="achGridHb"></div>
+</div>
+
+<!-- Quick actions -->
+<div class="chart-box">
+<div style="display:flex;gap:8px;flex-wrap:wrap">
+<button class="btn-sm" onclick="exportData()">📤 导出数据</button>
+<button class="btn-sm" onclick="toggleDark()">🌓 深色模式</button>
+<button class="btn-sm" onclick="resetAll()" style="margin-top:0">🔄 重置</button>
+</div>
+<p style="font-size:10px;color:var(--gr);text-align:center;margin-top:8px">🌟 积分：<b id="scoreVal">0</b> · 总专注 <b id="totalMin">0</b> 分钟 · 完成 <b id="totalSessions">0</b> 次</p>
+</div>
+</div>
+
+<!-- Achievement detail modal -->
+<div class="ach-modal-overlay" id="achModal" onclick="closeAchModal()">
+<div class="ach-modal" onclick="event.stopPropagation()">
+<span class="ach-m-icon" id="achMIcon"></span>
+<div class="ach-m-name" id="achMName"></div>
+<span class="ach-m-tier" id="achMTier"></span>
+<div class="ach-m-cond" id="achMCond"></div>
+<div class="ach-m-date" id="achMDate"></div>
+<button class="ach-m-btn" onclick="closeAchModal()">知道了</button>
+</div>
+</div>
+
+<!-- ===== 阿梓小精灵 ===== -->
+<div class="mascot-wrap mascot-idle" id="mascotWrap" title="拖拽移动 · 双击归位 · 戳戳互动">
+<img class="mascot-body" id="mascotBody" src="src/images/azusa/azusa_chibi.png" alt="阿梓小精灵">
+<span class="mascot-skin-badge" id="mascotSkinBadge"></span>
+<div class="mascot-bubble" id="mascotBubble"></div>
+<div class="mascot-particles" id="mascotParticles"></div>
 </div>
 
 <!-- ===== TAB BAR ===== -->
@@ -196,12 +461,566 @@ body.locked{overflow:hidden;position:fixed;width:100%;height:100%}
 <div class="tab" onclick="goTab(1)"><span class="ic">👗</span>衣柜</div>
 <div class="tab" onclick="goTab(2)"><span class="ic">✅</span>习惯</div>
 <div class="tab" onclick="goTab(3)"><span class="ic">🎯</span>目标</div>
-<div class="tab" onclick="goTab(4)"><span class="ic">👤</span>我的</div>
+<div class="tab" onclick="goTab(4)"><span class="ic">📒</span>手帳</div>
 </div>
 
 <div class="toast" id="toast"></div>
 
 <script>
+window.onerror=function(msg,url,line,col,err){
+var d=document.createElement('div');
+d.style.cssText='padding:16px;color:#e53935;font-family:monospace;font-size:12px;line-height:1.7;background:#fff;position:fixed;inset:0;z-index:99999;overflow:auto';
+d.innerHTML='<h3>JS Error</h3><p><b>'+msg+'</b></p><p>Line: '+line+', Col: '+col+'</p><pre style="white-space:pre-wrap;word-break:break-all;font-size:11px;color:#555">'+(err&&err.stack?err.stack:'')+'</pre>';
+document.body.appendChild(d);
+return true;
+};
+// ==================== 0. 统计引擎 (Stats Engine) ====================
+let currentPeriod = 'week';
+let currentPieTab = 'type';
+
+function getPeriodRange(period) {
+  const now = new Date();
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  switch (period) {
+    case 'today': return { start: today, end: new Date(today.getTime() + 86400000) };
+    case 'week': {
+      const dow = today.getDay();
+      const monOff = dow === 0 ? -6 : 1 - dow;
+      const mon = new Date(today.getTime() + monOff * 86400000);
+      return { start: mon, end: new Date(mon.getTime() + 7 * 86400000) };
+    }
+    case 'month': {
+      const ms = new Date(now.getFullYear(), now.getMonth(), 1);
+      return { start: ms, end: new Date(now.getFullYear(), now.getMonth() + 1, 1) };
+    }
+    case 'year': {
+      const ys = new Date(now.getFullYear(), 0, 1);
+      return { start: ys, end: new Date(now.getFullYear() + 1, 0, 1) };
+    }
+    default: return getPeriodRange('week');
+  }
+}
+
+function getFilteredSessions(period) {
+  const { start, end } = getPeriodRange(period);
+  return sessions.filter(s => {
+    const d = new Date(s.date + 'T00:00:00');
+    return d >= start && d < end && s.completed;
+  });
+}
+
+function calcStreak() {
+  const dates = [...new Set(sessions.filter(s => s.completed).map(s => s.date))].sort().reverse();
+  if (dates.length === 0) return 0;
+  let streak = 0;
+  const check = new Date();
+  check.setHours(0, 0, 0, 0);
+  for (let i = 0; i < dates.length; i++) {
+    const d = new Date(dates[i] + 'T00:00:00');
+    const exp = new Date(check.getTime() - i * 86400000);
+    if (d.getTime() === exp.getTime()) streak++;
+    else break;
+  }
+  return streak;
+}
+
+function getStats(period) {
+  const filtered = getFilteredSessions(period);
+  const totalMins = filtered.reduce((a, s) => a + s.minutes, 0);
+  const today = new Date().toISOString().slice(0, 10);
+  const todayMins = sessions.filter(s => s.date === today && s.completed).reduce((a, s) => a + s.minutes, 0);
+  const completedTasks = filtered.length;
+  const streak = calcStreak();
+  // by type
+  const byType = { habit: 0, goal: 0, free: 0 };
+  filtered.forEach(s => { byType[s.taskType] = (byType[s.taskType] || 0) + s.minutes; });
+  // by difficulty
+  const byDifficulty = { micro: 0, normal: 0, challenge: 0 };
+  filtered.forEach(s => {
+    if (s.taskType === 'habit' && s.taskId) {
+      const h = habits.find(x => x.id === s.taskId);
+      const tier = h ? (h.tier || 'normal') : 'normal';
+      byDifficulty[tier] = (byDifficulty[tier] || 0) + s.minutes;
+    }
+  });
+  // by time of day - approximate using date distribution
+  const byTimeOfDay = { morning: 0, afternoon: 0, evening: 0, night: 0 };
+  filtered.forEach(s => { byTimeOfDay.afternoon += s.minutes; }); // default afternoon
+  // by weekday
+  const byWeekday = Array(7).fill(0);
+  filtered.forEach(s => {
+    const d = new Date(s.date + 'T00:00:00');
+    byWeekday[d.getDay()] += s.minutes;
+  });
+  // all habits done today
+  const activeHabits = habits.filter(h => !h.archived);
+  const allHabitsDoneToday = activeHabits.length > 0 && activeHabits.every(h => h.dates && h.dates.includes(today));
+  const unlockedSkins = currentTreeIdx + 1;
+  return { totalMins, todayMins, completedTasks, streak, byType, byDifficulty, byTimeOfDay, byWeekday, allHabitsDoneToday, unlockedSkins, filtered };
+}
+
+function getTrendData(period) {
+  const { start, end } = getPeriodRange(period);
+  const diffDays = Math.round((end - start) / 86400000);
+  let labels, data;
+  if (period === 'today') {
+    labels = ['专注'];
+    data = [getFilteredSessions('today').reduce((a, s) => a + s.minutes, 0)];
+  } else if (period === 'week') {
+    const weekDays = ['一', '二', '三', '四', '五', '六', '日'];
+    labels = weekDays;
+    data = Array(7).fill(0);
+    for (let i = 0; i < 7; i++) {
+      const d = new Date(start.getTime() + i * 86400000);
+      const ds = d.toISOString().slice(0, 10);
+      data[i] = sessions.filter(s => s.date === ds && s.completed).reduce((a, s) => a + s.minutes, 0);
+    }
+  } else if (period === 'month') {
+    const totalDays = diffDays;
+    const weekCount = Math.ceil(totalDays / 7);
+    labels = Array.from({ length: weekCount }, (_, i) => 'W' + (i + 1));
+    data = Array(weekCount).fill(0);
+    for (let i = 0; i < totalDays; i++) {
+      const d = new Date(start.getTime() + i * 86400000);
+      const ds = d.toISOString().slice(0, 10);
+      const wi = Math.floor(i / 7);
+      data[wi] += sessions.filter(s => s.date === ds && s.completed).reduce((a, s) => a + s.minutes, 0);
+    }
+  } else if (period === 'year') {
+    labels = ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'];
+    data = Array(12).fill(0);
+    const year = start.getFullYear();
+    for (let m = 0; m < 12; m++) {
+      const ms = new Date(year, m, 1);
+      const me = new Date(year, m + 1, 1);
+      data[m] = sessions.filter(s => {
+        const d = new Date(s.date + 'T00:00:00');
+        return d >= ms && d < me && s.completed;
+      }).reduce((a, s) => a + s.minutes, 0);
+    }
+  }
+  return { labels, data };
+}
+
+// ==================== 0.5 图表引擎 (Chart Engine) ====================
+function drawPieChart(canvasId, data) {
+  const canvas = document.getElementById(canvasId);
+  if (!canvas) return;
+  const dpr = window.devicePixelRatio || 1;
+  const size = 200;
+  canvas.width = size * dpr;
+  canvas.height = size * dpr;
+  canvas.style.width = size + 'px';
+  canvas.style.height = size + 'px';
+  const ctx = canvas.getContext('2d');
+  ctx.scale(dpr, dpr);
+  const cx = size / 2, cy = size / 2, radius = 78;
+  ctx.clearRect(0, 0, size, size);
+  const total = data.reduce((sum, d) => sum + d.value, 0);
+  if (total === 0) {
+    ctx.fillStyle = '#999';
+    ctx.font = '14px -apple-system,sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('暂无数据', cx, cy);
+    return;
+  }
+  let startAngle = -Math.PI / 2;
+  data.forEach(d => {
+    if (d.value <= 0) return;
+    const sliceAngle = (d.value / total) * 2 * Math.PI;
+    ctx.beginPath();
+    ctx.moveTo(cx, cy);
+    ctx.arc(cx, cy, radius, startAngle, startAngle + sliceAngle);
+    ctx.closePath();
+    ctx.fillStyle = d.color;
+    ctx.fill();
+    ctx.strokeStyle = '#fff';
+    ctx.lineWidth = 2;
+    ctx.stroke();
+    const pct = Math.round((d.value / total) * 100);
+    if (pct >= 10) {
+      const midA = startAngle + sliceAngle / 2;
+      ctx.fillStyle = '#fff';
+      ctx.font = 'bold 11px -apple-system,sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(d.label, cx + Math.cos(midA) * (radius * 0.62), cy + Math.sin(midA) * (radius * 0.62));
+    }
+    startAngle += sliceAngle;
+  });
+  // center
+  ctx.fillStyle = '#333';
+  ctx.font = 'bold 15px -apple-system,sans-serif';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  const hrs = Math.floor(total / 60);
+  const mins = total % 60;
+  ctx.fillText((hrs > 0 ? hrs + 'h' : '') + (mins > 0 || hrs === 0 ? mins + 'm' : ''), cx, cy - 5);
+  ctx.font = '10px -apple-system,sans-serif';
+  ctx.fillStyle = '#888';
+  ctx.fillText('总计', cx, cy + 12);
+}
+
+function drawLineChart(canvasId, labels, data) {
+  const canvas = document.getElementById(canvasId);
+  if (!canvas) return;
+  const dpr = window.devicePixelRatio || 1;
+  const w = 340, h = 150;
+  canvas.width = w * dpr;
+  canvas.height = h * dpr;
+  canvas.style.width = '100%';
+  canvas.style.height = 'auto';
+  canvas.style.maxWidth = w + 'px';
+  const ctx = canvas.getContext('2d');
+  ctx.scale(dpr, dpr);
+  ctx.clearRect(0, 0, w, h);
+  const padL = 36, padR = 14, padT = 12, padB = 28;
+  const plotW = w - padL - padR, plotH = h - padT - padB;
+  const maxVal = Math.max(...data, 1);
+  if (data.every(v => v === 0)) {
+    ctx.fillStyle = '#999';
+    ctx.font = '13px -apple-system,sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('暂无数据', w / 2, h / 2);
+    return;
+  }
+  // grid
+  ctx.strokeStyle = '#e8e8e8';
+  ctx.lineWidth = 0.8;
+  for (let i = 0; i <= 4; i++) {
+    const y = padT + (plotH / 4) * i;
+    ctx.beginPath();
+    ctx.moveTo(padL, y);
+    ctx.lineTo(w - padR, y);
+    ctx.stroke();
+    ctx.fillStyle = '#999';
+    ctx.font = '9px -apple-system,sans-serif';
+    ctx.textAlign = 'right';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(Math.round(maxVal * (1 - i / 4)), padL - 5, y);
+  }
+  // points
+  const points = data.map((v, i) => ({
+    x: padL + (i / Math.max(data.length - 1, 1)) * plotW,
+    y: padT + plotH - (v / maxVal) * plotH
+  }));
+  // area
+  ctx.beginPath();
+  points.forEach((p, i) => { i === 0 ? ctx.moveTo(p.x, p.y) : ctx.lineTo(p.x, p.y); });
+  ctx.lineTo(points[points.length - 1].x, padT + plotH);
+  ctx.lineTo(points[0].x, padT + plotH);
+  ctx.closePath();
+  const grad = ctx.createLinearGradient(0, padT, 0, padT + plotH);
+  grad.addColorStop(0, 'rgba(124,92,191,0.22)');
+  grad.addColorStop(1, 'rgba(124,92,191,0.01)');
+  ctx.fillStyle = grad;
+  ctx.fill();
+  // line
+  ctx.beginPath();
+  ctx.strokeStyle = '#7C5CBF';
+  ctx.lineWidth = 2.5;
+  ctx.lineJoin = 'round';
+  ctx.lineCap = 'round';
+  points.forEach((p, i) => { i === 0 ? ctx.moveTo(p.x, p.y) : ctx.lineTo(p.x, p.y); });
+  ctx.stroke();
+  // dots
+  points.forEach(p => {
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, 3.5, 0, 2 * Math.PI);
+    ctx.fillStyle = '#fff';
+    ctx.fill();
+    ctx.strokeStyle = '#7C5CBF';
+    ctx.lineWidth = 2;
+    ctx.stroke();
+  });
+  // x labels
+  ctx.fillStyle = '#888';
+  ctx.font = '9px -apple-system,sans-serif';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'top';
+  labels.forEach((l, i) => {
+    const step = Math.max(1, Math.ceil(labels.length / 8));
+    if (i % step === 0 || i === labels.length - 1) {
+      ctx.fillText(l, points[i].x, padT + plotH + 8);
+    }
+  });
+}
+
+function renderYearHeatmap(year) {
+  const container = document.getElementById('heatmapYear');
+  if (!container) return;
+
+  const yearData = {};
+  for (let m = 0; m < 12; m++) {
+    const dim = new Date(year, m + 1, 0).getDate();
+    for (let d = 1; d <= dim; d++) {
+      const ds = `${year}-${String(m + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+      yearData[ds] = sessions.filter(s => s.date === ds && s.completed).reduce((a, s) => a + s.minutes, 0);
+    }
+  }
+
+  const values = Object.values(yearData);
+  const maxVal = Math.max(...values, 1);
+  function getColor(mins) {
+    if (mins === 0) return '#ebedf0';
+    const r = mins / maxVal;
+    if (r < 0.2) return '#E8D5F5';
+    if (r < 0.4) return '#B39DDB';
+    if (r < 0.7) return '#7C5CBF';
+    return '#512DA8';
+  }
+
+  const months = ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'];
+  const firstDay = new Date(year, 0, 1);
+  let startDow = firstDay.getDay();
+  startDow = startDow === 0 ? 6 : startDow - 1; // Mon=0
+
+  const allDays = [];
+  for (let m = 0; m < 12; m++) {
+    const dim = new Date(year, m + 1, 0).getDate();
+    for (let d = 1; d <= dim; d++) {
+      const ds = `${year}-${String(m + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+      allDays.push({ ds, mins: yearData[ds] || 0, month: m });
+    }
+  }
+
+  const leading = Array(startDow).fill(null);
+  const full = [...leading, ...allDays];
+  const weeks = [];
+  for (let i = 0; i < full.length; i += 7) weeks.push(full.slice(i, i + 7));
+
+  // Find first row of each month
+  const monthRows = Array(12).fill(-1);
+  for (let row = 0; row < weeks.length; row++) {
+    for (let col = 0; col < 7; col++) {
+      const cell = weeks[row] && weeks[row][col];
+      if (cell && monthRows[cell.month] === -1) monthRows[cell.month] = row;
+    }
+  }
+
+  // Month labels
+  let html = '<div style="display:flex;padding-left:18px;margin-bottom:3px">';
+  let lastLabelRow = -2;
+  for (let row = 0; row < weeks.length; row++) {
+    const mIdx = monthRows.indexOf(row);
+    if (mIdx >= 0 && row - lastLabelRow >= 1) {
+      html += `<span style="font-size:9px;color:#888;width:16px;flex-shrink:0">${months[mIdx]}</span>`;
+      lastLabelRow = row;
+    } else {
+      html += '<span style="width:16px;flex-shrink:0"></span>';
+    }
+  }
+  html += '</div>';
+
+  // Table
+  html += '<table class="heatmap-year-table"><tbody>';
+  const wl = ['', '一', '', '三', '', '五', ''];
+  for (let col = 0; col < 7; col++) {
+    html += '<tr>';
+    html += `<td style="font-size:9px;color:#888;width:14px;text-align:right;padding-right:3px">${wl[col]}</td>`;
+    for (let row = 0; row < weeks.length; row++) {
+      const cell = weeks[row] && weeks[row][col];
+      if (!cell) html += '<td style="background:transparent"></td>';
+      else html += `<td style="background:${getColor(cell.mins)}" title="${cell.ds}: ${cell.mins}分钟"></td>`;
+    }
+    html += '</tr>';
+  }
+  html += '</tbody></table>';
+  container.innerHTML = html;
+}
+
+// ==================== 0.6 成就引擎 (Achievement Engine 2.0) ====================
+const ACHIEVEMENTS = [
+  // Bronze - 入门里程碑
+  { id: 'first_focus',   name: '初次专注',       icon: '🌱', tier: 'bronze',  cond: s => s.totalSessions >= 1 },
+  { id: 'total_10h',     name: '累计10小时',     icon: '⏳', tier: 'bronze',  cond: s => s.totalMins >= 600 },
+  { id: 'sessions_5',    name: '5次专注',        icon: '🌿', tier: 'bronze',  cond: s => s.totalSessions >= 5 },
+  { id: 'all_habits',    name: '今日全勤',       icon: '🎯', tier: 'bronze',  cond: s => s.allHabitsDoneToday, hide: true },
+  { id: 'score_50',      name: '积分新苗',       icon: '🌱', tier: 'bronze',  cond: s => s.score >= 50 },
+  // Silver - 进阶成就
+  { id: 'daily_4h',      name: '小孩梓徽章',     icon: '🍼', tier: 'silver',  cond: s => s.todayMins >= 240, hide: true },
+  { id: 'total_30h',     name: '累计30小时',     icon: '⏰', tier: 'silver',  cond: s => s.totalMins >= 1800 },
+  { id: 'sessions_20',   name: '20次专注',       icon: '🌳', tier: 'silver',  cond: s => s.totalSessions >= 20 },
+  { id: 'skin_3',        name: '衣装收集者',     icon: '👗', tier: 'silver',  cond: s => s.unlockedSkins >= 3 },
+  { id: 'habit_perfect', name: '完美习惯周',     icon: '✅', tier: 'silver',  cond: s => s.habitStreak7 },
+  { id: 'score_200',     name: '积分达人',       icon: '⭐', tier: 'silver',  cond: s => s.score >= 200 },
+  // Gold - 高阶成就
+  { id: 'streak_7',      name: '连续7天',        icon: '🔥', tier: 'gold',    cond: s => s.streak >= 7 },
+  { id: 'total_60h',     name: '累计60小时',     icon: '⌛', tier: 'gold',    cond: s => s.totalMins >= 3600 },
+  { id: 'sessions_50',   name: '50次专注',       icon: '🌲', tier: 'gold',    cond: s => s.totalSessions >= 50 },
+  { id: 'streak_14',     name: '连续14天',       icon: '💪', tier: 'gold',    cond: s => s.streak >= 14 },
+  { id: 'skin_8',        name: '衣装收藏家',     icon: '🎨', tier: 'gold',    cond: s => s.unlockedSkins >= 8 },
+  { id: 'score_500',     name: '积分大师',       icon: '🌟', tier: 'gold',    cond: s => s.score >= 500 },
+  // Legend - 传说成就
+  { id: 'streak_30',     name: '连续30天',        icon: '🔥', tier: 'legend', cond: s => s.streak >= 30 },
+  { id: 'total_120h',    name: '累计120小时',    icon: '🏆', tier: 'legend',  cond: s => s.totalMins >= 7200 },
+  { id: 'sessions_100',  name: '100次专注',      icon: '🌍', tier: 'legend',  cond: s => s.totalSessions >= 100 },
+  { id: 'skin_12',       name: '衣装制霸',       icon: '👘', tier: 'legend',  cond: s => s.unlockedSkins >= 12 },
+  { id: 'skin_all',      name: '全衣装制霸',     icon: '👑', tier: 'legend',  cond: s => s.unlockedSkins >= 14 },
+  { id: 'score_1000',    name: '积分传说',       icon: '💎', tier: 'legend',  cond: s => s.score >= 1000 },
+  { id: 'streak_60',     name: '连续60天',        icon: '🐉', tier: 'legend', cond: s => s.streak >= 60, hide: true },
+];
+
+function checkAchievements(stats) {
+  const today = new Date().toISOString().slice(0, 10);
+  const todaySessions = sessions.filter(s => s.date === today && s.completed);
+  const allTimeMins = sessions.filter(s => s.completed).reduce((a, s) => a + s.minutes, 0);
+  const allTimeSessions = sessions.filter(s => s.completed).length;
+  const activeHabits = habits.filter(h => !h.archived);
+  const habitStreak7 = activeHabits.length > 0 && activeHabits.every(h => (h.dates || []).length >= 7);
+
+  const s = {
+    ...stats,
+    totalMins: allTimeMins,
+    totalSessions: allTimeSessions,
+    todayMins: todaySessions.reduce((a, s) => a + s.minutes, 0),
+    score,
+    habitStreak7,
+  };
+
+  return ACHIEVEMENTS.map(a => ({ ...a, unlocked: a.cond(s) }));
+}
+
+function renderAchievements() {
+  const stats = getStats(currentPeriod);
+  const ach = checkAchievements(stats);
+  const unlocked = ach.filter(a => a.unlocked);
+  const visible = ach.filter(a => !a.hide || a.unlocked);
+
+  // Summary
+  document.getElementById('achUnlocked').textContent = unlocked.length;
+  document.getElementById('achTotal').textContent = ACHIEVEMENTS.length;
+
+  const tiers = { bronze: 0, silver: 0, gold: 0, legend: 0 };
+  unlocked.forEach(a => tiers[a.tier]++);
+  document.getElementById('achTiers').innerHTML =
+    `<span>🥉${tiers.bronze}</span><span>🥈${tiers.silver}</span><span>🥇${tiers.gold}</span><span>👑${tiers.legend}</span>`;
+
+  // Grid
+  const grid = document.getElementById('achGridHb');
+  const tierColors = { bronze: '#CD7F32', silver: '#A0A0A0', gold: '#FFD700', legend: '#E040FB' };
+  const tierLabels = { bronze: '🥉铜', silver: '🥈银', gold: '🥇金', legend: '👑传说' };
+
+  grid.innerHTML = visible.map(a => {
+    const cls = a.unlocked ? 'earned tier-' + a.tier : 'locked';
+    return `
+      <div class="ach-card-hb ${cls}" style="${a.unlocked ? 'border-color:' + tierColors[a.tier] : ''}"
+           onclick="showAchDetail('${a.id}')">
+        <span class="ach-hb-icon">${a.unlocked ? a.icon : '❓'}</span>
+        <div class="ach-hb-info">
+          <div class="ach-hb-name">${a.name}</div>
+          ${a.unlocked ? `<span class="ach-hb-tier tier-${a.tier}">${tierLabels[a.tier]}</span>` : ''}
+        </div>
+        ${a.unlocked ? '<span class="ach-hb-check">✓</span>' : ''}
+      </div>`;
+  }).join('');
+}
+
+function showAchDetail(id) {
+  const a = ACHIEVEMENTS.find(x => x.id === id);
+  if (!a) return;
+  const stats = getStats(currentPeriod);
+  const allStats = {
+    ...stats,
+    totalMins: sessions.filter(s => s.completed).reduce((a, s) => a + s.minutes, 0),
+    totalSessions: sessions.filter(s => s.completed).length,
+    todayMins: sessions.filter(s => s.date === new Date().toISOString().slice(0, 10) && s.completed).reduce((a, s) => a + s.minutes, 0),
+    score,
+    habitStreak7: habits.filter(h => !h.archived).length > 0 && habits.filter(h => !h.archived).every(h => (h.dates || []).length >= 7),
+  };
+  const unlocked = a.cond(allStats);
+  const tierLabels = { bronze: '🥉 铜', silver: '🥈 银', gold: '🥇 金', legend: '👑 传说' };
+  const tierColors = { bronze: '#ffe0b2', silver: '#e0e0e0', gold: '#fff8e1', legend: '#f3e5f5' };
+
+  document.getElementById('achMIcon').textContent = unlocked ? a.icon : '❓';
+  document.getElementById('achMName').textContent = a.name;
+  document.getElementById('achMTier').textContent = tierLabels[a.tier] || '';
+  document.getElementById('achMTier').style.background = tierColors[a.tier] || '#eee';
+  document.getElementById('achMCond').textContent = unlocked ? '🎉 已解锁！继续保持！' : (a.hide ? '🔒 隐藏成就——达到条件后揭晓' : '🔒 继续努力解锁此成就');
+  document.getElementById('achMDate').textContent = '';
+  document.getElementById('achModal').classList.add('show');
+}
+
+function closeAchModal() {
+  document.getElementById('achModal').classList.remove('show');
+}
+
+// ==================== 0.7 手帳页渲染 (Handbook Renderer) ====================
+function switchPeriod(p) {
+  currentPeriod = p;
+  document.querySelectorAll('.period-chip').forEach(c => c.classList.toggle('on', c.dataset.p === p));
+  rHandbook();
+}
+
+function switchPieTab(t) {
+  currentPieTab = t;
+  document.querySelectorAll('.pie-tab').forEach(c => c.classList.toggle('on', c.dataset.pt === t));
+  rHandbook();
+}
+
+function rHandbook() {
+  const stats = getStats(currentPeriod);
+
+  // Stat cards
+  const totalH = Math.floor(stats.totalMins / 60);
+  const totalRem = stats.totalMins % 60;
+  document.getElementById('statTotal').innerHTML = (totalH > 0 ? totalH + '<small>h</small>' : stats.totalMins + '<small>min</small>');
+
+  const todayH = Math.floor(stats.todayMins / 60);
+  const todayRem = stats.todayMins % 60;
+  const periodTodayVal = currentPeriod === 'today' ? stats.totalMins : stats.todayMins;
+  const periodH = Math.floor(periodTodayVal / 60);
+  const periodRem = periodTodayVal % 60;
+  document.getElementById('statToday').innerHTML = (periodH > 0 ? periodH + '<small>h</small>' : periodTodayVal + '<small>min</small>');
+  document.getElementById('statToday').parentElement.querySelector('.lbl').textContent =
+    '🌸 ' + ({ today: '今日专注', week: '本周专注', month: '本月专注', year: '本年专注' })[currentPeriod];
+
+  document.getElementById('statSessions').textContent = stats.completedTasks;
+  document.getElementById('statStreak').innerHTML = stats.streak + '<small>天</small>';
+
+  // Score
+  document.getElementById('scoreVal').textContent = score;
+  const allTotalMin = sessions.filter(s => s.completed).reduce((a, s) => a + s.minutes, 0);
+  document.getElementById('totalMin').textContent = allTotalMin;
+  document.getElementById('totalSessions').textContent = sessions.filter(s => s.completed).length;
+
+  // Pie chart
+  let pieData;
+  if (currentPieTab === 'type') {
+    pieData = [
+      { label: '习惯', value: stats.byType.habit, color: '#7C5CBF' },
+      { label: '目标', value: stats.byType.goal, color: '#FF9A9E' },
+      { label: '自由', value: stats.byType.free, color: '#A0E7E5' }
+    ];
+  } else if (currentPieTab === 'difficulty') {
+    pieData = [
+      { label: '🌱微', value: stats.byDifficulty.micro, color: '#81C784' },
+      { label: '🌿常', value: stats.byDifficulty.normal, color: '#FFB74D' },
+      { label: '🌳挑', value: stats.byDifficulty.challenge, color: '#E57373' }
+    ];
+  } else {
+    pieData = [
+      { label: '☀️早', value: stats.byTimeOfDay.morning, color: '#FFCC80' },
+      { label: '🌤午', value: stats.byTimeOfDay.afternoon, color: '#EF6C00' },
+      { label: '🌙晚', value: stats.byTimeOfDay.evening, color: '#7E57C2' },
+      { label: '🌚深', value: stats.byTimeOfDay.night, color: '#37474F' }
+    ];
+  }
+  drawPieChart('pieChart', pieData);
+
+  // Line chart
+  const trend = getTrendData(currentPeriod);
+  drawLineChart('lineChart', trend.labels, trend.data);
+
+  // Year heatmap
+  renderYearHeatmap(new Date().getFullYear());
+
+  // Achievements
+  renderAchievements();
+}
+
 // ==================== 阿梓树系统 ====================
 // 阿梓的8套衣服 = 8个树等级。越专注解锁越多衣服。
 const AZUSA_TREES=[
@@ -219,9 +1038,14 @@ const AZUSA_TREES=[
 {id:'gift',name:'???????????',img:'src/images/azusa/azusa_gift.gif',unlock:130,sub:'??130?????????live2D',color:'#FF8A65'},
 {id:'ninja',name:'????????',img:'src/images/azusa/azusa_ninja.jpg',unlock:155,sub:'??155????????????????',color:'#7E57C2'},
 {id:'ultimate',name:'??????????',img:'src/images/azusa/azusa_transparent.png',unlock:180,sub:'??180?????????????????',color:'#E040FB'},
+{id:'regular',name:'粉丝作品·冬',img:'src/images/azusa/azusa_fan1.jpg',unlock:195,sub:'解锁195次：冬日暖装粉丝创作，温暖治愈',color:'#FFAB91'},
+{id:'box',name:'盒蛋阿梓',img:'src/images/azusa/azusa_box.png',unlock:210,sub:'解锁210次：超Q弹盒蛋版，一口一个！',color:'#FFCC80'},
+{id:'newyear2',name:'新年衣装·改',img:'src/images/azusa/azusa_newyear2.png',unlock:230,sub:'解锁230次：限定复刻新年和服，精致华美',color:'#F48FB1'},
+{id:'chibi4',name:'小呡梓·春',img:'src/images/azusa/azusa_chibi4.png',unlock:250,sub:'解锁250次：四周年纪念Q版，春日气息',color:'#B39DDB'},
 ];
 
-let currentTreeIdx=0; // which tree the user is currently at
+let currentTreeIdx=0; // 最高已解锁的衣装索引
+let currentOutfit=0; // 当前穿着的衣装索引（可自由切换已解锁的）
 let totalCompletions=0; // total completed sessions
 
 // ==================== STATE ====================
@@ -235,13 +1059,15 @@ let dark=localStorage.getItem('fdark')==='1';
 let selectedTask=null;
 totalCompletions=sessions.filter(s=>s.completed).length;
 updateCurrentTree();
+currentOutfit=parseInt(localStorage.getItem('fco')||String(currentTreeIdx));
+if(currentOutfit>currentTreeIdx)currentOutfit=currentTreeIdx; // 不能穿未解锁的
 if(dark)document.body.classList.add('dark');
 
 function updateCurrentTree(){
 for(let i=AZUSA_TREES.length-1;i>=0;i--){if(totalCompletions>=AZUSA_TREES[i].unlock){currentTreeIdx=i;break}}
 }
 function save(k){
-let map={h:['fh',JSON.stringify(habits)],g:['fg',JSON.stringify(goals)],s:['fs',JSON.stringify(sessions)],c:['fsc',String(score)],d:['fdark',dark?'1':'0']};
+let map={h:['fh',JSON.stringify(habits)],g:['fg',JSON.stringify(goals)],s:['fs',JSON.stringify(sessions)],c:['fsc',String(score)],d:['fdark',dark?'1':'0'],o:['fco',String(currentOutfit)]};
 let[key,val]=map[k];localStorage.setItem(key,val)
 }
 function toast(m){let t=document.getElementById('toast');t.textContent=m;t.classList.add('show');clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('show'),2000)}
@@ -251,9 +1077,10 @@ function fmtMins(m){if(m<60)return m+'分钟';let h=Math.floor(m/60);let r=m%60;
 
 // ==================== TABS ====================
 let currentTab=0;
-function goTab(i){currentTab=i;document.querySelectorAll('.page').forEach(p=>p.classList.remove('on'));document.querySelectorAll('.tab').forEach((t,j)=>t.classList.toggle('on',j===i));document.getElementById(['pg0','pg1','pg2','pg3','pg4'][i]).classList.add('on');document.getElementById('bar').textContent=['🌸 阿梓的森林','👗 阿梓的衣柜','✅ 习惯追踪','🎯 目标计划','👤 我的'][i];if(i===1)rGallery();if(i===2)rHabits();if(i===3)rGoals();if(i===4)rProfile()}
+function goTab(i){currentTab=i;document.querySelectorAll('.page').forEach(p=>p.classList.remove('on'));document.querySelectorAll('.tab').forEach((t,j)=>t.classList.toggle('on',j===i));document.getElementById(['pg0','pg1','pg2','pg3','pg4'][i]).classList.add('on');document.getElementById('bar').textContent=['🌸 阿梓的森林','👗 阿梓的衣柜','✅ 习惯追踪','🎯 目标计划','📒 阿梓の手帳'][i];if(i===1)rGallery();if(i===2)rHabits();if(i===3)rGoals();if(i===4){rHandbook();Mascot.react('open_stats')}}
 
 // ==================== FOCUS TIMER ====================
+function drawRing(p){let c=document.getElementById('ring'),dpr=window.devicePixelRatio||1,sz=180;c.width=c.height=sz*dpr;c.style.width=c.style.height=sz+'px';let ctx=c.getContext('2d');ctx.scale(dpr,dpr);let cx=sz/2,cy=sz/2,r=70;ctx.clearRect(0,0,sz,sz);ctx.beginPath();ctx.arc(cx,cy,r,0,Math.PI*2);ctx.strokeStyle='#e0e0e0';ctx.lineWidth=9;ctx.stroke();if(p>0){ctx.beginPath();ctx.arc(cx,cy,r,-Math.PI/2,-Math.PI/2+Math.PI*2*p);ctx.strokeStyle=isBreak?'#ff9800':'#7E57C2';ctx.lineWidth=9;ctx.lineCap='round';ctx.stroke()}}
 (function initFocus(){
 let c=document.getElementById('chips');
 DURS.forEach((d,i)=>{let e=document.createElement('div');e.className='chip'+(i===1?' sel':'');e.textContent=d+'分钟';e.onclick=()=>{c.querySelectorAll('.chip').forEach(x=>x.classList.remove('sel'));e.classList.add('sel');totalSec=d*60;if(!timerId)document.getElementById('time').textContent=d+':00'};c.appendChild(e)});
@@ -288,6 +1115,7 @@ document.getElementById('taskType').disabled=true;document.getElementById('taskP
 document.getElementById('lockLeft').textContent=Math.floor(totalSec/60);
 document.getElementById('lockCount').textContent='0';
 drawRing(0);updateTree(0);
+Mascot.react('focus_start');
 timerId=setInterval(tick,1000);
 }
 
@@ -302,6 +1130,7 @@ if(elapsed>=totalSec){clearInterval(timerId);timerId=null;onDone();}
 
 function onDone(){
 document.getElementById('status').textContent='🎉 太棒了！';
+Mascot.react('focus_complete');
 // Current tree emoji based on what was unlocked
 let curTree=AZUSA_TREES[Math.min(currentTreeIdx+1,AZUSA_TREES.length-1)];
 if(curTree.img)document.getElementById('tree').innerHTML='<img src='+curTree.img+' class=tree-img>';else document.getElementById('tree').textContent=curTree.emoji||'??';
@@ -322,8 +1151,15 @@ if(selectedTask&&selectedTask.type==='habit'){let h=habits.find(x=>x.id===select
 let newTree=null;
 for(let i=AZUSA_TREES.length-1;i>currentTreeIdx;i--){if(totalCompletions>=AZUSA_TREES[i].unlock){newTree=AZUSA_TREES[i];break}}
 selectedTask=null;updateTaskSelects();
-if(newTree)toast('🌸 新衣装解锁！'+newTree.name);else toast('🎉 专注完成！离下一件衣装更近了');
+if(newTree){Mascot.react('skin_unlock',newTree.name);toast('🌸 新衣装解锁！'+newTree.name)}else toast('🎉 专注完成！离下一件衣装更近了');
 try{navigator.vibrate?.([200,100,200])}catch(e){}
+// 检测里程碑
+const newStreak=calcStreak();
+if([7,14,30,60,100].includes(newStreak))Mascot.react('streak_milestone',newStreak+'天');
+// 检测成就解锁
+const achNow=checkAchievements(getStats('today'));
+const justUnlocked=achNow.filter(a=>a.unlocked&&a.hide);
+if(justUnlocked.length>0)Mascot.react('achievement_unlock',justUnlocked[0]);
 }
 
 function startBreak(){
@@ -340,7 +1176,7 @@ if(elapsed>=totalSec){clearInterval(timerId);timerId=null;isBreak=false;document
 }
 
 function abort(){
-if(!timerId)return;clearInterval(timerId);timerId=null;
+if(!timerId)return;clearInterval(timerId);timerId=null;Mascot.react('focus_abandon');
 document.getElementById('btnGo').style.display='block';document.getElementById('btnStop').style.display='none';
 document.getElementById('status').textContent='没关系，下次一定可以的 🌸';
 document.getElementById('tree').textContent='😢';document.getElementById('btnGo').textContent='🌱 重新开始';
@@ -353,53 +1189,154 @@ if(selectedTask&&selectedTask.type==='habit'){let h=habits.find(x=>x.id===select
 selectedTask=null;updateTaskSelects();
 drawRing(0);updateTree(0,true);document.getElementById('time').textContent=totalSec/60+':00';
 document.getElementById('lockOverlay').classList.remove('show');
-toast('🌸 没关系，阿梓会等你');
+toast('\u{1F338} 没关系，阿梓会等你');
+}
+
+function resumeFocus(){
+document.getElementById('lockOverlay').classList.remove('show');
+toast('\u{1F338} 欢迎回来！继续加油');
+}
+function lockAbort(){
+document.getElementById('lockOverlay').classList.remove('show');
+if(timerId){clearInterval(timerId);timerId=null}
+document.getElementById('btnGo').style.display='block';document.getElementById('btnStop').style.display='none';
+document.getElementById('status').textContent='树受伤了，下次加油 \u{1F338}';document.getElementById('tree').textContent='\u{1F622}';
+document.getElementById('btnGo').textContent='\u{1F331} 重新开始';document.getElementById('btnGo').onclick=start;
+document.querySelectorAll('#chips .chip').forEach(c=>c.style.pointerEvents='auto');
+document.getElementById('taskType').disabled=false;document.getElementById('taskPick').disabled=false;
+selectedTask=null;updateTaskSelects();
+drawRing(0);updateTree(0,true);document.getElementById('time').textContent=totalSec/60+':00';
+toast('\u{1F338} 下次一定会更好的');
 }
 
 function updateTree(p,dead){
 let e=document.getElementById('tree');
 if(dead){e.innerHTML='<span style=font-size:80px>??</span>';return}
-let stage,img;
+let img;
 if(p<0.15){
 e.innerHTML='<span style=font-size:70px class=pulse>??</span>'
 }else if(p<0.4){
-stage=Math.min(currentTreeIdx+1,AZUSA_TREES.length-1);
-img=AZUSA_TREES[stage].img;
-if(img)e.innerHTML='<img src='+img+' class=tree-img style=opacity:.5;transform:scale(.7)>';
-else e.innerHTML='<span style=font-size:60px>??</span>'
-}else if(p<0.7){
-stage=Math.min(currentTreeIdx+2,AZUSA_TREES.length-1);
-img=AZUSA_TREES[stage].img;
-if(img)e.innerHTML='<img src='+img+' class=tree-img style=opacity:.8;transform:scale(.85)>';
-else e.innerHTML='<span style=font-size:70px>'+AZUSA_TREES[stage].emoji+'</span>'
+// 幼苗期 → 显示当前穿着衣装的前一级（或种子）
+let prev=Math.max(0,currentOutfit-1);
+img=AZUSA_TREES[prev].img;
+if(img)e.innerHTML='<img src='+img+' class=tree-img style=opacity:.4;transform:scale(.6)>';
+else e.innerHTML='<span style=font-size:60px>'+AZUSA_TREES[prev].emoji+'</span>'
+}else if(p<0.75){
+// 成长中 → 显示当前穿着
+img=AZUSA_TREES[currentOutfit].img;
+if(img)e.innerHTML='<img src='+img+' class=tree-img style=opacity:.75;transform:scale(.85)>';
+else e.innerHTML='<span style=font-size:70px>'+AZUSA_TREES[currentOutfit].emoji+'</span>'
 }else{
-stage=Math.min(currentTreeIdx+3,AZUSA_TREES.length-1);
-img=AZUSA_TREES[stage].img;
+// 接近完成 → 显示下一级衣装（如果存在）
+let nxt=Math.min(currentOutfit+1,AZUSA_TREES.length-1);
+img=AZUSA_TREES[nxt].img;
 if(img)e.innerHTML='<img src='+img+' class=tree-img style=opacity:1;transform:scale(1)>';
-else e.innerHTML='<span style=font-size:80px>'+AZUSA_TREES[stage].emoji+'</span>'
+else e.innerHTML='<span style=font-size:80px>'+AZUSA_TREES[nxt].emoji+'</span>'
 }}
 function rGallery(){
 let el=document.getElementById('treeGallery');
 el.innerHTML=AZUSA_TREES.map((t,i)=>{
 let unlocked=i<=currentTreeIdx;
+let wearing=i===currentOutfit;
 let isNext=i===currentTreeIdx+1;
-let progress=unlocked?100:isNext?Math.round((totalCompletions-AZUSA_TREES[currentTreeIdx].unlock)/(t.unlock-AZUSA_TREES[currentTreeIdx].unlock)*100):0;
-let cls=unlocked?(i===currentTreeIdx?'current':'unlocked'):'locked';
-let badge=unlocked?(i===currentTreeIdx?'?? ??':'? ???'):'?? '+(isNext?'???':'?'+t.unlock+'?');
+let pct=unlocked?100:isNext?Math.round((totalCompletions-AZUSA_TREES[currentTreeIdx].unlock)/(t.unlock-AZUSA_TREES[currentTreeIdx].unlock)*100):0;
+let cls=unlocked?'unlocked':'locked';
+if(wearing)cls='current';
+let badge=wearing?'🌸 穿着中':unlocked?'✅ 已解锁':'🔒';
 let visual=t.img?`<img src="${t.img}" class="tg-img" alt="${t.name}" loading="lazy">`:`<span class="tg-emoji">${t.emoji}</span>`;
-return`<div class="tg-card ${cls}"><span class="tg-badge ${unlocked?'':'lock'}">${badge}</span>${visual}<div class="tg-name">${t.name}</div><div class="tg-sub">${t.sub}</div>${!unlocked?`<div class="tg-progress"><div style="width:${isNext?progress:0}%"></div></div>`:''}</div>`}).join('')
+return`<div class="tg-card ${cls}" onclick="${unlocked?`changeOutfit(${i})`:''}">
+<span class="tg-badge ${unlocked?'':'lock'}">${badge}</span>
+${visual}
+<div class="tg-name">${esc(t.name)}</div>
+<div class="tg-sub">${esc(t.sub)}</div>
+${!unlocked?`<div class="tg-progress"><div style="width:${isNext?pct:0}%"></div></div><div style="font-size:10px;color:var(--gr);margin-top:2px">${isNext?pct+'% 进行中':t.unlock+'次专注解锁'}</div>`:wearing?`<div style="font-size:10px;color:var(--b);margin-top:2px;font-weight:600">👈 当前穿着</div>`:`<div style="font-size:10px;color:var(--gr);margin-top:2px">点击穿着</div>`}
+</div>`}).join('')
+
+// Gallery stats
+let stats=document.getElementById('galleryStats');
+let remaining=AZUSA_TREES[Math.min(currentTreeIdx+1,AZUSA_TREES.length-1)].unlock-totalCompletions;
+stats.innerHTML=`<div class="st"><div class="n" style="color:#5C6BC0">${totalCompletions}</div><div class="l">🌸 完成次数</div></div><div class="st"><div class="n" style="color:#7E57C2">${currentTreeIdx+1}/${AZUSA_TREES.length}</div><div class="l">👗 已解锁衣装</div></div><div class="st"><div class="n" style="color:#FF7043">${remaining>0?remaining:0}</div><div class="l">下次解锁还需</div></div>`;
+}
+
+function changeOutfit(idx){
+if(idx>currentTreeIdx){toast('🔒 尚未解锁');return}
+currentOutfit=idx;
+save('o');
+rGallery();
+// 如果在种树页，刷新树显示
+if(currentTab===0)updateTree(0);
+// 同步小精灵
+Mascot.updateSkin();
+toast('👗 换装成功！'+AZUSA_TREES[idx].name);
+}
 
 // ==================== HABITS ====================
 function rHabits(){
-let el=document.getElementById('habitsList');
-let active=habits.filter(h=>!h.archived);
-if(active.length===0)el.innerHTML='<p style="text-align:center;color:var(--gr);padding:30px;font-size:13px">还没有习惯<br>点右上角 + 新建</p>';
-else el.innerHTML=active.map(h=>`<div class="card ht-row"><div class="ht-ck ${h.done?'done':''}" onclick="togH('${h.id}')">${h.done?'✓':'○'}</div><div class="ht-info"><div class="ht-n">${esc(h.name)}</div><div class="ht-d">${h.tier==='micro'?'🌱微':h.tier==='normal'?'🌿常':'🌳挑'} · ${h.totalMins?fmtMins(h.totalMins):'0'} · 🍅${h.totalSessions||0}次</div><div class="ht-bar"><div class="ht-fill" style="width:${h.health||50}%;background:${(h.health||50)>80?'#4CAF50':(h.health||50)>50?'#ff9800':'#e53935'}"></div></div></div><div class="ht-s">${h.streak||0}<span>天</span></div><div class="ht-act"><button onclick="delH('${h.id}')">🗑</button></div></div>`).join('');
+const active=habits.filter(h=>!h.archived);
+const today=new Date().toISOString().slice(0,10);
+
+// Summary bar
+const doneToday=active.filter(h=>h.dates&&h.dates.includes(today)).length;
+const bestH=active.reduce((b,h)=>((h.streak||0)>(b.streak||0)?h:b),{streak:0});
+const avgHealth=active.length?Math.round(active.reduce((s,h)=>s+(h.health||50),0)/active.length):0;
+document.getElementById('habitsSummary').innerHTML=active.length?`
+<div class="hs-stat"><div class="hs-val">${doneToday}/${active.length}</div><div class="hs-lbl">✅ 今日完成</div></div>
+<div class="hs-stat"><div class="hs-val">🔥${bestH.streak||0}天</div><div class="hs-lbl">🏆 ${bestH.name||'--'} 最佳</div></div>
+<div class="hs-stat"><div class="hs-val">❤️${avgHealth}%</div><div class="hs-lbl">📊 平均健康度</div></div>
+`:`<div style="text-align:center;width:100%;color:var(--gr)">👋 还没有习惯，点「+ 新建」开始吧</div>`;
+
+// Habit list
+const el=document.getElementById('habitsList');
+if(active.length===0){
+el.innerHTML='<div class="empty-state"><span class="empty-icon">🌱</span>这里空空如也<br><span class="empty-hint">点击上方 + 新建 或下方快速添加</span></div>';
+}else{
+el.innerHTML=active.map(h=>{
+const done=h.dates&&h.dates.includes(today);
+const tierIcon=h.tier==='micro'?'🌱':h.tier==='challenge'?'🌳':'🌿';
+const tierLabel=h.tier==='micro'?'微习惯':h.tier==='challenge'?'挑战':'正常';
+const health=h.health||50;
+const healthColor=health>80?'#4CAF50':health>50?'#FFB74D':'#E57373';
+// Mini 7-day dots
+const last7=[];
+for(let i=6;i>=0;i--){
+const d=new Date();d.setDate(d.getDate()-i);
+const ds=d.toISOString().slice(0,10);
+last7.push((h.dates||[]).includes(ds));
+}
+const miniDots=last7.map(d=>`<span${d?' class=done':''}></span>`).join('');
+return`<div class="habit-card t-${h.tier}${done?' done-today':''}">
+<div class="hb-left">
+<div class="hb-check${done?' done':''}" onclick="togH('${h.id}')">${done?'✓':'○'}</div>
+</div>
+<div class="hb-mid">
+<div class="hb-name">${tierIcon} ${esc(h.name)} <span style="font-size:10px;color:var(--gr);font-weight:400">· ${tierLabel}</span></div>
+<div class="hb-meta">
+<span>🍅 ${h.totalSessions||0}次</span>
+<span>⏱ ${h.totalMins?fmtMins(h.totalMins):'0'}</span>
+</div>
+<div class="hb-bar-wrap"><div class="hb-bar-fill" style="width:${health}%;background:${healthColor}"></div></div>
+</div>
+<div class="hb-right">
+<div class="hb-streak">${h.streak||0}<span>天🔥</span></div>
+<div class="hb-mini-week">${miniDots}</div>
+</div>
+<button class="hb-delete" onclick="delH('${h.id}')" title="删除">×</button>
+</div>`}).join('')}
+
 rHeatmap();
 }
+
+function addHabitPreset(name,tier){
+if(habits.find(h=>h.name===name&&!h.archived)){toast(name+' 已存在');return}
+const tierMap={micro:'🌱微习惯',normal:'🌿正常',challenge:'🌳挑战'};
+habits.push({id:uid(),name:name,tier:tier,done:false,streak:0,health:50,dates:[],totalMins:0,totalSessions:0,createdAt:new Date().toISOString()});
+save('h');rHabits();updateTaskSelects();
+toast('✅ '+name+' · '+tierMap[tier]);
+}
+
 function togH(id){let h=habits.find(x=>x.id===id);if(!h)return;h.done=!h.done;if(h.done){h.streak=(h.streak||0)+1;h.health=Math.min(100,(h.health||50)+5);h.totalSessions=(h.totalSessions||0)+1;h.dates=h.dates||[];let t=new Date().toISOString().slice(0,10);if(!h.dates.includes(t))h.dates.push(t);updateScore(3)}else{h.streak=Math.max(0,(h.streak||1)-1);h.health=Math.max(5,(h.health||50)-3)}save('h');rHabits()}
-function addHabit(){let n=prompt('习惯名称');if(!n||!n.trim())return;let t=prompt('难度：1=🌱微习惯 2=🌿正常 3=🌳挑战','2');habits.push({id:uid(),name:n.trim(),tier:t==='1'?'micro':t==='3'?'challenge':'normal',done:false,streak:0,health:50,dates:[],totalMins:0,totalSessions:0});save('h');rHabits();updateTaskSelects();toast('✅ 习惯已添加')}
-function delH(id){if(!confirm('确定删除？'))return;habits=habits.filter(h=>h.id!==id);save('h');rHabits();updateTaskSelects()}
+function addHabit(){let n=prompt('习惯名称：');if(!n||!n.trim())return;let t=prompt('难度：1=🌱微习惯 2=🌿正常 3=🌳挑战','2');habits.push({id:uid(),name:n.trim(),tier:t==='1'?'micro':t==='3'?'challenge':'normal',done:false,streak:0,health:50,dates:[],totalMins:0,totalSessions:0,createdAt:new Date().toISOString()});save('h');rHabits();updateTaskSelects();toast('✅ 习惯已添加')}
+function delH(id){if(!confirm('确定删除「'+((habits.find(h=>h.id===id)||{}).name||'')+'」？'))return;habits=habits.filter(h=>h.id!==id);save('h');rHabits();updateTaskSelects()}
 function rHeatmap(){
 let hm=document.getElementById('heatmap'),now=new Date(),cells=[];
 let start=new Date(now.getFullYear(),now.getMonth(),1);
@@ -415,71 +1352,387 @@ hm.innerHTML=cells.join('');
 }
 
 // ==================== GOALS ====================
+function drawGoalRing(canvasId,pct){
+const canvas=document.getElementById(canvasId);if(!canvas)return;
+const dpr=window.devicePixelRatio||1,sz=52;
+canvas.width=canvas.height=sz*dpr;canvas.style.width=canvas.style.height=sz+'px';
+const ctx=canvas.getContext('2d');ctx.scale(dpr,dpr);
+const cx=sz/2,cy=sz/2,r=20,lw=4;
+ctx.clearRect(0,0,sz,sz);
+// bg
+ctx.beginPath();ctx.arc(cx,cy,r,0,Math.PI*2);
+ctx.strokeStyle='#e8e8e8';ctx.lineWidth=lw;ctx.stroke();
+// progress
+if(pct>0){
+ctx.beginPath();ctx.arc(cx,cy,r,-Math.PI/2,-Math.PI/2+Math.PI*2*(pct/100));
+const grad=ctx.createLinearGradient(0,cy-r,0,cy+r);
+grad.addColorStop(0,'#7C5CBF');grad.addColorStop(1,'#CE93D8');
+ctx.strokeStyle=grad;ctx.lineWidth=lw;ctx.lineCap='round';ctx.stroke();
+}
+// pct text
+ctx.fillStyle='var(--b)';ctx.font='bold 12px -apple-system,sans-serif';
+ctx.textAlign='center';ctx.textBaseline='middle';
+ctx.fillText(pct+'%',cx,cy);
+}
+
 function rGoals(){
-let el=document.getElementById('goalsList');
-let active=goals.filter(g=>!g.archived);
-if(active.length===0)el.innerHTML='<p style="text-align:center;color:var(--gr);padding:30px;font-size:13px">还没有目标<br>点右上角 + 新建</p>';
-else el.innerHTML=active.map(g=>{let pct=Math.min(100,Math.round(((g.done||0)/(g.tomatoes||10))*100));return`<div class="card g-row"><div class="g-pct">${pct}%</div><div style="flex:1;min-width:0"><div style="font-weight:600;font-size:14px">${esc(g.title)}</div><div style="font-size:11px;color:var(--gr)">🍅${g.done||0}/${g.tomatoes||10} · ${g.totalMins?fmtMins(g.totalMins):'0'}</div><div class="g-bar"><div class="g-fill" style="width:${pct}%"></div></div></div><button style="border:none;background:var(--g);color:#fff;width:30px;height:30px;border-radius:50%;font-size:15px;cursor:pointer;flex-shrink:0" onclick="incG('${g.id}')">+</button><button style="border:none;background:transparent;color:var(--gr);font-size:12px;cursor:pointer;flex-shrink:0" onclick="delG('${g.id}')">🗑</button></div>`}).join('')}
-function incG(id){let g=goals.find(x=>x.id===id);if(!g)return;g.done=(g.done||0)+1;save('g');rGoals()}
-function addGoal(){let t=prompt('目标名称');if(!t||!t.trim())return;let tom=parseInt(prompt('预估番茄钟数','20'))||20;goals.push({id:uid(),title:t.trim(),tomatoes:tom,done:0,totalMins:0});save('g');rGoals();updateTaskSelects();toast('🎯 已添加')}
-function delG(id){if(!confirm('确定删除？'))return;goals=goals.filter(g=>g.id!==id);save('g');rGoals();updateTaskSelects()}
+const active=goals.filter(g=>!g.archived);
+const totalPct=active.length?Math.round(active.reduce((s,g)=>s+Math.min(100,((g.done||0)/(g.tomatoes||10))*100),0)/active.length):0;
+const inProgress=active.filter(g=>(g.done||0)<(g.tomatoes||10)).length;
+const completed=active.filter(g=>(g.done||0)>=(g.tomatoes||10)).length;
 
-// ==================== ACHIEVEMENTS ====================
-function calcAchievements(){
-let today=new Date().toISOString().slice(0,10);
-let todayMins=sessions.filter(s=>s.completed&&s.date===today).reduce((a,s)=>a+s.minutes,0);
-let dates=[...new Set(sessions.filter(s=>s.completed).map(s=>s.date))].sort();
-let streak=0,cur=0;
-for(let i=dates.length-1;i>=0;i--){
-let d=new Date(dates[i]);let prev=new Date(dates[i+1]||'');
-if(i===dates.length-1||(new Date(dates[i+1])-d)/86400000===1)cur++;else break;
+document.getElementById('goalsSummary').innerHTML=active.length?`
+<div class="hs-stat"><div class="hs-val">${totalPct}%</div><div class="hs-lbl">📊 总进度</div></div>
+<div class="hs-stat"><div class="hs-val">${inProgress}</div><div class="hs-lbl">🏃 进行中</div></div>
+<div class="hs-stat"><div class="hs-val">${completed}</div><div class="hs-lbl">🏆 已完成</div></div>
+`:`<div style="text-align:center;width:100%;color:var(--gr)">🎯 还没有目标，点「+ 新建」设定一个吧</div>`;
+
+const el=document.getElementById('goalsList');
+if(active.length===0){
+el.innerHTML='<div class="empty-state"><span class="empty-icon">🎯</span>设定你的第一个目标<br><span class="empty-hint">比如「学会Python」「读完5本书」</span></div>';
+}else{
+// Assign unique IDs for each canvas
+el.innerHTML=active.map((g,i)=>{
+const pct=Math.min(100,Math.round(((g.done||0)/(g.tomatoes||10))*100));
+const cid='goalRing'+i;
+const deadline=g.deadline||'';
+const deadlineInfo=deadline?(()=>{
+const dd=new Date(deadline),now=new Date();
+const daysLeft=Math.ceil((dd-now)/86400000);
+if(daysLeft<0)return'<span class="goal-deadline">⏰ 已过期</span>';
+if(daysLeft<=7)return`<span class="goal-deadline">⏰ 剩${daysLeft}天</span>`;
+return`<span>📅 ${deadline}</span>`;
+})():'';
+// Subtasks
+const subs=g.subtasks||[];
+const subsHtml=subs.length?`
+<div class="goal-subtasks">
+${subs.map((s,si)=>`<div class="goal-subtask${s.done?' done':''}" onclick="togSubGoal('${g.id}',${si})">
+<div class="gs-ck${s.done?' done':''}">${s.done?'✓':''}</div>
+<span class="gs-text">${esc(s.text)}</span>
+</div>`).join('')}
+</div>`:'';
+return`<div class="goal-card">
+<div class="goal-top">
+<div class="goal-progress-ring"><canvas id="${cid}"></canvas><div class="goal-ring-pct" style="display:none">${pct}%</div></div>
+<div class="goal-info">
+<div class="goal-title">${esc(g.title)}</div>
+<div class="goal-meta">
+<span>🍅 ${g.done||0}/${g.tomatoes||10} 番茄</span>
+${deadlineInfo}
+${g.totalMins?`<span>⏱ ${fmtMins(g.totalMins)}</span>`:''}
+</div>
+</div>
+</div>
+${subsHtml}
+<div class="goal-actions">
+<button class="goal-inc-btn" onclick="incG('${g.id}')">🍅 +1 番茄</button>
+<button class="goal-add-sub" onclick="addSubGoal('${g.id}')">+ 子任务</button>
+<button class="goal-del-btn" onclick="delG('${g.id}')">🗑</button>
+</div>
+</div>`}).join('');
+// Draw rings after DOM inserted
+setTimeout(()=>{active.forEach((g,i)=>{
+const cid='goalRing'+i;
+const pct=Math.min(100,Math.round(((g.done||0)/(g.tomatoes||10))*100));
+drawGoalRing(cid,pct);
+})},50)}
 }
-streak=cur;
-let habitsDone=habits.length>0&&habits.every(h=>h.dates&&h.dates.includes(today));
-return[
-{name:'?? ????',icon:'??',tier:'bronze',u:totalCompletions>=1},
-{name:'????????',icon:'??',tier:'silver',u:todayMins>=240},
-{name:'?? ????',icon:'??',tier:'bronze',u:totalCompletions>=5},
-{name:'?? ???',icon:'??',tier:'bronze',u:totalCompletions>=12},
-{name:'?? ????',icon:'??',tier:'silver',u:totalCompletions>=20},
-{name:'?? ??',icon:'??',tier:'silver',u:totalCompletions>=30},
-{name:'?? ????',icon:'??',tier:'gold',u:totalCompletions>=40},
-{name:'?? ????',icon:'??',tier:'gold',u:totalCompletions>=55},
-{name:'?? ??',icon:'??',tier:'gold',u:totalCompletions>=70},
-{name:'?? ????',icon:'??',tier:'gold',u:totalCompletions>=90},
-{name:'?? ???',icon:'??',tier:'legend',u:totalCompletions>=110},
-{name:'?? ????????',icon:'??',tier:'legend',u:totalCompletions>=130},
-{name:'?? ??',icon:'??',tier:'legend',u:totalCompletions>=155},
-{name:'?? ????????',icon:'??',tier:'legend',u:totalCompletions>=180},
-{name:'?? ??7?',icon:'??',tier:'gold',u:streak>=7},
-{name:'? ????',icon:'?',tier:'silver',u:habitsDone},
-{name:'?? ???',icon:'??',tier:'gold',u:score>=100},
-];
-}
 
-// ==================== PROFILE ====================
-function rProfile(){
-document.getElementById('scoreVal').textContent=score;
-let totalMin=sessions.filter(s=>s.completed).reduce((a,s)=>a+s.minutes,0);
-document.getElementById('totalMin').textContent=totalMin;
-document.getElementById('totalSessions').textContent=sessions.filter(s=>s.completed).length;
+function incG(id){let g=goals.find(x=>x.id===id);if(!g)return;g.done=(g.done||0)+1;save('g');rGoals();if(g.done>=g.tomatoes)Mascot.react('achievement_unlock',{name:'完成目标：'+g.title})}
+function addGoal(){let t=prompt('目标名称：');if(!t||!t.trim())return;let tom=parseInt(prompt('预估番茄钟数','20'))||20;let dl=prompt('截止日期（可选，格式：YYYY-MM-DD）','');goals.push({id:uid(),title:t.trim(),tomatoes:tom,done:0,totalMins:0,deadline:dl||'',subtasks:[],createdAt:new Date().toISOString()});save('g');rGoals();updateTaskSelects();toast('🎯 已添加')}
+function delG(id){if(!confirm('确定删除「'+((goals.find(g=>g.id===id)||{}).title||'')+'」？'))return;goals=goals.filter(g=>g.id!==id);save('g');rGoals();updateTaskSelects()}
+function togSubGoal(gid,si){let g=goals.find(x=>x.id===gid);if(!g||!g.subtasks)return;g.subtasks[si].done=!g.subtasks[si].done;save('g');rGoals()}
+function addSubGoal(gid){let g=goals.find(x=>x.id===gid);if(!g)return;let t=prompt('子任务名称：');if(!t||!t.trim())return;if(!g.subtasks)g.subtasks=[];g.subtasks.push({text:t.trim(),done:false});save('g');rGoals()}
 
-let bc=document.getElementById('barChart'),days=['一','二','三','四','五','六','日'];
-let wd=days.map((_,i)=>{let d=new Date();d.setDate(d.getDate()-(6-i));let ds=d.toISOString().slice(0,10);return sessions.filter(s=>s.date===ds&&s.completed).reduce((a,s)=>a+s.minutes,0)});
-let mx=Math.max(...wd,10);
-bc.innerHTML=wd.map((v,i)=>`<div class="col"><div class="bar" style="height:${Math.max(4,(v/mx)*110)}px;background:${i===6?'#81C784':'#5C6BC0'}"></div><div class="lbl">${days[i]}</div></div>`).join('');
-
-let ach=calcAchievements();
-document.getElementById('achs').innerHTML='<div class=ach-header><strong>?? ??</strong><span class=ach-count>'+ach.filter(a=>a.u).length+'/'+ach.length+'</span></div><div class=ach-grid>'+ach.map(a=>{let tierClass=a.tier==='legend'?'tier-legend':'';let tierLabel={bronze:'?',silver:'?',gold:'?',legend:'??'}[a.tier]||'';return`<div class="ach-card ${a.u?'unlocked '+tierClass:'locked'}"><span class=ach-icon>${a.u?a.icon:'?'}</span><div class=ach-name>${a.name}</div>${a.u?`<span class='ach-tier tier-${a.tier}'>${tierLabel}</span>`:''}</div>`}).join('')+'</div>';
-}
-
-function updateScore(n){score+=n;save('c');if(currentTab===4)rProfile()}
+function updateScore(n){score+=n;save('c');if(currentTab===4)rHandbook()}
 function toggleDark(){dark=!dark;document.body.classList.toggle('dark',dark);save('d')}
 function exportData(){let data={habits,goals,sessions,score,exported:new Date().toISOString()};let b=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});let a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='azusa-forest-'+new Date().toISOString().slice(0,10)+'.json';a.click();toast('📤 已导出')}
-function resetAll(){if(!confirm('确定删除？建议先导出备份。'))return;habits=[];goals=[];sessions=[];score=0;totalCompletions=0;currentTreeIdx=0;['fh','fg','fs','fsc'].forEach(k=>localStorage.removeItem(k));save('c');if(currentTab===1)rGallery();if(currentTab===2)rHabits();if(currentTab===3)rGoals();if(currentTab===4)rProfile();updateTaskSelects();toast('🔄 已重置')}
+function resetAll(){if(!confirm('确定删除？建议先导出备份。'))return;habits=[];goals=[];sessions=[];score=0;totalCompletions=0;currentTreeIdx=0;currentOutfit=0;['fh','fg','fs','fsc','fco'].forEach(k=>localStorage.removeItem(k));save('c');if(currentTab===1)rGallery();if(currentTab===2)rHabits();if(currentTab===3)rGoals();if(currentTab===4)rHandbook();updateTaskSelects();toast('🔄 已重置')}
+
+// ==================== 阿梓小精灵 (Mascot Engine v2) ====================
+const Mascot = {
+  el: null, body: null, bubble: null, particles: null, badge: null,
+  curState: 'idle',
+  idleSince: Date.now(),
+  bubbleTimer: null,
+  // Q版皮套库（对应衣柜衣装索引范围）
+  skinMap: [
+    {name:'默认Q版',img:'src/images/azusa/azusa_chibi.png',upTo:3},
+    {name:'Q版2号',img:'src/images/azusa/azusa_chibi4.png',upTo:7},
+    {name:'盒蛋版',img:'src/images/azusa/azusa_box.png',upTo:11},
+    {name:'进阶Q版',img:'src/images/azusa/azusa_chibi4.png',upTo:17},
+  ],
+  curSkin: 0,
+  // 拖拽状态
+  drag: {active:false,startX:0,startY:0,origLeft:0,origTop:0},
+  posX: null, posY: null, // null=默认位置
+
+  animMap: {
+    idle: 'mascot-idle', focus: 'mascot-breathe', celebrate: 'mascot-jump',
+    sad: 'mascot-shrink', angry: 'mascot-shake', think: 'mascot-tilt',
+    sleepy: 'mascot-sway', star: 'mascot-pulse'
+  },
+
+  talks: {
+    idle: ['今天也要加油哦~','阿梓在看着你哟','来种棵树吧！','有什么目标要完成吗？','🌸 今天天气真好','拖我可以移动哦~'],
+    focus: ['专心专心！','阿梓也在陪着你','树在慢慢长大呢','加油！马上就好了','不要分心哦~','🔥 燃烧吧'],
+    celebrate: ['太棒了！！','你好厉害！','🎉 新衣装解锁！','坚持就是胜利！','又完成了一个！'],
+    sad: ['没关系的…','下次一定可以的','阿梓相信你','休息一下再来吧','摸摸头~不哭'],
+    angry: ['哼！不准放弃！','认真一点啦！','阿梓生气了！','快回去学习！！'],
+    think: ['让我想想…','数据看起来…','嗯…有意思','继续分析中…'],
+    sleepy: ['好无聊呀…','快来学习吧！','阿梓要睡着了…','Zzz…等等，不能睡！'],
+    star: ['哇！！好厉害！','你是最棒的！','✨ 阿梓为你骄傲！']
+  },
+
+  init() {
+    this.el = document.getElementById('mascotWrap');
+    this.body = document.getElementById('mascotBody');
+    this.bubble = document.getElementById('mascotBubble');
+    this.particles = document.getElementById('mascotParticles');
+    this.badge = document.getElementById('mascotSkinBadge');
+    if (!this.el) return;
+    // 恢复位置
+    const saved = localStorage.getItem('mascotPos');
+    if (saved) { const p = JSON.parse(saved); this.posX = p.x; this.posY = p.y; this.moveTo(p.x, p.y); }
+    // 更新皮套
+    this.updateSkin();
+    this.resetIdleTimer();
+    // 绑定拖拽
+    this._bindDrag();
+    // 双击归位
+    this._bindDoubleTap();
+    // 随机待机
+    setInterval(() => { if (this.curState === 'idle') this.randomIdle(); }, 15000);
+  },
+
+  // ===== 拖拽系统 =====
+  _bindDrag() {
+    const startDrag = (e) => {
+      if (e.target === this.bubble) return; // 不拖气泡
+      this.drag.active = true;
+      this.el.classList.add('dragging');
+      const touch = e.touches ? e.touches[0] : e;
+      this.drag.startX = touch.clientX;
+      this.drag.startY = touch.clientY;
+      const rect = this.el.getBoundingClientRect();
+      this.drag.origLeft = rect.left;
+      this.drag.origTop = rect.top;
+      if (this.posX === null) { this.posX = rect.left; this.posY = rect.top; }
+    };
+    const moveDrag = (e) => {
+      if (!this.drag.active) return;
+      e.preventDefault();
+      const touch = e.touches ? e.touches[0] : e;
+      const dx = touch.clientX - this.drag.startX;
+      const dy = touch.clientY - this.drag.startY;
+      const newX = Math.max(0, Math.min(window.innerWidth - 80, this.drag.origLeft + dx));
+      const newY = Math.max(0, Math.min(window.innerHeight - 100, this.drag.origTop + dy));
+      this.posX = newX; this.posY = newY;
+      this.moveTo(newX, newY);
+    };
+    const endDrag = () => {
+      if (!this.drag.active) return;
+      this.drag.active = false;
+      this.el.classList.remove('dragging');
+      if (this.posX !== null) localStorage.setItem('mascotPos', JSON.stringify({x:this.posX,y:this.posY}));
+      this.resetIdleTimer();
+    };
+    this.el.addEventListener('touchstart', startDrag, {passive:false});
+    this.el.addEventListener('mousedown', startDrag);
+    document.addEventListener('touchmove', moveDrag, {passive:false});
+    document.addEventListener('mousemove', moveDrag);
+    document.addEventListener('touchend', endDrag);
+    document.addEventListener('mouseup', endDrag);
+  },
+
+  moveTo(x, y) {
+    this.el.style.left = x + 'px';
+    this.el.style.top = y + 'px';
+    this.el.style.right = 'auto';
+    this.el.style.bottom = 'auto';
+  },
+
+  _bindDoubleTap() {
+    let tapTimer = null;
+    this.el.addEventListener('click', () => {
+      if (tapTimer) {
+        // 双击归位
+        clearTimeout(tapTimer); tapTimer = null;
+        this.posX = null; this.posY = null;
+        localStorage.removeItem('mascotPos');
+        this.el.style.left = ''; this.el.style.top = '';
+        this.el.style.right = '6px'; this.el.style.bottom = '74px';
+        this.say('我回来啦~', 1500);
+        return;
+      }
+      tapTimer = setTimeout(() => {
+        tapTimer = null;
+        if (!this.drag.active) this.poke();
+      }, 320);
+    });
+  },
+
+  // ===== 皮套系统 =====
+  updateSkin() {
+    let newIdx = 0;
+    for (let i = this.skinMap.length - 1; i >= 0; i--) {
+      if (currentOutfit <= this.skinMap[i].upTo) { newIdx = i; }
+      else break;
+    }
+    // 优先匹配：currentOutfit 属于哪个 skinMap 区间
+    for (let i = 0; i < this.skinMap.length; i++) {
+      if (currentOutfit <= this.skinMap[i].upTo) { newIdx = i; break; }
+    }
+    if (newIdx !== this.curSkin) {
+      this.curSkin = newIdx;
+      this.body.src = this.skinMap[newIdx].img;
+      this.body.classList.add('unlock-pop');
+      setTimeout(() => this.body.classList.remove('unlock-pop'), 600);
+    }
+    if (this.badge) {
+      this.badge.textContent = this.skinMap[this.curSkin].name;
+      this.badge.classList.add('show');
+      setTimeout(() => this.badge.classList.remove('show'), 2000);
+    }
+  },
+
+  setSkin(idx) {
+    if (idx < 0 || idx >= this.skinMap.length) return;
+    this.curSkin = idx;
+    this.body.src = this.skinMap[idx].img;
+    this.say('换装完成~ ' + this.skinMap[idx].name, 1500);
+  },
+
+  // ===== 状态控制 =====
+  setState(state, persist) {
+    if (this.curState === state && !persist) return;
+    Object.values(this.animMap).forEach(c => this.el.classList.remove(c));
+    this.el.classList.remove('mascot-shrink', 'mascot-poke');
+    this.body.style.filter = 'contrast(1.04) drop-shadow(0 1px 3px rgba(124,92,191,.25))';
+    this.curState = state;
+    const anim = this.animMap[state];
+    if (anim === 'mascot-shrink') { this.el.classList.add('mascot-shrink'); }
+    else if (anim) { this.el.classList.add(anim); }
+    if (state === 'sleepy') this.body.style.filter = 'contrast(1.04) drop-shadow(0 1px 3px rgba(124,92,191,.25)) brightness(.7) saturate(.6)';
+    if (state === 'sad') this.body.style.filter = 'contrast(1.04) drop-shadow(0 1px 3px rgba(124,92,191,.25)) brightness(.75) saturate(.4)';
+    if (state === 'star') this.body.style.filter = 'contrast(1.04) drop-shadow(0 1px 3px rgba(124,92,191,.25)) brightness(1.2) saturate(1.3)';
+  },
+
+  say(text, duration) {
+    if (!text) return;
+    if (!duration) duration = 2800;
+    clearTimeout(this.bubbleTimer);
+    this.bubble.textContent = text;
+    this.bubble.classList.add('show');
+    this.bubbleTimer = setTimeout(() => this.bubble.classList.remove('show'), duration);
+  },
+
+  randomTalk(state) {
+    const list = this.talks[state] || this.talks.idle;
+    this.say(list[Math.floor(Math.random() * list.length)]);
+  },
+
+  spawnParticles(emojis, count) {
+    if (!emojis) emojis = ['✨', '🌟', '💫', '⭐'];
+    if (!count) count = 6;
+    this.particles.innerHTML = '';
+    for (let i = 0; i < count; i++) {
+      const p = document.createElement('span');
+      p.className = 'm-particle';
+      p.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+      p.style.left = (30 + Math.random() * 40) + '%';
+      p.style.top = (10 + Math.random() * 30) + '%';
+      p.style.setProperty('--dx', (Math.random() - 0.5) * 80 + 'px');
+      p.style.setProperty('--dy', -(20 + Math.random() * 60) + 'px');
+      p.style.animationDuration = (0.6 + Math.random() * 0.6) + 's';
+      p.style.animationDelay = Math.random() * 0.2 + 's';
+      this.particles.appendChild(p);
+    }
+    setTimeout(() => { this.particles.innerHTML = ''; }, 1200);
+  },
+
+  randomIdle() {
+    const r = Math.random();
+    if (r < 0.25) this.randomTalk('idle');
+    else if (r < 0.45) { this.el.classList.add('mascot-poke'); setTimeout(() => this.el.classList.remove('mascot-poke'), 400); }
+  },
+
+  poke() {
+    if (this.curState === 'focus') { this.say('别戳啦！在专注呢！', 1500); return; }
+    this.el.classList.add('mascot-poke');
+    setTimeout(() => this.el.classList.remove('mascot-poke'), 400);
+    const msgs = ['哎呀！','好痒~','干嘛啦！','嘻嘻~','有什么事吗？','再戳就生气啦！','人家在发呆呢','拖我可以移动哦'];
+    this.say(msgs[Math.floor(Math.random() * msgs.length)], 1800);
+    this.spawnParticles(['💢','💦','❓'], 3);
+    this.resetIdleTimer();
+  },
+
+  resetIdleTimer() {
+    this.idleSince = Date.now();
+    if (this.curState === 'sleepy') this.setState('idle');
+    clearTimeout(this._idleCheck);
+    this._idleCheck = setTimeout(() => {
+      if (this.curState === 'idle' && !timerId) {
+        this.setState('sleepy');
+        this.randomTalk('sleepy');
+      }
+    }, 1800000);
+  },
+
+  // ===== 事件响应 =====
+  react(event, data) {
+    switch (event) {
+      case 'focus_start':
+        this.setState('focus');
+        this.say('加油！阿梓看着你~');
+        break;
+      case 'focus_complete':
+        this.setState('celebrate');
+        this.spawnParticles(['🎉','🌸','✨','💫','⭐'], 10);
+        this.say('太棒了！阿梓好开心！');
+        setTimeout(() => { this.setState('idle'); this.resetIdleTimer(); this.updateSkin(); }, 3500);
+        break;
+      case 'focus_abandon':
+        this.setState('sad');
+        this.randomTalk('sad');
+        setTimeout(() => { this.setState('idle'); this.resetIdleTimer(); }, 3000);
+        break;
+      case 'achievement_unlock':
+        this.setState('celebrate');
+        this.spawnParticles(['🏆','👑','✨','💎'], 8);
+        this.say('解锁成就：'+(data?data.name:'新成就！'), 3500);
+        setTimeout(() => { this.setState('idle'); this.resetIdleTimer(); }, 4000);
+        break;
+      case 'skin_unlock':
+        this.setState('star');
+        this.spawnParticles(['👗','✨','🌸','💫'], 10);
+        this.say('新衣装！'+(data||'')+' 🎉', 3500);
+        setTimeout(() => { this.setState('idle'); this.resetIdleTimer(); this.updateSkin(); }, 4000);
+        break;
+      case 'streak_milestone':
+        this.setState('celebrate');
+        this.spawnParticles(['🔥','💪','✨','🌟'], 8);
+        this.say('连续'+(data||'多')+'天！你太强了！');
+        setTimeout(() => { this.setState('idle'); this.resetIdleTimer(); }, 3500);
+        break;
+      case 'open_stats':
+        this.setState('think');
+        this.randomTalk('think');
+        setTimeout(() => { this.setState('idle'); this.resetIdleTimer(); }, 3000);
+        break;
+      default:
+        this.setState('idle');
+    }
+  }
+};
+
+// 全局闲置监听
+document.addEventListener('touchstart', () => Mascot.resetIdleTimer(), {passive: true});
+document.addEventListener('mousemove', () => Mascot.resetIdleTimer(), {passive: true});
 
 // ==================== INIT ====================
-function initAll(){rHabits();rGoals();}
+function initAll(){rHabits();rGoals();try{Mascot.init()}catch(e){console.log('Mascot init error:',e)}}
 initAll();
 if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});
 </script>
