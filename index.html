@@ -388,79 +388,67 @@ body.locked{overflow:hidden;position:fixed;width:100%;height:100%}
 
 <!-- ===== HANDBOOK PAGE (手帳) ===== -->
 <div class="page" id="pg4">
-<!-- Period selector -->
-<div class="period-bar">
-<div class="period-chip on" data-p="today" onclick="switchPeriod('today')">📅 今日</div>
-<div class="period-chip" data-p="week" onclick="switchPeriod('week')">📆 本周</div>
-<div class="period-chip" data-p="month" onclick="switchPeriod('month')">📋 本月</div>
-<div class="period-chip" data-p="year" onclick="switchPeriod('year')">📊 本年</div>
-</div>
 
-<!-- Stat cards 2x2 -->
-<div class="stat-grid">
-<div class="stat-card"><div class="val" id="statTotal">0<small>h</small></div><div class="lbl">📊 总专注时长</div></div>
-<div class="stat-card"><div class="val" id="statToday">0<small>min</small></div><div class="lbl">🌸 周期专注</div></div>
-<div class="stat-card"><div class="val" id="statSessions">0</div><div class="lbl">✅ 完成任务</div></div>
-<div class="stat-card"><div class="val" id="statStreak">0<small>天</small></div><div class="lbl">🔥 连续天数</div></div>
-</div>
-
-<!-- Pie chart -->
-<div class="chart-box">
-<div class="chart-title">📊 时间分布</div>
-<div class="pie-tabs">
-<div class="pie-tab on" data-pt="type" onclick="switchPieTab('type')">按类型</div>
-<div class="pie-tab" data-pt="difficulty" onclick="switchPieTab('difficulty')">按难度</div>
-<div class="pie-tab" data-pt="timeofday" onclick="switchPieTab('timeofday')">按时段</div>
-</div>
-<canvas id="pieChart" width="200" height="200"></canvas>
-</div>
-
-<!-- Line chart -->
-<div class="chart-box">
-<div class="chart-title">📈 专注趋势</div>
-<canvas id="lineChart" width="340" height="150"></canvas>
-</div>
-
-<!-- Year heatmap -->
-<div class="chart-box">
-<div class="chart-title">🗓️ 年度热力图</div>
-<div class="heatmap-year" id="heatmapYear"></div>
-<div class="heatmap-legend">少<span style="background:#ebedf0"></span><span style="background:#E8D5F5"></span><span style="background:#B39DDB"></span><span style="background:#7C5CBF"></span><span style="background:#512DA8"></span>多</div>
-</div>
-
-<!-- Achievements -->
-<div class="chart-box">
-<div class="ach-summary"><span class="ach-total">🏆 成就 <span id="achUnlocked">0</span>/<span id="achTotal">0</span></span><span class="ach-tiers" id="achTiers"></span></div>
-<div class="ach-grid-hb" id="achGridHb"></div>
-</div>
-
-<!-- Quick actions -->
-<div class="chart-box">
-<div style="display:flex;gap:8px;flex-wrap:wrap">
-<button class="btn-sm" onclick="exportData()">📤 导出数据</button>
-<button class="btn-sm" onclick="toggleDark()">🌓 深色</button><button class="btn-sm" onclick="cycleTheme()" style="border-color:var(--accent);color:var(--accent)">🎨 切换主题</button>
-<button class="btn-sm" onclick="resetAll()" style="margin-top:0">🔄 重置</button>
-</div>
-<p style="font-size:10px;color:var(--gr);text-align:center;margin-top:8px">🌟 积分：<b id="scoreVal">0</b> · 总专注 <b id="totalMin">0</b> 分钟 · 完成 <b id="totalSessions">0</b> 次</p>
+<!-- 用户信息 -->
+<div class="card" style="text-align:center;padding:16px">
+<div style="font-size:44px;margin-bottom:4px">🌸</div>
+<div style="font-size:17px;font-weight:700">斯瑞</div>
+<div style="font-size:12px;color:var(--gr);margin:2px 0" id="profileMotto" onclick="editMotto()">千里之行，始于足下</div>
+<div style="display:flex;gap:6px;justify-content:center;margin-top:10px">
+<div style="flex:1;max-width:80px;text-align:center"><div style="font-size:20px;font-weight:700;color:var(--g)" id="totalFocusDays">0</div><div style="font-size:10px;color:var(--gr)">专注天</div></div>
+<div style="flex:1;max-width:80px;text-align:center"><div style="font-size:20px;font-weight:700" id="currentStreak">0</div><div style="font-size:10px;color:var(--gr)">连续天</div></div>
+<div style="flex:1;max-width:80px;text-align:center"><div style="font-size:20px;font-weight:700" id="totalTrees">0</div><div style="font-size:10px;color:var(--gr)">种树</div></div>
 </div>
 </div>
 
-<!-- Achievement detail modal -->
-<div class="ach-modal-overlay" id="achModal" onclick="closeAchModal()">
-<div class="ach-modal" onclick="event.stopPropagation()">
-<span class="ach-m-icon" id="achMIcon"></span>
-<div class="ach-m-name" id="achMName"></div>
-<span class="ach-m-tier" id="achMTier"></span>
-<div class="ach-m-cond" id="achMCond"></div>
-<div class="ach-m-date" id="achMDate"></div>
-<button class="ach-m-btn" onclick="closeAchModal()">知道了</button>
+<!-- 倒计时 -->
+<div class="card"><h3 style="font-size:14px;margin-bottom:6px">⏳ 倒计时</h3><div id="countdownList" style="font-size:12px"></div><button class="btn-sm" onclick="addCountdown()" style="border-color:var(--g);color:var(--g);margin-top:4px">+ 添加</button></div>
+
+<!-- 本周统计 -->
+<div class="card"><h3 style="font-size:14px;margin-bottom:6px">📊 本周专注（分钟）</h3><div class="chart" id="barChart"></div></div>
+
+<!-- 周总结 -->
+<div class="card"><h3 style="font-size:14px;margin-bottom:4px">📝 周总结</h3><div id="weeklySummary" style="font-size:12px;line-height:1.6"></div></div>
+
+<!-- 时间轴 -->
+<div class="card"><h3 style="font-size:14px;margin-bottom:4px">📜 时间轴</h3><div id="focusTimeline" style="max-height:160px;overflow-y:auto;font-size:11px"></div></div>
+
+<!-- 背景 -->
+<div class="card"><h3 style="font-size:14px;margin-bottom:6px">🖼️ 背景</h3><div style="display:flex;gap:6px" id="bgPicker"></div></div>
+
+<!-- 主题+深色 -->
+<div class="card">
+<h3 style="font-size:14px;margin-bottom:6px">🎨 外观</h3>
+<div style="display:flex;gap:6px;flex-wrap:wrap">
+<button class="btn-sm" onclick="cycleTheme()" style="border-color:var(--accent);color:var(--accent);flex:1;min-width:70px">切换主题</button>
+<button class="btn-sm" onclick="toggleDark()" style="flex:1;min-width:70px">🌓 深色</button>
 </div>
 </div>
 
-<!-- ===== 阿梓小精灵 ===== -->
+<!-- 锁机+设置 -->
+<div class="card"><h3 style="font-size:14px;margin-bottom:6px">🔒 锁机 & 设置</h3>
+<div style="display:flex;align-items:center;justify-content:space-between;margin:4px 0"><span style="font-size:12px">专注锁机</span><button id="lockToggle" style="padding:4px 12px;border-radius:10px;border:none;font-size:11px;cursor:pointer;background:#4CAF50;color:#fff" onclick="toggleLock()">已启用</button></div>
+<div style="font-size:10px;color:var(--gr)">紧急解锁: <b id="emergencyCount">3</b>/3次</div>
+<div style="margin-top:6px;font-size:11px;color:var(--gr)">休息: <b id="breakMins">5</b>分 <button onclick="setBreak()" style="border:1px solid var(--g);background:transparent;color:var(--g);border-radius:6px;padding:1px 6px;font-size:10px;cursor:pointer;margin-left:4px">改</button> | 目标: <b id="dailyGoal">8</b>个/天 <button onclick="setGoal()" style="border:1px solid var(--g);background:transparent;color:var(--g);border-radius:6px;padding:1px 6px;font-size:10px;cursor:pointer;margin-left:4px">改</button></div>
+</div>
 
-<!-- ===== TAB BAR ===== -->
-<div class="tabbar">
+<!-- 工具 -->
+<div class="card"><h3 style="font-size:14px;margin-bottom:6px">🧰 工具</h3>
+<div style="display:flex;gap:6px;flex-wrap:wrap">
+<button class="btn-sm" onclick="calcPomo()" style="border-color:var(--g);color:var(--g);flex:1;min-width:70px">🍅 番茄计算</button>
+<button class="btn-sm" onclick="importData()" style="border-color:#FF9800;color:#FF9800;flex:1;min-width:70px">📥 导入</button>
+<button class="btn-sm" onclick="exportData()" style="border-color:var(--b);color:var(--b);flex:1;min-width:70px">📤 导出</button>
+</div>
+<div style="margin-top:6px;font-size:10px;color:var(--gr)">🤖 AI: <button onclick="setApiKey()" style="border:1px solid #7C5CBF;background:transparent;color:#7C5CBF;border-radius:6px;padding:1px 6px;font-size:10px;cursor:pointer">设置密钥</button></div>
+</div>
+
+<!-- 积分 -->
+<div style="text-align:center;padding:12px;font-size:11px;color:var(--gr)">
+🌟 积分: <b id="scoreVal">0</b> · 总专注 <b id="totalMin">0</b>分 · <b id="totalSessions">0</b>次
+</div>
+<button class="btn-sm" onclick="resetAll()">🔄 重置</button>
+
+</div><div class="tabbar">
 <div class="tab on" onclick="goTab(0)"><span class="ic">🌸</span>种树</div>
 <div class="tab" onclick="goTab(1)"><span class="ic">👗</span>衣柜</div>
 <div class="tab" onclick="goTab(2)"><span class="ic">✅</span>习惯</div>
