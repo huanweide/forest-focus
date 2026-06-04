@@ -1529,6 +1529,40 @@ function calcPomo(){var h=parseInt(prompt("剩余小时数"))||0;var m=parseInt(
 function showStudyRoom(){toast("自习室功能开发中... 敬请期待")}
 function importData(){var input=document.createElement("input");input.type="file";input.accept=".json";input.onchange=function(e){var file=e.target.files[0];var reader=new FileReader();reader.onload=function(ev){try{var data=JSON.parse(ev.target.result);if(data.habits)habits=data.habits;if(data.goals)goals=data.goals;if(data.sessions)sessions=data.sessions;if(data.score)score=data.score;if(data.todos)todos=data.todos;["fh","fg","fs","fsc","ftodos"].forEach(function(k){localStorage.removeItem(k)});save("h");save("g");save("s");save("c");saveTodos();rTodos();rHabits();rGoals();rForest();toast("数据已导入！请刷新页面")}catch(ex){toast("文件格式错误")}};reader.readAsText(file)};input.click()}
 
+
+// ===== CORE FUNCTIONS (restored) =====
+function goTab(i){
+  currentTab=i;
+  document.querySelectorAll(".page").forEach(function(p){p.classList.remove("on")});
+  document.querySelectorAll(".tab").forEach(function(t,j){t.classList.toggle("on",j===i)});
+  var pages=["pg0","pgTodo","pg1","pg2","pg3","pg4"];
+  var titles=["🌸 阿梓的森林","📋 待办清单","👗 衣柜","✅ 习惯","🎯 目标","👤 我的"];
+  var el=document.getElementById(pages[i]);if(el)el.classList.add("on");
+  document.getElementById("bar").textContent=titles[i]||"阿梓的森林";
+  if(i===1)rTodos();if(i===2)rGallery();if(i===3)rHabits();if(i===4)rGoals();if(i===5)rProfile();
+}
+function rProfile(){
+  document.getElementById("scoreVal").textContent=score;
+  var totalMin=sessions.filter(function(s){return s.completed}).reduce(function(a,s){return a+s.minutes},0);
+  document.getElementById("totalMin").textContent=totalMin;
+  document.getElementById("totalSessions").textContent=sessions.filter(function(s){return s.completed}).length;
+  var days=["一","二","三","四","五","六","日"];
+  var wd=days.map(function(_,i){var d=new Date();d.setDate(d.getDate()-(6-i));var ds=d.toISOString().slice(0,10);return sessions.filter(function(s){return s.date===ds&&s.completed}).reduce(function(a,s){return a+s.minutes},0)});
+  var mx=Math.max.apply(null,wd.concat([10]));
+  var bc=document.getElementById("barChart");if(bc)bc.innerHTML=wd.map(function(v,i){return"<div class=col><div class=bar style=height:"+Math.max(4,(v/mx)*110)+"px;background:"+(i===6?"#81C784":"#5C6BC0")+"></div><div class=lbl>"+days[i]+"</div></div>"}).join("");
+  updateProfile();renderTimeline();renderWeeklySummary();renderCountdowns();renderBgPicker();renderLockSettings();
+  var ach=[{n:"🌸 初次种树",u:totalCompletions>=1},{n:"🌲 10棵树",u:totalCompletions>=10},{n:"📚 50棵",u:totalCompletions>=50},{n:"⭐ 500积分",u:score>=500},{n:"🏅 100棵",u:totalCompletions>=100},{n:"👑 200棵",u:totalCompletions>=200}];
+  var ae=document.getElementById("achs");if(ae)ae.innerHTML=ach.map(function(a){return"<div class=ach"+(a.u?"":" lk")+">"+a.n+"</div>"}).join("");
+}
+function rForest(){
+  var total=sessions.length,alive=sessions.filter(function(s){return s.completed}).length,dead=total-alive,totalMin=sessions.reduce(function(a,s){return a+s.minutes},0);
+  var fs=document.getElementById("forestStats");if(fs)fs.innerHTML="<div class=st><div class=n style=color:#4CAF50>"+total+"</div><div class=l>总次数</div></div><div class=st><div class=n style=color:#2E7D32>"+alive+"</div><div class=l>🌳成活</div></div><div class=st><div class=n style=color:#e53935>"+dead+"</div><div class=l>🥀枯萎</div></div><div class=st><div class=n style=color:#ff9800>"+totalMin+"分</div><div class=l>总时长</div></div>";
+  var fg=document.getElementById("forestGrid");if(!fg)return;if(sessions.length===0){fg.innerHTML="<p style=text-align:center;color:var(--gr);padding:30px;grid-column:1/-1;font-size:13px>还没有种过树<br>去专注页开始吧 🌱</p>";return}
+  var emojis=["🌳","🌲","🌸","🎋","🌵","🍁","🌿","🏔️","🌴","🪴"];fg.innerHTML=sessions.slice(-15).reverse().map(function(s){return"<div class=f-card><div class=f-emoji>"+(s.completed?emojis[Math.floor(Math.random()*emojis.length)]:"🥀")+"</div><div class=f-info>"+(s.taskName||"自由专注")+"<br>"+s.date.slice(5)+" · "+s.minutes+"分钟</div></div>"}).join("");
+}
+function incG(id){var g=goals.find(function(x){return x.id===id});if(!g)return;g.done=(g.done||0)+1;save("g");rGoals();toast("🍅 +1")}
+function mark(lvl){document.querySelectorAll(".attn").forEach(function(a){a.classList.remove("on")});var m={deep:"attn-deep",ok:"attn-ok",drift:"attn-drift",off:"attn-off"};if(m[lvl]){var el=document.getElementById(m[lvl]);if(el)el.classList.add("on")}}
+
 // ==================== INIT ====================
 function initAll(){rTodos();rHabits();rGoals();rForest()}
 initAll();
