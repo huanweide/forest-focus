@@ -1,69 +1,38 @@
-﻿name: 构建阿梓森林APK
-
+name: Build Android APK
 on:
-  workflow_dispatch:
   push:
-    branches: [master]
-    paths:
-      - "android/**"
-      - ".github/workflows/build-apk.yml"
+    branches: [master, main]
+  workflow_dispatch:
 
 jobs:
   build:
     runs-on: ubuntu-latest
-    container:
-      image: mingc/android-build-box:latest
-
     steps:
       - uses: actions/checkout@v4
 
-      - name: 定位Android SDK
-        working-directory: android
-        run: |
-          for d in "$ANDROID_HOME" /opt/android-sdk /usr/local/android-sdk /opt/android /home/android/android-sdk; do
-            if [ -d "$d/platforms" ]; then
-              echo "找到SDK: $d"
-              echo "sdk.dir=$d" > local.properties
-              exit 0
-            fi
-          done
-          echo "ERROR: 找不到Android SDK!"
-          find / -name "platforms" -type d 2>/dev/null | head -5
-          exit 1
-
-      - name: 查看环境
-        run: |
-          echo "ANDROID_HOME=$ANDROID_HOME"
-          echo "JAVA_HOME=$JAVA_HOME"
-          java -version 2>&1
-          cat android/local.properties
-          which gradle && gradle --version || echo "gradle not in PATH"
-
-      - name: 生成Gradle Wrapper
-        working-directory: android
-        run: gradle wrapper --gradle-version 8.5
-
-      - name: 编译APK
-        working-directory: android
-        run: ./gradlew assembleRelease --stacktrace
-
-      - name: 签名
-        working-directory: android
-        run: |
-          APK=$(find app/build -name "*.apk" -type f | head -1)
-          echo "APK=$APK"
-          keytool -genkey -keystore debug.keystore -alias debug \
-            -keyalg RSA -keysize 2048 -validity 10000 \
-            -storepass android -keypass android \
-            -dname "CN=Debug" 2>/dev/null || true
-          jarsigner -keystore debug.keystore \
-            -storepass android -keypass android \
-            "$APK" debug 2>/dev/null
-          mkdir -p output
-          cp "$APK" output/azusa-forest.apk
-          ls -la output/
-
-      - uses: actions/upload-artifact@v4
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
         with:
-          name: azusa-forest-apk
-          path: android/output/azusa-forest.apk
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Generate keystore
+        run: |
+          keytool -genkey -v \
+            -keystore android/app/release.keystore \
+            -alias azusaforest \
+            -keyalg RSA -keysize 2048 -validity 10000 \
+            -storepass azusa2026 -keypass azusa2026 \
+            -dname "CN=Azusa, OU=Forest, O=Huanweide, L=Shanghai, ST=Shanghai, C=CN"
+
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Build release APK
+        run: cd android && ./gradlew assembleRelease
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: azusa-forest-release
+          path: android/app/build/outputs/apk/release/*.apk
