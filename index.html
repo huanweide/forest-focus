@@ -11,9 +11,9 @@
 <style>
 :root{--g:#5C6BC0;--gl:#7986CB;--bg:#f0f2fa;--c:#fff;--t:#1a1a1a;--gr:#888;--r:#e53935;--o:#ff9800;--b:#7E57C2;--rad:14px;--sh:0 2px 8px rgba(0,0,0,.06)}
 *{margin:0;padding:0;box-sizing:border-box}
-body{font-family:-apple-system,'PingFang SC','Noto Sans SC',sans-serif;background:var(--bg);color:var(--t);-webkit-tap-highlight-color:transparent;user-select:none;-webkit-user-select:none;padding-bottom:72px;overscroll-behavior:none;font-size:15px;position:relative}
-body::before{content:'';position:fixed;top:0;left:0;right:0;bottom:0;background:url(src/images/azusa/renders/azusa_front.png?v=11) center/contain no-repeat;opacity:.05;pointer-events:none;z-index:0}
-.appbar,.tabbar,.page{position:relative;z-index:1}
+body{font-family:-apple-system,'PingFang SC','Noto Sans SC',sans-serif;background:var(--bg);color:var(--t);-webkit-tap-highlight-color:transparent;user-select:none;-webkit-user-select:none;padding-bottom:72px;overscroll-behavior:none;font-size:15px;}
+
+.appbar,.tabbar,.page{;z-index:1}
 body.dark{--bg:#1a1a2e;--c:#16213e;--t:#e0e0e0;--gr:#999;--sh:0 2px 8px rgba(0,0,0,.3)}
 body.locked{overflow:hidden;position:fixed;width:100%;height:100%}
 .appbar{background:var(--g);color:#fff;padding:12px 16px;text-align:center;font-weight:700;font-size:17px;position:sticky;top:0;z-index:10}
@@ -33,7 +33,7 @@ body.locked{overflow:hidden;position:fixed;width:100%;height:100%}
 .btn-o{background:var(--o);color:#fff}
 
 .tree-box{text-align:center;height:180px;display:flex;align-items:center;justify-content:center;transition:.4s;overflow:hidden}
-.ring-wrap{width:180px;height:180px;margin:0 auto;position:relative}
+.ring-wrap{width:180px;height:180px;margin:0 auto;}
 .ring-wrap canvas{width:100%;height:100%}
 .ring-t{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center}
 .ring-t .tm{font-size:36px;font-weight:700;font-family:monospace;letter-spacing:2px}
@@ -62,7 +62,7 @@ body.locked{overflow:hidden;position:fixed;width:100%;height:100%}
 
 /* Tree Gallery */
 .tree-gallery{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:8px}
-.tg-card{background:var(--c);border-radius:var(--rad);padding:10px 8px 12px;text-align:center;box-shadow:var(--sh);transition:.3s;position:relative;overflow:hidden;cursor:pointer}.tg-card:active{transform:scale(.95)}.tg-card.unlocked:hover{box-shadow:0 4px 16px rgba(92,107,192,.2)}
+.tg-card{background:var(--c);border-radius:var(--rad);padding:10px 8px 12px;text-align:center;box-shadow:var(--sh);transition:.3s;;overflow:hidden;cursor:pointer}.tg-card:active{transform:scale(.95)}.tg-card.unlocked:hover{box-shadow:0 4px 16px rgba(92,107,192,.2)}
 .tg-card.locked{opacity:.85}.tg-card.locked .tg-img{filter:brightness(.7) saturate(.5)}
 .tg-card.unlocked{border:2px solid var(--g)}
 .tg-card.current{border:2px solid var(--g);box-shadow:0 0 16px rgba(92,107,192,.3)}
@@ -81,7 +81,7 @@ body.locked{overflow:hidden;position:fixed;width:100%;height:100%}
 @keyframes unlockPop{0%{transform:scale(.5);opacity:0}60%{transform:scale(1.1)}100%{transform:scale(1);opacity:1}}
 .unlock-pop{animation:unlockPop .6s ease}
 .ach-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}
-.ach-card{background:var(--c);border-radius:10px;padding:10px 6px;text-align:center;box-shadow:var(--sh);transition:.2s;position:relative}
+.ach-card{background:var(--c);border-radius:10px;padding:10px 6px;text-align:center;box-shadow:var(--sh);transition:.2s;}
 .ach-card.locked{opacity:.45;filter:grayscale(.8)}
 .ach-card.unlocked{border:1px solid var(--g)}
 .ach-card.tier-legend{background:linear-gradient(135deg,#fce4ec,#f3e5f5)}
@@ -135,7 +135,7 @@ body.locked{overflow:hidden;position:fixed;width:100%;height:100%}
 
 /* Stat cards 2x2 */
 .stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}
-.stat-card{background:var(--c);border-radius:var(--rad);padding:12px 10px;text-align:center;box-shadow:var(--sh);transition:.2s;position:relative;overflow:hidden}
+.stat-card{background:var(--c);border-radius:var(--rad);padding:12px 10px;text-align:center;box-shadow:var(--sh);transition:.2s;;overflow:hidden}
 .stat-card::after{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--b),#CE93D8)}
 .stat-card .val{font-size:26px;font-weight:800;color:var(--b);line-height:1.1}
 .stat-card .val small{font-size:14px;font-weight:500}
@@ -154,7 +154,7 @@ body.locked{overflow:hidden;position:fixed;width:100%;height:100%}
 /* Year heatmap */
 .heatmap-year{overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:4px}
 .heatmap-year-table{border-collapse:separate;border-spacing:3px;margin:0 auto}
-.heatmap-year-table td{width:13px;height:13px;border-radius:3px;transition:.15s;cursor:default;position:relative}
+.heatmap-year-table td{width:13px;height:13px;border-radius:3px;transition:.15s;cursor:default;}
 .heatmap-year-table td:hover{transform:scale(1.4);z-index:2;box-shadow:0 2px 8px rgba(0,0,0,.2)}
 .heatmap-legend{display:flex;align-items:center;gap:3px;justify-content:flex-end;font-size:9px;color:var(--gr);margin-top:4px}
 .heatmap-legend span{width:11px;height:11px;border-radius:2px;display:inline-block}
@@ -175,7 +175,7 @@ body.locked{overflow:hidden;position:fixed;width:100%;height:100%}
 
 /* Achievement 2-col grid (handbook) */
 .ach-grid-hb{display:grid;grid-template-columns:1fr 1fr;gap:7px}
-.ach-card-hb{background:var(--c);border-radius:var(--rad);padding:10px;display:flex;align-items:center;gap:8px;border:2px solid #e0e0e0;cursor:pointer;transition:all .2s;position:relative;overflow:hidden}
+.ach-card-hb{background:var(--c);border-radius:var(--rad);padding:10px;display:flex;align-items:center;gap:8px;border:2px solid #e0e0e0;cursor:pointer;transition:all .2s;;overflow:hidden}
 .ach-card-hb:active{transform:scale(.96)}
 .ach-card-hb.earned{border-color:var(--b);background:linear-gradient(135deg,#F5F3FA,var(--c))}
 .ach-card-hb.earned.tier-gold{border-color:#FFD700;background:linear-gradient(135deg,#FFFDE7,var(--c))}
@@ -196,53 +196,44 @@ body.locked{overflow:hidden;position:fixed;width:100%;height:100%}
 /* Period stat highlight */
 .period-highlight{color:var(--b);font-weight:700}
 
-/* ===== 阿梓小精灵 (Mascot) ===== */
-.mascot-wrap{position:fixed;bottom:74px;right:6px;z-index:50;pointer-events:auto;cursor:grab;user-select:none;-webkit-tap-highlight-color:transparent;touch-action:none;-webkit-user-drag:none}
-.mascot-wrap.dragging{cursor:grabbing;transition:none;z-index:60;opacity:.85}
-.mascot-wrap.dragging .mascot-body{transform:scale(1.08)}
-.mascot-body{width:72px;height:84px;object-fit:contain;display:block;transition:filter .4s,transform .3s;image-rendering:auto;filter:none}
+
 /* 皮套切换提示 */
-.mascot-skin-badge{position:absolute;top:-6px;right:-8px;background:var(--b);color:#fff;font-size:8px;padding:1px 5px;border-radius:8px;font-weight:700;pointer-events:none;opacity:0;transition:opacity .3s}
-.mascot-skin-badge.show{opacity:1}
-.mascot-expression{position:absolute;top:-35px;left:50%;transform:translateX(-50%);pointer-events:none;transition:all .3s;z-index:51}
-.mascot-expression img{width:50px;height:50px;object-fit:contain;animation:mExprPop .3s ease}
+
 @keyframes mExprPop{0%{transform:scale(.3);opacity:0}60%{transform:scale(1.15)}100%{transform:scale(1);opacity:1}}
 /* 待机浮动 */
-.mascot-idle{animation:mFloat 3.2s ease-in-out infinite}
+
 @keyframes mFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
 /* 庆祝跳跃 */
-.mascot-jump{animation:mJump .5s ease-in-out 3}
+
 @keyframes mJump{0%,100%{transform:translateY(0)}30%{transform:translateY(-18px) rotate(-5deg)}60%{transform:translateY(-8px) rotate(3deg)}}
 /* 生气抖动 */
-.mascot-shake{animation:mShake .18s ease-in-out 5}
+
 @keyframes mShake{0%,100%{transform:translateX(0)}50%{transform:translateX(-7px)}}
 /* 思考歪头 */
-.mascot-tilt{animation:mTilt 2s ease-in-out infinite}
+
 @keyframes mTilt{0%,100%{transform:rotate(0)}30%{transform:rotate(-8deg)}70%{transform:rotate(5deg)}}
 /* 困倦摇摆 */
-.mascot-sway{animation:mSway 4s ease-in-out infinite}
+
 @keyframes mSway{0%,100%{transform:rotate(0) translateY(0)}25%{transform:rotate(-3deg) translateY(-2px)}75%{transform:rotate(3deg) translateY(-1px)}}
 /* 星星眼脉冲 */
-.mascot-pulse{animation:mPulse 1s ease-in-out infinite}
+
 @keyframes mPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.12)}}
 /* 专注呼吸 */
-.mascot-breathe{animation:mBreathe 1.5s ease-in-out infinite}
+
 @keyframes mBreathe{0%,100%{transform:scale(1)}50%{transform:scale(1.06)}}
 /* 难过缩小 */
-.mascot-shrink{transform:scale(.85);filter:brightness(.8) saturate(.5)}
+
 /* 对话气泡 */
-.mascot-bubble{position:absolute;bottom:100%;left:50%;transform:translateX(-50%);background:var(--c);color:var(--t);border:2px solid var(--b);border-radius:14px;padding:5px 10px;font-size:11px;white-space:nowrap;box-shadow:0 3px 12px rgba(124,92,191,.2);opacity:0;pointer-events:none;transition:opacity .3s;max-width:160px;text-align:center;line-height:1.4}
-.mascot-bubble.show{opacity:1}
-.mascot-bubble::after{content:'';position:absolute;top:100%;left:50%;transform:translateX(-50%);border:6px solid transparent;border-top-color:var(--b)}
+
 /* 粒子特效容器 */
-.mascot-particles{position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none}
+
 .m-particle{position:absolute;font-size:14px;animation:mParticle .8s ease-out forwards;pointer-events:none}
 @keyframes mParticle{0%{opacity:1;transform:translate(0,0) scale(1)}100%{opacity:0;transform:translate(var(--dx),var(--dy)) scale(.3)}}
 /* 戳一戳反馈 */
-.mascot-poke{animation:mPoke .4s ease}
+
 @keyframes mPoke{0%{transform:scale(1)}30%{transform:scale(1.2) rotate(5deg)}60%{transform:scale(.9) rotate(-3deg)}100%{transform:scale(1) rotate(0)}}
 /* 移动端优化 */
-@media(max-width:400px){.mascot-body{width:60px;height:70px}.mascot-wrap{bottom:70px;right:2px}.mascot-bubble{font-size:10px;max-width:130px}}
+@media(max-width:400px){}
 
 /* ===== 习惯 + 目标 重设计 ===== */
 .hb-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
@@ -254,7 +245,7 @@ body.locked{overflow:hidden;position:fixed;width:100%;height:100%}
 .hb-summary .hs-stat .hs-lbl{font-size:10px;color:var(--gr);margin-top:1px}
 
 /* 习惯卡片 */
-.habit-card{background:var(--c);border-radius:var(--rad);padding:12px;margin-bottom:8px;box-shadow:var(--sh);display:flex;gap:10px;align-items:center;border-left:4px solid #ddd;transition:.2s;position:relative}
+.habit-card{background:var(--c);border-radius:var(--rad);padding:12px;margin-bottom:8px;box-shadow:var(--sh);display:flex;gap:10px;align-items:center;border-left:4px solid #ddd;transition:.2s;}
 .habit-card.t-micro{border-left-color:#81C784}
 .habit-card.t-normal{border-left-color:#FFB74D}
 .habit-card.t-challenge{border-left-color:#E57373}
@@ -285,9 +276,9 @@ body.locked{overflow:hidden;position:fixed;width:100%;height:100%}
 .hb-preset-chip:active{transform:scale(.94);border-color:var(--b);background:#F5F3FA}
 
 /* 目标卡片 */
-.goal-card{background:var(--c);border-radius:var(--rad);padding:14px;margin-bottom:8px;box-shadow:var(--sh);position:relative}
+.goal-card{background:var(--c);border-radius:var(--rad);padding:14px;margin-bottom:8px;box-shadow:var(--sh);}
 .goal-top{display:flex;align-items:flex-start;gap:10px;margin-bottom:8px}
-.goal-progress-ring{flex-shrink:0;position:relative;width:52px;height:52px}
+.goal-progress-ring{flex-shrink:0;;width:52px;height:52px}
 .goal-progress-ring canvas{width:100%;height:100%}
 .goal-ring-pct{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:13px;font-weight:800;color:var(--b)}
 .goal-info{flex:1;min-width:0}
@@ -451,13 +442,6 @@ body.locked{overflow:hidden;position:fixed;width:100%;height:100%}
 </div>
 
 <!-- ===== 阿梓小精灵 ===== -->
-<div class="mascot-wrap mascot-idle" id="mascotWrap" title="拖拽移动 · 双击归位 · 戳戳互动">
-<img class="mascot-body" id="mascotBody" src="src/images/azusa/renders/azusa_chibi.png?v=11" alt="阿梓小精灵">
-<span class="mascot-skin-badge" id="mascotSkinBadge"></span>
-<div class="mascot-expression" id="mascotExpression"></div>
-<div class="mascot-bubble" id="mascotBubble"></div>
-<div class="mascot-particles" id="mascotParticles"></div>
-</div>
 
 <!-- ===== TAB BAR ===== -->
 <div class="tabbar">
@@ -559,7 +543,7 @@ function getStats(period) {
   // all habits done today
   const activeHabits = habits.filter(h => !h.archived);
   const allHabitsDoneToday = activeHabits.length > 0 && activeHabits.every(h => h.dates && h.dates.includes(today));
-  const unlockedSkins = currentTreeIdx + 1;
+  const unlockedSkins = 0;
   return { totalMins, todayMins, completedTasks, streak, byType, byDifficulty, byTimeOfDay, byWeekday, allHabitsDoneToday, unlockedSkins, filtered };
 }
 
@@ -846,24 +830,17 @@ const ACHIEVEMENTS = [
   // Silver - 进阶成就
   { id: 'daily_4h',      name: '小孩梓徽章',     icon: '🍼', tier: 'silver',  cond: s => s.todayMins >= 240, hide: true },
   { id: 'total_30h',     name: '累计30小时',     icon: '⏰', tier: 'silver',  cond: s => s.totalMins >= 1800 },
-  { id: 'sessions_20',   name: '20次专注',       icon: '🌳', tier: 'silver',  cond: s => s.totalSessions >= 20 },
-  { id: 'skin_3',        name: '衣装收集者',     icon: '👗', tier: 'silver',  cond: s => s.unlockedSkins >= 3 },
-  { id: 'habit_perfect', name: '完美习惯周',     icon: '✅', tier: 'silver',  cond: s => s.habitStreak7 },
+  { id: 'sessions_20',   name: '20次专注',       icon: '🌳', tier: 'silver',  cond: s => s.totalSessions >= 20 },  { id: 'habit_perfect', name: '完美习惯周',     icon: '✅', tier: 'silver',  cond: s => s.habitStreak7 },
   { id: 'score_200',     name: '积分达人',       icon: '⭐', tier: 'silver',  cond: s => s.score >= 200 },
   // Gold - 高阶成就
   { id: 'streak_7',      name: '连续7天',        icon: '🔥', tier: 'gold',    cond: s => s.streak >= 7 },
   { id: 'total_60h',     name: '累计60小时',     icon: '⌛', tier: 'gold',    cond: s => s.totalMins >= 3600 },
   { id: 'sessions_50',   name: '50次专注',       icon: '🌲', tier: 'gold',    cond: s => s.totalSessions >= 50 },
-  { id: 'streak_14',     name: '连续14天',       icon: '💪', tier: 'gold',    cond: s => s.streak >= 14 },
-  { id: 'skin_8',        name: '衣装收藏家',     icon: '🎨', tier: 'gold',    cond: s => s.unlockedSkins >= 8 },
-  { id: 'score_500',     name: '积分大师',       icon: '🌟', tier: 'gold',    cond: s => s.score >= 500 },
+  { id: 'streak_14',     name: '连续14天',       icon: '💪', tier: 'gold',    cond: s => s.streak >= 14 },  { id: 'score_500',     name: '积分大师',       icon: '🌟', tier: 'gold',    cond: s => s.score >= 500 },
   // Legend - 传说成就
   { id: 'streak_30',     name: '连续30天',        icon: '🔥', tier: 'legend', cond: s => s.streak >= 30 },
   { id: 'total_120h',    name: '累计120小时',    icon: '🏆', tier: 'legend',  cond: s => s.totalMins >= 7200 },
-  { id: 'sessions_100',  name: '100次专注',      icon: '🌍', tier: 'legend',  cond: s => s.totalSessions >= 100 },
-  { id: 'skin_12',       name: '衣装制霸',       icon: '👘', tier: 'legend',  cond: s => s.unlockedSkins >= 12 },
-  { id: 'skin_all',      name: '全衣装制霸',     icon: '👑', tier: 'legend',  cond: s => s.unlockedSkins >= 14 },
-  { id: 'score_1000',    name: '积分传说',       icon: '💎', tier: 'legend',  cond: s => s.score >= 1000 },
+  { id: 'sessions_100',  name: '100次专注',      icon: '🌍', tier: 'legend',  cond: s => s.totalSessions >= 100 },  { id: 'score_1000',    name: '积分传说',       icon: '💎', tier: 'legend',  cond: s => s.score >= 1000 },
   { id: 'streak_60',     name: '连续60天',        icon: '🐉', tier: 'legend', cond: s => s.streak >= 60, hide: true },
 ];
 
@@ -1028,16 +1005,7 @@ function rHandbook() {
 // ==================== 阿梓树系统 ====================
 // 阿梓的8套衣服 = 8个树等级。越专注解锁越多衣服。
 const AZUSA_TREES=[
-{id:'seed',name:'阿梓的种子',img:'',emoji:'🌰',unlock:0,sub:'初始形态·第一次专注即可发芽',color:'#8D6E63'},
-{id:'3d_front',name:'3D阿梓·正面',img:'src/images/azusa/renders/azusa_front.png?v=11',emoji:'🎭',unlock:1,sub:'3D模型正面·800px高清渲染',color:'#90CAF9'},
-{id:'3d_portrait',name:'3D阿梓·全身',img:'src/images/azusa/renders/azusa_portrait.png?v=11',emoji:'🎭',unlock:3,sub:'3D模型全身立绘·完整形象',color:'#81D4FA'},
-{id:'3d_34r',name:'3D阿梓·右前侧',img:'src/images/azusa/renders/azusa_front_right.png?v=11',emoji:'🎭',unlock:6,sub:'3D模型右前侧·最优展示角度',color:'#4FC3F7'},
-{id:'3d_34l',name:'3D阿梓·左前侧',img:'src/images/azusa/renders/azusa_front_left.png?v=11',emoji:'🎭',unlock:9,sub:'3D模型左前侧·对称视角',color:'#29B6F6'},
-{id:'3d_left',name:'3D阿梓·左侧',img:'src/images/azusa/renders/azusa_left.png?v=11',emoji:'🎭',unlock:12,sub:'3D模型左侧面·展示侧面细节',color:'#03A9F4'},
-{id:'3d_right',name:'3D阿梓·右侧',img:'src/images/azusa/renders/azusa_right.png?v=11',emoji:'🎭',unlock:14,sub:'3D模型右侧面·展示发型细节',color:'#0288D1'},
-{id:'3d_back',name:'3D阿梓·背面',img:'src/images/azusa/renders/azusa_back.png?v=11',emoji:'🎭',unlock:16,sub:'3D模型背面·完整背部展示',color:'#0277BD'},
-{id:'3d_chibi',name:'3D阿梓·Q版',img:'src/images/azusa/renders/azusa_chibi.png?v=11',emoji:'🎭',unlock:18,sub:'3D模型俯视Q版·超可爱视角',color:'#01579B'},
-{id:'default',name:'默认衣装',img:'src/images/azusa/azusa_default.png',emoji:'🌸',unlock:20,sub:'完成20次·阿梓日常默认形象',color:'#90CAF9'},
+{id:'seed',name:'阿梓的种子',img:'',emoji:'🌰',unlock:0,sub:'初始形态·第一次专注即可发芽',color:'#8D6E63'},{id:'default',name:'默认衣装',img:'src/images/azusa/azusa_default.png',emoji:'🌸',unlock:20,sub:'完成20次·阿梓日常默认形象',color:'#90CAF9'},
 {id:'newyear',name:'新年衣装',img:'src/images/azusa/azusa_newyear.png',emoji:'🎊',unlock:28,sub:'完成28次·新年限定和服',color:'#EF5350'},
 {id:'summer',name:'夏日衣装',img:'src/images/azusa/azusa_summer.jpg',emoji:'🏖️',unlock:36,sub:'完成36次·清凉夏日',color:'#FF7043'},
 {id:'panda',name:'熊猫阿梓',img:'src/images/azusa/azusa_panda.png',emoji:'🐼',unlock:44,sub:'完成44次·超萌熊猫外套',color:'#4CAF50'},
@@ -1089,7 +1057,6 @@ function fmtMins(m){if(m<60)return m+'分钟';let h=Math.floor(m/60);let r=m%60;
 
 // ==================== TABS ====================
 let currentTab=0;
-function goTab(i){currentTab=i;document.querySelectorAll('.page').forEach(p=>p.classList.remove('on'));document.querySelectorAll('.tab').forEach((t,j)=>t.classList.toggle('on',j===i));document.getElementById(['pg0','pg1','pg2','pg3','pg4'][i]).classList.add('on');document.getElementById('bar').textContent=['🌸 阿梓的森林','👗 阿梓的衣柜','✅ 习惯追踪','🎯 目标计划','📒 阿梓の手帳'][i];if(i===1)rGallery();if(i===2)rHabits();if(i===3)rGoals();if(i===4){rHandbook();Mascot.react('open_stats')}}
 
 // ==================== FOCUS TIMER ====================
 function drawRing(p){let c=document.getElementById('ring'),dpr=window.devicePixelRatio||1,sz=180;c.width=c.height=sz*dpr;c.style.width=c.style.height=sz+'px';let ctx=c.getContext('2d');ctx.scale(dpr,dpr);let cx=sz/2,cy=sz/2,r=70;ctx.clearRect(0,0,sz,sz);ctx.beginPath();ctx.arc(cx,cy,r,0,Math.PI*2);ctx.strokeStyle='#e0e0e0';ctx.lineWidth=9;ctx.stroke();if(p>0){ctx.beginPath();ctx.arc(cx,cy,r,-Math.PI/2,-Math.PI/2+Math.PI*2*p);ctx.strokeStyle=isBreak?'#ff9800':'#7E57C2';ctx.lineWidth=9;ctx.lineCap='round';ctx.stroke()}}
@@ -1127,7 +1094,6 @@ document.getElementById('taskType').disabled=true;document.getElementById('taskP
 document.getElementById('lockLeft').textContent=Math.floor(totalSec/60);
 document.getElementById('lockCount').textContent='0';
 drawRing(0);updateTree(0);
-Mascot.react('focus_start');
 timerId=setInterval(tick,1000);
 }
 
@@ -1142,7 +1108,6 @@ if(elapsed>=totalSec){clearInterval(timerId);timerId=null;onDone();}
 
 function onDone(){
 document.getElementById('status').textContent='🎉 太棒了！';
-Mascot.react('focus_complete');
 // Current tree emoji based on what was unlocked
 let curTree=AZUSA_TREES[Math.min(currentTreeIdx+1,AZUSA_TREES.length-1)];
 if(curTree.img)document.getElementById('tree').innerHTML='<img src='+curTree.img+' class=tree-img>';else document.getElementById('tree').textContent=curTree.emoji||'??';
@@ -1163,15 +1128,12 @@ if(selectedTask&&selectedTask.type==='habit'){let h=habits.find(x=>x.id===select
 let newTree=null;
 for(let i=AZUSA_TREES.length-1;i>currentTreeIdx;i--){if(totalCompletions>=AZUSA_TREES[i].unlock){newTree=AZUSA_TREES[i];break}}
 selectedTask=null;updateTaskSelects();
-if(newTree){Mascot.react('skin_unlock',newTree.name);toast('🌸 新衣装解锁！'+newTree.name)}else toast('🎉 专注完成！离下一件衣装更近了');
 try{navigator.vibrate?.([200,100,200])}catch(e){}
 // 检测里程碑
 const newStreak=calcStreak();
-if([7,14,30,60,100].includes(newStreak))Mascot.react('streak_milestone',newStreak+'天');
 // 检测成就解锁
 const achNow=checkAchievements(getStats('today'));
 const justUnlocked=achNow.filter(a=>a.unlocked&&a.hide);
-if(justUnlocked.length>0)Mascot.react('achievement_unlock',justUnlocked[0]);
 }
 
 function startBreak(){
@@ -1188,7 +1150,6 @@ if(elapsed>=totalSec){clearInterval(timerId);timerId=null;isBreak=false;document
 }
 
 function abort(){
-if(!timerId)return;clearInterval(timerId);timerId=null;Mascot.react('focus_abandon');
 document.getElementById('btnGo').style.display='block';document.getElementById('btnStop').style.display='none';
 document.getElementById('status').textContent='没关系，下次一定可以的 🌸';
 document.getElementById('tree').textContent='😢';document.getElementById('btnGo').textContent='🌱 重新开始';
@@ -1256,7 +1217,7 @@ let cls=unlocked?'unlocked':'locked';
 if(wearing)cls='current';
 let badge=wearing?'🌸 穿着中':unlocked?'✅ 已解锁':'🔒';
 let visual=t.img?`<img src="${t.img}" class="tg-img" alt="${t.name}" loading="lazy">`:`<span class="tg-emoji">${t.emoji}</span>`;
-return`<div class="tg-card ${cls}" onclick="${unlocked?`changeOutfit(${i})`:''}">
+return`<div class="tg-card ${cls}" >
 <span class="tg-badge ${unlocked?'':'lock'}">${badge}</span>
 ${visual}
 <div class="tg-name">${esc(t.name)}</div>
@@ -1270,15 +1231,12 @@ let remaining=AZUSA_TREES[Math.min(currentTreeIdx+1,AZUSA_TREES.length-1)].unloc
 stats.innerHTML=`<div class="st"><div class="n" style="color:#5C6BC0">${totalCompletions}</div><div class="l">🌸 完成次数</div></div><div class="st"><div class="n" style="color:#7E57C2">${currentTreeIdx+1}/${AZUSA_TREES.length}</div><div class="l">👗 已解锁衣装</div></div><div class="st"><div class="n" style="color:#FF7043">${remaining>0?remaining:0}</div><div class="l">下次解锁还需</div></div>`;
 }
 
-function changeOutfit(idx){
-if(idx>currentTreeIdx){toast('🔒 尚未解锁');return}
 currentOutfit=idx;
 save('o');
 rGallery();
 // 如果在种树页，刷新树显示
 if(currentTab===0)updateTree(0);
 // 同步小精灵
-Mascot.updateSkin();
 toast('👗 换装成功！'+AZUSA_TREES[idx].name);
 }
 
@@ -1451,7 +1409,6 @@ drawGoalRing(cid,pct);
 })},50)}
 }
 
-function incG(id){let g=goals.find(x=>x.id===id);if(!g)return;g.done=(g.done||0)+1;save('g');rGoals();if(g.done>=g.tomatoes)Mascot.react('achievement_unlock',{name:'完成目标：'+g.title})}
 function addGoal(){let t=prompt('目标名称：');if(!t||!t.trim())return;let tom=parseInt(prompt('预估番茄钟数','20'))||20;let dl=prompt('截止日期（可选，格式：YYYY-MM-DD）','');goals.push({id:uid(),title:t.trim(),tomatoes:tom,done:0,totalMins:0,deadline:dl||'',subtasks:[],createdAt:new Date().toISOString()});save('g');rGoals();updateTaskSelects();toast('🎯 已添加')}
 function delG(id){if(!confirm('确定删除「'+((goals.find(g=>g.id===id)||{}).title||'')+'」？'))return;goals=goals.filter(g=>g.id!==id);save('g');rGoals();updateTaskSelects()}
 function togSubGoal(gid,si){let g=goals.find(x=>x.id===gid);if(!g||!g.subtasks)return;g.subtasks[si].done=!g.subtasks[si].done;save('g');rGoals()}
@@ -1462,20 +1419,16 @@ function toggleDark(){dark=!dark;document.body.classList.toggle('dark',dark);sav
 function exportData(){let data={habits,goals,sessions,score,exported:new Date().toISOString()};let b=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});let a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='azusa-forest-'+new Date().toISOString().slice(0,10)+'.json';a.click();toast('📤 已导出')}
 function resetAll(){if(!confirm('确定删除？建议先导出备份。'))return;habits=[];goals=[];sessions=[];score=0;totalCompletions=0;currentTreeIdx=0;currentOutfit=0;['fh','fg','fs','fsc','fco'].forEach(k=>localStorage.removeItem(k));save('c');if(currentTab===1)rGallery();if(currentTab===2)rHabits();if(currentTab===3)rGoals();if(currentTab===4)rHandbook();updateTaskSelects();toast('🔄 已重置')}
 
-// ==================== 阿梓小精灵 (Mascot Engine v2) ====================
-const Mascot = {
   el: null, body: null, bubble: null, particles: null, badge: null,
   curState: 'idle',
   idleSince: Date.now(),
   bubbleTimer: null,
   // Q版皮套库（对应衣柜衣装索引范围）
   skinMap: [
-    {name:'3D阿梓·Q版',img:'src/images/azusa/renders/azusa_chibi.png?v=11',upTo:7},
     {name:'默认Q版',img:'src/images/azusa/azusa_chibi.png',upTo:11},
     {name:'Q版2号',img:'src/images/azusa/azusa_chibi4.png',upTo:15},
     {name:'盒蛋版',img:'src/images/azusa/azusa_box.png',upTo:19},
     {name:'进阶Q版',img:'src/images/azusa/azusa_chibi4.png',upTo:24},
-    {name:'终极3D',img:'src/images/azusa/renders/azusa_chibi.png?v=11',upTo:999},
   ],
   curSkin: 0,
   // 表情映射
@@ -1494,9 +1447,6 @@ const Mascot = {
   posX: null, posY: null, // null=默认位置
 
   animMap: {
-    idle: 'mascot-idle', focus: 'mascot-breathe', celebrate: 'mascot-jump',
-    sad: 'mascot-shrink', angry: 'mascot-shake', think: 'mascot-tilt',
-    sleepy: 'mascot-sway', star: 'mascot-pulse'
   },
 
   talks: {
@@ -1511,15 +1461,8 @@ const Mascot = {
   },
 
   init() {
-    this.el = document.getElementById('mascotWrap');
-    this.body = document.getElementById('mascotBody');
-    this.bubble = document.getElementById('mascotBubble');
-    this.particles = document.getElementById('mascotParticles');
-    this.badge = document.getElementById('mascotSkinBadge');
-    this.exprEl = document.getElementById('mascotExpression');
     if (!this.el) return;
     // 恢复位置
-    const saved = localStorage.getItem('mascotPos');
     if (saved) { const p = JSON.parse(saved); this.posX = p.x; this.posY = p.y; this.moveTo(p.x, p.y); }
     // 更新皮套
     this.updateSkin();
@@ -1561,7 +1504,6 @@ const Mascot = {
       if (!this.drag.active) return;
       this.drag.active = false;
       this.el.classList.remove('dragging');
-      if (this.posX !== null) localStorage.setItem('mascotPos', JSON.stringify({x:this.posX,y:this.posY}));
       this.resetIdleTimer();
     };
     this.el.addEventListener('touchstart', startDrag, {passive:false});
@@ -1586,7 +1528,6 @@ const Mascot = {
         // 双击归位
         clearTimeout(tapTimer); tapTimer = null;
         this.posX = null; this.posY = null;
-        localStorage.removeItem('mascotPos');
         this.el.style.left = ''; this.el.style.top = '';
         this.el.style.right = '6px'; this.el.style.bottom = '74px';
         this.say('我回来啦~', 1500);
@@ -1634,11 +1575,9 @@ const Mascot = {
   setState(state, persist) {
     if (this.curState === state && !persist) return;
     Object.values(this.animMap).forEach(c => this.el.classList.remove(c));
-    this.el.classList.remove('mascot-shrink', 'mascot-poke');
     this.body.style.filter = 'contrast(1.04) drop-shadow(0 1px 3px rgba(124,92,191,.25))';
     this.curState = state;
     const anim = this.animMap[state];
-    if (anim === 'mascot-shrink') { this.el.classList.add('mascot-shrink'); }
     else if (anim) { this.el.classList.add(anim); }
     if (state === 'sleepy') this.body.style.filter = 'contrast(1.04) drop-shadow(0 1px 3px rgba(124,92,191,.25)) brightness(.7) saturate(.6)';
     if (state === 'sad') this.body.style.filter = 'contrast(1.04) drop-shadow(0 1px 3px rgba(124,92,191,.25)) brightness(.75) saturate(.4)';
@@ -1683,13 +1622,10 @@ const Mascot = {
   randomIdle() {
     const r = Math.random();
     if (r < 0.25) this.randomTalk('idle');
-    else if (r < 0.45) { this.el.classList.add('mascot-poke'); setTimeout(() => this.el.classList.remove('mascot-poke'), 400); }
   },
 
   poke() {
     if (this.curState === 'focus') { this.say('别戳啦！在专注呢！', 1500); return; }
-    this.el.classList.add('mascot-poke');
-    setTimeout(() => this.el.classList.remove('mascot-poke'), 400);
     const msgs = ['哎呀！','好痒~','干嘛啦！','嘻嘻~','有什么事吗？','再戳就生气啦！','人家在发呆呢','拖我可以移动哦'];
     this.say(msgs[Math.floor(Math.random() * msgs.length)], 1800);
     this.spawnParticles(['💢','💦','❓'], 3);
@@ -1756,11 +1692,8 @@ const Mascot = {
 };
 
 // 全局闲置监听
-document.addEventListener('touchstart', () => Mascot.resetIdleTimer(), {passive: true});
-document.addEventListener('mousemove', () => Mascot.resetIdleTimer(), {passive: true});
 
 // ==================== INIT ====================
-function initAll(){rHabits();rGoals();try{Mascot.init()}catch(e){console.log('Mascot init error:',e)}}
 initAll();
 if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});
 </script>
