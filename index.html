@@ -197,7 +197,7 @@ body.locked{overflow:hidden;position:fixed;width:100%;height:100%}
 .period-highlight{color:var(--b);font-weight:700}
 
 /* ===== 阿梓小精灵 (Mascot) ===== */
-.mascot-wrap{position:fixed;bottom:74px;right:6px;z-index:50;pointer-events:none;cursor:grab;user-select:none;-webkit-tap-highlight-color:transparent;touch-action:none;-webkit-user-drag:none;display:none!important}
+.mascot-wrap{position:fixed;bottom:74px;right:6px;z-index:50;pointer-events:auto;cursor:grab;user-select:none;-webkit-tap-highlight-color:transparent;touch-action:none;-webkit-user-drag:none}
 .mascot-wrap.dragging{cursor:grabbing;transition:none;z-index:60;opacity:.85}
 .mascot-wrap.dragging .mascot-body{transform:scale(1.08)}
 .mascot-body{width:72px;height:84px;object-fit:contain;display:block;transition:filter .4s,transform .3s;image-rendering:auto;filter:none}
@@ -1024,25 +1024,25 @@ function rHandbook() {
 // ==================== 阿梓树系统 ====================
 // 阿梓的8套衣服 = 8个树等级。越专注解锁越多衣服。
 const AZUSA_TREES=[
-{id:'seed',name:'????????',img:'',emoji:'??',unlock:0,sub:'????????????????????',color:'#8D6E63'},
-{id:'default',name:'??????????',img:'src/images/azusa/azusa_default.png',unlock:1,sub:'??1????????????????',color:'#90CAF9'},
-{id:'newyear',name:'??????????',img:'src/images/azusa/azusa_newyear.png',unlock:5,sub:'??5????????????????',color:'#EF5350'},
-{id:'summer',name:'?????????',img:'src/images/azusa/azusa_summer.jpg',unlock:12,sub:'??12????????????????',color:'#FF7043'},
-{id:'panda',name:'????',img:'src/images/azusa/azusa_panda.png',unlock:20,sub:'??20?????????????????',color:'#4CAF50'},
-{id:'rabbit',name:'????????',img:'src/images/azusa/azusa_rabbit.jpg',unlock:30,sub:'??30????????????????',color:'#FF80AB'},
-{id:'frog',name:'??????????',img:'src/images/azusa/azusa_frog.jpg',unlock:40,sub:'??40????????????????',color:'#66BB6A'},
-{id:'butterfly',name:'??????????',img:'src/images/azusa/azusa_butterfly.jpg',unlock:55,sub:'??55????????????????',color:'#CE93D8'},
-{id:'eggplant',name:'????????',img:'src/images/azusa/azusa_eggplant.png',unlock:70,sub:'??70?????????????????',color:'#9575CD'},
-{id:'spring',name:'??????????',img:'src/images/azusa/azusa_spring.png',unlock:90,sub:'??90????????????????',color:'#81C784'},
-{id:'chibi',name:'?????????',img:'src/images/azusa/azusa_chibi.png',unlock:110,sub:'??110????????????',color:'#FFD700'},
-{id:'gift',name:'???????????',img:'src/images/azusa/azusa_gift.gif',unlock:130,sub:'??130?????????live2D',color:'#FF8A65'},
-{id:'ninja',name:'????????',img:'src/images/azusa/azusa_ninja.jpg',unlock:155,sub:'??155????????????????',color:'#7E57C2'},
-{id:'ultimate',name:'??????????',img:'src/images/azusa/azusa_transparent.png',unlock:180,sub:'??180?????????????????',color:'#E040FB'},
-{id:'regular',name:'粉丝作品·冬',img:'src/images/azusa/azusa_fan1.jpg',unlock:195,sub:'解锁195次：冬日暖装粉丝创作，温暖治愈',color:'#FFAB91'},
-{id:'box',name:'盒蛋阿梓',img:'src/images/azusa/azusa_box.png',unlock:210,sub:'解锁210次：超Q弹盒蛋版，一口一个！',color:'#FFCC80'},
-{id:'newyear2',name:'新年衣装·改',img:'src/images/azusa/azusa_newyear2.png',unlock:230,sub:'解锁230次：限定复刻新年和服，精致华美',color:'#F48FB1'},
-{id:'chibi4',name:'小呡梓·春',img:'src/images/azusa/azusa_chibi4.png',unlock:250,sub:'解锁250次：四周年纪念Q版，春日气息',color:'#B39DDB'},
-];
+{id:'seed',name:'阿梓的种子',img:'',emoji:'🌰',unlock:0,sub:'初始形态·第一次专注即可发芽',color:'#8D6E63'},
+{id:'default',name:'默认衣装',img:'src/images/azusa/azusa_default.png',emoji:'🌸',unlock:1,sub:'完成1次专注·阿梓的日常默认形象',color:'#90CAF9'},
+{id:'newyear',name:'新年衣装',img:'src/images/azusa/azusa_newyear.png',emoji:'🎊',unlock:5,sub:'完成5次专注·新年限定和服装扮',color:'#EF5350'},
+{id:'summer',name:'夏日衣装',img:'src/images/azusa/azusa_summer.jpg',emoji:'🏖️',unlock:12,sub:'完成12次专注·清凉夏日泳装',color:'#FF7043'},
+{id:'panda',name:'熊猫阿梓',img:'src/images/azusa/azusa_panda.png',emoji:'🐼',unlock:20,sub:'完成20次专注·超萌熊猫外套',color:'#4CAF50'},
+{id:'rabbit',name:'兔兔阿梓',img:'src/images/azusa/azusa_rabbit.jpg',emoji:'🐰',unlock:30,sub:'完成30次专注·软萌兔耳少女',color:'#FF80AB'},
+{id:'frog',name:'青蛙阿梓',img:'src/images/azusa/azusa_frog.jpg',emoji:'🐸',unlock:40,sub:'完成40次专注·呱娃子可爱青蛙装',color:'#66BB6A'},
+{id:'butterfly',name:'蝴蝶阿梓',img:'src/images/azusa/azusa_butterfly.jpg',emoji:'🦋',unlock:55,sub:'完成55次专注·翩翩蝴蝶精灵',color:'#CE93D8'},
+{id:'eggplant',name:'茄子阿梓',img:'src/images/azusa/azusa_eggplant.png',emoji:'🍆',unlock:70,sub:'完成70次专注·紫色茄子主题',color:'#9575CD'},
+{id:'spring',name:'春装阿梓',img:'src/images/azusa/azusa_spring.png',emoji:'🌿',unlock:90,sub:'完成90次专注·春日樱花限定',color:'#81C784'},
+{id:'chibi',name:'Q版阿梓',img:'src/images/azusa/azusa_chibi.png',emoji:'💎',unlock:110,sub:'完成110次专注·超Q小呡梓形象',color:'#FFD700'},
+{id:'gift',name:'礼物阿梓',img:'src/images/azusa/azusa_gift.gif',emoji:'🎁',unlock:130,sub:'完成130次专注·Live2D动态礼盒',color:'#FF8A65'},
+{id:'ninja',name:'忍者阿梓',img:'src/images/azusa/azusa_ninja.jpg',emoji:'🥷',unlock:155,sub:'完成155次专注·暗夜忍者形态',color:'#7E57C2'},
+{id:'ultimate',name:'终极阿梓',img:'src/images/azusa/azusa_transparent.png',emoji:'👑',unlock:180,sub:'完成180次专注·全衣装制霸证明',color:'#E040FB'},
+{id:'fan1',name:'粉丝作品·冬',img:'src/images/azusa/azusa_fan1.jpg',emoji:'❄️',unlock:195,sub:'完成195次·冬日暖装粉丝创作',color:'#FFAB91'},
+{id:'box',name:'盒蛋阿梓',img:'src/images/azusa/azusa_box.png',emoji:'📦',unlock:210,sub:'完成210次·超Q弹盒蛋收藏版',color:'#FFCC80'},
+{id:'newyear2',name:'新年衣装·改',img:'src/images/azusa/azusa_newyear2.png',emoji:'🎋',unlock:230,sub:'完成230次·新年和服复刻限定',color:'#F48FB1'},
+{id:'chibi4',name:'小呡梓·春',img:'src/images/azusa/azusa_chibi4.png',emoji:'🌺',unlock:250,sub:'完成250次·四周年纪念Q版',color:'#B39DDB'},
+];;;
 
 let currentTreeIdx=0; // 最高已解锁的衣装索引
 let currentOutfit=0; // 当前穿着的衣装索引（可自由切换已解锁的）
