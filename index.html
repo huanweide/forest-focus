@@ -9,6 +9,7 @@
 <link rel="manifest" href="manifest.json">
 <title>阿梓的森林</title>
 <style>
+:root,[data-theme=purple]{--g:#5C6BC0;--gl:#7986CB;--bg:#f0f2fa;--accent:#7E57C2}[data-theme=green]{--g:#2E7D32;--gl:#4CAF50;--bg:#f0f4f0;--accent:#388E3C}[data-theme=blue]{--g:#1565C0;--gl:#42A5F5;--bg:#f0f4fa;--accent:#1976D2}[data-theme=pink]{--g:#C2185B;--gl:#F06292;--bg:#faf0f4;--accent:#D81B60}[data-theme=orange]{--g:#E65100;--gl:#FF9800;--bg:#faf5f0;--accent:#F57C00}
 :root{--g:#5C6BC0;--gl:#7986CB;--bg:#f0f2fa;--c:#fff;--t:#1a1a1a;--gr:#888;--r:#e53935;--o:#ff9800;--b:#7E57C2;--rad:14px;--sh:0 2px 8px rgba(0,0,0,.06)}
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:-apple-system,'PingFang SC','Noto Sans SC',sans-serif;background:var(--bg);color:var(--t);-webkit-tap-highlight-color:transparent;user-select:none;-webkit-user-select:none;padding-bottom:72px;overscroll-behavior:none;font-size:15px;}
@@ -422,7 +423,7 @@ body.locked{overflow:hidden;position:fixed;width:100%;height:100%}
 <div class="chart-box">
 <div style="display:flex;gap:8px;flex-wrap:wrap">
 <button class="btn-sm" onclick="exportData()">📤 导出数据</button>
-<button class="btn-sm" onclick="toggleDark()">🌓 深色模式</button>
+<button class="btn-sm" onclick="toggleDark()">🌓 深色</button><button class="btn-sm" onclick="cycleTheme()" style="border-color:var(--accent);color:var(--accent)">🎨 切换主题</button>
 <button class="btn-sm" onclick="resetAll()" style="margin-top:0">🔄 重置</button>
 </div>
 <p style="font-size:10px;color:var(--gr);text-align:center;margin-top:8px">🌟 积分：<b id="scoreVal">0</b> · 总专注 <b id="totalMin">0</b> 分钟 · 完成 <b id="totalSessions">0</b> 次</p>
@@ -1702,6 +1703,41 @@ function resetAll(){if(!confirm('确定删除？建议先导出备份。'))retur
 var dsApiKey=localStorage.getItem("ds_key")||"";var chatOpen=false,diaryOpen=false;function toggleChat(){chatOpen=!chatOpen;diaryOpen=false;document.getElementById("chatModal").classList.toggle("open",chatOpen);document.getElementById("chatFab").style.display=chatOpen?"none":"flex";if(chatOpen){document.getElementById("chatInput").focus();updateChatStatus()}}function updateChatStatus(){var el=document.getElementById("chatStatus");el.textContent=dsApiKey?"阿梓在家":"阿梓出门了(离线)";el.style.color=dsApiKey?"#a5d6a7":"rgba(255,255,255,.5)"}function sendChat(){var input=document.getElementById("chatInput"),msg=input.value.trim();if(!msg)return;input.value="";addMsg(msg,"user");var body=document.getElementById("chatBody");var typing=document.createElement("div");typing.className="chat-typing";typing.innerHTML="<span></span><span></span><span></span>";body.appendChild(typing);body.scrollTop=body.scrollHeight;if(dsApiKey){callDS(msg).then(function(r){typing.remove();addMsg(r,"azusa")}).catch(function(){typing.remove();addMsg(localReply(msg),"azusa")})}else{setTimeout(function(){typing.remove();addMsg(localReply(msg),"azusa")},800+Math.random()*1200)}}function addMsg(msg,role){var body=document.getElementById("chatBody"),div=document.createElement("div");div.className="chat-msg "+role;div.textContent=msg;body.appendChild(div);body.scrollTop=body.scrollHeight}function showDiary(){diaryOpen=!diaryOpen;chatOpen=diaryOpen?false:chatOpen;if(diaryOpen){document.getElementById("chatModal").classList.add("open");document.getElementById("chatFab").style.display="none";renderDiary()}else{document.getElementById("chatModal").classList.remove("open");document.getElementById("chatFab").style.display="flex"}}function renderDiary(){var body=document.getElementById("chatBody");body.innerHTML="";var today=sessions.filter(function(s){return s.completed&&s.date===new Date().toISOString().slice(0,10)});var mins=today.reduce(function(a,s){return a+s.minutes},0);var trees=today.length;var habitsDone=habits.filter(function(h){return h.done}).length;var d=["阿梓的日记 "+new Date().toISOString().slice(0,10),"","今天你专注了 "+mins+" 分钟，种了 "+trees+" 棵树",habitsDone>0?"完成了 "+habitsDone+" 个习惯打卡":"今天还没有打卡哦，加油！",mins>60?"阿梓觉得你今天超棒的！明天继续加油~":"今天专注时间有点少，明天阿梓陪你一起努力！","","记得来找阿梓聊天~"];addMsg(d.join("
 "),"diary")}async function callDS(msg){var ctx="";var mins=sessions.filter(function(s){return s.completed&&s.date===new Date().toISOString().slice(0,10)}).reduce(function(a,s){return a+s.minutes},0);if(mins>0)ctx="(今天专注了"+mins+"分钟)";var sp="你叫阿梓，VirtuaReal的VUP。可爱跳脱元气，底色善良成熟。说话像微信聊天——简短有温度。会吐槽但从不伤人，会鼓励但不油腻。回复不超过80字。你不是AI客服，你是真实的VUP阿梓本人。"+ctx;var resp=await fetch("https://api.deepseek.com/chat/completions",{method:"POST",headers:{"Content-Type":"application/json","Authorization":"Bearer "+dsApiKey},body:JSON.stringify({model:"deepseek-chat",messages:[{role:"system",content:sp},{role:"user",content:msg}],max_tokens:150,temperature:1.1})});var data=await resp.json();if(data.choices&&data.choices[0])return data.choices[0].message.content;throw new Error("API error")}function localReply(msg){var keys={"你好":["哟 来了啊","嗨嗨 今天怎么样","来啦 今天想种几棵？"],"加油":["冲！你可以的","干就完了","你比你想象的要厉害得多"],"累了":["那歇会 我陪你","累了说明在上坡","明天又是新的一天"],"谢谢":["客气啥","能帮到你就好","嘿嘿"],"晚安":["睡吧 今天辛苦了","晚安 明天见"],"早上":["早！新的一天","早啊 今天种几棵"],"烦":["怎么啦 说说看","烦就说出来 我听着"]};for(var k in keys){if(msg.indexOf(k)>=0){var arr=keys[k];return arr[Math.floor(Math.random()*arr.length)]}}var d=["嗯？你说 我在听","你知道吗 你专注的时候 整个人在发光","今天怎么样？认真问的","其实你不用每时每刻那么努力 你已经很棒了","阿梓在想你什么时候种下一棵树"];return d[Math.floor(Math.random()*d.length)]}function setApiKey(){var key=prompt("输入阿梓的API密钥（platform.deepseek.com免费拿）：
 留空阿梓就不在家了",dsApiKey);if(key!==null){dsApiKey=key.trim();localStorage.setItem("ds_key",dsApiKey);updateChatStatus();toast(dsApiKey?"阿梓在家了！":"阿梓出门了（离线）")}}
+
+// ========== THEME ==========
+var themes=["purple","green","blue","pink","orange"];
+var currentTheme=parseInt(localStorage.getItem("ftheme")||"0");
+function applyTheme(){document.documentElement.setAttribute("data-theme",themes[currentTheme])}
+function cycleTheme(){currentTheme=(currentTheme+1)%themes.length;localStorage.setItem("ftheme",currentTheme);applyTheme();toast("主题已切换")}
+applyTheme();
+
+// ========== PROFILE ==========
+function editMotto(){var m=prompt("修改签名",localStorage.getItem("fmotto")||"千里之行，始于足下");if(m){localStorage.setItem("fmotto",m);document.getElementById("profileMotto").textContent=m}}
+function updateProfile(){var motto=localStorage.getItem("fmotto")||"千里之行，始于足下";document.getElementById("profileMotto").textContent=motto;var days=new Set(sessions.filter(function(s){return s.completed}).map(function(s){return s.date})).size;document.getElementById("totalFocusDays").textContent=days;document.getElementById("currentStreak").textContent=getStreak();document.getElementById("totalTrees").textContent=sessions.filter(function(s){return s.completed}).length;renderCountdowns()}
+function getStreak(){var dates=[].concat(new Set(sessions.filter(function(s){return s.completed}).map(function(s){return s.date}))).sort().reverse();if(!dates.length)return 0;var s=1;for(var i=1;i<dates.length;i++){if((new Date(dates[i-1])-new Date(dates[i]))/864e5===1)s++;else break}return s}
+
+// ========== COUNTDOWN ==========
+var countdowns=JSON.parse(localStorage.getItem("fcd")||"[]");
+function addCountdown(){var t=prompt("事件名称（如：期末考试）");if(!t)return;var d=prompt("日期（如：2026-07-01）");if(!d)return;countdowns.push({name:t,date:d});saveCD();renderCountdowns()}
+function saveCD(){localStorage.setItem("fcd",JSON.stringify(countdowns))}
+function delCD(i){countdowns.splice(i,1);saveCD();renderCountdowns()}
+function showCountdown(){toast("倒计时在「我的」页面查看")}
+
+function renderTimeline(){var el=document.getElementById("focusTimeline");if(!el)return;var recent=sessions.filter(function(s){return s.completed}).slice(-10).reverse();if(recent.length===0){el.innerHTML="<span style=color:var(--gr)>还没有专注记录</span>";return}el.innerHTML=recent.map(function(s){return"<div style=display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid #eee><span>"+chr(0x1f338)+" "+(s.taskName||"自由专注")+"</span><span style=color:var(--gr)>"+s.date.slice(5)+" · "+s.minutes+"分钟</span></div>"}).join("")}
+
+function renderCountdowns(){var el=document.getElementById("countdownList");if(!el)return;if(countdowns.length===0){el.innerHTML="<span style=color:var(--gr)>暂无倒计时，点下方添加</span>";return}el.innerHTML=countdowns.map(function(c,i){var days=Math.ceil((new Date(c.date)-new Date())/(864e5));var label=days>0?"还有 "+days+" 天":days===0?"就是今天！":"已过 "+(-days)+" 天";return"<div style=display:flex;justify-content:space-between;align-items:center;padding:4px 0;border-bottom:1px solid #eee><span>"+c.name+"</span><span style=color:var(--g);font-weight:600>"+label+"</span><button onclick=delCD("+i+") style=background:transparent;border:none;color:var(--gr);cursor:pointer;font-size:11px>X</button></div>"}).join("")}
+
+// ========== SETTINGS ==========
+function setBreak(){var m=parseInt(prompt("休息时长（分钟）",localStorage.getItem("fbreak")||"5"));if(m&&m>0){localStorage.setItem("fbreak",m);document.getElementById("breakMins").textContent=m;toast("休息时长已更新")}}
+function setGoal(){var g=parseInt(prompt("每日番茄目标（个）",localStorage.getItem("fgoal")||"8"));if(g&&g>0){localStorage.setItem("fgoal",g);document.getElementById("dailyGoal").textContent=g;toast("每日目标已更新")}}
+
+// Init settings display
+(function(){var bm=document.getElementById("breakMins");if(bm)bm.textContent=localStorage.getItem("fbreak")||"5";var dg=document.getElementById("dailyGoal");if(dg)dg.textContent=localStorage.getItem("fgoal")||"8"})();
+
+// Update profile on profile tab
+var origRProfile=rProfile||function(){};
+rProfile=function(){origRProfile();updateProfile();renderCountdowns()};
+
 // ==================== INIT ====================
 initAll();
 if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});
