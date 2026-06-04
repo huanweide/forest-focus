@@ -1415,6 +1415,12 @@ function togSubGoal(gid,si){let g=goals.find(x=>x.id===gid);if(!g||!g.subtasks)r
 function addSubGoal(gid){let g=goals.find(x=>x.id===gid);if(!g)return;let t=prompt('子任务名称：');if(!t||!t.trim())return;if(!g.subtasks)g.subtasks=[];g.subtasks.push({text:t.trim(),done:false});save('g');rGoals()}
 
 function updateScore(n){score+=n;save('c');if(currentTab===4)rHandbook()}
+
+var lockEnabled=localStorage.getItem("flock")!=="0";
+var emergencyLeft=parseInt(localStorage.getItem("fem")||"3");
+function toggleLock(){lockEnabled=!lockEnabled;localStorage.setItem("flock",lockEnabled?"1":"0");var b=document.getElementById("lockToggle");b.textContent=lockEnabled?"已启用":"已关闭";b.style.background=lockEnabled?"#4CAF50":"#e53935"}
+function renderLockSettings(){try{var b=document.getElementById("lockToggle");if(b){b.textContent=lockEnabled?"已启用":"已关闭";b.style.background=lockEnabled?"#4CAF50":"#e53935";b.style.color="#fff"}var e=document.getElementById("emergencyCount");if(e)e.textContent=emergencyLeft}catch(e){}}
+
 function toggleDark(){dark=!dark;document.body.classList.toggle('dark',dark);save('d')}
 function exportData(){let data={habits,goals,sessions,score,exported:new Date().toISOString()};let b=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});let a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='azusa-forest-'+new Date().toISOString().slice(0,10)+'.json';a.click();toast('📤 已导出')}
 function resetAll(){if(!confirm('确定删除？建议先导出备份。'))return;habits=[];goals=[];sessions=[];score=0;totalCompletions=0;currentTreeIdx=0;currentOutfit=0;['fh','fg','fs','fsc','fco'].forEach(k=>localStorage.removeItem(k));save('c');if(currentTab===1)rGallery();if(currentTab===2)rHabits();if(currentTab===3)rGoals();if(currentTab===4)rHandbook();updateTaskSelects();toast('🔄 已重置')}
