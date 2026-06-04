@@ -24,9 +24,8 @@ android {
 
     buildTypes {
         release {
-            minifyEnabled true
-            shrinkResources true
-            proguardFiles getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
+            minifyEnabled false
+            shrinkResources false
             signingConfig signingConfigs.release
         }
     }
@@ -40,5 +39,4 @@ android {
 dependencies {
     implementation "androidx.appcompat:appcompat:1.6.1"
     implementation "androidx.webkit:webkit:1.9.0"
-    implementation "androidx.core:core:1.12.0"
 }
