@@ -33,12 +33,25 @@ body.locked{overflow:hidden;position:fixed;width:100%;height:100%}
 .btn-r{background:var(--r);color:#fff}
 .btn-o{background:var(--o);color:#fff}
 
-.tree-box{text-align:center;min-height:240px;display:flex;align-items:center;justify-content:center;transition:.4s;overflow:visible;margin:4px 0;background:linear-gradient(135deg,rgba(200,180,230,.15),rgba(220,200,240,.1));border-radius:20px;border:2px dashed rgba(124,92,191,.1)}
-.ring-wrap{width:180px;height:180px;margin:0 auto;}
+.tree-box{text-align:center;min-height:260px;display:flex;align-items:center;justify-content:center;transition:.4s;overflow:visible;margin:4px 0;background:linear-gradient(180deg,rgba(200,220,255,.2) 0%,rgba(230,210,250,.15) 50%,rgba(200,240,220,.1) 100%);border-radius:24px;border:2px solid rgba(124,92,191,.12);box-shadow:0 4px 24px rgba(124,92,191,.08),inset 0 0 80px rgba(180,160,220,.04);position:relative}
+/* 树区装饰：小星星和花瓣 */
+.tree-box::before{content:'';position:absolute;top:0;left:0;right:0;bottom:0;border-radius:24px;background:radial-gradient(circle at 20% 30%,rgba(255,200,220,.15) 0%,transparent 50%),radial-gradient(circle at 80% 70%,rgba(180,200,255,.12) 0%,transparent 50%),radial-gradient(circle at 50% 20%,rgba(255,255,200,.1) 0%,transparent 40%);pointer-events:none}
+/* 浮动装饰粒子 */
+.tree-decor{position:absolute;font-size:18px;pointer-events:none;opacity:.6;animation:tFloat 3s ease-in-out infinite}
+.tree-decor:nth-child(1){top:12%;left:8%;animation-delay:0s}
+.tree-decor:nth-child(2){top:18%;right:10%;animation-delay:.8s}
+.tree-decor:nth-child(3){bottom:22%;left:12%;animation-delay:1.6s}
+.tree-decor:nth-child(4){bottom:15%;right:15%;animation-delay:2.2s}
+.tree-decor:nth-child(5){top:40%;left:6%;font-size:14px;animation-delay:.4s}
+.tree-decor:nth-child(6){top:35%;right:8%;font-size:14px;animation-delay:1.2s}
+@keyframes tFloat{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-8px) rotate(5deg)}}
+.ring-wrap{width:210px;height:210px;margin:0 auto;position:relative}
 .ring-wrap canvas{width:100%;height:100%}
 .ring-t{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center}
-.ring-t .tm{font-size:36px;font-weight:700;font-family:monospace;letter-spacing:2px}
-.ring-t .lb{font-size:12px;color:var(--g);margin-top:1px}
+.ring-t .tm{font-size:40px;font-weight:700;font-family:'SF Mono','Cascadia Code',monospace;letter-spacing:2px;color:#5C3D7A;text-shadow:0 2px 8px rgba(124,92,191,.15)}
+.ring-t .lb{font-size:12px;color:var(--g);margin-top:2px;font-weight:500}
+/* 环背景光晕 */
+.ring-glow{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:190px;height:190px;border-radius:50%;background:radial-gradient(circle,rgba(180,160,220,.12) 0%,rgba(200,180,240,.05) 50%,transparent 70%);pointer-events:none}
 .chips{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin:14px 0}
 .chip{padding:7px 14px;border-radius:18px;border:2px solid #ddd;background:var(--c);font-size:13px;font-weight:500;cursor:pointer;transition:.15s}
 .chip.sel{border-color:var(--g);background:var(--g);color:#fff}
@@ -75,8 +88,8 @@ body.locked{overflow:hidden;position:fixed;width:100%;height:100%}
 .tg-progress{height:4px;border-radius:2px;background:#e8e8e8;margin-top:8px;overflow:hidden}
 .tg-progress div{height:100%;border-radius:2px;background:var(--g);transition:.4s}
 .tg-img{width:100%;height:180px;object-fit:contain;border-radius:10px;background:linear-gradient(135deg,#f5f0ff,#faf5ff);display:block;margin:0 auto;filter:brightness(1.05) saturate(1.1)}
-.tree-img{max-height:230px;max-width:90%;object-fit:contain;transition:all .5s ease;border-radius:12px;filter:brightness(1.08) saturate(1.08);display:block;margin:0 auto}
-.tree-box{text-align:center;height:180px;display:flex;align-items:center;justify-content:center;transition:.4s;overflow:hidden}
+.tree-img{max-height:280px;max-width:85%;object-fit:contain;transition:all .5s ease;border-radius:16px;filter:brightness(1.08) saturate(1.08);display:block;margin:0 auto}
+/* DUPLICATE REMOVED - using line 36 definition */
 @keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}
 .pulse{animation:pulse 1.5s ease-in-out infinite;display:inline-block}
 @keyframes unlockPop{0%{transform:scale(.5);opacity:0}60%{transform:scale(1.1)}100%{transform:scale(1);opacity:1}}
@@ -351,8 +364,8 @@ body.locked{overflow:hidden;position:fixed;width:100%;height:100%}
 <!-- ===== FOCUS PAGE ===== -->
 <div class="page on" id="pg0">
 <div style="max-width:400px;margin:0 auto;display:flex;flex-direction:column;align-items:center;gap:8px">
-<div class="tree-box" id="tree"><img src="src/images/azusa/azusa_transparent.png" class="tree-img" style="max-height:200px;max-width:90%;opacity:.95;object-fit:contain;display:block;margin:0 auto" alt="阿梓"></div>
-<div class="ring-wrap"><canvas id="ring"></canvas><div class="ring-t"><div class="tm" id="time">25:00</div><div class="lb" id="status">选个目标，开始种阿梓吧</div></div></div>
+<div class="tree-box" id="tree"><span class="tree-decor">✨</span><span class="tree-decor">🌸</span><span class="tree-decor">💫</span><span class="tree-decor">🌿</span><span class="tree-decor">⭐</span><span class="tree-decor">🍃</span><img src="src/images/azusa/azusa_transparent.png" class="tree-img" style="max-height:260px;max-width:85%;opacity:.95;object-fit:contain;display:block;margin:0 auto;filter:drop-shadow(0 6px 24px rgba(124,92,191,.25))" alt="阿梓"></div>
+<div class="ring-wrap"><div class="ring-glow"></div><canvas id="ring"></canvas><div class="ring-t"><div class="tm" id="time">25:00</div><div class="lb" id="status">选个目标，开始种阿梓吧</div></div></div>
 <div class="chips" id="chips"></div>
 <div class="focus-motto" id="focusMotto">千里之行，始于足下</div><div class="task-sel">
 <select id="taskType" onchange="onTaskType()"><option value="">-- 选任务类型 --</option><option value="habit">✅ 习惯</option><option value="goal">🎯 目标</option><option value="free">🌸 自由种树</option></select>
@@ -1076,7 +1089,7 @@ function fmtMins(m){if(m<60)return m+'分钟';let h=Math.floor(m/60);let r=m%60;
 let currentTab=0;
 
 // ==================== FOCUS TIMER ====================
-function drawRing(p){let c=document.getElementById('ring'),dpr=window.devicePixelRatio||1,sz=180;c.width=c.height=sz*dpr;c.style.width=c.style.height=sz+'px';let ctx=c.getContext('2d');ctx.scale(dpr,dpr);let cx=sz/2,cy=sz/2,r=70;ctx.clearRect(0,0,sz,sz);ctx.beginPath();ctx.arc(cx,cy,r,0,Math.PI*2);ctx.strokeStyle='#e0e0e0';ctx.lineWidth=9;ctx.stroke();if(p>0){ctx.beginPath();ctx.arc(cx,cy,r,-Math.PI/2,-Math.PI/2+Math.PI*2*p);ctx.strokeStyle=isBreak?'#ff9800':'#7E57C2';ctx.lineWidth=9;ctx.lineCap='round';ctx.stroke()}}
+function drawRing(p){let c=document.getElementById('ring'),dpr=window.devicePixelRatio||1,sz=210;c.width=c.height=sz*dpr;c.style.width=c.style.height=sz+'px';let ctx=c.getContext('2d');ctx.scale(dpr,dpr);let cx=sz/2,cy=sz/2,r=84;ctx.clearRect(0,0,sz,sz);ctx.beginPath();ctx.arc(cx,cy,r,0,Math.PI*2);ctx.strokeStyle='#e0e0e0';ctx.lineWidth=9;ctx.stroke();if(p>0){ctx.beginPath();ctx.arc(cx,cy,r,-Math.PI/2,-Math.PI/2+Math.PI*2*p);ctx.strokeStyle=isBreak?'#ff9800':'#7E57C2';ctx.lineWidth=9;ctx.lineCap='round';ctx.stroke()}}
 (function initFocus(){
 let c=document.getElementById('chips');
 DURS.forEach((d,i)=>{let e=document.createElement('div');e.className='chip'+(i===1?' sel':'');e.textContent=d+'分钟';e.onclick=()=>{c.querySelectorAll('.chip').forEach(x=>x.classList.remove('sel'));e.classList.add('sel');totalSec=d*60;if(!timerId)document.getElementById('time').textContent=d+':00'};c.appendChild(e)});
@@ -1202,12 +1215,18 @@ toast('\u{1F338} 下次一定会更好的');
 
 function updateTree(p,dead){
 let e=document.getElementById('tree');
-if(dead){e.innerHTML="<span style='font-size:80px'>??</span>";return}
-let img;
+if(dead){e.innerHTML="<span style='font-size:80px'>😢</span>";return}
+var curImg,curEmoji;
+if(currentOutfit===0){
+  curImg='src/images/azusa/azusa_transparent.png';
+  curEmoji='🌰';
+}else{
+  curImg=AZUSA_TREES[currentOutfit]&&AZUSA_TREES[currentOutfit].img;
+  curEmoji=(AZUSA_TREES[currentOutfit]||{}).emoji||'🌸';
+}
 if(p<0.15){
-img=AZUSA_TREES[currentOutfit]&&AZUSA_TREES[currentOutfit].img;
-if(img)e.innerHTML="<img src="+img+" class=tree-img style='opacity:.6;transform:scale(.7)'>";
-else e.innerHTML="<span style='font-size:60px'>"+((AZUSA_TREES[currentOutfit]||{}).emoji||"🌰")+"</span>"
+  if(curImg)e.innerHTML="<span class='tree-decor'>✨</span><span class='tree-decor'>🌸</span><span class='tree-decor'>💫</span><span class='tree-decor'>🌿</span><span class='tree-decor'>⭐</span><span class='tree-decor'>🍃</span><img src="+curImg+" class=tree-img style='opacity:.92;transform:scale(.95);filter:drop-shadow(0 6px 24px rgba(124,92,191,.25))'>";
+  else e.innerHTML="<span style='font-size:60px'>"+curEmoji+"</span>"
 }else if(p<0.4){
 // 幼苗期 → 显示当前穿着衣装的前一级（或种子）
 let prev=Math.max(0,currentOutfit-1);
