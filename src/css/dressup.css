@@ -1,0 +1,127 @@
+/* dressup.css - 衣柜、阿梓2D角色系统、分层展示 */
+/* Tree Gallery */
+.tree-gallery{
+  display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:8px;
+}
+.tg-card{
+  background:var(--c);border-radius:var(--rad);padding:16px 10px;text-align:center;
+  box-shadow:var(--sh);transition:.3s;position:relative;overflow:hidden;cursor:pointer;
+}
+.tg-card:active{transform:scale(.95)}
+.tg-card.unlocked:hover{box-shadow:0 4px 16px rgba(92,107,192,.2)}
+.tg-card.locked{opacity:.55;filter:grayscale(.6)}
+.tg-card.unlocked{border:2px solid var(--g)}
+.tg-card.current{border:2px solid var(--g);box-shadow:0 0 16px rgba(92,107,192,.3)}
+.tg-emoji{font-size:50px;display:block}
+.tg-name{font-weight:700;font-size:14px;margin:6px 0 2px}
+.tg-sub{font-size:11px;color:var(--gr);line-height:1.4}
+.tg-badge{
+  position:absolute;top:8px;right:8px;background:var(--g);color:#fff;
+  font-size:10px;padding:3px 8px;border-radius:10px;
+}
+.tg-badge.lock{background:#ccc}
+.tg-progress{height:4px;border-radius:2px;background:#e8e8e8;margin-top:8px;overflow:hidden}
+.tg-progress div{height:100%;border-radius:2px;background:var(--g);transition:.4s}
+.tg-img{
+  width:100%;height:120px;object-fit:contain;border-radius:10px;
+  background:rgba(0,0,0,.03);display:block;margin:0 auto;
+}
+
+/* Wardrobe */
+.wardrobe-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin:8px 0}
+.wcard{
+  background:var(--c);border-radius:14px;padding:10px 8px;text-align:center;
+  box-shadow:var(--sh);transition:all .25s;cursor:pointer;position:relative;
+  overflow:hidden;border:2px solid transparent;animation:fIn .3s ease;
+}
+.wcard:active{transform:scale(.95)}
+.wcard.wearing{
+  border-color:var(--g);background:linear-gradient(135deg,#f5f0fa,#ede4f5);
+  box-shadow:0 0 16px rgba(124,92,191,.2);animation:wGlow 2s ease-in-out infinite;
+}
+.wcard.locked{opacity:.45;filter:grayscale(.8);cursor:default}
+.wcard.locked:active{transform:none}
+.wimg{
+  max-height:100px;max-width:100%;object-fit:contain;border-radius:8px;
+  transition:transform .3s;
+}
+.wcard:not(.locked):hover .wimg{transform:scale(1.08)}
+.wemoji{font-size:60px;display:block}
+.wname{font-weight:700;font-size:12px;margin:6px 0 2px;color:var(--t)}
+.wsub{font-size:10px;color:var(--gr)}
+.wbadge{
+  position:absolute;top:6px;right:6px;background:var(--gd);color:#fff;
+  font-size:10px;padding:2px 8px;border-radius:10px;font-weight:600;z-index:2;
+  animation:wBadgePulse 1.5s ease-in-out infinite;
+}
+.wbtn{
+  display:block;width:100%;margin-top:6px;padding:6px;border:none;
+  border-radius:8px;background:var(--gd);color:#fff;font-size:12px;
+  font-weight:600;cursor:pointer;transition:all .2s;
+}
+.wbtn:active{transform:scale(.94);filter:brightness(.9)}
+
+/* === v4.0: 分层角色系统 (10层) === */
+.azusa-character{position:relative;width:200px;height:280px;margin:0 auto;transition:filter .5s}
+.azusa-character .layer{
+  position:absolute;left:0;top:0;width:100%;height:100%;
+  object-fit:contain;pointer-events:none;
+}
+.azusa-character .layer-scene{
+  position:absolute;left:-10%;top:-10%;width:120%;height:120%;
+  border-radius:20px;z-index:0;opacity:.15;transition:opacity .5s;
+}
+.azusa-character .layer-body{z-index:1}
+.azusa-character .layer-bottom{z-index:2}
+.azusa-character .layer-top{z-index:3}
+.azusa-character .layer-dress{z-index:4}
+.azusa-character .layer-neck{z-index:5}
+.azusa-character .layer-head{z-index:6}
+.azusa-character .layer-face{z-index:7}
+.azusa-character .layer-hand{z-index:8}
+.azusa-character .layer-fx{z-index:9;pointer-events:none}
+.azusa-character .body-outfit{
+  transition:opacity .8s ease,transform .8s ease,filter .5s ease;
+}
+/* Face bubble */
+.face-bubble{
+  position:absolute;top:-8px;right:-16px;width:44px;height:44px;
+  background:#fff;border-radius:50%;background-size:auto 44px;
+  background-repeat:no-repeat;border:2px solid #7C5CBF;
+  box-shadow:0 2px 8px rgba(0,0,0,.15);z-index:10;
+  transition:background-position .3s ease;
+  display:flex;align-items:center;justify-content:center;font-size:22px;
+}
+/* Speech bubble */
+.speech-bubble{
+  position:absolute;top:-50px;left:50%;transform:translateX(-50%);
+  background:#fff;border-radius:12px;padding:6px 14px;
+  font-size:13px;color:#333;box-shadow:0 2px 12px rgba(0,0,0,.15);
+  white-space:nowrap;z-index:20;animation:popIn .3s ease-out;
+}
+@keyframes popIn{0%{transform:translateX(-50%) scale(0);opacity:0}100%{transform:translateX(-50%) scale(1);opacity:1}}
+/* Growth states - v4.0: apply to all layers */
+.azusa-character.seed .layer-dress,.azusa-character.seed .layer-body,.azusa-character.seed .layer-top,.azusa-character.seed .layer-bottom,.azusa-character.seed .layer-neck,.azusa-character.seed .layer-head,.azusa-character.seed .layer-face,.azusa-character.seed .layer-hand{opacity:0;transform:scale(.25)}
+.azusa-character.growing .layer-dress,.azusa-character.growing .layer-body{opacity:.65;transform:scale(.75);animation:growPulse 3s ease-in-out infinite}
+@keyframes growPulse{0%,100%{transform:scale(.75)}50%{transform:scale(.8)}}
+.azusa-character.full .layer-dress,.azusa-character.full .layer-body{opacity:1;transform:scale(1);animation:breathe 4s ease-in-out infinite}
+@keyframes breathe{0%,100%{transform:scale(1)}50%{transform:scale(1.03)}}
+/* Celebrate */
+.azusa-character.celebrate .layer-dress{animation:nod .4s ease-in-out 3}
+@keyframes nod{0%{transform:translateY(0)}50%{transform:translateY(-10px)}100%{transform:translateY(0)}}
+/* Wilt */
+.azusa-character.wilt .layer-dress{filter:grayscale(1) brightness(.7);opacity:.6;animation:wiltShake .4s ease-in-out 2}
+@keyframes wiltShake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+/* Angry */
+.azusa-character.angry .layer-dress{filter:hue-rotate(-20deg) saturate(1.5);animation:angryShake .2s ease-in-out 3}
+@keyframes angryShake{0%,100%{transform:translateX(0)}50%{transform:translateX(-8px)}}
+/* Surprised */
+.azusa-character.surprised .layer-dress{animation:surprise .5s ease-out}
+@keyframes surprise{0%{transform:scale(1)}50%{transform:scale(1.12)}100%{transform:scale(1)}}
+.azusa-character:active .layer-dress{transform:scale(.95);transition:transform .1s}
+
+/* Animations for wardrobe */
+@keyframes wGlow{0%,100%{box-shadow:0 0 8px rgba(124,92,191,.15)}50%{box-shadow:0 0 20px rgba(124,92,191,.3)}}
+@keyframes wBadgePulse{0%,100%{opacity:1}50%{opacity:.7}}
+@keyframes unlockPop{0%{transform:scale(.5);opacity:0}60%{transform:scale(1.1)}100%{transform:scale(1);opacity:1}}
+.unlock-pop{animation:unlockPop .6s ease}

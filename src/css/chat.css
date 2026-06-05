@@ -1,0 +1,219 @@
+/* chat.css - AI聊天、押注、商城、弹窗覆盖层 */
+/* Chat FAB */
+.chat-fab{
+  position:fixed;bottom:70px;right:16px;width:52px;height:52px;border-radius:50%;
+  background:linear-gradient(135deg,#7C5CBF,#9575CD);color:#fff;font-size:24px;
+  border:none;cursor:pointer;z-index:150;box-shadow:0 4px 20px rgba(124,92,191,.4);
+  transition:all .2s;display:flex;align-items:center;justify-content:center;
+}
+.chat-fab:active{transform:scale(.9)}
+.chat-fab .badge{
+  position:absolute;top:-4px;right:-4px;width:18px;height:18px;
+  background:#e91e63;border-radius:50%;font-size:10px;
+  display:flex;align-items:center;justify-content:center;
+  animation:pulse .8s ease-in-out infinite;
+}
+
+/* Chat modal */
+.chat-modal{
+  position:fixed;bottom:0;left:0;right:0;top:0;z-index:350;
+  display:flex;flex-direction:column;background:var(--bg,#f5f0fa);
+  transform:translateY(100%);transition:transform .3s ease-out;
+}
+.chat-modal.open{transform:translateY(0)}
+.chat-header{
+  background:var(--gd);color:#fff;padding:14px 16px;
+  display:flex;align-items:center;justify-content:space-between;
+  box-shadow:0 2px 10px rgba(0,0,0,.1);
+}
+.chat-header .ch-title{font-weight:700;font-size:16px;display:flex;align-items:center;gap:8px}
+.chat-header .ch-close{
+  width:32px;height:32px;border-radius:50%;border:none;
+  background:rgba(255,255,255,.2);color:#fff;font-size:18px;cursor:pointer;
+}
+.chat-body{flex:1;overflow-y:auto;padding:12px;display:flex;flex-direction:column;gap:8px}
+.chat-msg{
+  max-width:85%;padding:10px 14px;border-radius:16px;
+  font-size:14px;line-height:1.5;animation:msgIn .3s ease-out;
+}
+@keyframes msgIn{0%{opacity:0;transform:translateY(10px)}100%{opacity:1;transform:translateY(0)}}
+.chat-msg.user{align-self:flex-end;background:var(--gd);color:#fff;border-bottom-right-radius:4px}
+.chat-msg.azusa{
+  align-self:flex-start;background:#fff;color:#333;
+  border-bottom-left-radius:4px;box-shadow:0 2px 8px rgba(0,0,0,.06);
+}
+.chat-msg.azusa .az-avatar{font-size:20px;margin-right:6px}
+.chat-typing{
+  align-self:flex-start;background:#fff;padding:10px 16px;
+  border-radius:16px;font-size:13px;color:#999;display:flex;gap:4px;
+}
+.chat-typing span{
+  width:6px;height:6px;background:#ccc;border-radius:50%;
+  animation:typeBounce 1.4s ease-in-out infinite;
+}
+.chat-typing span:nth-child(2){animation-delay:.2s}
+.chat-typing span:nth-child(3){animation-delay:.4s}
+@keyframes typeBounce{0%,80%,100%{transform:scale(.6)}40%{transform:scale(1)}}
+.chat-input-wrap{display:flex;gap:8px;padding:10px 12px;background:#fff;border-top:1px solid #eee}
+.chat-input-wrap input{
+  flex:1;padding:10px 14px;border-radius:20px;border:2px solid #e0e0e0;
+  font-size:14px;outline:none;transition:border .2s;
+}
+.chat-input-wrap input:focus{border-color:var(--g)}
+.chat-input-wrap button{
+  width:40px;height:40px;border-radius:50%;border:none;
+  background:var(--gd);color:#fff;font-size:18px;cursor:pointer;
+}
+
+/* Betting UI */
+.bet-row{
+  display:flex;align-items:center;gap:6px;margin:8px 0;padding:8px 12px;
+  background:linear-gradient(135deg,#fff8e1,#ffecb3);border-radius:12px;
+  font-size:12px;border:1px solid #ffe0b2;
+}
+.bet-row select{
+  padding:6px 10px;border-radius:8px;border:2px solid #e0e0e0;
+  font-size:13px;background:var(--c);
+}
+.bet-row .bet-info{font-size:11px;color:var(--gr);margin-left:auto}
+.bet-result{
+  text-align:center;font-size:14px;font-weight:600;padding:8px;
+  border-radius:12px;margin:4px 0;animation:popIn .3s ease-out;
+}
+.bet-result.win{background:#e8f5e9;color:#2e7d32}
+.bet-result.lose{background:#fce4ec;color:#c62828}
+
+/* Coin display */
+.coin-display{
+  display:inline-flex;align-items:center;gap:4px;
+  background:linear-gradient(135deg,#fff8e1,#ffecb3);padding:4px 10px;
+  border-radius:14px;font-size:13px;font-weight:700;color:#f57f17;
+}
+
+/* Shop */
+.shop-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin:8px 0}
+.shop-item{
+  background:var(--c);border-radius:14px;padding:10px 8px;text-align:center;
+  box-shadow:var(--sh);transition:all .2s;
+}
+.shop-item:active{transform:scale(.96)}
+.shop-item .si-icon{font-size:32px;margin-bottom:4px}
+.shop-item .si-name{font-size:13px;font-weight:600}
+.shop-item .si-price{font-size:11px;color:var(--gr);margin:4px 0}
+.shop-item .si-btn{
+  padding:6px 16px;border-radius:12px;border:none;
+  font-size:12px;font-weight:600;cursor:pointer;margin-top:4px;
+}
+.shop-item .si-btn.buy{background:var(--gd);color:#fff}
+.shop-item .si-btn.owned{background:#e0e0e0;color:#999;cursor:default}
+
+/* Shop modal */
+.shop-modal{
+  position:fixed;top:0;left:0;right:0;bottom:0;z-index:400;
+  background:var(--bg);display:flex;flex-direction:column;
+  transform:translateY(100%);transition:transform .3s ease-out;
+}
+.shop-modal.open{transform:translateY(0)}
+.shop-modal-header{
+  background:var(--gd);color:#fff;padding:14px 16px;
+  display:flex;align-items:center;justify-content:space-between;
+  font-size:17px;font-weight:700;
+}
+.shop-coin{font-size:14px}
+.shop-close{width:32px;height:32px;border-radius:50%;border:none;background:rgba(255,255,255,.2);color:#fff;font-size:18px;cursor:pointer}
+.shop-cats{display:flex;gap:4px;padding:8px 12px;overflow-x:auto;background:var(--c);border-bottom:1px solid #eee}
+.shop-cat{
+  padding:6px 12px;border-radius:14px;font-size:12px;font-weight:600;
+  cursor:pointer;white-space:nowrap;background:#eee;color:#666;transition:.15s;
+}
+.shop-cat.sel{background:var(--gd);color:#fff}
+.shop-items{
+  flex:1;overflow-y:auto;padding:8px;
+  display:grid;grid-template-columns:repeat(2,1fr);gap:8px;
+}
+.shop-card{
+  background:var(--c);border-radius:14px;padding:12px 8px;text-align:center;
+  box-shadow:var(--sh);position:relative;transition:.2s;
+}
+.shop-card.owned{opacity:.7;border:1px solid #eee}
+.shop-item-icon{font-size:36px;display:block;margin-bottom:4px}
+.shop-item-name{font-size:13px;font-weight:600}
+.shop-item-desc{font-size:10px;color:var(--gr);margin:2px 0}
+.shop-item-rarity{font-size:9px;padding:1px 6px;border-radius:8px}
+.rarity-common{background:#e0e0e0;color:#666}
+.rarity-rare{background:#e3f2fd;color:#1565c0}
+.rarity-epic{background:#f3e5f5;color:#6a1b9a}
+.rarity-legend{background:#fff3e0;color:#e65100}
+.shop-item-price{font-size:13px;font-weight:700;color:#f57f17;margin:4px 0}
+.shop-buy-btn{padding:6px 16px;border-radius:12px;border:none;font-size:12px;font-weight:600;cursor:pointer}
+.buy-btn{background:var(--gd);color:#fff}
+.owned-btn{background:#e0e0e0;color:#999;cursor:default}
+.no-money-btn{background:#eee;color:#ccc;cursor:default}
+.shop-btn{
+  padding:10px 20px;border-radius:12px;border:none;font-size:13px;font-weight:600;cursor:pointer;margin:4px;
+}
+.shop-btn.primary{background:var(--gd);color:#fff}
+.shop-btn.secondary{background:#eee;color:#666}
+
+/* Lock overlay */
+.lock-overlay{
+  display:none;position:fixed;inset:0;background:rgba(0,0,0,.85);
+  z-index:50;flex-direction:column;align-items:center;
+  justify-content:center;text-align:center;color:#fff;padding:20px;
+}
+.lock-overlay.show{display:flex}
+.lock-overlay .lo-icon{font-size:80px;margin-bottom:16px}
+.lock-overlay .lo-title{font-size:22px;font-weight:700;margin-bottom:8px}
+.lock-overlay .lo-sub{font-size:14px;color:#ccc;margin-bottom:20px;line-height:1.6}
+.lock-overlay .lo-btn{padding:12px 30px;border-radius:20px;border:none;font-size:16px;font-weight:600;cursor:pointer;margin:6px}
+.lock-count{font-size:12px;color:#999;margin-top:12px}
+
+/* Dialogue bubble */
+.bubble-wrap{position:fixed;top:60px;right:12px;z-index:200;max-width:240px}
+.bubble{
+  background:#fff;border-radius:16px 16px 4px 16px;padding:12px 16px;
+  box-shadow:0 4px 20px rgba(124,92,191,.2);font-size:13px;
+  line-height:1.5;color:#333;animation:popInBubble .3s ease-out;
+  border:2px solid #e8ddf5;
+}
+@keyframes popInBubble{0%{opacity:0;transform:scale(.8) translateY(10px)}100%{opacity:1;transform:scale(1) translateY(0)}}
+.bubble-fade{animation:popInBubble .3s ease-out,fadeOut .3s ease-in 4.7s forwards}
+@keyframes fadeOut{to{opacity:0;transform:translateY(-10px)}}
+
+/* Reward box overlay */
+.box-overlay{
+  position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.6);
+  z-index:300;display:flex;align-items:center;justify-content:center;
+}
+.box-overlay.hidden{display:none}
+.box{
+  background:linear-gradient(135deg,#fff8e1,#ffe0b2);border-radius:24px;
+  padding:30px;text-align:center;box-shadow:0 8px 40px rgba(0,0,0,.3);
+  animation:boxShake .5s ease-out;max-width:300px;
+}
+@keyframes boxShake{0%{transform:scale(0) rotate(-10deg)}50%{transform:scale(1.1) rotate(3deg)}100%{transform:scale(1) rotate(0)}}
+.box .reward{font-size:48px;margin:10px 0;animation:rewardDrop .6s ease-out .3s both}
+@keyframes rewardDrop{0%{opacity:0;transform:translateY(-40px)}100%{opacity:1;transform:translateY(0)}}
+.box .reward-text{font-size:16px;font-weight:700;color:#e65100;margin:8px 0}
+.box-btn{
+  padding:10px 30px;border-radius:20px;border:none;
+  background:linear-gradient(135deg,#FF7043,#FF8A65);color:#fff;
+  font-size:16px;font-weight:600;cursor:pointer;margin-top:12px;
+}
+
+/* Freeze badge */
+.freeze-badge{
+  display:inline-flex;align-items:center;gap:4px;
+  background:linear-gradient(135deg,#e3f2fd,#bbdefb);padding:4px 10px;
+  border-radius:14px;font-size:12px;font-weight:600;color:#1565c0;
+}
+
+/* Dark mode overrides for chat/shop */
+body.dark .chat-body{background:#1a1a2e}
+body.dark .chat-msg.azusa{background:#16213e;color:#e0e0e0}
+body.dark .chat-input-wrap{background:#16213e;border-color:#333}
+body.dark .chat-input-wrap input{background:#1a1a2e;color:#e0e0e0;border-color:#333}
+body.dark .bet-row{background:linear-gradient(135deg,#2d2416,#3d2e1a);border-color:#4d3e2a}
+body.dark .shop-item{background:#16213e}
+body.dark .chat-typing{background:#16213e}
+body.dark .chat-modal{background:#1a1a2e}

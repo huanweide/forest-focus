@@ -1,0 +1,36 @@
+/* variables.css - CSS变量、暗色模式、基础body */
+:root{
+  --g:#7C5CBF;--gl:#B39DDB;
+  --gd:linear-gradient(135deg,#7C5CBF,#9575CD);
+  --bg:#f5f3fa;--c:#fff;--t:#2d2d2d;--gr:#999;
+  --r:#e57373;--o:#ff8a65;--b:#7C5CBF;
+  --rad:16px;
+  --sh:0 2px 12px rgba(124,92,191,.08);
+  --sh-lg:0 4px 20px rgba(124,92,191,.12);
+}
+
+*{margin:0;padding:0;box-sizing:border-box}
+
+body{
+  font-family:-apple-system,'PingFang SC','Noto Sans SC',sans-serif;
+  background:var(--bg);color:var(--t);
+  -webkit-tap-highlight-color:transparent;
+  user-select:none;-webkit-user-select:none;
+  padding-bottom:72px;overscroll-behavior:none;
+  font-size:15px;position:relative;
+}
+body::before{
+  content:'';position:fixed;top:0;left:0;right:0;bottom:0;
+  background:url(src/images/azusa/azusa_transparent.png) center/contain no-repeat;
+  opacity:.06;pointer-events:none;z-index:0;filter:blur(1px);
+}
+body.dark{
+  --bg:#1a1a2e;--c:#16213e;--t:#e0e0e0;--gr:#999;
+  --sh:0 2px 8px rgba(0,0,0,.3);
+}
+body.locked{overflow:hidden;position:fixed;width:100%;height:100%}
+
+/* 心情背景 */
+body.mood-high{--mood-bg:linear-gradient(180deg,#fce4ec,#f8f0ff)}
+body.mood-mid{--mood-bg:linear-gradient(180deg,#f5f0fa,#e8e0f5)}
+body.mood-low{--mood-bg:linear-gradient(180deg,#eceff1,#e0e0f0)}

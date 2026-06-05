@@ -1,0 +1,137 @@
+/* base.css - 通用组件：导航栏、TabBar、卡片、按钮、Toast、设置 */
+.appbar,.tabbar,.page{
+  display:none;padding:0 12px 90px;position:relative;z-index:1;
+  animation:fIn .25s ease;
+}
+.appbar{
+  background:var(--gd);color:#fff;padding:14px 16px;
+  text-align:center;font-weight:800;font-size:18px;
+  position:sticky;top:0;z-index:10;letter-spacing:1px;
+  box-shadow:0 2px 12px rgba(124,92,191,.2);
+}
+.tabbar{
+  position:fixed;bottom:0;left:0;right:0;background:var(--c);display:flex;
+  border-top:1px solid rgba(124,92,191,.1);z-index:10;
+  padding-bottom:env(safe-area-inset-bottom,0);
+  box-shadow:0 -2px 10px rgba(0,0,0,.04);
+}
+.tab{
+  flex:1;text-align:center;padding:8px 0 6px;font-size:11px;
+  color:var(--gr);transition:all .2s;cursor:pointer;position:relative;
+}
+.tab.on{color:var(--g);font-weight:700}
+.tab.on::after{
+  content:'';position:absolute;top:0;left:50%;transform:translateX(-50%);
+  width:20px;height:3px;border-radius:2px;background:var(--gd);
+}
+.tab .ic{font-size:21px;display:block;margin-bottom:1px}
+
+.page.on{display:block}
+
+/* 卡片 */
+.card{
+  background:var(--c);border-radius:var(--rad);padding:16px;margin:10px 0;
+  box-shadow:var(--sh);transition:all .25s;
+  border:1px solid rgba(124,92,191,.06);
+}
+.card:active{transform:scale(.97);box-shadow:var(--sh-lg)}
+
+/* 按钮 */
+.btn{
+  display:block;width:100%;padding:15px;border:none;border-radius:var(--rad);
+  font-size:17px;font-weight:700;cursor:pointer;margin:10px 0;
+  transition:all .2s;letter-spacing:1px;
+}
+.btn:active{transform:scale(.96);filter:brightness(.92)}
+.btn-g{background:var(--gd);color:#fff;box-shadow:0 4px 14px rgba(124,92,191,.25)}
+.btn-r{background:var(--r);color:#fff}
+.btn-o{background:var(--o);color:#fff}
+.btn-sm{
+  font-size:13px;padding:10px;border:1px solid var(--r);color:var(--r);
+  background:transparent;border-radius:var(--rad);cursor:pointer;margin:4px;width:100%;
+}
+
+/* Toast */
+.toast{
+  position:fixed;top:20px;left:50%;transform:translateX(-50%);
+  background:linear-gradient(135deg,#7C5CBF,#9575CD);color:#fff;
+  padding:12px 24px;border-radius:24px;font-size:14px;z-index:60;
+  opacity:0;transition:all .3s;pointer-events:none;
+  box-shadow:0 4px 16px rgba(124,92,191,.3);font-weight:600;
+}
+.toast.show{opacity:1}
+
+/* Section title */
+.sec-title{
+  font-size:16px;font-weight:700;margin:8px 0 4px;
+  display:flex;align-items:center;gap:8px;
+}
+.sec-title .tip{font-size:11px;color:var(--gr);font-weight:400}
+
+/* Install bar */
+.install-bar{
+  background:linear-gradient(135deg,#7C5CBF,#9575CD);color:#fff;
+  padding:10px 16px;display:flex;align-items:center;gap:10px;
+  border-radius:14px;margin:10px 0;
+  box-shadow:0 4px 16px rgba(124,92,191,.3);cursor:pointer;
+  animation:slideDown .4s ease-out;font-size:13px;
+}
+.install-bar.hidden{display:none}
+.install-bar .inst-icon{font-size:28px}
+.install-bar .inst-text{flex:1}
+.install-bar .inst-title{font-weight:700;font-size:14px}
+.install-bar .inst-sub{font-size:11px;opacity:.8;margin-top:1px}
+.install-bar .inst-btn{
+  background:#fff;color:#7C5CBF;padding:8px 16px;border-radius:20px;
+  font-weight:700;font-size:13px;border:none;cursor:pointer;white-space:nowrap;
+}
+
+/* Install guide modal */
+.install-guide{
+  position:fixed;bottom:0;left:0;right:0;background:#fff;
+  border-radius:20px 20px 0 0;padding:20px;z-index:400;
+  box-shadow:0 -4px 30px rgba(0,0,0,.2);
+  transform:translateY(100%);transition:transform .3s ease-out;
+  max-height:70vh;overflow-y:auto;
+}
+.install-guide.show{transform:translateY(0)}
+.install-guide .ig-close{
+  float:right;width:28px;height:28px;border-radius:50%;
+  border:none;background:#eee;font-size:16px;cursor:pointer;
+}
+.install-guide h3{font-size:17px;margin:8px 0 14px}
+.install-guide .step{margin:10px 0;display:flex;gap:10px;align-items:start}
+.install-guide .step-num{
+  width:24px;height:24px;background:var(--gd);color:#fff;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:13px;font-weight:700;flex-shrink:0;
+}
+.install-guide .step-text{font-size:14px;line-height:1.5;color:#333;flex:1}
+.install-guide .browser-pick{display:flex;gap:8px;margin:12px 0}
+.install-guide .browser-pick button{
+  flex:1;padding:12px;border-radius:12px;border:2px solid #e0e0e0;
+  background:#fff;font-size:14px;cursor:pointer;text-align:center;
+}
+.install-guide .browser-pick button.sel{border-color:var(--g);background:#f5f0fa}
+
+/* Settings */
+.setting-row{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:10px 0;border-bottom:1px solid #eee;
+}
+.setting-row .toggle{
+  width:48px;height:26px;background:#ccc;border-radius:13px;
+  position:relative;cursor:pointer;transition:background .3s;
+}
+.setting-row .toggle.on{background:var(--g)}
+.setting-row .toggle::after{
+  content:'';position:absolute;top:3px;left:3px;width:20px;height:20px;
+  background:#fff;border-radius:50%;transition:left .3s;
+}
+.setting-row .toggle.on::after{left:25px}
+
+/* Pulse animation */
+@keyframes fIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}
+.pulse{animation:pulse 1.5s ease-in-out infinite;display:inline-block}
+@keyframes slideDown{from{transform:translateY(-20px);opacity:0}to{transform:translateY(0);opacity:1}}

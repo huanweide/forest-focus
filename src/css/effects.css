@@ -1,0 +1,173 @@
+/* effects.css - 动画特效、Duolingo风格提醒、断签覆盖层 */
+/* Azusa mood animations */
+@keyframes azBreathe{0%,100%{transform:scale(1)}50%{transform:scale(1.03)}}
+.azusa-live{animation:azBreathe 4s ease-in-out infinite;display:inline-block}
+@keyframes sway{0%,100%{transform:rotate(0)}25%{transform:rotate(1deg)}75%{transform:rotate(-1deg)}}
+.azusa-sway{animation:sway 6s ease-in-out infinite}
+@keyframes jump{0%,100%{transform:translateY(0)}30%{transform:translateY(-12px)}50%{transform:translateY(0)}70%{transform:translateY(-6px)}}
+.azusa-jump{animation:jump .6s ease-out}
+.mood-face{font-size:32px;display:inline-block;transition:all .3s}
+
+/* Home scene */
+.home-scene{
+  position:relative;overflow:visible;border-radius:20px;
+  background:linear-gradient(180deg,#e8f5e9 0%,#c8e6c9 40%,#a5d6a7 100%);
+  min-height:280px;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;margin:8px 0;
+  box-shadow:0 4px 20px rgba(76,175,80,.15);
+}
+.home-scene.night{background:linear-gradient(180deg,#1a237e 0%,#283593 50%,#3949ab 100%)}
+/* 背景装饰裁剪层——圆角+overflow:hidden只约束星空和地面 */
+.scene-bg-inner{
+  position:absolute;inset:0;overflow:hidden;border-radius:20px;
+  pointer-events:none;z-index:0;
+}
+.home-scene .sky-stars{position:absolute;top:0;left:0;right:0;height:60%;overflow:hidden}
+.home-scene .star{
+  position:absolute;width:3px;height:3px;background:#fff;
+  border-radius:50%;animation:twinkle 2s ease-in-out infinite;
+}
+@keyframes twinkle{0%,100%{opacity:.3}50%{opacity:1}}
+.home-scene .ground{
+  position:absolute;bottom:0;left:0;right:0;height:40px;
+  background:linear-gradient(180deg,#66bb6a,#43a047);border-radius:0 0 20px 20px;
+}
+/* 互动阿梓 */
+.azusa-interactive{
+  position:relative;z-index:99;display:inline-block;
+  cursor:grab;user-select:none;-webkit-user-select:none;
+  transition:filter .3s;
+  /* 轮廓投影——Canvas已剔除白色，投影只环绕角色本体 */
+  filter:drop-shadow(0 2px 8px rgba(124,92,191,.35));
+}
+.azusa-interactive:active{cursor:grabbing}
+.azusa-interactive.dragging{
+  cursor:grabbing;z-index:999;transition:none;
+  filter:drop-shadow(0 6px 18px rgba(124,92,191,.5)) brightness(1.08);
+}
+.azusa-interactive.thrown{
+  z-index:999;
+  transition:transform .08s linear;
+  filter:drop-shadow(0 4px 16px rgba(124,92,191,.45));
+}
+.azusa-chibi{
+  width:120px;height:auto;display:block;
+  /* 洪水填充已真正去背——不需要multiply */
+  border:none;background:transparent;
+  pointer-events:none;
+  image-rendering:auto;
+  opacity:0.92;
+}
+/* 静止时轻柔浮动 */
+.azusa-interactive:not(.dragging):not(.thrown) .azusa-chibi{
+  animation:chibiFloat 4s ease-in-out infinite;
+}
+@keyframes chibiFloat{
+  0%,100%{transform:translateY(0) rotate(0deg)}
+  25%{transform:translateY(-5px) rotate(1deg)}
+  75%{transform:translateY(2px) rotate(-1deg)}
+}
+.azusa-interactive.dragging .azusa-chibi{
+  animation:none;transform:scale(1.12);
+}
+.azusa-interactive.thrown .azusa-chibi{
+  animation:none;
+  transform:rotate(var(--rot,0deg)) scale(var(--scl,1));
+}
+/* 阿梓对话气泡 */
+.azusa-bubble{
+  position:absolute;bottom:100%;left:50%;transform:translateX(-50%);
+  background:#fff;border-radius:14px 14px 14px 4px;padding:8px 14px;
+  font-size:13px;color:#333;white-space:nowrap;z-index:10;
+  box-shadow:0 2px 12px rgba(124,92,191,.18);border:1.5px solid #e8ddf5;
+  animation:chibiBubble .3s ease-out;
+  margin-bottom:8px;
+}
+@keyframes chibiBubble{0%{opacity:0;transform:translateX(-50%) translateY(8px) scale(.8)}100%{opacity:1;transform:translateX(-50%) translateY(0) scale(1)}}
+/* 表情粒子 */
+.chibi-emoji-particle{
+  position:absolute;pointer-events:none;
+  font-size:28px;z-index:50;
+  animation:emojiFly .8s ease-out forwards;
+}
+@keyframes emojiFly{
+  0%{opacity:1;transform:translate(0,0) scale(1)}
+  100%{opacity:0;transform:translate(var(--dx),var(--dy)) scale(0)}
+}
+
+.home-scene .azusa-char{
+  position:relative;z-index:2;font-size:80px;
+  animation:azBreathe 4s ease-in-out infinite;
+  filter:drop-shadow(0 4px 8px rgba(0,0,0,.15));
+}
+.home-scene .azusa-char img{width:140px;height:auto;border-radius:0}
+.home-scene .char-label{
+  font-size:14px;font-weight:700;color:#2e7d32;margin-top:4px;
+  background:rgba(255,255,255,.8);padding:4px 14px;border-radius:14px;
+}
+.home-mood-badge{
+  display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.85);
+  padding:6px 14px;border-radius:20px;font-size:13px;font-weight:600;
+  color:#333;position:absolute;top:12px;right:12px;z-index:3;
+}
+
+/* Quick stats */
+.quick-stats{display:flex;gap:8px;margin:12px 0;flex-wrap:wrap}
+.quick-stat{flex:1;min-width:70px;background:var(--c);border-radius:14px;padding:12px 8px;text-align:center;box-shadow:var(--sh)}
+.quick-stat .qs-val{font-size:22px;font-weight:700;color:var(--g)}
+.quick-stat .qs-lbl{font-size:10px;color:var(--gr);margin-top:2px}
+
+/* Home actions */
+.home-actions{display:flex;gap:8px;margin:8px 0}
+.home-btn{flex:1;padding:14px;border-radius:16px;border:none;font-size:15px;font-weight:700;cursor:pointer;transition:all .2s}
+.home-btn.primary{background:var(--gd);color:#fff;box-shadow:0 4px 16px rgba(124,92,191,.3)}
+.home-btn.secondary{background:var(--c);color:var(--t);border:2px solid #e0e0e0}
+.home-btn:active{transform:scale(.96)}
+.daily-quote{font-size:12px;color:var(--gr);text-align:center;margin:6px 0;font-style:italic;min-height:18px}
+
+/* === Duolingo-style urgency === */
+.streak-danger{animation:streakPulse .5s ease-in-out infinite;color:#e53935 !important}
+@keyframes streakPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.15)}}
+.streak-warning-badge{
+  display:inline-flex;align-items:center;gap:4px;
+  background:linear-gradient(135deg,#fff3e0,#ffe0b2);color:#e65100;
+  padding:6px 14px;border-radius:20px;font-size:13px;font-weight:700;
+  animation:warningShake 2s ease-in-out infinite;
+}
+@keyframes warningShake{
+  0%,100%{transform:translateX(0)}10%{transform:translateX(-3px)}20%{transform:translateX(3px)}
+  30%{transform:translateX(-3px)}40%{transform:translateX(3px)}50%{transform:translateX(0)}
+}
+.duo-reminder{
+  background:linear-gradient(135deg,#fce4ec,#f8bbd0);border:2px solid #e91e63;
+  border-radius:16px;padding:14px;margin:10px 0;text-align:center;
+  animation:duoGlow 2s ease-in-out infinite;
+}
+@keyframes duoGlow{0%,100%{box-shadow:0 0 8px rgba(233,30,99,.2)}50%{box-shadow:0 0 20px rgba(233,30,99,.4)}}
+.duo-reminder .duo-title{font-size:15px;font-weight:700;color:#c62828;margin-bottom:4px}
+.duo-reminder .duo-msg{font-size:12px;color:#666;line-height:1.5}
+.duo-reminder .duo-action{
+  padding:8px 20px;border-radius:20px;border:none;
+  background:linear-gradient(135deg,#e91e63,#f06292);color:#fff;
+  font-size:14px;font-weight:600;cursor:pointer;margin-top:8px;
+  box-shadow:0 3px 12px rgba(233,30,99,.3);
+}
+
+/* Streak lost overlay */
+.streak-lost-overlay{
+  position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.7);
+  z-index:400;display:flex;align-items:center;justify-content:center;
+}
+.streak-lost-overlay.hidden{display:none}
+.streak-lost-card{
+  background:#fff;border-radius:24px;padding:30px;text-align:center;
+  max-width:320px;box-shadow:0 8px 40px rgba(0,0,0,.3);
+  animation:dropIn .5s ease-out;
+}
+@keyframes dropIn{0%{opacity:0;transform:translateY(-60px)}100%{opacity:1;transform:translateY(0)}}
+.streak-lost-card .lost-icon{font-size:64px;margin-bottom:8px}
+.streak-lost-card .lost-title{font-size:18px;font-weight:700;color:#c62828;margin:8px 0}
+.streak-lost-card .lost-msg{font-size:13px;color:#666;margin:8px 0;line-height:1.5}
+.streak-lost-card .lost-btn{padding:12px 30px;border-radius:20px;border:none;font-size:16px;font-weight:600;cursor:pointer;margin:4px}
+.lost-btn.primary{background:linear-gradient(135deg,#4CAF50,#66BB6A);color:#fff}
+.lost-btn.secondary{background:#eee;color:#666}

@@ -1,0 +1,75 @@
+/* timer.css - 计时器：环形进度条、时长芯片、任务选择、习惯/目标行 */
+.tree-box{
+  text-align:center;height:150px;display:flex;align-items:center;
+  justify-content:center;transition:all .5s cubic-bezier(.4,0,.2,1);
+  overflow:visible;position:relative;
+}
+.seed-img{
+  width:70px;height:70px;object-fit:contain;
+  animation:pulse 2s ease-in-out infinite;border-radius:50%;
+}
+.tab-icon{
+  width:24px;height:24px;object-fit:contain;
+  display:block;margin:0 auto 2px;border-radius:4px;
+}
+.tree-img{
+  max-height:130px;max-width:90%;object-fit:contain;
+  transition:all .6s cubic-bezier(.4,0,.2,1);border-radius:14px;
+  filter:drop-shadow(0 6px 16px rgba(124,92,191,.25));
+}
+
+/* 环形进度条 */
+.ring-wrap{width:180px;height:180px;margin:0 auto;position:relative}
+.ring-wrap canvas{width:100%;height:100%}
+.ring-t{
+  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;
+}
+.ring-t .tm{
+  font-size:40px;font-weight:800;font-family:'SF Mono','Consolas',monospace;
+  letter-spacing:3px;color:var(--g);
+}
+.ring-t .lb{font-size:12px;color:var(--g);margin-top:1px}
+
+/* 时长选择芯片 */
+.chips{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:10px 0}
+.chip{
+  padding:8px 16px;border-radius:20px;border:2px solid #e0d8f0;
+  background:var(--c);font-size:13px;font-weight:600;cursor:pointer;
+  transition:all .2s;color:var(--t);
+}
+.chip.sel{
+  border-color:var(--g);background:var(--gd);color:#fff;
+  box-shadow:0 2px 8px rgba(124,92,191,.2);
+}
+
+/* 任务选择 */
+.task-sel{
+  margin:8px 0;padding:10px;background:var(--c);border-radius:var(--rad);
+  box-shadow:var(--sh);display:flex;align-items:center;gap:8px;flex-wrap:wrap;
+}
+.task-sel select{
+  flex:1;min-width:120px;padding:10px;border:1px solid #ddd;
+  border-radius:10px;font-size:14px;background:var(--bg);color:var(--t);
+}
+
+/* 习惯行 */
+.ht-row{display:flex;align-items:center;gap:10px}
+.ht-ck{
+  min-width:40px;height:40px;border-radius:50%;background:#e8e8e8;
+  display:flex;align-items:center;justify-content:center;font-size:17px;
+  cursor:pointer;transition:.15s;flex-shrink:0;
+}
+.ht-ck.done{background:var(--g);color:#fff}
+.ht-info{flex:1;min-width:0}
+.ht-n{font-weight:600;font-size:14px}
+.ht-d{font-size:11px;color:var(--gr);margin-top:2px}
+.ht-bar{height:5px;border-radius:3px;background:#e8e8e8;margin-top:5px}
+.ht-fill{height:100%;border-radius:3px;transition:.4s}
+.ht-s{min-width:36px;text-align:center;font-size:17px;font-weight:700;color:var(--g)}
+.ht-s span{display:block;font-size:9px;color:var(--gr);font-weight:400}
+
+/* 目标行 */
+.g-row{display:flex;align-items:center;gap:8px}
+.g-pct{font-size:14px;font-weight:700;color:var(--g);min-width:40px;text-align:center}
+.g-bar{flex:1;height:7px;border-radius:4px;background:#e8e8e8;overflow:hidden}
+.g-fill{height:100%;border-radius:4px;background:var(--g);transition:.4s}
