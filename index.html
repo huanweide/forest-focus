@@ -6,13 +6,14 @@
 <meta name="theme-color" content="#2E7D32">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="description" content="阿梓的森林 - 番茄钟专注计时器，种树养成，数据可视化，习惯打卡。VUP阿梓陪你一起专注。">
 <link rel="manifest" href="manifest.json">
-<title>阿梓的森林</title>
+<title>阿梓的森林 - 番茄专注</title>
 <style>
 :root,[data-theme=purple]{--g:#5C6BC0;--gl:#7986CB;--bg:#f0f2fa;--accent:#7E57C2}[data-theme=green]{--g:#2E7D32;--gl:#4CAF50;--bg:#f0f4f0;--accent:#388E3C}[data-theme=blue]{--g:#1565C0;--gl:#42A5F5;--bg:#f0f4fa;--accent:#1976D2}[data-theme=pink]{--g:#C2185B;--gl:#F06292;--bg:#faf0f4;--accent:#D81B60}[data-theme=orange]{--g:#E65100;--gl:#FF9800;--bg:#faf5f0;--accent:#F57C00}
 :root{--g:#5C6BC0;--gl:#7986CB;--bg:#f0f2fa;--c:#fff;--t:#1a1a1a;--gr:#888;--r:#e53935;--o:#ff9800;--b:#7E57C2;--rad:14px;--sh:0 2px 8px rgba(0,0,0,.06)}
 *{margin:0;padding:0;box-sizing:border-box}
-body{font-family:-apple-system,'PingFang SC','Noto Sans SC',sans-serif;background:var(--bg);color:var(--t);-webkit-tap-highlight-color:transparent;user-select:none;-webkit-user-select:none;padding-bottom:72px;overscroll-behavior:none;font-size:15px;}
+body{font-family:-apple-system,'PingFang SC','Noto Sans SC',sans-serif;background:var(--bg);color:var(--t);-webkit-tap-highlight-color:transparent;user-select:none;-webkit-user-select:none;padding-bottom:72px;overscroll-behavior:none;font-size:15px;touch-action:manipulation;-webkit-touch-callout:none;-webkit-font-smoothing:antialiased}
 
 .appbar,.tabbar,.page{;z-index:1}
 body.dark{--bg:#1a1a2e;--c:#16213e;--t:#e0e0e0;--gr:#999;--sh:0 2px 8px rgba(0,0,0,.3)}
@@ -80,7 +81,9 @@ body.locked{overflow:hidden;position:fixed;width:100%;height:100%}
 @keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}
 .pulse{animation:pulse 1.5s ease-in-out infinite;display:inline-block}
 @keyframes unlockPop{0%{transform:scale(.5);opacity:0}60%{transform:scale(1.1)}100%{transform:scale(1);opacity:1}}
-.unlock-pop{animation:unlockPop .6s ease}
+.unlock-pop{animation:unlockPop .6s ease;will-change:transform}
+.tg-card,.card,.btn{will-change:transform}
+.tg-img{content-visibility:auto}
 .ach-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}
 .ach-card{background:var(--c);border-radius:10px;padding:10px 6px;text-align:center;box-shadow:var(--sh);transition:.2s;}
 .ach-card.locked{opacity:.45;filter:grayscale(.8)}
