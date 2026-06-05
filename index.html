@@ -360,7 +360,7 @@ body.locked{overflow:hidden;position:fixed;width:100%;height:100%}
 </div>
 <div id="taskHint" style="text-align:center;font-size:12px;color:var(--gr);margin:4px 0;min-height:18px"></div>
 <button class="btn btn-g" id="btnGo" onclick="start()">🌱 开始种树</button>
-<button class="btn btn-r" id="btnStop" onclick="abort()" style="display:none">放弃（树会受伤的 😢）</button>
+<button class="btn btn-r" id="btnStop" onclick="abort()" style="display:none">放弃（树会受伤的 😢）</button><div style="text-align:center;margin-top:6px;font-size:11px;color:var(--gr);opacity:.7">🌸 每次专注都会让阿梓长大一点点 ✨</div>
 </div>
 </div>
 
@@ -1080,7 +1080,7 @@ function drawRing(p){let c=document.getElementById('ring'),dpr=window.devicePixe
 (function initFocus(){
 let c=document.getElementById('chips');
 DURS.forEach((d,i)=>{let e=document.createElement('div');e.className='chip'+(i===1?' sel':'');e.textContent=d+'分钟';e.onclick=()=>{c.querySelectorAll('.chip').forEach(x=>x.classList.remove('sel'));e.classList.add('sel');totalSec=d*60;if(!timerId)document.getElementById('time').textContent=d+':00'};c.appendChild(e)});
-updateTaskSelects();drawRing(0);
+updateTaskSelects();setTimeout(function(){drawRing(0)},100);
 document.getElementById('lockLeft').textContent=Math.floor(totalSec/60);
 })();
 
@@ -1591,9 +1591,9 @@ var Mascot={
     star:['哇！新衣服！','好漂亮！','这身真好看~']
   },
   init:function(){
-    this.el.style.cursor='grab';
-    this.el.setAttribute('title','拖我可以移动 | 双击归位 | 点击互动');
     this.el=document.getElementById('mascot');
+    this.el.style.cursor='grab';
+    this.el.title='拖我可以移动 | 双击归位 | 点击互动';
     this.body=document.getElementById('mascotBody');
     this.bubble=document.getElementById('mascotBubble');
     this.badge=document.getElementById('mascotBadge');
@@ -1737,7 +1737,7 @@ document.addEventListener('touchstart',function(){Mascot.resetIdleTimer()},{pass
 document.addEventListener('mousemove',function(){Mascot.resetIdleTimer()},{passive:true});
 
 // ==================== INIT ====================
-function initAll(){rTodos();rHabits();rGoals();rForest();rProfile();try{Mascot.init()}catch(e){};updateChatStatus();updateTree(0,false)}
+function initAll(){rTodos();rHabits();rGoals();rForest();rProfile();try{Mascot.init()}catch(e){};updateChatStatus();updateTree(0,false);setTimeout(function(){drawRing(0)},200)}
 initAll();
 if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});
 </script>
