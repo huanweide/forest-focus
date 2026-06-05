@@ -495,7 +495,7 @@ body.locked{overflow:hidden;position:fixed;width:100%;height:100%}
 <div class="toast" id="toast"></div>
 
 <button class="chat-fab" id="chatFab" onclick="toggleChat()" title="和阿梓聊天">💬</button><div class="chat-modal" id="chatModal"><div class="chat-hdr"><div class="ch-t"><span id="chatStatus">阿梓在家</span></div><div style="display:flex;gap:8px"><button class="ch-close" onclick="showDiary()" title="阿梓日记">📔</button><button class="ch-close" onclick="toggleChat()">X</button></div></div><div class="chat-body" id="chatBody"></div><div class="chat-input-wrap"><input id="chatInput" placeholder="和阿梓说点什么..." onkeydown="if(event.key==='Enter')sendChat()"><button onclick="sendChat()">↑</button></div></div>
-<div id="mascot"><img class="mascot-body" id="mascotBody" src="src/images/azusa/azusa_chibi.png" alt="阿梓小精灵"><div class="mascot-badge" id="mascotBadge"></div><div class="mascot-bubble" id="mascotBubble"></div><div class="mascot-particles" id="mascotParticles"></div></div>
+<div id="mascot"><img class="mascot-body" id="mascotBody" src="src/images/azusa/azusa_fan_model1.jpg" alt="阿梓小精灵"><div class="mascot-badge" id="mascotBadge"></div><div class="mascot-bubble" id="mascotBubble"></div><div class="mascot-particles" id="mascotParticles"></div></div>
 <script>
 function getPeriodRange(period) {
   const now = new Date();
@@ -1057,7 +1057,7 @@ const AZUSA_TREES=[
 {id:'beizi',name:'贝梓·居家',img:'src/images/azusa/azusa_beizi.png',emoji:'🧸',unlock:280,sub:'完成280次·贝雷帽居家服',color:'#FFCC80'},
 {id:'huazi',name:'华梓2.0',img:'src/images/azusa/azusa_huazi.png',emoji:'🏮',unlock:300,sub:'完成300次·拜年纪华服',color:'#EF5350'},
 {id:'tuozi',name:'坨梓·常规',img:'src/images/azusa/azusa_tuozi_normal_crop.png',emoji:'🍡',unlock:320,sub:'完成320次·Q弹坨梓',color:'#FFAB91'},
-{id:'tuozi2',name:'坨梓·大舌头',img:'src/images/azusa/azusa_tuozi_tongue_crop.png',emoji:'👅',unlock:340,sub:'完成340次·搞怪坨梓',color:'#F48FB1'},
+{id:'default_hd',name:'默认立绘·高清',img:'src/images/azusa/azusa_default_hd.png',emoji:'💜',unlock:340,sub:'完成340次·经典阿梓立绘去白边',color:'#90CAF9'},
 ];
 
 let currentTreeIdx=0; // 最高已解锁的衣装索引
@@ -1591,11 +1591,11 @@ var Mascot={
   posX:null,posY:null,drag:{active:false,ox:0,oy:0,sx:0,sy:0},
   curState:'idle',curSkin:0,idleSince:Date.now(),bubbleTimer:null,
   skinMap:[
-    {name:'Q版阿梓',img:'src/images/azusa/azusa_chibi.png',upTo:4},
-    {name:'粉丝作品·春',img:'src/images/azusa/azusa_fan_model1.jpg',upTo:8},
+    {name:'粉丝作品·春',img:'src/images/azusa/azusa_fan_model1.jpg',upTo:4},
+    {name:'Q版阿梓',img:'src/images/azusa/azusa_chibi.png',upTo:8},
     {name:'坨梓·常规',img:'src/images/azusa/azusa_tuozi_normal_crop.png',upTo:12},
     {name:'盒蛋阿梓',img:'src/images/azusa/azusa_box.png',upTo:16},
-    {name:'坨梓·大舌头',img:'src/images/azusa/azusa_tuozi_tongue_crop.png',upTo:999}
+    {name:'默认立绘',img:'src/images/azusa/azusa_default_hd.png',upTo:999}
   ],
   exprMap:{
     idle:'src/images/azusa/stickers/阿梓从小就很可爱新装扮_大家好.gif',
