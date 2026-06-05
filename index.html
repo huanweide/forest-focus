@@ -364,7 +364,7 @@ body.locked{overflow:hidden;position:fixed;width:100%;height:100%}
 <!-- ===== FOCUS PAGE ===== -->
 <div class="page on" id="pg0">
 <div style="max-width:400px;margin:0 auto;display:flex;flex-direction:column;align-items:center;gap:8px">
-<div class="tree-box" id="tree"><span class="tree-decor">✨</span><span class="tree-decor">🌸</span><span class="tree-decor">💫</span><span class="tree-decor">🌿</span><span class="tree-decor">⭐</span><span class="tree-decor">🍃</span><img src="src/images/azusa/azusa_transparent.png" class="tree-img" style="max-height:260px;max-width:85%;opacity:.95;object-fit:contain;display:block;margin:0 auto;filter:drop-shadow(0 6px 24px rgba(124,92,191,.25))" alt="阿梓"></div>
+<div class="tree-box" id="tree"><span class="tree-decor">✨</span><span class="tree-decor">🌸</span><span class="tree-decor">💫</span><span class="tree-decor">🌿</span><span class="tree-decor">⭐</span><span class="tree-decor">🍃</span><img src="src/images/azusa/azusa_touming_liren.png" class="tree-img" style="max-height:280px;max-width:85%;opacity:.95;object-fit:contain;display:block;margin:0 auto;filter:drop-shadow(0 6px 24px rgba(124,92,191,.25))" alt="阿梓"></div>
 <div class="ring-wrap"><div class="ring-glow"></div><canvas id="ring"></canvas><div class="ring-t"><div class="tm" id="time">25:00</div><div class="lb" id="status">选个目标，开始种阿梓吧</div></div></div>
 <div class="chips" id="chips"></div>
 <div class="focus-motto" id="focusMotto">千里之行，始于足下</div><div class="task-sel">
@@ -495,7 +495,7 @@ body.locked{overflow:hidden;position:fixed;width:100%;height:100%}
 <div class="toast" id="toast"></div>
 
 <button class="chat-fab" id="chatFab" onclick="toggleChat()" title="和阿梓聊天">💬</button><div class="chat-modal" id="chatModal"><div class="chat-hdr"><div class="ch-t"><span id="chatStatus">阿梓在家</span></div><div style="display:flex;gap:8px"><button class="ch-close" onclick="showDiary()" title="阿梓日记">📔</button><button class="ch-close" onclick="toggleChat()">X</button></div></div><div class="chat-body" id="chatBody"></div><div class="chat-input-wrap"><input id="chatInput" placeholder="和阿梓说点什么..." onkeydown="if(event.key==='Enter')sendChat()"><button onclick="sendChat()">↑</button></div></div>
-<div id="mascot"><img class="mascot-body" id="mascotBody" src="src/images/azusa/azusa_fan_model1.jpg" alt="阿梓小精灵" style="border-radius:50%;background:transparent;filter:drop-shadow(0 4px 16px rgba(124,92,191,.45))"><div class="mascot-badge" id="mascotBadge"></div><div class="mascot-bubble" id="mascotBubble"></div><div class="mascot-particles" id="mascotParticles"></div></div>
+<div id="mascot"><img class="mascot-body" id="mascotBody" src="src/images/azusa/azusa_mascot_live2d.gif" alt="阿梓小精灵" style="border-radius:50%;background:transparent;filter:drop-shadow(0 4px 16px rgba(124,92,191,.45))"><div class="mascot-badge" id="mascotBadge"></div><div class="mascot-bubble" id="mascotBubble"></div><div class="mascot-particles" id="mascotParticles"></div></div>
 <script>
 function getPeriodRange(period) {
   const now = new Date();
@@ -1039,21 +1039,25 @@ function rHandbook() {
 const AZUSA_TREES=[
 {id:'seed',name:'阿梓的种子',img:'',emoji:'🌰',unlock:0,sub:'初始形态·第一次专注即可发芽',color:'#8D6E63'},{id:'default',name:'默认衣装',img:'src/images/azusa/azusa_default.png',emoji:'🌸',unlock:20,sub:'完成20次·阿梓日常默认形象',color:'#90CAF9'},
 {id:'newyear',name:'新年衣装',img:'src/images/azusa/azusa_newyear.png',emoji:'🎊',unlock:28,sub:'完成28次·新年限定和服',color:'#EF5350'},
-{id:'summer',name:'夏日衣装',img:'src/images/azusa/azusa_summer.jpg',emoji:'🏖️',unlock:36,sub:'完成36次·清凉夏日',color:'#FF7043'},
+{id:'summer',name:'夏日衣装',img:'src/images/azusa/azusa_summer.png',emoji:'🏖️',unlock:36,sub:'完成36次·清凉夏日',color:'#FF7043'},
 {id:'panda',name:'熊猫阿梓',img:'src/images/azusa/azusa_panda.png',emoji:'🐼',unlock:44,sub:'完成44次·超萌熊猫外套',color:'#4CAF50'},
-{id:'rabbit',name:'兔兔阿梓',img:'src/images/azusa/azusa_rabbit.jpg',emoji:'🐰',unlock:52,sub:'完成52次·软萌兔耳',color:'#FF80AB'},
-{id:'frog',name:'青蛙阿梓',img:'src/images/azusa/azusa_frog.jpg',emoji:'🐸',unlock:60,sub:'完成60次·呱娃子青蛙装',color:'#66BB6A'},
-{id:'butterfly',name:'蝴蝶阿梓',img:'src/images/azusa/azusa_butterfly.jpg',emoji:'🦋',unlock:70,sub:'完成70次·蝴蝶精灵',color:'#CE93D8'},
+{id:'rabbit',name:'兔兔阿梓',img:'src/images/azusa/azusa_rabbit.png',emoji:'🐰',unlock:52,sub:'完成52次·软萌兔耳',color:'#FF80AB'},
+{id:'frog',name:'青蛙阿梓',img:'src/images/azusa/azusa_frog.png',emoji:'🐸',unlock:60,sub:'完成60次·呱娃子青蛙装',color:'#66BB6A'},
+{id:'butterfly',name:'蝴蝶阿梓',img:'src/images/azusa/azusa_butterfly.png',emoji:'🦋',unlock:70,sub:'完成70次·蝴蝶精灵',color:'#CE93D8'},
 {id:'eggplant',name:'茄子阿梓',img:'src/images/azusa/azusa_eggplant.png',emoji:'🍆',unlock:80,sub:'完成80次·紫色茄子主题',color:'#9575CD'},
-{id:'spring',name:'春装阿梓',img:'src/images/azusa/azusa_spring.png',emoji:'🌿',unlock:92,sub:'完成92次·春日樱花限定',color:'#81C784'},
+{id:'spring',name:'春装阿梓',img:'src/images/azusa/azusa_spring_new.png',emoji:'🌿',unlock:92,sub:'完成92次·春日樱花限定',color:'#81C784'},
 {id:'chibi',name:'Q版阿梓',img:'src/images/azusa/azusa_chibi.png',emoji:'💎',unlock:110,sub:'完成110次·超Q小呡梓',color:'#FFD700'},
 {id:'gift',name:'微信表情阿梓',img:'src/images/azusa/azusa_wechat1.jpg',emoji:'💬',unlock:130,sub:'完成130次·微信表情包限定',color:'#FF8A65'},
-{id:'ninja',name:'忍者阿梓',img:'src/images/azusa/azusa_ninja.jpg',emoji:'🥷',unlock:155,sub:'完成155次·暗夜忍者',color:'#7E57C2'},
-{id:'ultimate',name:'终极阿梓',img:'src/images/azusa/azusa_transparent.png',emoji:'👑',unlock:180,sub:'完成180次·全衣装制霸',color:'#E040FB'},
+{id:'ninja',name:'忍者阿梓',img:'src/images/azusa/azusa_ninja.png',emoji:'🥷',unlock:155,sub:'完成155次·暗夜忍者',color:'#7E57C2'},
+{id:'ultimate',name:'终极阿梓',img:'src/images/azusa/azusa_touming_liren.png',emoji:'👑',unlock:180,sub:'完成180次·全衣装制霸',color:'#E040FB'},
 {id:'fan1',name:'粉丝作品·春',img:'src/images/azusa/azusa_fan_model1.jpg',emoji:'🎨',unlock:195,sub:'完成195次·粉丝创作模型',color:'#FFAB91'},
 {id:'box',name:'盒蛋阿梓',img:'src/images/azusa/azusa_box.png',emoji:'📦',unlock:210,sub:'完成210次·超Q弹盒蛋',color:'#FFCC80'},
 {id:'rabbit24',name:'兔兔2024',img:'src/images/azusa/azusa_rabbit_2024.jpg',emoji:'🐇',unlock:230,sub:'完成230次·2024兔年限定',color:'#F48FB1'},
-{id:'summer2',name:'夏日祭阿梓',img:'src/images/azusa/azusa_summer_festival.jpg',emoji:'🎆',unlock:250,sub:'完成250次·夏日祭典限定',color:'#B39DDB'},
+{id:'summer2',name:'夏日祭阿梓',img:'src/images/azusa/azusa_summer_festival_hd.jpg',emoji:'🎆',unlock:260,sub:'完成260次·夏日祭典限定',color:'#B39DDB'},
+{id:'beizi',name:'贝梓·居家',img:'src/images/azusa/azusa_beizi.png',emoji:'🧸',unlock:280,sub:'完成280次·贝雷帽居家服',color:'#FFCC80'},
+{id:'huazi',name:'华梓2.0',img:'src/images/azusa/azusa_huazi.png',emoji:'🏮',unlock:300,sub:'完成300次·拜年纪华服',color:'#EF5350'},
+{id:'tuozi',name:'坨梓·常规',img:'src/images/azusa/azusa_tuozi_normal_crop.png',emoji:'🍡',unlock:320,sub:'完成320次·Q弹坨梓',color:'#FFAB91'},
+{id:'tuozi2',name:'坨梓·大舌头',img:'src/images/azusa/azusa_tuozi_tongue_crop.png',emoji:'👅',unlock:340,sub:'完成340次·搞怪坨梓',color:'#F48FB1'},
 ];
 
 let currentTreeIdx=0; // 最高已解锁的衣装索引
@@ -1220,7 +1224,7 @@ let e=document.getElementById('tree');
 if(dead){e.innerHTML="<span style='font-size:80px'>😢</span>";return}
 var curImg,curEmoji;
 if(currentOutfit===0){
-  curImg='src/images/azusa/azusa_transparent.png';
+  curImg='src/images/azusa/azusa_touming_liren.png';
   curEmoji='🌰';
 }else{
   curImg=AZUSA_TREES[currentOutfit]&&AZUSA_TREES[currentOutfit].img;
@@ -1587,10 +1591,11 @@ var Mascot={
   posX:null,posY:null,drag:{active:false,ox:0,oy:0,sx:0,sy:0},
   curState:'idle',curSkin:0,idleSince:Date.now(),bubbleTimer:null,
   skinMap:[
-    {name:'默认Q版',img:'src/images/azusa/azusa_fan_model1.jpg',upTo:3},
-    {name:'Q版2号',img:'src/images/azusa/azusa_chibi4.png',upTo:7},
-    {name:'盒蛋版',img:'src/images/azusa/azusa_box.png',upTo:11},
-    {name:'进阶Q版',img:'src/images/azusa/azusa_chibi4.png',upTo:17},
+    {name:'默认Q版',img:'src/images/azusa/azusa_mascot_live2d.gif',upTo:3},
+    {name:'粉丝作品·春',img:'src/images/azusa/azusa_fan_model1.jpg',upTo:7},
+    {name:'坨梓',img:'src/images/azusa/azusa_tuozi_normal_crop.png',upTo:11},
+    {name:'盒蛋版',img:'src/images/azusa/azusa_box.png',upTo:15},
+    {name:'进阶Q版',img:'src/images/azusa/azusa_chibi4.png',upTo:18},
     {name:'终极Q版',img:'src/images/azusa/azusa_chibi.png',upTo:999}
   ],
   exprMap:{

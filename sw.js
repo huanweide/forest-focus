@@ -1,23 +1,25 @@
-const V='forest-v8';
+const V='forest-v9';
 const FILES=[
   './','./index.html','./manifest.json',
   // 核心图标
   './src/images/azusa/icon-192.png','./src/images/azusa/icon-512.png',
-  // 3D渲染图
-  './src/images/azusa/renders/azusa_front.png','./src/images/azusa/renders/azusa_back.png',
-  './src/images/azusa/renders/azusa_left.png','./src/images/azusa/renders/azusa_right.png',
-  './src/images/azusa/renders/azusa_chibi.png','./src/images/azusa/renders/azusa_portrait.png',
-  './src/images/azusa/renders/azusa_front_left.png','./src/images/azusa/renders/azusa_front_right.png',
   // 2D衣装
   './src/images/azusa/azusa_default.png','./src/images/azusa/azusa_chibi.png',
   './src/images/azusa/azusa_chibi4.png','./src/images/azusa/azusa_box.png',
-  './src/images/azusa/azusa_newyear.png','./src/images/azusa/azusa_summer.jpg',
-  './src/images/azusa/azusa_panda.png','./src/images/azusa/azusa_rabbit.jpg',
-  './src/images/azusa/azusa_frog.jpg','./src/images/azusa/azusa_butterfly.jpg',
-  './src/images/azusa/azusa_eggplant.png','./src/images/azusa/azusa_spring.png',
-  './src/images/azusa/azusa_ninja.jpg','./src/images/azusa/azusa_fan_model1.jpg',
-  './src/images/azusa/azusa_rabbit_2024.jpg','./src/images/azusa/azusa_summer_festival.jpg',
-  './src/images/azusa/azusa_transparent.png','./src/images/azusa/azusa_wechat1.jpg',
+  './src/images/azusa/azusa_newyear.png','./src/images/azusa/azusa_summer.png',
+  './src/images/azusa/azusa_panda.png','./src/images/azusa/azusa_rabbit.png',
+  './src/images/azusa/azusa_frog.png','./src/images/azusa/azusa_butterfly.png',
+  './src/images/azusa/azusa_eggplant.png','./src/images/azusa/azusa_spring_new.png',
+  './src/images/azusa/azusa_ninja.png','./src/images/azusa/azusa_fan_model1.jpg',
+  './src/images/azusa/azusa_rabbit_2024.jpg','./src/images/azusa/azusa_summer_festival_hd.jpg',
+  './src/images/azusa/azusa_touming_liren.png','./src/images/azusa/azusa_wechat1.jpg',
+  // 新增衣装 + 高清
+  './src/images/azusa/azusa_beizi.png','./src/images/azusa/azusa_huazi.png',
+  './src/images/azusa/azusa_tuozi_normal_crop.png','./src/images/azusa/azusa_tuozi_tongue_crop.png',
+  './src/images/azusa/azusa_default_hd.png','./src/images/azusa/azusa_regular.png',
+  './src/images/azusa/azusa_panda_outfit.png','./src/images/azusa/azusa_ninja_outfit.png',
+  // 精灵GIF
+  './src/images/azusa/azusa_mascot_live2d.gif',
   // 表情贴纸
   './src/images/azusa/stickers/阿梓从小就很可爱新装扮_比心.gif',
   './src/images/azusa/stickers/阿梓从小就很可爱新装扮_打call.gif',
