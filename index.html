@@ -1560,6 +1560,7 @@ function goTab(i){
   var titles=["🌸 阿梓的森林","👗 衣柜","✅ 习惯","🎯 目标","👤 我的"];
   var el=document.getElementById(pages[i]);if(el)el.classList.add("on");
   document.getElementById("bar").textContent=titles[i]||"阿梓的森林";
+  if(i===0){updateTree(0,false);setTimeout(function(){drawRing(0)},200);}
   if(i===1){rGallery();rForest();}if(i===2){rHabits();rTodos();updateColSelect();}if(i===3)rGoals();if(i===4)rProfile();
 }
 function rProfile(){
@@ -1687,7 +1688,7 @@ var Mascot={
   updateSkin:function(){
     var self=this;
     var newIdx=0;
-    for(var i=this.skinMap.length-1;i>=0;i--){if(currentOutfit<=this.skinMap[i].upTo){newIdx=i;break}}
+    for(var i=0;i<this.skinMap.length;i++){if(currentOutfit<=this.skinMap[i].upTo){newIdx=i;break}}
     if(newIdx!==this.curSkin){
       this.curSkin=newIdx;this.body.src=this.skinMap[newIdx].img;
       this.body.classList.add('unlock-pop');
