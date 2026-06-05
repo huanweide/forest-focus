@@ -1553,6 +1553,18 @@ function importData(){var input=document.createElement("input");input.type="file
 
 // ===== CORE FUNCTIONS (restored) =====
 function goTab(i){
+  // 锁机检测：专注中不能切页面
+  if(lockEnabled && timerId && i!==0 && !isBreak){
+    lockExits++;
+    document.getElementById('lockCount').textContent=lockExits;
+    document.getElementById('lockLeft').textContent=Math.floor((totalSec-elapsed)/60);
+    document.getElementById('lockOverlay').classList.add('show');
+    if(lockExits>=3){
+      document.getElementById('lockMsg').innerHTML='超过3次了！<br>阿梓很伤心，这棵树要枯萎了...';
+      document.getElementById('lockAbort').style.display='none';
+    }
+    return;
+  }
   currentTab=i;
   document.querySelectorAll(".page").forEach(function(p){p.classList.remove("on")});
   document.querySelectorAll(".tab").forEach(function(t,j){t.classList.toggle("on",j===i)});
@@ -1780,6 +1792,20 @@ var Mascot={
 };
 document.addEventListener('touchstart',function(){Mascot.resetIdleTimer()},{passive:true});
 document.addEventListener('mousemove',function(){Mascot.resetIdleTimer()},{passive:true});
+
+// ========== 锁机：检测切后台/锁屏 ==========
+document.addEventListener('visibilitychange',function(){
+  if(document.hidden && lockEnabled && timerId && !isBreak){
+    lockExits++;
+    document.getElementById('lockCount').textContent=lockExits;
+    document.getElementById('lockLeft').textContent=Math.floor((totalSec-elapsed)/60);
+    document.getElementById('lockOverlay').classList.add('show');
+    if(lockExits>=3){
+      document.getElementById('lockMsg').innerHTML='超过3次了！<br>阿梓很伤心，这棵树要枯萎了...';
+      document.getElementById('lockAbort').style.display='none';
+    }
+  }
+});
 
 // ==================== INIT ====================
 function initAll(){rTodos();rHabits();rGoals();rForest();rProfile();try{Mascot.init()}catch(e){};updateChatStatus();updateTree(0,false);setTimeout(function(){drawRing(0)},200)}
