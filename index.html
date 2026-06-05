@@ -380,7 +380,15 @@ body.locked{overflow:hidden;position:fixed;width:100%;height:100%}
 </div>
 
 <!-- ===== GOALS PAGE ===== -->
-<div class="page" id="pg3">
+<div class="page" 
+<div style="margin-top:20px"><h3 class="sec-title">📋 待办清单</h3>
+<div class="todo-input-wrap"><input id="todoInput" placeholder="添加新任务..." onkeydown="if(event.key==='Enter')addTodo()"><button onclick="addTodo()">添加</button></div>
+<div><select id="todoFilter" onchange="rTodos()" style="padding:6px 12px;border-radius:10px;border:1px solid #ddd;font-size:12px;background:var(--bg);color:var(--t)"><option value="all">全部</option><option value="active">进行中</option><option value="done">已完成</option><option value="today">今天</option></select></div>
+<div id="todoList"></div>
+<div id="todoStats" style="font-size:11px;color:var(--gr);margin-top:4px"></div>
+<div style="margin-top:8px"><select id="todoCollection" onchange="rTodos()" style="padding:6px 12px;border-radius:10px;border:1px solid #ddd;font-size:12px;background:var(--bg);color:var(--t)"><option value="">全部待办集</option></select><button onclick="addCollection()" style="border:1px solid var(--g);background:transparent;color:var(--g);border-radius:8px;padding:4px 10px;font-size:11px;cursor:pointer;margin-left:6px">+ 新建集</button></div></div>
+
+id="pg3">
 <div class="hb-header"><h3 class="sec-title" style="margin:0">🎯 目标计划</h3><button class="hb-add-btn" onclick="addGoal()">+ 新建</button></div>
 <div class="hb-summary" id="goalsSummary"></div>
 <div id="goalsList"></div>
@@ -1521,7 +1529,7 @@ function goTab(i){
   var titles=["🌸 阿梓的森林","👗 衣柜","✅ 习惯","🎯 目标","👤 我的"];
   var el=document.getElementById(pages[i]);if(el)el.classList.add("on");
   document.getElementById("bar").textContent=titles[i]||"阿梓的森林";
-  if(i===1)rGallery();if(i===2)rHabits();if(i===3)rGoals();if(i===4)rProfile();
+  if(i===1)rGallery();if(i===2){rHabits();rTodos();updateColSelect();}if(i===3)rGoals();if(i===4)rProfile();
 }
 function rProfile(){
   document.getElementById("scoreVal").textContent=score;
@@ -1553,3 +1561,8 @@ if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(
 <button class="chat-fab" id="chatFab" onclick="toggleChat()" title="和阿梓聊天">💬</button><div class="chat-modal" id="chatModal"><div class="chat-hdr"><div class="ch-t"><span id="chatStatus">阿梓在家</span></div><div style="display:flex;gap:8px"><button class="ch-close" onclick="showDiary()" title="阿梓日记">📔</button><button class="ch-close" onclick="toggleChat()">X</button></div></div><div class="chat-body" id="chatBody"></div><div class="chat-input-wrap"><input id="chatInput" placeholder="和阿梓说点什么..." onkeydown="if(event.key==='Enter')sendChat()"><button onclick="sendChat()">↑</button></div></div>
 </body>
 </html>
+<div style="margin-top:20px"><h3 class="sec-title">🌳 我的森林</h3>
+<div class="st-row" id="forestStats"></div>
+<div class="f-grid" id="forestGrid"></div></div>
+
+
