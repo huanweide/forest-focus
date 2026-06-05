@@ -1782,7 +1782,16 @@ document.addEventListener('mousemove',function(){Mascot.resetIdleTimer()},{passi
 // ==================== INIT ====================
 function initAll(){rTodos();rHabits();rGoals();rForest();rProfile();try{Mascot.init()}catch(e){};updateChatStatus();updateTree(0,false);setTimeout(function(){drawRing(0)},200)}
 initAll();
-if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});
+if('serviceWorker' in navigator){
+  // 强制清理所有旧SW缓存，解决更新不生效问题
+  navigator.serviceWorker.getRegistrations().then(function(regs){
+    regs.forEach(function(r){r.unregister()});
+  }).then(function(){
+    return caches.keys().then(function(keys){return Promise.all(keys.map(function(k){return caches.delete(k)}))});
+  }).then(function(){
+    navigator.serviceWorker.register('sw.js?v=10');
+  });
+}
 </script>
 </body>
 </html>
