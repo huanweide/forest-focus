@@ -6,14 +6,13 @@
 <meta name="theme-color" content="#2E7D32">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="description" content="阿梓的森林 - 番茄钟专注计时器，种树养成，数据可视化，习惯打卡。VUP阿梓陪你一起专注。">
 <link rel="manifest" href="manifest.json">
-<title>阿梓的森林 - 番茄专注</title>
+<title>阿梓的森林</title>
 <style>
 :root,[data-theme=purple]{--g:#5C6BC0;--gl:#7986CB;--bg:#f0f2fa;--accent:#7E57C2}[data-theme=green]{--g:#2E7D32;--gl:#4CAF50;--bg:#f0f4f0;--accent:#388E3C}[data-theme=blue]{--g:#1565C0;--gl:#42A5F5;--bg:#f0f4fa;--accent:#1976D2}[data-theme=pink]{--g:#C2185B;--gl:#F06292;--bg:#faf0f4;--accent:#D81B60}[data-theme=orange]{--g:#E65100;--gl:#FF9800;--bg:#faf5f0;--accent:#F57C00}
 :root{--g:#5C6BC0;--gl:#7986CB;--bg:#f0f2fa;--c:#fff;--t:#1a1a1a;--gr:#888;--r:#e53935;--o:#ff9800;--b:#7E57C2;--rad:14px;--sh:0 2px 8px rgba(0,0,0,.06)}
 *{margin:0;padding:0;box-sizing:border-box}
-body{font-family:-apple-system,'PingFang SC','Noto Sans SC',sans-serif;background:var(--bg);color:var(--t);-webkit-tap-highlight-color:transparent;user-select:none;-webkit-user-select:none;padding-bottom:72px;overscroll-behavior:none;font-size:15px;touch-action:manipulation;-webkit-touch-callout:none;-webkit-font-smoothing:antialiased}
+body{font-family:-apple-system,'PingFang SC','Noto Sans SC',sans-serif;background:var(--bg);color:var(--t);-webkit-tap-highlight-color:transparent;user-select:none;-webkit-user-select:none;padding-bottom:72px;overscroll-behavior:none;font-size:15px;}
 
 .appbar,.tabbar,.page{;z-index:1}
 body.dark{--bg:#1a1a2e;--c:#16213e;--t:#e0e0e0;--gr:#999;--sh:0 2px 8px rgba(0,0,0,.3)}
@@ -81,9 +80,7 @@ body.locked{overflow:hidden;position:fixed;width:100%;height:100%}
 @keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}
 .pulse{animation:pulse 1.5s ease-in-out infinite;display:inline-block}
 @keyframes unlockPop{0%{transform:scale(.5);opacity:0}60%{transform:scale(1.1)}100%{transform:scale(1);opacity:1}}
-.unlock-pop{animation:unlockPop .6s ease;will-change:transform}
-.tg-card,.card,.btn{will-change:transform}
-.tg-img{content-visibility:auto}
+.unlock-pop{animation:unlockPop .6s ease}
 .ach-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}
 .ach-card{background:var(--c);border-radius:10px;padding:10px 6px;text-align:center;box-shadow:var(--sh);transition:.2s;}
 .ach-card.locked{opacity:.45;filter:grayscale(.8)}
@@ -1199,27 +1196,27 @@ toast('\u{1F338} 下次一定会更好的');
 
 function updateTree(p,dead){
 let e=document.getElementById('tree');
-if(dead){e.innerHTML='<span style='font-size:80px'>??</span>';return}
+if(dead){e.innerHTML="<span style='font-size:80px'>??</span>";return}
 let img;
 if(p<0.15){
-e.innerHTML='<span style='font-size:70px' class='pulse'>??</span>'
+e.innerHTML="<span style='font-size:70px' class='pulse'>??</span>"
 }else if(p<0.4){
 // 幼苗期 → 显示当前穿着衣装的前一级（或种子）
 let prev=Math.max(0,currentOutfit-1);
 img=AZUSA_TREES[prev].img;
-if(img)e.innerHTML='<img src='+img+' class=tree-img style='opacity:.4;transform:scale(.6)'>';
-else e.innerHTML='<span style='font-size:60px'>'+AZUSA_TREES[prev].emoji+'</span>'
+if(img)e.innerHTML="<img src="+img+" class=tree-img style='opacity:.4;transform:scale(.6)'>";
+else e.innerHTML="<span style='font-size:60px'>"+AZUSA_TREES[prev].emoji+"</span>"
 }else if(p<0.75){
 // 成长中 → 显示当前穿着
 img=AZUSA_TREES[currentOutfit].img;
-if(img)e.innerHTML='<img src='+img+' class=tree-img style='opacity:.75;transform:scale(.85)'>';
-else e.innerHTML='<span style='font-size:70px'>'+AZUSA_TREES[currentOutfit].emoji+'</span>'
+if(img)e.innerHTML="<img src="+img+" class=tree-img style='opacity:.75;transform:scale(.85)'>";
+else e.innerHTML="<span style='font-size:70px'>"+AZUSA_TREES[currentOutfit].emoji+"</span>"
 }else{
 // 接近完成 → 显示下一级衣装（如果存在）
 let nxt=Math.min(currentOutfit+1,AZUSA_TREES.length-1);
 img=AZUSA_TREES[nxt].img;
-if(img)e.innerHTML='<img src='+img+' class=tree-img style='opacity:1;transform:scale(1)'>';
-else e.innerHTML='<span style='font-size:80px'>'+AZUSA_TREES[nxt].emoji+'</span>'
+if(img)e.innerHTML="<img src="+img+" class=tree-img style='opacity:1;transform:scale(1)'>";
+else e.innerHTML="<span style='font-size:80px'>"+AZUSA_TREES[nxt].emoji+"</span>"
 }}
 function rGallery(){
 let el=document.getElementById('treeGallery');
@@ -1441,7 +1438,7 @@ function resetAll(){if(!confirm('确定删除？建议先导出备份。'))retur
   
 // 全局闲置监听
 
-var dsApiKey=localStorage.getItem("ds_key")||"";var chatOpen=false,diaryOpen=false;function toggleChat(){chatOpen=!chatOpen;diaryOpen=false;document.getElementById("chatModal").classList.toggle("open",chatOpen);document.getElementById("chatFab").style.display=chatOpen?"none":"flex";if(chatOpen){document.getElementById("chatInput").focus();updateChatStatus()}}function updateChatStatus(){var el=document.getElementById("chatStatus");el.textContent=dsApiKey?"阿梓在家":"阿梓出门了(离线)";el.style.color=dsApiKey?"#a5d6a7":"rgba(255,255,255,.5)"}function sendChat(){var input=document.getElementById("chatInput"),msg=input.value.trim();if(!msg)return;input.value="";addMsg(msg,"user");var body=document.getElementById("chatBody");var typing=document.createElement("div");typing.className="chat-typing";typing.innerHTML="<span></span><span></span><span></span>";body.appendChild(typing);body.scrollTop=body.scrollHeight;if(dsApiKey){callDS(msg).then(function(r){typing.remove();addMsg(r,"azusa")}).catch(function(){typing.remove();addMsg(localReply(msg),"azusa")})}else{setTimeout(function(){typing.remove();addMsg(localReply(msg),"azusa")},800+Math.random()*1200)}}function addMsg(msg,role){var body=document.getElementById("chatBody"),div=document.createElement("div");div.className="chat-msg "+role;div.textContent=msg;body.appendChild(div);body.scrollTop=body.scrollHeight}function showDiary(){diaryOpen=!diaryOpen;chatOpen=diaryOpen?false:chatOpen;if(diaryOpen){document.getElementById("chatModal").classList.add("open");document.getElementById("chatFab").style.display="none";renderDiary()}else{document.getElementById("chatModal").classList.remove("open");document.getElementById("chatFab").style.display="flex"}}function renderDiary(){var body=document.getElementById("chatBody");body.innerHTML="";var today=sessions.filter(function(s){return s.completed&&s.date===new Date().toISOString().slice(0,10)});var mins=today.reduce(function(a,s){return a+s.minutes},0);var trees=today.length;var habitsDone=habits.filter(function(h){var td=new Date().toISOString().slice(0,10);return h.dates&&h.dates.includes(td)}).length;var d=["阿梓的日记 "+new Date().toISOString().slice(0,10),"","今天你专注了 "+mins+" 分钟，种了 "+trees+" 棵树",habitsDone>0?"完成了 "+habitsDone+" 个习惯打卡":"今天还没有打卡哦，加油！",mins>60?"阿梓觉得你今天超棒的！明天继续加油~":"今天专注时间有点少，明天阿梓陪你一起努力！","","记得来找阿梓聊天~"];addMsg(d.join("\n"),"diary")}async function callDS(msg){var ctx="";var mins=sessions.filter(function(s){return s.completed&&s.date===new Date().toISOString().slice(0,10)}).reduce(function(a,s){return a+s.minutes},0);if(mins>0)ctx="(今天专注了"+mins+"分钟)";var sp="你叫阿梓，VirtuaReal的VUP。可爱跳脱元气，底色善良成熟。说话像微信聊天——简短有温度。会吐槽但从不伤人，会鼓励但不油腻。回复不超过80字。你不是AI客服，你是真实的VUP阿梓本人。"+ctx;var resp=await fetch("https://api.deepseek.com/chat/completions",{method:"POST",headers:{"Content-Type":"application/json","Authorization":"Bearer "+dsApiKey},body:JSON.stringify({model:"deepseek-chat",messages:[{role:"system",content:sp},{role:"user",content:msg}],max_tokens:150,temperature:1.1})});var data=await resp.json();if(data.choices&&data.choices[0])return data.choices[0].message.content;throw new Error("API error")}function localReply(msg){var keys={"你好":["哟 来了啊","嗨嗨 今天怎么样","来啦 今天想种几棵？"],"加油":["冲！你可以的","干就完了","你比你想象的要厉害得多"],"累了":["那歇会 我陪你","累了说明在上坡","明天又是新的一天"],"谢谢":["客气啥","能帮到你就好","嘿嘿"],"晚安":["睡吧 今天辛苦了","晚安 明天见"],"早上":["早！新的一天","早啊 今天种几棵"],"烦":["怎么啦 说说看","烦就说出来 我听着"]};for(var k in keys){if(msg.indexOf(k)>=0){var arr=keys[k];return arr[Math.floor(Math.random()*arr.length)]}}var d=["嗯？你说 我在听","你知道吗 你专注的时候 整个人在发光","今天怎么样？认真问的","其实你不用每时每刻那么努力 你已经很棒了","阿梓在想你什么时候种下一棵树"];return d[Math.floor(Math.random()*d.length)]}function setApiKey(){var key=prompt("输入阿梓的API密钥（platform.deepseek.com免费拿）：\n留空阿梓就不在家了",dsApiKey);if(key!==null){dsApiKey=key.trim();localStorage.setItem("ds_key",dsApiKey);updateChatStatus();toast(dsApiKey?"阿梓在家了！":"阿梓出门了（离线）")}}
+var dsApiKey=localStorage.getItem("ds_key")||"";var chatOpen=false,diaryOpen=false;function toggleChat(){chatOpen=!chatOpen;diaryOpen=false;document.getElementById("chatModal").classList.toggle("open",chatOpen);document.getElementById("chatFab").style.display=chatOpen?"none":"flex";if(chatOpen){document.getElementById("chatInput").focus();updateChatStatus()}}function updateChatStatus(){var el=document.getElementById("chatStatus");el.textContent=dsApiKey?"阿梓在家":"阿梓出门了(离线)";el.style.color=dsApiKey?"#a5d6a7":"rgba(255,255,255,.5)"}function sendChat(){var input=document.getElementById("chatInput"),msg=input.value.trim();if(!msg)return;input.value="";addMsg(msg,"user");var body=document.getElementById("chatBody");var typing=document.createElement("div");typing.className="chat-typing";typing.innerHTML="<span></span><span></span><span></span>";body.appendChild(typing);body.scrollTop=body.scrollHeight;if(dsApiKey){callDS(msg).then(function(r){typing.remove();addMsg(r,"azusa")}).catch(function(){typing.remove();addMsg(localReply(msg),"azusa")})}else{setTimeout(function(){typing.remove();addMsg(localReply(msg),"azusa")},800+Math.random()*1200)}}function addMsg(msg,role){var body=document.getElementById("chatBody"),div=document.createElement("div");div.className="chat-msg "+role;div.textContent=msg;body.appendChild(div);body.scrollTop=body.scrollHeight}function showDiary(){diaryOpen=!diaryOpen;chatOpen=diaryOpen?false:chatOpen;if(diaryOpen){document.getElementById("chatModal").classList.add("open");document.getElementById("chatFab").style.display="none";renderDiary()}else{document.getElementById("chatModal").classList.remove("open");document.getElementById("chatFab").style.display="flex"}}function renderDiary(){var body=document.getElementById("chatBody");body.innerHTML="";var today=sessions.filter(function(s){return s.completed&&s.date===new Date().toISOString().slice(0,10)});var mins=today.reduce(function(a,s){return a+s.minutes},0);var trees=today.length;var habitsDone=habits.filter(function(h){return h.done}).length;var d=["阿梓的日记 "+new Date().toISOString().slice(0,10),"","今天你专注了 "+mins+" 分钟，种了 "+trees+" 棵树",habitsDone>0?"完成了 "+habitsDone+" 个习惯打卡":"今天还没有打卡哦，加油！",mins>60?"阿梓觉得你今天超棒的！明天继续加油~":"今天专注时间有点少，明天阿梓陪你一起努力！","","记得来找阿梓聊天~"];addMsg(d.join("\n"),"diary")}async function callDS(msg){var ctx="";var mins=sessions.filter(function(s){return s.completed&&s.date===new Date().toISOString().slice(0,10)}).reduce(function(a,s){return a+s.minutes},0);if(mins>0)ctx="(今天专注了"+mins+"分钟)";var sp="你叫阿梓，VirtuaReal的VUP。可爱跳脱元气，底色善良成熟。说话像微信聊天——简短有温度。会吐槽但从不伤人，会鼓励但不油腻。回复不超过80字。你不是AI客服，你是真实的VUP阿梓本人。"+ctx;var resp=await fetch("https://api.deepseek.com/chat/completions",{method:"POST",headers:{"Content-Type":"application/json","Authorization":"Bearer "+dsApiKey},body:JSON.stringify({model:"deepseek-chat",messages:[{role:"system",content:sp},{role:"user",content:msg}],max_tokens:150,temperature:1.1})});var data=await resp.json();if(data.choices&&data.choices[0])return data.choices[0].message.content;throw new Error("API error")}function localReply(msg){var keys={"你好":["哟 来了啊","嗨嗨 今天怎么样","来啦 今天想种几棵？"],"加油":["冲！你可以的","干就完了","你比你想象的要厉害得多"],"累了":["那歇会 我陪你","累了说明在上坡","明天又是新的一天"],"谢谢":["客气啥","能帮到你就好","嘿嘿"],"晚安":["睡吧 今天辛苦了","晚安 明天见"],"早上":["早！新的一天","早啊 今天种几棵"],"烦":["怎么啦 说说看","烦就说出来 我听着"]};for(var k in keys){if(msg.indexOf(k)>=0){var arr=keys[k];return arr[Math.floor(Math.random()*arr.length)]}}var d=["嗯？你说 我在听","你知道吗 你专注的时候 整个人在发光","今天怎么样？认真问的","其实你不用每时每刻那么努力 你已经很棒了","阿梓在想你什么时候种下一棵树"];return d[Math.floor(Math.random()*d.length)]}function setApiKey(){var key=prompt("输入阿梓的API密钥（platform.deepseek.com免费拿）：\n留空阿梓就不在家了",dsApiKey);if(key!==null){dsApiKey=key.trim();localStorage.setItem("ds_key",dsApiKey);updateChatStatus();toast(dsApiKey?"阿梓在家了！":"阿梓出门了（离线）")}}
 
 // ========== THEME ==========
 var themes=["purple","green","blue","pink","orange"];
@@ -1474,6 +1471,8 @@ function setGoal(){var g=parseInt(prompt("每日番茄目标（个）",localStor
 (function(){var bm=document.getElementById("breakMins");if(bm)bm.textContent=localStorage.getItem("fbreak")||"5";var dg=document.getElementById("dailyGoal");if(dg)dg.textContent=localStorage.getItem("fgoal")||"8"})();
 
 // Update profile on profile tab
+var origRProfile=rProfile||function(){};
+rProfile=function(){origRProfile();updateProfile();renderCountdowns()};
 
 var todos=JSON.parse(localStorage.getItem("ftodos")||"[]");
 function addTodo(){var input=document.getElementById("todoInput");var t=input.value.trim();if(!t)return;var est=1;todos.push({id:Date.now().toString(36),title:t,est:est,donePomos:0,completed:false,created:new Date().toISOString().slice(0,10),category:""});input.value="";saveTodos();rTodos();toast("任务已添加")}
@@ -1482,8 +1481,7 @@ function delTodo(id){todos=todos.filter(function(t){return t.id!==id});saveTodos
 function addPomo(id){var t=todos.find(function(x){return x.id===id});if(!t)return;t.donePomos=(t.donePomos||0)+1;if(t.donePomos>=t.est)t.completed=true;saveTodos();rTodos();toast("🍅 +1")}
 function setEst(id){var t=todos.find(function(x){return x.id===id});if(!t)return;var e=parseInt(prompt("预估番茄钟数",t.est||1));if(e&&e>0){t.est=e;saveTodos();rTodos()}}
 function saveTodos(){localStorage.setItem("ftodos",JSON.stringify(todos))}
-function rTodos(){var el=document.getElementById("todoList");var filter=document.getElementById("todoFilter").value;var list=todos.slice();if(filter==="active")list=list.filter(function(t){return !t.completed});if(filter==="done")list=list.filter(function(t){return t.completed});if(filter==="today")list=list.filter(function(t){return t.created===new Date().toISOString().slice(0,10)});if(list.length===0){el.innerHTML="<p style=text-align:center;color:var(--gr);padding:20px;font-size:13px>暂无任务</p>"}else{el.innerHTML=list.map(function(t){return"<div class='todo-item "+(t.completed?"done":"")+"'><div class='todo-check "+(t.completed?"done":"")+"' onclick='togTodo(\""+t.id+"')">"+(t.completed?"✓":"")+"</div><div class='todo-info'><div class='todo-title'>"+t.title+"</div><div class='todo-meta'>"+t.created+" · "+(t.category||"未分类")+"</div></div><div class='todo-est' onclick='setEst(\""+t.id+"')">🍅"+(t.donePomos||0)+"/"+(t.est||1)+"</div><button onclick='addPomo(\""+t.id+"')" style='border:none;background:var(--g);color:#fff;width:26px;height:26px;border-radius:50%;font-size:14px;cursor:pointer;flex-shrink:0'>+</button><button onclick='delTodo(\""+t.id+"')" style='border:none;background:transparent;color:var(--gr);font-size:12px;cursor:pointer;flex-shrink:0'>X</button></div>"}).join("")}var total=todos.length,active=todos.filter(function(t){return !t.completed}).length,done=todos.filter(function(t){return t.completed}).length;var stats=document.getElementById("todoStats");if(stats)stats.textContent="共 "+total+" 个任务 · "+active+" 进行中 · "+done+" 已完成"}
-
+function rTodos(){var el=document.getElementById("todoList");var filter=document.getElementById("todoFilter").value;var list=todos.slice();if(filter==="active")list=list.filter(function(t){return !t.completed});if(filter==="done")list=list.filter(function(t){return t.completed});if(filter==="today")list=list.filter(function(t){return t.created===new Date().toISOString().slice(0,10)});if(list.length===0){el.innerHTML="<p style='text-align:center;color:var(--gr);padding:20px;font-size:13px'>暂无任务</p>"}else{el.innerHTML=list.map(function(t){var a="<div class='todo-item "+(t.completed?"done":"")+"'>";var b="<div class='todo-check "+(t.completed?"done":"")+"' onclick=\"togTodo('"+t.id+"')\">"+(t.completed?"✓":"")+"</div>";var c="<div class='todo-info'><div class='todo-title'>"+t.title+"</div><div class='todo-meta'>"+t.created+" · "+(t.category||"未分类")+"</div></div>";var d="<div class='todo-est' onclick=\"setEst('"+t.id+"')\">🍅"+(t.donePomos||0)+"/"+(t.est||1)+"</div>";var e="<button onclick=\"addPomo('"+t.id+"')\" style='border:none;background:var(--g);color:#fff;width:26px;height:26px;border-radius:50%;font-size:14px;cursor:pointer;flex-shrink:0'>+</button>";var f="<button onclick=\"delTodo('"+t.id+"')\" style='border:none;background:transparent;color:var(--gr);font-size:12px;cursor:pointer;flex-shrink:0'>X</button>";return a+b+c+d+e+f+"</div>"}).join("")}var total=todos.length,active=todos.filter(function(t){return !t.completed}).length,done=todos.filter(function(t){return t.completed}).length;var stats=document.getElementById("todoStats");if(stats)stats.textContent="共 "+total+" 个任务 · "+active+" 进行中 · "+done+" 已完成"}
 var pomodoroPhase="idle";var completedRounds=0;
 function startSM(){pomodoroPhase="focus";completedRounds=0;start()}
 function onFocusDone(){completedRounds++;if(completedRounds%4===0){toast("完成4轮！长休15分钟");startLongBreak()}else{toast("专注完成！短休5分钟");startShortBreak()}}
@@ -1518,8 +1516,8 @@ function renderWeeklySummary(){var el=document.getElementById("weeklySummary");i
 
 // ========== TOOLBOX ==========  
 function calcPomo(){var h=parseInt(prompt("剩余小时数"))||0;var m=parseInt(prompt("剩余分钟数"))||0;var total=h*60+m;var pomos=Math.floor(total/25);toast("约需要 "+pomos+" 个番茄钟（25分钟/个）")}
-function showStudyRoom(){var el=document.getElementById("srModal");if(!el){el=document.createElement("div");el.id="srModal";el.style.cssText="position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:45;display:flex;align-items:center;justify-content:center";el.onclick=function(e){if(e.target===el)el.style.display="none"};document.body.appendChild(el)}if(el.style.display==="flex"){el.style.display="none";return}el.style.display="flex";var td=sessions.filter(function(s){return s.completed&&s.date===new Date().toISOString().slice(0,10)});var tm=td.reduce(function(a,s){return a+s.minutes},0);var tc=td.length;var tu=Math.max(1,Math.floor(sessions.filter(function(s){return s.completed}).length/5));var msgs=["\u{1f4da} \u81ea\u4e60\u5ba4\n\n\u2728 \u4eca\u65e5\u5728\u7ebf: "+tu+" \u4eba\n\u{1f333} \u4eca\u65e5\u79cd\u6811: "+tc+" \u68f5\n\u23f1 \u4eca\u65e5\u4e13\u6ce8: "+tm+" \u5206\u949f\n\n\u{1f497} \u963f\u6893\u966a\u4f60\u4e00\u8d77\u4e13\u6ce8\n\u201c\u4f60\u4e13\u6ce8\u7684\u65f6\u5019 \u6574\u4e2a\u4e16\u754c\u90fd\u5728\u4e3a\u4f60\u8ba9\u8def\u201d","\u201c\u79cd\u4e00\u68f5\u6811\u6700\u597d\u7684\u65f6\u95f4\u662f\u5341\u5e74\u524d\u201d\n\u2014\u2014\u5176\u6b21\u662f\u73b0\u5728\u201d\n\n\u2728 \u963f\u6893\u7684\u5c0f\u8d34\u58eb:\n\u6bcf25\u5206\u949f\u4f11\u606f5\u5206\u949f\n\u6548\u7387\u4f1a\u66f4\u9ad8\u54e6~"];el.innerHTML="<div style=background:var(--c);border-radius:16px;padding:24px;max-width:320px;width:90%;text-align:center;box-shadow:0 8px 32px rgba(0,0,0,.2);position:relative><button onclick=document.getElementById(\"srModal\").style.display=\"none\" style=position:absolute;top:10px;right:14px;background:transparent;border:none;font-size:20px;cursor:pointer;color:var(--gr)>\u2715</button><div style=white-space:pre-line;font-size:14px;line-height:1.8;color:var(--t)>"+msgs[Math.floor(Math.random()*msgs.length)]+"</div></div>"}
-function importData(){var input=document.createElement("input");input.type="file";input.accept=".json";input.onchange=function(e){var file=e.target.files[0];var reader=new FileReader();reader.onload=function(ev){try{var data=JSON.parse(ev.target.result);if(data.habits||data.goals||data.sessions){var bk="forest-backup-"+new Date().toISOString().slice(0,10);localStorage.setItem(bk,JSON.stringify({habits:habits,goals:goals,sessions:sessions,score:score,todos:todos}));toast("已自动备份到 "+bk)}if(data.habits)habits=data.habits;if(data.goals)goals=data.goals;if(data.sessions)sessions=data.sessions;if(data.score!=null)score=data.score;if(data.todos)todos=data.todos;["fh","fg","fs","fsc","ftodos"].forEach(function(k){localStorage.removeItem(k)});save("h");save("g");save("s");save("c");saveTodos();rTodos();rHabits();rGoals();rForest();rProfile();toast("数据已导入！")}catch(ex){toast("文件格式错误: "+ex.message)}};reader.readAsText(file)};input.click()}
+function showStudyRoom(){toast("自习室功能开发中... 敬请期待")}
+function importData(){var input=document.createElement("input");input.type="file";input.accept=".json";input.onchange=function(e){var file=e.target.files[0];var reader=new FileReader();reader.onload=function(ev){try{var data=JSON.parse(ev.target.result);if(data.habits)habits=data.habits;if(data.goals)goals=data.goals;if(data.sessions)sessions=data.sessions;if(data.score)score=data.score;if(data.todos)todos=data.todos;["fh","fg","fs","fsc","ftodos"].forEach(function(k){localStorage.removeItem(k)});save("h");save("g");save("s");save("c");saveTodos();rTodos();rHabits();rGoals();rForest();toast("数据已导入！请刷新页面")}catch(ex){toast("文件格式错误")}};reader.readAsText(file)};input.click()}
 
 
 // ===== CORE FUNCTIONS (restored) =====
@@ -1556,7 +1554,7 @@ function incG(id){var g=goals.find(function(x){return x.id===id});if(!g)return;g
 function mark(lvl){document.querySelectorAll(".attn").forEach(function(a){a.classList.remove("on")});var m={deep:"attn-deep",ok:"attn-ok",drift:"attn-drift",off:"attn-off"};if(m[lvl]){var el=document.getElementById(m[lvl]);if(el)el.classList.add("on")}}
 
 // ==================== INIT ====================
-function initAll(){rTodos();rHabits();rGoals();rForest();rProfile()}
+function initAll(){rTodos();rHabits();rGoals();rForest()}
 initAll();
 if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});
 </script>
