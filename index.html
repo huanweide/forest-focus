@@ -1631,24 +1631,33 @@ var Mascot={
   _bindDrag:function(){
     var self=this;
     var startDrag=function(e){
-      e.preventDefault();
-      self.drag.active=true;
-      var t=e.touches?e.touches[0]:e;
-      self.drag.sx=t.clientX-self.el.offsetLeft;
-      self.drag.sy=t.clientY-self.el.offsetTop;
-      self.el.style.cursor='grabbing';
-      self.el.style.transition='none';
+      // 不preventDefault——让click事件能正常触发（poke需要）
+      self.drag._startX=(e.touches?e.touches[0]:e).clientX;
+      self.drag._startY=(e.touches?e.touches[0]:e).clientY;
+      self.drag.pending=true;
+      self.drag.sx=(e.touches?e.touches[0]:e).clientX-self.el.offsetLeft;
+      self.drag.sy=(e.touches?e.touches[0]:e).clientY-self.el.offsetTop;
     };
     var moveDrag=function(e){
-      if(!self.drag.active)return;
-      e.preventDefault();
+      if(!self.drag.pending)return;
       var t=e.touches?e.touches[0]:e;
+      var dx=Math.abs(t.clientX-self.drag._startX);
+      var dy=Math.abs(t.clientY-self.drag._startY);
+      // 移动超过3px才算真正拖拽
+      if(dx<3&&dy<3)return;
+      if(!self.drag.active){
+        self.drag.active=true;
+        self.el.style.cursor='grabbing';
+        self.el.style.transition='none';
+      }
+      e.preventDefault();
       var x=t.clientX-self.drag.sx,y=t.clientY-self.drag.sy;
       self.el.style.left=x+'px';self.el.style.top=y+'px';
       self.el.style.right='auto';self.el.style.bottom='auto';
     };
     var endDrag=function(){
-      if(!self.drag.active)return;
+      self.drag.pending=false;
+      if(!self.drag.active)return; // 不是拖拽，是轻触→留给click处理
       self.drag.active=false;
       self.el.style.cursor='grab';
       self.el.style.transition='transform .1s';
@@ -1665,12 +1674,14 @@ var Mascot={
   },
   _bindDoubleTap:function(){
     var self=this,tapTimer=null;
-    this.el.addEventListener('click',function(){
+    this.el.addEventListener('click',function(e){
+      if(self.drag.active)return; // 拖拽中不处理
       if(tapTimer){clearTimeout(tapTimer);tapTimer=null;
+        // 双击：归位
         self.posX=null;self.posY=null;localStorage.removeItem('mascotPos');
-        self.el.style.left='';self.el.style.top='';self.el.style.right='6px';self.el.style.bottom='70px';
+        self.el.style.left='';self.el.style.top='';self.el.style.right='70px';self.el.style.bottom='85px';
         self.say('我回来啦~',1500);return}
-      tapTimer=setTimeout(function(){tapTimer=null;if(!self.drag.active)self.poke()},320);
+      tapTimer=setTimeout(function(){tapTimer=null;self.poke()},250);
     });
   },
   updateSkin:function(){
