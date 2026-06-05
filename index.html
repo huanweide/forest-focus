@@ -471,10 +471,6 @@ id="pg3">
 window.onerror=function(msg,url,line,col,err){
 var d=document.createElement('div');
 d.style.cssText='padding:16px;color:#e53935;font-family:monospace;font-size:12px;line-height:1.7;background:#fff;position:fixed;inset:0;z-index:99999;overflow:auto';
-d.innerHTML='<h3>JS Error</h3><p><b>'+msg+'</b></p><p>Line: '+line+', Col: '+col+'</p><pre style="white-space:pre-wrap;word-break:break-all;font-size:11px;color:#555">'+(err&&err.stack?err.stack:'')+'</pre>';
-document.body.appendChild(d);
-return true;
-};
 // ==================== 0. 统计引擎 (Stats Engine) ====================
 let currentPeriod = 'week';
 let currentPieTab = 'type';
