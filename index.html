@@ -351,7 +351,7 @@ body.locked{overflow:hidden;position:fixed;width:100%;height:100%}
 <!-- ===== FOCUS PAGE ===== -->
 <div class="page on" id="pg0">
 <div style="max-width:360px;margin:0 auto">
-<div class="tree-box" id="tree">🌰</div>
+<div class="tree-box" id="tree"><img src="src/images/azusa/azusa_transparent.png" class="tree-img" style="opacity:1;transform:scale(1)" alt="阿梓"></div>
 <div class="ring-wrap"><canvas id="ring"></canvas><div class="ring-t"><div class="tm" id="time">25:00</div><div class="lb" id="status">选个目标，开始种阿梓吧</div></div></div>
 <div class="chips" id="chips"></div>
 <div class="focus-motto" id="focusMotto">千里之行，始于足下</div><div class="task-sel">
@@ -1205,7 +1205,9 @@ let e=document.getElementById('tree');
 if(dead){e.innerHTML="<span style='font-size:80px'>??</span>";return}
 let img;
 if(p<0.15){
-e.innerHTML="<span style='font-size:70px' class='pulse'>??</span>"
+img=AZUSA_TREES[currentOutfit]&&AZUSA_TREES[currentOutfit].img;
+if(img)e.innerHTML="<img src="+img+" class=tree-img style='opacity:.6;transform:scale(.7)'>";
+else e.innerHTML="<span style='font-size:60px'>"+((AZUSA_TREES[currentOutfit]||{}).emoji||"🌰")+"</span>"
 }else if(p<0.4){
 // 幼苗期 → 显示当前穿着衣装的前一级（或种子）
 let prev=Math.max(0,currentOutfit-1);
@@ -1728,7 +1730,7 @@ document.addEventListener('touchstart',function(){Mascot.resetIdleTimer()},{pass
 document.addEventListener('mousemove',function(){Mascot.resetIdleTimer()},{passive:true});
 
 // ==================== INIT ====================
-function initAll(){rTodos();rHabits();rGoals();rForest();rProfile();try{Mascot.init()}catch(e){};updateChatStatus()}
+function initAll(){rTodos();rHabits();rGoals();rForest();rProfile();try{Mascot.init()}catch(e){};updateChatStatus();updateTree(0,false)}
 initAll();
 if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});
 </script>
