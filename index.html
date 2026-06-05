@@ -1144,6 +1144,7 @@ const newStreak=calcStreak();
 // 检测成就解锁
 const achNow=checkAchievements(getStats('today'));
 const justUnlocked=achNow.filter(a=>a.unlocked&&a.hide);
+if(currentTab===1){rForest();rGallery();}
 }
 
 function startBreak(){
@@ -1479,7 +1480,7 @@ function delTodo(id){todos=todos.filter(function(t){return t.id!==id});saveTodos
 function addPomo(id){var t=todos.find(function(x){return x.id===id});if(!t)return;t.donePomos=(t.donePomos||0)+1;if(t.donePomos>=t.est)t.completed=true;saveTodos();rTodos();toast("🍅 +1")}
 function setEst(id){var t=todos.find(function(x){return x.id===id});if(!t)return;var e=parseInt(prompt("预估番茄钟数",t.est||1));if(e&&e>0){t.est=e;saveTodos();rTodos()}}
 function saveTodos(){localStorage.setItem("ftodos",JSON.stringify(todos))}
-function rTodos(){var el=document.getElementById("todoList");var filter=document.getElementById("todoFilter").value;var list=todos.slice();if(filter==="active")list=list.filter(function(t){return !t.completed});if(filter==="done")list=list.filter(function(t){return t.completed});if(filter==="today")list=list.filter(function(t){return t.created===new Date().toISOString().slice(0,10)});if(list.length===0){el.innerHTML="<p style=text-align:center;color:var(--gr);padding:20px;font-size:13px>暂无任务</p>"}else{el.innerHTML=list.map(function(t){return"<div class='todo-item "+(t.completed?"done":"")+"'><div class='todo-check "+(t.completed?"done":"")+"' onclick="togTodo('"+t.id+"')">"+(t.completed?"✓":"")+"</div><div class='todo-info'><div class='todo-title'>"+t.title+"</div><div class='todo-meta'>"+t.created+" · "+(t.category||"未分类")+"</div></div><div class='todo-est' onclick="setEst('"+t.id+"')">🍅"+(t.donePomos||0)+"/"+(t.est||1)+"</div><button onclick="addPomo('"+t.id+"')" style='border:none;background:var(--g);color:#fff;width:26px;height:26px;border-radius:50%;font-size:14px;cursor:pointer;flex-shrink:0'>+</button><button onclick="delTodo('"+t.id+"')" style='border:none;background:transparent;color:var(--gr);font-size:12px;cursor:pointer;flex-shrink:0'>X</button></div>"}).join("")}var total=todos.length,active=todos.filter(function(t){return !t.completed}).length,done=todos.filter(function(t){return t.completed}).length;var stats=document.getElementById("todoStats");if(stats)stats.textContent="共 "+total+" 个任务 · "+active+" 进行中 · "+done+" 已完成"}
+function rTodos(){var el=document.getElementById("todoList");var filter=document.getElementById("todoFilter").value;var list=todos.slice();if(filter==="active")list=list.filter(function(t){return !t.completed});if(filter==="done")list=list.filter(function(t){return t.completed});if(filter==="today")list=list.filter(function(t){return t.created===new Date().toISOString().slice(0,10)});if(list.length===0){el.innerHTML="<p style=text-align:center;color:var(--gr);padding:20px;font-size:13px>暂无任务</p>"}else{el.innerHTML=list.map(function(t){return"<div class='todo-item "+(t.completed?"done":"")+"'><div class='todo-check "+(t.completed?"done":"")+"' onclick='togTodo(\""+t.id+"')">"+(t.completed?"✓":"")+"</div><div class='todo-info'><div class='todo-title'>"+t.title+"</div><div class='todo-meta'>"+t.created+" · "+(t.category||"未分类")+"</div></div><div class='todo-est' onclick='setEst(\""+t.id+"')">🍅"+(t.donePomos||0)+"/"+(t.est||1)+"</div><button onclick='addPomo(\""+t.id+"')" style='border:none;background:var(--g);color:#fff;width:26px;height:26px;border-radius:50%;font-size:14px;cursor:pointer;flex-shrink:0'>+</button><button onclick='delTodo(\""+t.id+"')" style='border:none;background:transparent;color:var(--gr);font-size:12px;cursor:pointer;flex-shrink:0'>X</button></div>"}).join("")}var total=todos.length,active=todos.filter(function(t){return !t.completed}).length,done=todos.filter(function(t){return t.completed}).length;var stats=document.getElementById("todoStats");if(stats)stats.textContent="共 "+total+" 个任务 · "+active+" 进行中 · "+done+" 已完成"}
 
 var pomodoroPhase="idle";var completedRounds=0;
 function startSM(){pomodoroPhase="focus";completedRounds=0;start()}
@@ -1490,7 +1491,7 @@ function tickBreak(){elapsed++;var rem=Math.max(0,totalSec-elapsed);var m=Math.f
 
 
 // ========== TODO COLLECTIONS ==========
-var todoCollections=JSON.parse(localStorage.getItem("ftcol")||"["默认"]");
+var todoCollections=JSON.parse(localStorage.getItem("ftcol")||"[\"默认\"]");
 function addCollection(){var n=prompt("待办集名称");if(!n||!n.trim())return;todoCollections.push(n.trim());saveCol();updateColSelect();toast("待办集已创建")}
 function saveCol(){localStorage.setItem("ftcol",JSON.stringify(todoCollections))}
 function updateColSelect(){var sel=document.getElementById("todoCollection");if(!sel)return;sel.innerHTML="<option value=''>全部待办集</option>"+todoCollections.map(function(c){return"<option>"+c+"</option>"}).join("")}
@@ -1528,7 +1529,7 @@ function goTab(i){
   var titles=["🌸 阿梓的森林","👗 衣柜","✅ 习惯","🎯 目标","👤 我的"];
   var el=document.getElementById(pages[i]);if(el)el.classList.add("on");
   document.getElementById("bar").textContent=titles[i]||"阿梓的森林";
-  if(i===1)rGallery();if(i===2){rHabits();rTodos();updateColSelect();}if(i===3)rGoals();if(i===4)rProfile();
+  if(i===1){rGallery();rForest();}if(i===2){rHabits();rTodos();updateColSelect();}if(i===3)rGoals();if(i===4)rProfile();
 }
 function rProfile(){
   document.getElementById("scoreVal").textContent=score;
