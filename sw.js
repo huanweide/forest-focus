@@ -1,4 +1,4 @@
-const V='forest-v9';
+const V='forest-v10';
 const FILES=[
   './','./index.html','./manifest.json',
   // 核心图标
