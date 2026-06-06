@@ -258,6 +258,90 @@ body.mood-low{--mood-bg:linear-gradient(180deg,#eceff1,#e0e0f0)}
 .timer-dressup-wrap.thrown img.squashing{animation:squashBounce .35s ease-out}
 .timer-dressup-wrap.dragging img{transform:scale(1.12)}
 
+
+/* ===== 阿梓小屋家园 ===== */
+.timer-house {
+  position: absolute;
+  bottom: 90px;
+  left: 50%;
+  transform: translateX(-50%);
+  text-align: center;
+  z-index: 5;
+  pointer-events: none;
+}
+.house-roof {
+  font-size: 36px;
+  line-height: 1;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,.1));
+  animation: houseFloat 4s ease-in-out infinite;
+}
+.house-base {
+  display: flex;
+  justify-content: center;
+  gap: 4px;
+  margin-top: -4px;
+}
+.house-door, .house-window {
+  font-size: 20px;
+  opacity: .6;
+}
+@keyframes houseFloat {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-3px); }
+}
+
+/* ===== 计时页阿梓：规律可爱运动（参考 mo.js 缓动 + CSS 动画） ===== */
+@keyframes azusaIdle {
+  0%, 100% { transform: translateY(0) scale(1); }
+  25% { transform: translateY(-4px) scale(1.03); }
+  50% { transform: translateY(0) scale(1); }
+  75% { transform: translateY(-2px) scale(1.01); }
+}
+@keyframes azusaBounce {
+  0% { transform: translateY(0) scale(1); }
+  30% { transform: translateY(-18px) scale(1.15); }
+  50% { transform: translateY(-6px) scale(0.95); }
+  70% { transform: translateY(0) scale(1.05); }
+  85% { transform: translateY(-3px) scale(0.98); }
+  100% { transform: translateY(0) scale(1); }
+}
+@keyframes azusaSparkle {
+  0% { opacity: 1; transform: translate(0,0) scale(0); }
+  50% { opacity: 1; transform: translate(var(--sx),var(--sy)) scale(1); }
+  100% { opacity: 0; transform: translate(var(--sx),calc(var(--sy)*2)) scale(0); }
+}
+.timer-dressup-wrap {
+  animation: azusaIdle 3s ease-in-out infinite;
+  transition: none;
+}
+.timer-dressup-wrap.bouncing {
+  animation: azusaBounce .6s cubic-bezier(.34,1.56,.64,1);
+}
+.timer-dressup-wrap.bouncing::after {
+  content: '';
+  position: absolute;
+  bottom: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 40px;
+  height: 8px;
+  background: rgba(124,92,191,.15);
+  border-radius: 50%;
+  animation: shadowPulse .6s ease-out;
+}
+@keyframes shadowPulse {
+  0% { transform: translateX(-50%) scale(0.5); opacity: 0; }
+  50% { transform: translateX(-50%) scale(1.2); opacity: .4; }
+  100% { transform: translateX(-50%) scale(1); opacity: 0; }
+}
+/* 风铃粒子 */
+.sparkle-particle {
+  position: absolute;
+  pointer-events: none;
+  font-size: 18px;
+  z-index: 60;
+  animation: azusaSparkle .7s ease-out forwards;
+}
 /* === dressup.css === */
 /* dressup.css - 衣柜、阿梓2D角色系统、分层展示 */
 /* Tree Gallery */
@@ -1118,7 +1202,15 @@ body.dark .azusa-chibi{
   <div class="face-bubble" id="azusaFace">😊</div>
   <div class="speech-bubble" id="speechBubble" style="display:none"></div>
 </div>
-<!-- 可拖拽换装阿梓 -->
+<!-- 阿梓的小屋家园 -->
+<div class="timer-house" id="timerHouse">
+  <div class="house-roof">🏠</div>
+  <div class="house-base">
+    <div class="house-door">🚪</div>
+    <div class="house-window">🪟</div>
+  </div>
+</div>
+<!-- 计时页阿梓（规律可爱运动） -->
 <div class="timer-dressup-wrap" id="timerDressupWrap">
   <img id="timerDressupImg" src="src/images/azusa/outfits/jk_uniform.png" alt="阿梓" style="width:140px;display:block;pointer-events:none">
   <div class="azusa-bubble" id="timerDressupBubble" style="display:none"></div>
@@ -4828,75 +4920,64 @@ const SFX = {
 
 // 全局静音开关
 
-// ==================== 增强音效库（参考 Tone.js 合成器音色模式） ====================
-// 轻触音效 - 短促的叮咚声（阿梓被点击时）
+// ==================== 风铃音效库（参考 Tone.js 合成器音色 · 可爱风格） ====================
+// 轻触音效 - 清脆风铃声（阿梓被点击时）
 function playTapSound() {
   var ctx = getAudioCtx(); if (!ctx || _audioMuted) return;
   try {
     var osc = ctx.createOscillator();
     var gain = ctx.createGain();
     osc.type = 'sine';
-    osc.frequency.setValueAtTime(880, ctx.currentTime);
-    osc.frequency.exponentialRampToValueAtTime(1200, ctx.currentTime + 0.05);
-    osc.frequency.exponentialRampToValueAtTime(600, ctx.currentTime + 0.15);
-    gain.gain.setValueAtTime(0.15, ctx.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.2);
+    osc.frequency.setValueAtTime(1318, ctx.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(1760, ctx.currentTime + 0.06);
+    osc.frequency.exponentialRampToValueAtTime(1047, ctx.currentTime + 0.3);
+    gain.gain.setValueAtTime(0.1, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.5);
     osc.connect(gain); gain.connect(ctx.destination);
-    osc.start(ctx.currentTime); osc.stop(ctx.currentTime + 0.2);
+    osc.start(ctx.currentTime); osc.stop(ctx.currentTime + 0.5);
   } catch(e) {}
 }
 
-// 弹出音效 - 清脆的弹出声（表情粒子弹出时）
+// 弹出音效 - 柔和风铃串音（表情粒子弹出时）
 function playPopSound() {
   var ctx = getAudioCtx(); if (!ctx || _audioMuted) return;
   try {
-    var osc = ctx.createOscillator();
-    var gain = ctx.createGain();
-    osc.type = 'triangle';
-    osc.frequency.setValueAtTime(600, ctx.currentTime);
-    osc.frequency.exponentialRampToValueAtTime(2000, ctx.currentTime + 0.04);
-    gain.gain.setValueAtTime(0.12, ctx.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.15);
-    osc.connect(gain); gain.connect(ctx.destination);
-    osc.start(ctx.currentTime); osc.stop(ctx.currentTime + 0.15);
+    [880, 1100, 1320].forEach(function(f, i) {
+      var osc = ctx.createOscillator();
+      var gain = ctx.createGain();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(f, ctx.currentTime + i*0.06);
+      gain.gain.setValueAtTime(0.06, ctx.currentTime + i*0.06);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + i*0.06 + 0.4);
+      osc.connect(gain); gain.connect(ctx.destination);
+      osc.start(ctx.currentTime + i*0.06);
+      osc.stop(ctx.currentTime + i*0.06 + 0.4);
+    });
   } catch(e) {}
 }
 
-// 投掷音效 - 上扬的滑音（阿梓被扔出去时）
-function playThrowSound() {
-  var ctx = getAudioCtx(); if (!ctx || _audioMuted) return;
-  try {
-    var osc = ctx.createOscillator();
-    var gain = ctx.createGain();
-    osc.type = 'sine';
-    osc.frequency.setValueAtTime(400, ctx.currentTime);
-    osc.frequency.exponentialRampToValueAtTime(900, ctx.currentTime + 0.2);
-    gain.gain.setValueAtTime(0.25, ctx.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.4);
-    osc.connect(gain); gain.connect(ctx.destination);
-    osc.start(ctx.currentTime); osc.stop(ctx.currentTime + 0.4);
-  } catch(e) {}
-}
+// 投掷音效 → 改为柔和滑音
+function playThrowSound() { playTapSound(); }
 
-// 落地碰撞音效（阿梓撞到边界时）
+// 碰撞音效 → 改为轻碰叮声
 function playBounceSound() {
   var ctx = getAudioCtx(); if (!ctx || _audioMuted) return;
   try {
     var osc = ctx.createOscillator();
     var gain = ctx.createGain();
-    osc.type = 'square';
-    osc.frequency.setValueAtTime(200, ctx.currentTime);
-    osc.frequency.exponentialRampToValueAtTime(80, ctx.currentTime + 0.08);
+    osc.type = 'triangle';
+    osc.frequency.setValueAtTime(660, ctx.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(440, ctx.currentTime + 0.15);
     gain.gain.setValueAtTime(0.08, ctx.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.1);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.25);
     osc.connect(gain); gain.connect(ctx.destination);
-    osc.start(ctx.currentTime); osc.stop(ctx.currentTime + 0.1);
+    osc.start(ctx.currentTime); osc.stop(ctx.currentTime + 0.25);
   } catch(e) {}
 }
 
-// 成就解锁音效 - 上升的琶音
+// 成就解锁音效 - 上升风铃琶音
 function playAchievementSound() {
-  playNotes([523, 659, 784, 1047], 0.12, 0.08, 'triangle', 0.1);
+  playNotes([1047, 1318, 1568, 2093], 0.15, 0.1, 'sine', 0.08);
 }
 function toggleMute() {
   _audioMuted = !_audioMuted;
@@ -6532,112 +6613,56 @@ function initTimerDressup() {
   var wrap = document.getElementById('timerDressupWrap');
   if (!wrap) return;
 
+  // 规律可爱运动：CSS动画自动驱动（参考 mo.js 缓动模式）
+  wrap.style.position = 'relative';
+  wrap.style.left = '50%';
+  wrap.style.top = '60px';
+  wrap.style.transform = 'translateX(-50%)';
+  wrap.style.cursor = 'pointer';
+
+  // 点击：可爱弹跳 + 风铃粒子 + 铃铛音效
+  var _lastClick = 0;
   wrap.addEventListener('pointerdown', function(e) {
     e.preventDefault(); e.stopPropagation();
-    if (timerDressupAnimId) { cancelAnimationFrame(timerDressupAnimId); timerDressupAnimId = null; }
-    timerDressupState.dragging = true;
-    timerDressupState.flying = false;
-    timerDressupState.settled = false;
-    timerDressupState.startX = e.clientX;
-    timerDressupState.startY = e.clientY;
-    timerDressupState.origX = timerDressupState.x;
-    timerDressupState.origY = timerDressupState.y;
-    timerDressupState.lastX = e.clientX;
-    timerDressupState.lastY = e.clientY;
-    timerDressupState.lastT = Date.now();
-    timerDressupState.velHistory = [];
-    wrap.classList.add('dragging');
-    wrap.classList.remove('thrown');
-    wrap.setPointerCapture(e.pointerId);
-  });
+    var now = Date.now();
+    if (now - _lastClick < 600) return;
+    _lastClick = now;
 
-  wrap.addEventListener('pointermove', function(e) {
-    if (!timerDressupState.dragging) return;
-    var now3 = Date.now();
-    var h4 = timerDressupState.velHistory;
-    h4.push({x:e.clientX, y:e.clientY, t:now3});
-    if (h4.length > PHYSICS.VEL_SMOOTH) h4.shift();
-    timerDressupState.x = timerDressupState.origX + (e.clientX - timerDressupState.startX);
-    timerDressupState.y = timerDressupState.origY + (e.clientY - timerDressupState.startY);
-    timerDressupState.lastX = e.clientX;
-    timerDressupState.lastY = e.clientY;
-    timerDressupState.lastT = now3;
-    wrap.style.transform = 'translate(' + timerDressupState.x + 'px,' + timerDressupState.y + 'px)';
-  });
+    // 弹跳动画
+    wrap.classList.remove('bouncing');
+    void wrap.offsetWidth;
+    wrap.classList.add('bouncing');
+    setTimeout(function() { wrap.classList.remove('bouncing'); }, 600);
 
-  var _lastTimerTapTime = 0;
-  wrap.addEventListener('pointerup', function(e) {
-    var dx = Math.abs(e.clientX - timerDressupState.startX);
-    var dy = Math.abs(e.clientY - timerDressupState.startY);
-    if (dx < 5 && dy < 5) {
-      // 冷却：500ms内重复点击不响应
-      var _now = Date.now();
-      if (_now - _lastTimerTapTime < 500) return;
-      _lastTimerTapTime = _now;
-      timerDressupState.dragging = false;
-      timerDressupState.settled = true;
-      wrap.classList.remove('dragging');
-      // 多样化随机对话(10条)
-      var lines = ['今天穿这件~','好看吧？','斯瑞选的！','美美哒~','换新装啦','喜欢这件吗？','镜子镜子谁最美~','嘿嘿新衣服！','闪亮登场✨','阿梓今天也很可爱'];
-      var b = document.getElementById('timerDressupBubble');
-      if (b) { b.textContent = lines[Math.floor(Math.random()*lines.length)]; b.style.display='block'; clearTimeout(b._t); b._t=setTimeout(function(){b.style.display='none';},2500); }
-      // 大号表情包弹出
-      var bigEmoji = document.createElement('div');
-      bigEmoji.textContent = ['😊','💕','✨','🥰','😘','💖','🎀','👑'][Math.floor(Math.random()*8)];
-      bigEmoji.style.cssText = 'position:fixed;font-size:48px;pointer-events:none;z-index:999;transition:all .6s cubic-bezier(.25,.8,.25,1.2);';
-      var rect = wrap.getBoundingClientRect();
-      bigEmoji.style.left = (rect.left+rect.width/2-24)+'px';
-      bigEmoji.style.top = (rect.top-20)+'px';
-      bigEmoji.style.opacity = '1';
-      bigEmoji.style.transform = 'scale(1)';
-      document.body.appendChild(bigEmoji);
-      requestAnimationFrame(function(){
-        bigEmoji.style.opacity='0';
-        bigEmoji.style.transform='translateY(-70px) scale(1.6)';
-      });
-      setTimeout(function(){bigEmoji.remove();},700);
-      // 粒子散开
-      var cx = rect.left + rect.width/2, cy = rect.top;
-      var emojis = ['💕','✨','🌸','💖','😊','👗','🎀','💝','💫','🌷'];
-      for (var i=0;i<6;i++) {
-        var p=document.createElement('span');
-        p.className='chibi-emoji-particle';
-        p.textContent=emojis[Math.floor(Math.random()*emojis.length)];
-        p.style.left=cx+'px';p.style.top=cy+'px';
-        p.style.setProperty('--dx',(Math.random()-0.5)*140+'px');
-        p.style.setProperty('--dy',-(50+Math.random()*100)+'px');
-        p.style.animationDuration=(0.5+Math.random()*0.6)+'s';
-        document.body.appendChild(p);
-        setTimeout(function(){p.remove();},1000);
-      }
-      if (SFX&&SFX.click) SFX.click();
-      return;
+    // 风铃音效
+    if (typeof playTapSound === 'function') playTapSound();
+
+    // 风铃粒子（参考 tsParticles 轻量粒子）
+    var rect = wrap.getBoundingClientRect();
+    var cx = rect.left + rect.width/2;
+    var cy = rect.top + rect.height/3;
+    var sparkles = ['✨','🌟','💫','🫧','🌸','💖','🎀'];
+    for (var i = 0; i < 4; i++) {
+      var p = document.createElement('span');
+      p.className = 'sparkle-particle';
+      p.textContent = sparkles[Math.floor(Math.random() * sparkles.length)];
+      p.style.left = cx + 'px';
+      p.style.top = cy + 'px';
+      p.style.setProperty('--sx', (Math.random() - 0.5) * 60 + 'px');
+      p.style.setProperty('--sy', -(30 + Math.random() * 40) + 'px');
+      document.body.appendChild(p);
+      setTimeout(function() { p.remove(); }, 700);
     }
-    // 投掷——Verlet速度平滑
-    timerDressupState.dragging = false;
-    wrap.classList.remove('dragging');
-    var h5 = timerDressupState.velHistory;
-    var throwVX3 = 0, throwVY3 = 0;
-    if (h5.length >= 2) {
-      var first3 = h5[0], last3 = h5[h5.length-1];
-      var totalDt3 = Math.max(1, last3.t - first3.t);
-      throwVX3 = (last3.x - first3.x) / totalDt3 * PHYSICS.THROW_MULT;
-      throwVY3 = (last3.y - first3.y) / totalDt3 * PHYSICS.THROW_MULT;
-    } else {
-      var dt3 = Math.max(1, Date.now() - timerDressupState.lastT);
-      throwVX3 = (e.clientX - timerDressupState.lastX) / dt3 * PHYSICS.THROW_MULT;
-      throwVY3 = (e.clientY - timerDressupState.lastY) / dt3 * PHYSICS.THROW_MULT;
+
+    // 随机对话
+    var lines = ['嘻嘻~','在呢！','好舒服呀~','今天也要加油哦！','斯瑞最棒了！','叮咚~','风铃好听吗？','小屋子好温馨~'];
+    var b = document.getElementById('timerDressupBubble');
+    if (b) {
+      b.textContent = lines[Math.floor(Math.random() * lines.length)];
+      b.style.display = 'block';
+      clearTimeout(b._t);
+      b._t = setTimeout(function() { b.style.display = 'none'; }, 2500);
     }
-    throwVX3 = Math.max(-PHYSICS.MAX_SPEED, Math.min(PHYSICS.MAX_SPEED, throwVX3));
-    throwVY3 = Math.max(-PHYSICS.MAX_SPEED, Math.min(PHYSICS.MAX_SPEED, throwVY3));
-    timerDressupState.oldX = timerDressupState.x - throwVX3;
-    timerDressupState.oldY = timerDressupState.y - throwVY3;
-    timerDressupState.velHistory = [];
-    wrap.style.setProperty('--scl','1.18');
-    timerDressupState.flying = true;
-    timerDressupState.settled = false;
-    wrap.classList.add('thrown');
-    startTimerDressupPhysics();
   });
 }
 

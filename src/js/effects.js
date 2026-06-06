@@ -119,75 +119,64 @@ const SFX = {
 
 // 全局静音开关
 
-// ==================== 增强音效库（参考 Tone.js 合成器音色模式） ====================
-// 轻触音效 - 短促的叮咚声（阿梓被点击时）
+// ==================== 风铃音效库（参考 Tone.js 合成器音色 · 可爱风格） ====================
+// 轻触音效 - 清脆风铃声（阿梓被点击时）
 function playTapSound() {
   var ctx = getAudioCtx(); if (!ctx || _audioMuted) return;
   try {
     var osc = ctx.createOscillator();
     var gain = ctx.createGain();
     osc.type = 'sine';
-    osc.frequency.setValueAtTime(880, ctx.currentTime);
-    osc.frequency.exponentialRampToValueAtTime(1200, ctx.currentTime + 0.05);
-    osc.frequency.exponentialRampToValueAtTime(600, ctx.currentTime + 0.15);
-    gain.gain.setValueAtTime(0.15, ctx.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.2);
+    osc.frequency.setValueAtTime(1318, ctx.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(1760, ctx.currentTime + 0.06);
+    osc.frequency.exponentialRampToValueAtTime(1047, ctx.currentTime + 0.3);
+    gain.gain.setValueAtTime(0.1, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.5);
     osc.connect(gain); gain.connect(ctx.destination);
-    osc.start(ctx.currentTime); osc.stop(ctx.currentTime + 0.2);
+    osc.start(ctx.currentTime); osc.stop(ctx.currentTime + 0.5);
   } catch(e) {}
 }
 
-// 弹出音效 - 清脆的弹出声（表情粒子弹出时）
+// 弹出音效 - 柔和风铃串音（表情粒子弹出时）
 function playPopSound() {
   var ctx = getAudioCtx(); if (!ctx || _audioMuted) return;
   try {
-    var osc = ctx.createOscillator();
-    var gain = ctx.createGain();
-    osc.type = 'triangle';
-    osc.frequency.setValueAtTime(600, ctx.currentTime);
-    osc.frequency.exponentialRampToValueAtTime(2000, ctx.currentTime + 0.04);
-    gain.gain.setValueAtTime(0.12, ctx.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.15);
-    osc.connect(gain); gain.connect(ctx.destination);
-    osc.start(ctx.currentTime); osc.stop(ctx.currentTime + 0.15);
+    [880, 1100, 1320].forEach(function(f, i) {
+      var osc = ctx.createOscillator();
+      var gain = ctx.createGain();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(f, ctx.currentTime + i*0.06);
+      gain.gain.setValueAtTime(0.06, ctx.currentTime + i*0.06);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + i*0.06 + 0.4);
+      osc.connect(gain); gain.connect(ctx.destination);
+      osc.start(ctx.currentTime + i*0.06);
+      osc.stop(ctx.currentTime + i*0.06 + 0.4);
+    });
   } catch(e) {}
 }
 
-// 投掷音效 - 上扬的滑音（阿梓被扔出去时）
-function playThrowSound() {
-  var ctx = getAudioCtx(); if (!ctx || _audioMuted) return;
-  try {
-    var osc = ctx.createOscillator();
-    var gain = ctx.createGain();
-    osc.type = 'sine';
-    osc.frequency.setValueAtTime(400, ctx.currentTime);
-    osc.frequency.exponentialRampToValueAtTime(900, ctx.currentTime + 0.2);
-    gain.gain.setValueAtTime(0.25, ctx.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.4);
-    osc.connect(gain); gain.connect(ctx.destination);
-    osc.start(ctx.currentTime); osc.stop(ctx.currentTime + 0.4);
-  } catch(e) {}
-}
+// 投掷音效 → 改为柔和滑音
+function playThrowSound() { playTapSound(); }
 
-// 落地碰撞音效（阿梓撞到边界时）
+// 碰撞音效 → 改为轻碰叮声
 function playBounceSound() {
   var ctx = getAudioCtx(); if (!ctx || _audioMuted) return;
   try {
     var osc = ctx.createOscillator();
     var gain = ctx.createGain();
-    osc.type = 'square';
-    osc.frequency.setValueAtTime(200, ctx.currentTime);
-    osc.frequency.exponentialRampToValueAtTime(80, ctx.currentTime + 0.08);
+    osc.type = 'triangle';
+    osc.frequency.setValueAtTime(660, ctx.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(440, ctx.currentTime + 0.15);
     gain.gain.setValueAtTime(0.08, ctx.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.1);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.25);
     osc.connect(gain); gain.connect(ctx.destination);
-    osc.start(ctx.currentTime); osc.stop(ctx.currentTime + 0.1);
+    osc.start(ctx.currentTime); osc.stop(ctx.currentTime + 0.25);
   } catch(e) {}
 }
 
-// 成就解锁音效 - 上升的琶音
+// 成就解锁音效 - 上升风铃琶音
 function playAchievementSound() {
-  playNotes([523, 659, 784, 1047], 0.12, 0.08, 'triangle', 0.1);
+  playNotes([1047, 1318, 1568, 2093], 0.15, 0.1, 'sine', 0.08);
 }
 function toggleMute() {
   _audioMuted = !_audioMuted;

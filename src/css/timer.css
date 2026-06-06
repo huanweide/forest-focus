@@ -83,4 +83,90 @@
 .timer-dressup-wrap.dragging{cursor:grabbing;z-index:100;filter:drop-shadow(0 6px 16px rgba(0,0,0,.35))}
 .timer-dressup-wrap.thrown{z-index:100}
 .timer-dressup-wrap.thrown img{transform:rotate(var(--rot,0deg)) scale(var(--scl,1))}
-.timer-dressup-wrap.dragging img{transform:scale(1.08)}
+.timer-dressup-wrap.thrown img.squashing{animation:squashBounce .35s ease-out}
+.timer-dressup-wrap.dragging img{transform:scale(1.12)}
+
+
+/* ===== 阿梓小屋家园 ===== */
+.timer-house {
+  position: absolute;
+  bottom: 90px;
+  left: 50%;
+  transform: translateX(-50%);
+  text-align: center;
+  z-index: 5;
+  pointer-events: none;
+}
+.house-roof {
+  font-size: 36px;
+  line-height: 1;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,.1));
+  animation: houseFloat 4s ease-in-out infinite;
+}
+.house-base {
+  display: flex;
+  justify-content: center;
+  gap: 4px;
+  margin-top: -4px;
+}
+.house-door, .house-window {
+  font-size: 20px;
+  opacity: .6;
+}
+@keyframes houseFloat {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-3px); }
+}
+
+/* ===== 计时页阿梓：规律可爱运动（参考 mo.js 缓动 + CSS 动画） ===== */
+@keyframes azusaIdle {
+  0%, 100% { transform: translateY(0) scale(1); }
+  25% { transform: translateY(-4px) scale(1.03); }
+  50% { transform: translateY(0) scale(1); }
+  75% { transform: translateY(-2px) scale(1.01); }
+}
+@keyframes azusaBounce {
+  0% { transform: translateY(0) scale(1); }
+  30% { transform: translateY(-18px) scale(1.15); }
+  50% { transform: translateY(-6px) scale(0.95); }
+  70% { transform: translateY(0) scale(1.05); }
+  85% { transform: translateY(-3px) scale(0.98); }
+  100% { transform: translateY(0) scale(1); }
+}
+@keyframes azusaSparkle {
+  0% { opacity: 1; transform: translate(0,0) scale(0); }
+  50% { opacity: 1; transform: translate(var(--sx),var(--sy)) scale(1); }
+  100% { opacity: 0; transform: translate(var(--sx),calc(var(--sy)*2)) scale(0); }
+}
+.timer-dressup-wrap {
+  animation: azusaIdle 3s ease-in-out infinite;
+  transition: none;
+}
+.timer-dressup-wrap.bouncing {
+  animation: azusaBounce .6s cubic-bezier(.34,1.56,.64,1);
+}
+.timer-dressup-wrap.bouncing::after {
+  content: '';
+  position: absolute;
+  bottom: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 40px;
+  height: 8px;
+  background: rgba(124,92,191,.15);
+  border-radius: 50%;
+  animation: shadowPulse .6s ease-out;
+}
+@keyframes shadowPulse {
+  0% { transform: translateX(-50%) scale(0.5); opacity: 0; }
+  50% { transform: translateX(-50%) scale(1.2); opacity: .4; }
+  100% { transform: translateX(-50%) scale(1); opacity: 0; }
+}
+/* 风铃粒子 */
+.sparkle-particle {
+  position: absolute;
+  pointer-events: none;
+  font-size: 18px;
+  z-index: 60;
+  animation: azusaSparkle .7s ease-out forwards;
+}

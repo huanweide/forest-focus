@@ -803,112 +803,56 @@ function initTimerDressup() {
   var wrap = document.getElementById('timerDressupWrap');
   if (!wrap) return;
 
+  // 规律可爱运动：CSS动画自动驱动（参考 mo.js 缓动模式）
+  wrap.style.position = 'relative';
+  wrap.style.left = '50%';
+  wrap.style.top = '60px';
+  wrap.style.transform = 'translateX(-50%)';
+  wrap.style.cursor = 'pointer';
+
+  // 点击：可爱弹跳 + 风铃粒子 + 铃铛音效
+  var _lastClick = 0;
   wrap.addEventListener('pointerdown', function(e) {
     e.preventDefault(); e.stopPropagation();
-    if (timerDressupAnimId) { cancelAnimationFrame(timerDressupAnimId); timerDressupAnimId = null; }
-    timerDressupState.dragging = true;
-    timerDressupState.flying = false;
-    timerDressupState.settled = false;
-    timerDressupState.startX = e.clientX;
-    timerDressupState.startY = e.clientY;
-    timerDressupState.origX = timerDressupState.x;
-    timerDressupState.origY = timerDressupState.y;
-    timerDressupState.lastX = e.clientX;
-    timerDressupState.lastY = e.clientY;
-    timerDressupState.lastT = Date.now();
-    timerDressupState.velHistory = [];
-    wrap.classList.add('dragging');
-    wrap.classList.remove('thrown');
-    wrap.setPointerCapture(e.pointerId);
-  });
+    var now = Date.now();
+    if (now - _lastClick < 600) return;
+    _lastClick = now;
 
-  wrap.addEventListener('pointermove', function(e) {
-    if (!timerDressupState.dragging) return;
-    var now3 = Date.now();
-    var h4 = timerDressupState.velHistory;
-    h4.push({x:e.clientX, y:e.clientY, t:now3});
-    if (h4.length > PHYSICS.VEL_SMOOTH) h4.shift();
-    timerDressupState.x = timerDressupState.origX + (e.clientX - timerDressupState.startX);
-    timerDressupState.y = timerDressupState.origY + (e.clientY - timerDressupState.startY);
-    timerDressupState.lastX = e.clientX;
-    timerDressupState.lastY = e.clientY;
-    timerDressupState.lastT = now3;
-    wrap.style.transform = 'translate(' + timerDressupState.x + 'px,' + timerDressupState.y + 'px)';
-  });
+    // 弹跳动画
+    wrap.classList.remove('bouncing');
+    void wrap.offsetWidth;
+    wrap.classList.add('bouncing');
+    setTimeout(function() { wrap.classList.remove('bouncing'); }, 600);
 
-  var _lastTimerTapTime = 0;
-  wrap.addEventListener('pointerup', function(e) {
-    var dx = Math.abs(e.clientX - timerDressupState.startX);
-    var dy = Math.abs(e.clientY - timerDressupState.startY);
-    if (dx < 5 && dy < 5) {
-      // 冷却：500ms内重复点击不响应
-      var _now = Date.now();
-      if (_now - _lastTimerTapTime < 500) return;
-      _lastTimerTapTime = _now;
-      timerDressupState.dragging = false;
-      timerDressupState.settled = true;
-      wrap.classList.remove('dragging');
-      // 多样化随机对话(10条)
-      var lines = ['今天穿这件~','好看吧？','斯瑞选的！','美美哒~','换新装啦','喜欢这件吗？','镜子镜子谁最美~','嘿嘿新衣服！','闪亮登场✨','阿梓今天也很可爱'];
-      var b = document.getElementById('timerDressupBubble');
-      if (b) { b.textContent = lines[Math.floor(Math.random()*lines.length)]; b.style.display='block'; clearTimeout(b._t); b._t=setTimeout(function(){b.style.display='none';},2500); }
-      // 大号表情包弹出
-      var bigEmoji = document.createElement('div');
-      bigEmoji.textContent = ['😊','💕','✨','🥰','😘','💖','🎀','👑'][Math.floor(Math.random()*8)];
-      bigEmoji.style.cssText = 'position:fixed;font-size:48px;pointer-events:none;z-index:999;transition:all .6s cubic-bezier(.25,.8,.25,1.2);';
-      var rect = wrap.getBoundingClientRect();
-      bigEmoji.style.left = (rect.left+rect.width/2-24)+'px';
-      bigEmoji.style.top = (rect.top-20)+'px';
-      bigEmoji.style.opacity = '1';
-      bigEmoji.style.transform = 'scale(1)';
-      document.body.appendChild(bigEmoji);
-      requestAnimationFrame(function(){
-        bigEmoji.style.opacity='0';
-        bigEmoji.style.transform='translateY(-70px) scale(1.6)';
-      });
-      setTimeout(function(){bigEmoji.remove();},700);
-      // 粒子散开
-      var cx = rect.left + rect.width/2, cy = rect.top;
-      var emojis = ['💕','✨','🌸','💖','😊','👗','🎀','💝','💫','🌷'];
-      for (var i=0;i<6;i++) {
-        var p=document.createElement('span');
-        p.className='chibi-emoji-particle';
-        p.textContent=emojis[Math.floor(Math.random()*emojis.length)];
-        p.style.left=cx+'px';p.style.top=cy+'px';
-        p.style.setProperty('--dx',(Math.random()-0.5)*140+'px');
-        p.style.setProperty('--dy',-(50+Math.random()*100)+'px');
-        p.style.animationDuration=(0.5+Math.random()*0.6)+'s';
-        document.body.appendChild(p);
-        setTimeout(function(){p.remove();},1000);
-      }
-      if (SFX&&SFX.click) SFX.click();
-      return;
+    // 风铃音效
+    if (typeof playTapSound === 'function') playTapSound();
+
+    // 风铃粒子（参考 tsParticles 轻量粒子）
+    var rect = wrap.getBoundingClientRect();
+    var cx = rect.left + rect.width/2;
+    var cy = rect.top + rect.height/3;
+    var sparkles = ['✨','🌟','💫','🫧','🌸','💖','🎀'];
+    for (var i = 0; i < 4; i++) {
+      var p = document.createElement('span');
+      p.className = 'sparkle-particle';
+      p.textContent = sparkles[Math.floor(Math.random() * sparkles.length)];
+      p.style.left = cx + 'px';
+      p.style.top = cy + 'px';
+      p.style.setProperty('--sx', (Math.random() - 0.5) * 60 + 'px');
+      p.style.setProperty('--sy', -(30 + Math.random() * 40) + 'px');
+      document.body.appendChild(p);
+      setTimeout(function() { p.remove(); }, 700);
     }
-    // 投掷——Verlet速度平滑
-    timerDressupState.dragging = false;
-    wrap.classList.remove('dragging');
-    var h5 = timerDressupState.velHistory;
-    var throwVX3 = 0, throwVY3 = 0;
-    if (h5.length >= 2) {
-      var first3 = h5[0], last3 = h5[h5.length-1];
-      var totalDt3 = Math.max(1, last3.t - first3.t);
-      throwVX3 = (last3.x - first3.x) / totalDt3 * PHYSICS.THROW_MULT;
-      throwVY3 = (last3.y - first3.y) / totalDt3 * PHYSICS.THROW_MULT;
-    } else {
-      var dt3 = Math.max(1, Date.now() - timerDressupState.lastT);
-      throwVX3 = (e.clientX - timerDressupState.lastX) / dt3 * PHYSICS.THROW_MULT;
-      throwVY3 = (e.clientY - timerDressupState.lastY) / dt3 * PHYSICS.THROW_MULT;
+
+    // 随机对话
+    var lines = ['嘻嘻~','在呢！','好舒服呀~','今天也要加油哦！','斯瑞最棒了！','叮咚~','风铃好听吗？','小屋子好温馨~'];
+    var b = document.getElementById('timerDressupBubble');
+    if (b) {
+      b.textContent = lines[Math.floor(Math.random() * lines.length)];
+      b.style.display = 'block';
+      clearTimeout(b._t);
+      b._t = setTimeout(function() { b.style.display = 'none'; }, 2500);
     }
-    throwVX3 = Math.max(-PHYSICS.MAX_SPEED, Math.min(PHYSICS.MAX_SPEED, throwVX3));
-    throwVY3 = Math.max(-PHYSICS.MAX_SPEED, Math.min(PHYSICS.MAX_SPEED, throwVY3));
-    timerDressupState.oldX = timerDressupState.x - throwVX3;
-    timerDressupState.oldY = timerDressupState.y - throwVY3;
-    timerDressupState.velHistory = [];
-    wrap.style.setProperty('--scl','1.18');
-    timerDressupState.flying = true;
-    timerDressupState.settled = false;
-    wrap.classList.add('thrown');
-    startTimerDressupPhysics();
   });
 }
 

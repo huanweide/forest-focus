@@ -21,7 +21,7 @@
 </head>
 <body>
 
-<div class="appbar" id="bar"><span class="mood-face azusa-live" id="moodIcon" style="font-size:22px;margin-right:4px">😊</span>阿梓的森林<span style="float:right;display:flex;align-items:center;gap:6px"><span class="coin-display" id="coinDisplay" style="font-size:11px">🪙<span id="coinVal">0</span></span><span style="cursor:pointer;font-size:18px" onclick="toggleDark()" id="darkIcon">🌙</span></span></div>
+<div class="appbar" id="bar"><span class="mood-face azusa-live" id="moodIcon" style="font-size:22px;margin-right:4px">😊</span><span id="barTitle">阿梓的森林</span><span style="float:right;display:flex;align-items:center;gap:6px"><span class="coin-display" id="coinDisplay" style="font-size:11px">🪙<span id="coinVal">0</span></span><span style="cursor:pointer;font-size:18px" onclick="toggleDark()" id="darkIcon">🌙</span></span></div>
 
 <!-- ===== CHAT FAB ===== -->
 <button class="chat-fab" id="chatFab" onclick="toggleChat()">💬<span class="badge" id="chatBadge" style="display:none">1</span></button>
@@ -129,7 +129,15 @@
   <div class="face-bubble" id="azusaFace">😊</div>
   <div class="speech-bubble" id="speechBubble" style="display:none"></div>
 </div>
-<!-- 可拖拽换装阿梓 -->
+<!-- 阿梓的小屋家园 -->
+<div class="timer-house" id="timerHouse">
+  <div class="house-roof">🏠</div>
+  <div class="house-base">
+    <div class="house-door">🚪</div>
+    <div class="house-window">🪟</div>
+  </div>
+</div>
+<!-- 计时页阿梓（规律可爱运动） -->
 <div class="timer-dressup-wrap" id="timerDressupWrap">
   <img id="timerDressupImg" src="src/images/azusa/outfits/jk_uniform.png" alt="阿梓" style="width:140px;display:block;pointer-events:none">
   <div class="azusa-bubble" id="timerDressupBubble" style="display:none"></div>
@@ -266,14 +274,15 @@
 <!-- ===== REWARD BOX ===== -->
 <div class="box-overlay hidden" id="boxOverlay"><div class="box"><div class="chest">🎁</div><div class="reward" id="boxReward"></div><div class="reward-text" id="boxText"></div><button class="box-btn" onclick="closeBox()">收下！</button></div></div>
 
-<div class="tabbar">
-<div class="tab on" onclick="goTab(0)"><span class="ic">🏠</span>首页</div>
-<div class="tab" onclick="goTab(1)"><span class="ic">⏱</span>计时</div>
-<div class="tab" onclick="goTab(2)"><span class="ic">👗</span>衣柜</div>
-<div class="tab" onclick="goTab(3)"><span class="ic">✅</span>习惯</div>
-<div class="tab" onclick="goTab(4)"><span class="ic">🎯</span>目标</div>
-<div class="tab" onclick="goTab(5)"><span class="ic">👤</span>我的</div>
+<div class="tabbar" id="tabbar">
+<div class="tab on" onclick="try{goTab(0)}catch(e){document.getElementById('dbg').textContent+=' E0:'+e.message}" onpointerdown="this.style.outline='2px solid red';document.getElementById('dbg').textContent='TAB0-POINTER-DOWN'" style="z-index:999!important"><span class="ic">🏠</span>首页</div>
+<div class="tab" onclick="try{goTab(1)}catch(e){document.getElementById('dbg').textContent+=' E1:'+e.message}" style="z-index:999!important"><span class="ic">⏱</span>计时</div>
+<div class="tab" onclick="try{goTab(2)}catch(e){document.getElementById('dbg').textContent+=' E2:'+e.message}" style="z-index:999!important"><span class="ic">👗</span>衣柜</div>
+<div class="tab" onclick="try{goTab(3)}catch(e){document.getElementById('dbg').textContent+=' E3:'+e.message}" style="z-index:999!important"><span class="ic">✅</span>习惯</div>
+<div class="tab" onclick="try{goTab(4)}catch(e){document.getElementById('dbg').textContent+=' E4:'+e.message}" style="z-index:999!important"><span class="ic">🎯</span>目标</div>
+<div class="tab" onclick="try{goTab(5)}catch(e){document.getElementById('dbg').textContent+=' E5:'+e.message}" style="z-index:999!important"><span class="ic">👤</span>我的</div>
 </div>
+<div id="dbg" style="position:fixed;top:0;left:0;z-index:99999;background:#000;color:#0f0;font-size:10px;padding:4px;max-width:100%;word-break:break-all;opacity:.95">DBG:等待点击tab...</div>
 
 <div class="toast" id="toast"></div>
 <!-- /BUILD:HTML -->
