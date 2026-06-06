@@ -606,6 +606,7 @@ function initAll() {
   initAzusaClick();
   initChibiPhysics();
   initDressupPhysics();
+  initTimerDressup();
   setTimeout(checkInstallAvailable, 3000);
 
   if (timerDefault) { goTab(1); } else { goTab(0); rHome(); }
@@ -642,3 +643,114 @@ document.addEventListener('visibilitychange', function() {
 
 // 启动应用
 initAll();
+
+
+// ==================== 计时页换装阿梓物理 ====================
+var timerDressupState = { x:0, y:0, vx:0, vy:0, dragging:false, flying:false, settled:true, startX:0, startY:0, origX:0, origY:0, lastX:0, lastY:0, lastT:0 };
+var timerDressupAnimId = null;
+
+function initTimerDressup() {
+  var wrap = document.getElementById('timerDressupWrap');
+  if (!wrap) return;
+
+  wrap.addEventListener('pointerdown', function(e) {
+    e.preventDefault(); e.stopPropagation();
+    if (timerDressupAnimId) { cancelAnimationFrame(timerDressupAnimId); timerDressupAnimId = null; }
+    timerDressupState.dragging = true;
+    timerDressupState.flying = false;
+    timerDressupState.settled = false;
+    timerDressupState.startX = e.clientX;
+    timerDressupState.startY = e.clientY;
+    timerDressupState.origX = timerDressupState.x;
+    timerDressupState.origY = timerDressupState.y;
+    timerDressupState.lastX = e.clientX;
+    timerDressupState.lastY = e.clientY;
+    timerDressupState.lastT = Date.now();
+    wrap.classList.add('dragging');
+    wrap.classList.remove('thrown');
+    wrap.setPointerCapture(e.pointerId);
+  });
+
+  wrap.addEventListener('pointermove', function(e) {
+    if (!timerDressupState.dragging) return;
+    timerDressupState.x = timerDressupState.origX + (e.clientX - timerDressupState.startX);
+    timerDressupState.y = timerDressupState.origY + (e.clientY - timerDressupState.startY);
+    timerDressupState.lastX = e.clientX;
+    timerDressupState.lastY = e.clientY;
+    timerDressupState.lastT = Date.now();
+    wrap.style.transform = 'translate(' + timerDressupState.x + 'px,' + timerDressupState.y + 'px)';
+  });
+
+  wrap.addEventListener('pointerup', function(e) {
+    var dx = Math.abs(e.clientX - timerDressupState.startX);
+    var dy = Math.abs(e.clientY - timerDressupState.startY);
+    if (dx < 5 && dy < 5) {
+      timerDressupState.dragging = false;
+      timerDressupState.settled = true;
+      wrap.classList.remove('dragging');
+      // tap: 弹个气泡
+      var b = document.getElementById('timerDressupBubble');
+      if (b) { b.textContent = '今天穿这件~'; b.style.display='block'; clearTimeout(b._t); b._t=setTimeout(function(){b.style.display='none';},2000); }
+      return;
+    }
+    timerDressupState.dragging = false;
+    wrap.classList.remove('dragging');
+    var dt = Math.max(1, Date.now() - timerDressupState.lastT);
+    timerDressupState.vx = (e.clientX - timerDressupState.lastX) / dt * 35;
+    timerDressupState.vy = (e.clientY - timerDressupState.lastY) / dt * 35;
+    var maxV = 35;
+    timerDressupState.vx = Math.max(-maxV, Math.min(maxV, timerDressupState.vx));
+    timerDressupState.vy = Math.max(-maxV, Math.min(maxV, timerDressupState.vy));
+    timerDressupState.flying = true;
+    timerDressupState.settled = false;
+    wrap.classList.add('thrown');
+    startTimerDressupPhysics();
+  });
+}
+
+function startTimerDressupPhysics() {
+  if (timerDressupAnimId) return;
+  var wrap = document.getElementById('timerDressupWrap');
+  if (!wrap) return;
+  var page = document.getElementById('pg0');
+  var pr = page ? page.getBoundingClientRect() : { width: 360, height: 600 };
+  var cw = 140, ch = 200;
+
+  function step() {
+    if (!timerDressupState.flying) { timerDressupAnimId = null; return; }
+    timerDressupState.vy += 0.55;
+    timerDressupState.x += timerDressupState.vx;
+    timerDressupState.y += timerDressupState.vy;
+    timerDressupState.vx *= 0.985;
+    timerDressupState.vy *= 0.985;
+    var maxX = pr.width/2 - cw/2;
+    var floorY = pr.height/2 - ch;
+    var ceilY = -pr.height/2 + ch/2 + 40;
+    if (timerDressupState.x > maxX)  { timerDressupState.x = maxX;  timerDressupState.vx = -Math.abs(timerDressupState.vx)*0.6; }
+    if (timerDressupState.x < -maxX) { timerDressupState.x = -maxX; timerDressupState.vx = Math.abs(timerDressupState.vx)*0.6; }
+    if (timerDressupState.y > floorY) {
+      timerDressupState.y = floorY;
+      timerDressupState.vy = -Math.abs(timerDressupState.vy)*0.5;
+      if (Math.abs(timerDressupState.vy) < 0.5) { timerDressupState.vy = 0; timerDressupState.vx *= 0.8; }
+    }
+    if (timerDressupState.y < ceilY) { timerDressupState.y = ceilY; timerDressupState.vy = Math.abs(timerDressupState.vy)*0.5; }
+    if (Math.abs(timerDressupState.vx) < 0.08 && Math.abs(timerDressupState.vy) < 0.08 && timerDressupState.y >= floorY - 3) {
+      timerDressupState.flying = false; timerDressupState.settled = true;
+      timerDressupState.vx = 0; timerDressupState.vy = 0;
+      wrap.classList.remove('thrown');
+      timerDressupAnimId = null;
+      wrap.style.transform = 'translate(' + timerDressupState.x + 'px,' + timerDressupState.y + 'px)';
+      return;
+    }
+    wrap.style.transform = 'translate(' + timerDressupState.x + 'px,' + timerDressupState.y + 'px)';
+    timerDressupAnimId = requestAnimationFrame(step);
+  }
+  timerDressupAnimId = requestAnimationFrame(step);
+}
+
+function updateTimerDressupImg() {
+  var img = document.getElementById('timerDressupImg');
+  if (!img) return;
+  var curTree = AZUSA_TREES[currentTreeIdx] || AZUSA_TREES[0];
+  img.src = curTree.img || 'src/images/azusa/outfits/jk_uniform.png';
+}

@@ -387,6 +387,7 @@ function changeOutfit(filename) {
   var body = document.getElementById('azusaBody');
   if (body) body.src = 'src/images/azusa/' + filename;
   if (currentTab === 0) rHome();
+  if (typeof updateTimerDressupImg === 'function') updateTimerDressupImg();
 }
 
 var currentExpression = 'smile';

@@ -73,3 +73,12 @@
 .g-pct{font-size:14px;font-weight:700;color:var(--g);min-width:40px;text-align:center}
 .g-bar{flex:1;height:7px;border-radius:4px;background:#e8e8e8;overflow:hidden}
 .g-fill{height:100%;border-radius:4px;background:var(--g);transition:.4s}
+
+/* 计时页可拖拽换装阿梓 */
+.timer-dressup-wrap{
+  position:absolute;z-index:50;right:10px;bottom:60px;
+  cursor:grab;user-select:none;-webkit-user-select:none;
+  touch-action:none;filter:drop-shadow(0 2px 8px rgba(0,0,0,.2));
+}
+.timer-dressup-wrap.dragging{cursor:grabbing;z-index:100;filter:drop-shadow(0 6px 16px rgba(0,0,0,.35))}
+.timer-dressup-wrap.thrown{z-index:100}
