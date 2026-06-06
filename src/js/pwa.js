@@ -782,20 +782,7 @@ initAll();
 
 
 
-// ==================== 计时页换装阿梓物理 Verlet版 ====================
-// 碰撞粒子特效——打击感
-function spawnCollisionParticles(cx, cy) {
-  var particles = ['💥','⚡','💢','✨','💫','🌟'];
-  for (var i=0;i<6;i++) {
-    var p=document.createElement('span');
-    p.className='chibi-emoji-particle';
-    p.textContent=particles[Math.floor(Math.random()*particles.length)];
-    p.style.left=cx+'px';p.style.top=cy+'px';
-    p.style.setProperty('--dx',(Math.random()-0.5)*80+'px');
-    p.style.setProperty('--dy',(Math.random()-0.5)*80+'px');
-    p.style.animationDuration=(0.3+Math.random()*0.4)+'s';
-    document.body.appendChild(p);
-    setTimeout(function(){p.remove();},800);
+// ==================== 计时页换装阿梓物理 Verlet版 ====================,800);
   }
 }
 
@@ -960,47 +947,46 @@ function startTimerDressupPhysics() {
     if (scl > 1.01) { scl += (1-scl)*0.1; wrap.style.setProperty('--scl', scl); }
 
     var pr2 = page ? page.getBoundingClientRect() : { width:360, height:600 };
+    var tdWB = 0.55, tdFB = 0.45, tdCB = 0.5; // 轻量反弹
     var maxX = pr2.width/2 - cw/2, minX = -pr2.width/2 + cw/2;
     var floorY = pr2.height/2 - ch, ceilY = -pr2.height/2 + ch/2;
     var hitWall = false;
     if (timerDressupState.x > maxX) {
       var overshoot = timerDressupState.x - maxX;
-      timerDressupState.x = maxX - overshoot * PHYSICS.WALL_BOUNCE;
-      timerDressupState.vx = -Math.abs(timerDressupState.vx) * PHYSICS.WALL_BOUNCE;
+      timerDressupState.x = maxX - overshoot * tdWB;
+      timerDressupState.vx = -Math.abs(timerDressupState.vx) * tdWB;
       timerDressupState.oldX = timerDressupState.x + timerDressupState.vx;
       hitWall=true;
     }
     if (timerDressupState.x < minX) {
       var overshoot = minX - timerDressupState.x;
-      timerDressupState.x = minX + overshoot * PHYSICS.WALL_BOUNCE;
-      timerDressupState.vx = Math.abs(timerDressupState.vx) * PHYSICS.WALL_BOUNCE;
+      timerDressupState.x = minX + overshoot * tdWB;
+      timerDressupState.vx = Math.abs(timerDressupState.vx) * tdWB;
       timerDressupState.oldX = timerDressupState.x - timerDressupState.vx;
       hitWall=true;
     }
     if (timerDressupState.y > floorY) {
       var overshoot = timerDressupState.y - floorY;
-      timerDressupState.y = floorY - overshoot * PHYSICS.FLOOR_BOUNCE;
-      timerDressupState.vy = -Math.abs(timerDressupState.vy) * PHYSICS.FLOOR_BOUNCE;
+      timerDressupState.y = floorY - overshoot * tdFB;
+      timerDressupState.vy = -Math.abs(timerDressupState.vy) * tdFB;
       timerDressupState.vx *= PHYSICS.GROUND_FRICTION;
       timerDressupState.oldY = timerDressupState.y + timerDressupState.vy;
       hitWall=true;
     }
     if (timerDressupState.y < ceilY) {
       var overshoot = ceilY - timerDressupState.y;
-      timerDressupState.y = ceilY + overshoot * PHYSICS.CEIL_BOUNCE;
-      timerDressupState.vy = Math.abs(timerDressupState.vy) * PHYSICS.CEIL_BOUNCE;
+      timerDressupState.y = ceilY + overshoot * tdCB;
+      timerDressupState.vy = Math.abs(timerDressupState.vy) * tdCB;
       timerDressupState.oldY = timerDressupState.y - timerDressupState.vy;
       hitWall=true;
     }
     if (hitWall) {
-      if (typeof playBounceSound === 'function') playBounceSound();
       var rect2 = wrap.getBoundingClientRect();
-      spawnCollisionParticles(rect2.left+rect2.width/2, rect2.top+rect2.height/2);
       wrap.style.setProperty('--scl','0.88');
       var img = document.getElementById('timerDressupImg');
       if (img) { img.classList.add('squashing'); setTimeout(function(){ img.classList.remove('squashing'); }, 350); }
     }
-    if (Math.abs(timerDressupState.vx)<PHYSICS.SETTLE_THRESH && Math.abs(timerDressupState.vy)<PHYSICS.SETTLE_THRESH) {
+    if (Math.abs(timerDressupState.vx)<0.08 && Math.abs(timerDressupState.vy)<0.08) {
       timerDressupState.flying=false; timerDressupState.settled=true;
       wrap.classList.remove('thrown');
       wrap.style.setProperty('--rot','0deg'); wrap.style.setProperty('--scl','1');
