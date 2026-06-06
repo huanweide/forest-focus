@@ -1,10 +1,10 @@
-const V='forest-v11';
+const V='forest-v12';
 // HTML用网络优先（始终最新），静态资源用缓存优先
 self.addEventListener('install',e=>{
   e.waitUntil(caches.open(V).then(c=>c.addAll([
     './','./index.html','./manifest.json',
     './src/images/azusa/icon-192.png','./src/images/azusa/icon-512.png',
-    './src/images/azusa/chibi_perfect.png','./src/images/azusa/chibi_azusa.png',
+    './src/images/azusa/chibi_home.png','./src/images/azusa/chibi_azusa.png',
     './src/images/azusa/sprites/chibi_idle.png','./src/images/azusa/sprites/chibi_happy.png',
     './src/images/azusa/sprites/chibi_surprised.png','./src/images/azusa/sprites/chibi_shy.png',
     './src/images/azusa/base/body_base.png',

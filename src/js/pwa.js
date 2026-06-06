@@ -442,7 +442,7 @@ function setChibiFrame(frameName) {
   chibiCurrentFrame = frameName;
   img.src = CHIBI_SPRITES[frameName];
   img.onerror = function() {
-    this.src = 'src/images/azusa/chibi_perfect.png';
+    this.src = 'src/images/azusa/chibi_home.png';
   };
 }
 
@@ -474,9 +474,9 @@ function rHome() {
   var curTree = AZUSA_TREES[currentTreeIdx] || AZUSA_TREES[0];
   var homeAzusaImg = document.getElementById('homeAzusaImg');
   if (homeAzusaImg) {
-    homeAzusaImg.src = 'src/images/azusa/chibi_perfect.png';
+    homeAzusaImg.src = 'src/images/azusa/chibi_home.png';
     homeAzusaImg.onerror = function() {
-      this.src = curTree.img || 'src/images/azusa/chibi_perfect.png';
+      this.src = curTree.img || 'src/images/azusa/chibi_home.png';
     };
   }
   // 换装角色——显示当前衣装
