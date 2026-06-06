@@ -28,8 +28,8 @@ function startChibiWander() {
     if (!scene) return;
     var sr = scene.getBoundingClientRect();
     var maxX = sr.width/2 - 100, maxY = sr.height/2 - 100;
-    chibiState.vx = (Math.random()-0.5) * 3;
-    chibiState.vy = (Math.random()-0.5) * 2 - 0.5;
+    chibiState.vx = (Math.random()-0.5) * 1.5;
+    chibiState.vy = (Math.random()-0.5) * 1 - 0.5;
     chibiState.flying = true; chibiState.settled = false;
     var wrap = document.getElementById('homeAzusaWrap');
     if (wrap) wrap.classList.add('thrown');
@@ -96,10 +96,10 @@ function initChibiPhysics() {
     wrap.classList.remove('dragging');
 
     var dt = Math.max(1, Date.now() - chibiState.lastT);
-    chibiState.vx = (e.clientX - chibiState.lastX) / dt * 35;
-    chibiState.vy = (e.clientY - chibiState.lastY) / dt * 35;
+    chibiState.vx = (e.clientX - chibiState.lastX) / dt * 18;
+    chibiState.vy = (e.clientY - chibiState.lastY) / dt * 18;
     // 限速，避免飞出屏幕
-    var maxV = 35;
+    var maxV = 20;
     chibiState.vx = Math.max(-maxV, Math.min(maxV, chibiState.vx));
     chibiState.vy = Math.max(-maxV, Math.min(maxV, chibiState.vy));
 
@@ -205,7 +205,7 @@ function startChibiPhysics() {
     }
 
     // 旋转+缩放视觉
-    var rot = Math.atan2(chibiState.vy, Math.abs(chibiState.vx) + 0.1) * 30;
+    var rot = Math.atan2(chibiState.vy, Math.abs(chibiState.vx) + 0.1) * 10;
     wrap.style.setProperty('--rot', rot + 'deg');
     wrap.style.setProperty('--scl', Math.min(1.3, 1 + Math.abs(chibiState.vy) * 0.012));
 
@@ -644,6 +644,7 @@ function initTimerDressup() {
   wrap.addEventListener('pointerdown', function(e) {
     e.preventDefault(); e.stopPropagation();
     if (timerDressupAnimId) { cancelAnimationFrame(timerDressupAnimId); timerDressupAnimId = null; }
+    stopTimerDressupWander();
     timerDressupState.dragging = true;
     timerDressupState.flying = false;
     timerDressupState.settled = false;
@@ -679,14 +680,29 @@ function initTimerDressup() {
       // tap: 弹个气泡
       var b = document.getElementById('timerDressupBubble');
       if (b) { b.textContent = '今天穿这件~'; b.style.display='block'; clearTimeout(b._t); b._t=setTimeout(function(){b.style.display='none';},2000); }
+      var rect = wrap.getBoundingClientRect();
+      var cx = rect.left + rect.width/2, cy = rect.top;
+      var emojis = ["💕","✨","🌸","💖","😊","👗","🎀","💝"];
+      for (var i=0;i<4;i++) {
+        var p=document.createElement("span");
+        p.className="chibi-emoji-particle";
+        p.textContent=emojis[Math.floor(Math.random()*emojis.length)];
+        p.style.left=cx+"px";p.style.top=cy+"px";
+        p.style.setProperty("--dx",(Math.random()-0.5)*120+"px");
+        p.style.setProperty("--dy",-(40+Math.random()*80)+"px");
+        p.style.animationDuration=(0.5+Math.random())+"s";
+        document.body.appendChild(p);
+        setTimeout(function(){p.remove();},1000);
+      }
+      if (SFX&&SFX.click) SFX.click();
       return;
     }
     timerDressupState.dragging = false;
     wrap.classList.remove('dragging');
     var dt = Math.max(1, Date.now() - timerDressupState.lastT);
-    timerDressupState.vx = (e.clientX - timerDressupState.lastX) / dt * 35;
-    timerDressupState.vy = (e.clientY - timerDressupState.lastY) / dt * 35;
-    var maxV = 35;
+    timerDressupState.vx = (e.clientX - timerDressupState.lastX) / dt * 18;
+    timerDressupState.vy = (e.clientY - timerDressupState.lastY) / dt * 18;
+    var maxV = 20;
     timerDressupState.vx = Math.max(-maxV, Math.min(maxV, timerDressupState.vx));
     timerDressupState.vy = Math.max(-maxV, Math.min(maxV, timerDressupState.vy));
     timerDressupState.flying = true;
@@ -694,6 +710,7 @@ function initTimerDressup() {
     wrap.classList.add('thrown');
     startTimerDressupPhysics();
   });
+  startTimerDressupWander();
 }
 
 function startTimerDressupPhysics() {
@@ -711,6 +728,9 @@ function startTimerDressupPhysics() {
     timerDressupState.y += timerDressupState.vy;
     timerDressupState.vx *= 0.985;
     timerDressupState.vy *= 0.985;
+    // 旋转视觉
+    var rot = Math.atan2(timerDressupState.vy, Math.abs(timerDressupState.vx) + 0.1) * 8;
+    wrap.style.setProperty('--rot', rot + 'deg');
     var maxX = 80, minX = -100;
     var floorY = 80, ceilY = -120;
     if (timerDressupState.x > maxX)  { timerDressupState.x = maxX;  timerDressupState.vx = -Math.abs(timerDressupState.vx)*0.6; }
@@ -725,12 +745,29 @@ function startTimerDressupPhysics() {
       timerDressupState.flying = false; timerDressupState.settled = true;
       timerDressupState.vx = 0; timerDressupState.vy = 0;
       wrap.classList.remove('thrown');
+      wrap.style.setProperty('--rot', '0deg');
       timerDressupAnimId = null;
       wrap.style.transform = 'translate(' + timerDressupState.x + 'px,' + timerDressupState.y + 'px)';
+      startTimerDressupWander();
       return;
     }
     wrap.style.transform = 'translate(' + timerDressupState.x + 'px,' + timerDressupState.y + 'px)';
     timerDressupAnimId = requestAnimationFrame(step);
+
+var timerDressupWanderId = null;
+function stopTimerDressupWander() { if (timerDressupWanderId) { clearInterval(timerDressupWanderId); timerDressupWanderId = null; } }
+function startTimerDressupWander() {
+  stopTimerDressupWander();
+  timerDressupWanderId = setInterval(function() {
+    if (timerDressupState.dragging || timerDressupState.flying || !timerDressupState.settled) return;
+    timerDressupState.vx = (Math.random()-0.5) * 2;
+    timerDressupState.vy = -(1 + Math.random() * 3);
+    timerDressupState.flying = true; timerDressupState.settled = false;
+    var wrap = document.getElementById('timerDressupWrap');
+    if (wrap) wrap.classList.add('thrown');
+    startTimerDressupPhysics();
+  }, 5000 + Math.random() * 7000);
+}
   }
   timerDressupAnimId = requestAnimationFrame(step);
 }
@@ -738,6 +775,6 @@ function startTimerDressupPhysics() {
 function updateTimerDressupImg() {
   var img = document.getElementById('timerDressupImg');
   if (!img) return;
-  var curTree = AZUSA_TREES[currentTreeIdx] || AZUSA_TREES[0];
+  var curTree = AZUSA_TREES[(typeof currentOutfit!=='undefined' && currentOutfit>=0 ? currentOutfit : currentTreeIdx)] || AZUSA_TREES[0];
   img.src = curTree.img || 'src/images/azusa/outfits/jk_uniform.png';
 }

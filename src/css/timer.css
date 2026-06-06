@@ -82,3 +82,5 @@
 }
 .timer-dressup-wrap.dragging{cursor:grabbing;z-index:100;filter:drop-shadow(0 6px 16px rgba(0,0,0,.35))}
 .timer-dressup-wrap.thrown{z-index:100}
+.timer-dressup-wrap.thrown img{transform:rotate(var(--rot,0deg)) scale(var(--scl,1))}
+.timer-dressup-wrap.dragging img{transform:scale(1.08)}
