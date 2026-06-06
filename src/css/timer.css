@@ -166,10 +166,10 @@
   100% { opacity: 0; transform: translate(var(--sx),var(--sy)) scale(0); }
 }
 /* 角色浮游 + 呼吸叠加 */
-.azusa-character .body-outfit {
+.timer-dressup-wrap img {
   animation: azuFloat 5s ease-in-out infinite, azuBreathe 3s ease-in-out infinite;
 }
-.azusa-character.clicked .body-outfit {
+.timer-dressup-wrap.clicked img {
   animation: azuBounceClick .55s cubic-bezier(.25,.46,.45,.94) !important;
 }
 /* 点击粒子 */

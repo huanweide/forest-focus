@@ -338,10 +338,10 @@ body.mood-low{--mood-bg:linear-gradient(180deg,#eceff1,#e0e0f0)}
   100% { opacity: 0; transform: translate(var(--sx),var(--sy)) scale(0); }
 }
 /* 角色浮游 + 呼吸叠加 */
-.azusa-character .body-outfit {
+.timer-dressup-wrap img {
   animation: azuFloat 5s ease-in-out infinite, azuBreathe 3s ease-in-out infinite;
 }
-.azusa-character.clicked .body-outfit {
+.timer-dressup-wrap.clicked img {
   animation: azuBounceClick .55s cubic-bezier(.25,.46,.45,.94) !important;
 }
 /* 点击粒子 */
@@ -6039,7 +6039,7 @@ function startChibiPhysics() {
       hitWall = true;
     }
     if (chibiState.x < -maxX) {
-      var overshoot = maxX + chibiState.x;
+      var overshoot = -maxX - chibiState.x;
       chibiState.x = -maxX + overshoot * PHYSICS.WALL_BOUNCE;
       chibiState.vx = Math.abs(chibiState.vx)*PHYSICS.WALL_BOUNCE;
       chibiState.oldX = chibiState.x - chibiState.vx;
@@ -6331,7 +6331,7 @@ function startDressupPhysics() {
       hitWall=true;
     }
     if (dressupState.x < -maxX) {
-      var overshoot = maxX + dressupState.x;
+      var overshoot = -maxX - dressupState.x;
       dressupState.x = -maxX + overshoot * PHYSICS.WALL_BOUNCE;
       dressupState.vx = Math.abs(dressupState.vx)*PHYSICS.WALL_BOUNCE;
       dressupState.oldX = dressupState.x - dressupState.vx;

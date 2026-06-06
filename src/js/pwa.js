@@ -226,7 +226,7 @@ function startChibiPhysics() {
       hitWall = true;
     }
     if (chibiState.x < -maxX) {
-      var overshoot = maxX + chibiState.x;
+      var overshoot = -maxX - chibiState.x;
       chibiState.x = -maxX + overshoot * PHYSICS.WALL_BOUNCE;
       chibiState.vx = Math.abs(chibiState.vx)*PHYSICS.WALL_BOUNCE;
       chibiState.oldX = chibiState.x - chibiState.vx;
@@ -518,7 +518,7 @@ function startDressupPhysics() {
       hitWall=true;
     }
     if (dressupState.x < -maxX) {
-      var overshoot = maxX + dressupState.x;
+      var overshoot = -maxX - dressupState.x;
       dressupState.x = -maxX + overshoot * PHYSICS.WALL_BOUNCE;
       dressupState.vx = Math.abs(dressupState.vx)*PHYSICS.WALL_BOUNCE;
       dressupState.oldX = dressupState.x - dressupState.vx;
