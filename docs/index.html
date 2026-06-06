@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
@@ -256,38 +256,6 @@ body.mood-low{--mood-bg:linear-gradient(180deg,#eceff1,#e0e0f0)}
 .g-pct{font-size:14px;font-weight:700;color:var(--g);min-width:40px;text-align:center}
 .g-bar{flex:1;height:7px;border-radius:4px;background:#e8e8e8;overflow:hidden}
 .g-fill{height:100%;border-radius:4px;background:var(--g);transition:.4s}
-
-/* 计时页可拖拽换装阿梓 */
-.timer-dressup-wrap{
-  position:absolute;z-index:50;
-  cursor:grab;user-select:none;-webkit-user-select:none;
-  touch-action:none;filter:drop-shadow(0 2px 8px rgba(0,0,0,.2));
-}
-/* 圆形框——::before 伪元素不碰 DOM */
-.timer-dressup-wrap::before{
-  content:"";position:absolute;
-  top:50%;left:50%;transform:translate(-50%,-50%);
-  width:170px;height:170px;
-  border-radius:50%;
-  border:3px solid rgba(124,92,191,.25);
-  background:rgba(255,255,255,.65);
-  box-shadow:0 4px 20px rgba(124,92,191,.12);
-  z-index:-1;
-}
-.timer-dressup-wrap.dragging{cursor:grabbing;z-index:100}
-
-@keyframes azuBounceClick {
-  0% { transform: translateY(0) scale(1); }
-  20% { transform: translateY(-16px) scale(1.12) rotate(-4deg); }
-  40% { transform: translateY(-4px) scale(0.93) rotate(2deg); }
-  60% { transform: translateY(0) scale(1.06) rotate(-1deg); }
-  80% { transform: translateY(-3px) scale(0.97); }
-  100% { transform: translateY(0) scale(1) rotate(0deg); }
-}
-
-.timer-dressup-wrap.clicked img {
-  animation: azuBounceClick .55s cubic-bezier(.25,.46,.45,.94) !important;
-}
 
 
 /* === dressup.css === */
@@ -1151,11 +1119,6 @@ body.dark .azusa-chibi{
   <div class="speech-bubble" id="speechBubble" style="display:none"></div>
 </div>
 
-<!-- 计时页阿梓（规律可爱运动） -->
-<div class="timer-dressup-wrap" id="timerDressupWrap">
-  <img id="timerDressupImg" src="src/images/azusa/outfits/jk_uniform.png" alt="阿梓" style="width:140px;display:block;pointer-events:none">
-  <div class="azusa-bubble" id="timerDressupBubble" style="display:none"></div>
-</div>
 <div class="ring-wrap"><canvas id="ring"></canvas><div class="ring-t"><div class="tm" id="time">25:00</div><div class="lb" id="status">选个目标，阿梓陪你一起种树吧 🌸</div></div></div>
 <div class="chips" id="chips"></div>
 <div class="task-sel">
@@ -6484,7 +6447,6 @@ function initAll() {
   initAzusaClick();
   initChibiPhysics();
   initDressupPhysics();
-  initTimerDressupSimple();
   setTimeout(checkInstallAvailable, 3000);
   // 同步所有页面的阿梓形象
   setTimeout(function(){ syncAllAzusaImages(); }, 200);
@@ -6525,62 +6487,10 @@ document.addEventListener('visibilitychange', function() {
 // 启动应用
 initAll();
 
+function resetTimerDressup() { }
 
+function updateTimerDressupImg() { }
 
-
-
-// ==================== 计时页阿梓——轻量点击表情 ====================
-function initTimerDressupSimple() {
-  var wrap = document.getElementById('timerDressupWrap');
-  if (!wrap) return;
-  wrap.style.position = 'absolute';
-  wrap.style.left = '16px'; wrap.style.top = 'auto'; wrap.style.bottom = '16px';
-  wrap.style.transform = 'translate(0,0)';
-  wrap.style.cursor = 'pointer';
-
-  wrap.addEventListener('click', function(e) {
-    e.stopPropagation();
-    var bubble = document.getElementById('timerDressupBubble');
-    if (!bubble) return;
-    var msgs = ['别戳我啦~', '在呢！', '嘿嘿~', '想我了？', '加油哦！', '阿梓在呢~', '干什么！', '好痒！', '啊！', '斯瑞！', '最喜欢你了~'];
-    bubble.textContent = msgs[Math.floor(Math.random() * msgs.length)];
-    bubble.style.display = 'block';
-    clearTimeout(bubble._t);
-    bubble._t = setTimeout(function() { bubble.style.display = 'none'; }, 2000);
-
-    var wrap2 = document.getElementById('timerDressupWrap');
-    if (wrap2) { wrap2.classList.add('clicked'); setTimeout(function(){ wrap2.classList.remove('clicked'); }, 550); }
-
-    if (SFX && SFX.click) SFX.click();
-  });
-}
-
-function resetTimerDressup() {
-  var wrap = document.getElementById('timerDressupWrap');
-  if (!wrap) return;
-  wrap.style.left = '16px';
-  wrap.style.bottom = '16px';
-  wrap.style.top = 'auto';
-  wrap.style.transform = 'translate(0,0)';
-}
-function updateTimerDressupImg() {
-  var img = document.getElementById('timerDressupImg');
-  if (!img) return;
-  var curTree = AZUSA_TREES[(typeof currentOutfit!=='undefined' && currentOutfit>=0 ? currentOutfit : currentTreeIdx)] || AZUSA_TREES[0];
-  var newSrc = curTree.img || 'src/images/azusa/outfits/jk_uniform.png';
-  img.src = newSrc;
-
-  // 同步更新计时页分层阿梓的 dress 层
-  var layerDress = document.getElementById('layerDress');
-  if (layerDress) layerDress.src = newSrc;
-
-  // 同步更新首页换装阿梓（如果存在）
-  var homeDressImg = document.getElementById('homeDressupImg');
-  if (homeDressImg) homeDressImg.src = newSrc;
-
-  localStorage.setItem('foutfitfile', newSrc.split('/').pop());
-  currentOutfitFile = newSrc.split('/').pop();
-}
 
 // 强制刷新所有位置的阿梓形象
 function syncAllAzusaImages() {

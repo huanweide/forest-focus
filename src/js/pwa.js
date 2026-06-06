@@ -734,7 +734,6 @@ function initAll() {
   initAzusaClick();
   initChibiPhysics();
   initDressupPhysics();
-  initTimerDressupSimple();
   setTimeout(checkInstallAvailable, 3000);
   // 同步所有页面的阿梓形象
   setTimeout(function(){ syncAllAzusaImages(); }, 200);
@@ -775,62 +774,10 @@ document.addEventListener('visibilitychange', function() {
 // 启动应用
 initAll();
 
+function resetTimerDressup() { }
 
+function updateTimerDressupImg() { }
 
-
-
-// ==================== 计时页阿梓——轻量点击表情 ====================
-function initTimerDressupSimple() {
-  var wrap = document.getElementById('timerDressupWrap');
-  if (!wrap) return;
-  wrap.style.position = 'absolute';
-  wrap.style.left = '16px'; wrap.style.top = 'auto'; wrap.style.bottom = '16px';
-  wrap.style.transform = 'translate(0,0)';
-  wrap.style.cursor = 'pointer';
-
-  wrap.addEventListener('click', function(e) {
-    e.stopPropagation();
-    var bubble = document.getElementById('timerDressupBubble');
-    if (!bubble) return;
-    var msgs = ['别戳我啦~', '在呢！', '嘿嘿~', '想我了？', '加油哦！', '阿梓在呢~', '干什么！', '好痒！', '啊！', '斯瑞！', '最喜欢你了~'];
-    bubble.textContent = msgs[Math.floor(Math.random() * msgs.length)];
-    bubble.style.display = 'block';
-    clearTimeout(bubble._t);
-    bubble._t = setTimeout(function() { bubble.style.display = 'none'; }, 2000);
-
-    var wrap2 = document.getElementById('timerDressupWrap');
-    if (wrap2) { wrap2.classList.add('clicked'); setTimeout(function(){ wrap2.classList.remove('clicked'); }, 550); }
-
-    if (SFX && SFX.click) SFX.click();
-  });
-}
-
-function resetTimerDressup() {
-  var wrap = document.getElementById('timerDressupWrap');
-  if (!wrap) return;
-  wrap.style.left = '16px';
-  wrap.style.bottom = '16px';
-  wrap.style.top = 'auto';
-  wrap.style.transform = 'translate(0,0)';
-}
-function updateTimerDressupImg() {
-  var img = document.getElementById('timerDressupImg');
-  if (!img) return;
-  var curTree = AZUSA_TREES[(typeof currentOutfit!=='undefined' && currentOutfit>=0 ? currentOutfit : currentTreeIdx)] || AZUSA_TREES[0];
-  var newSrc = curTree.img || 'src/images/azusa/outfits/jk_uniform.png';
-  img.src = newSrc;
-
-  // 同步更新计时页分层阿梓的 dress 层
-  var layerDress = document.getElementById('layerDress');
-  if (layerDress) layerDress.src = newSrc;
-
-  // 同步更新首页换装阿梓（如果存在）
-  var homeDressImg = document.getElementById('homeDressupImg');
-  if (homeDressImg) homeDressImg.src = newSrc;
-
-  localStorage.setItem('foutfitfile', newSrc.split('/').pop());
-  currentOutfitFile = newSrc.split('/').pop();
-}
 
 // 强制刷新所有位置的阿梓形象
 function syncAllAzusaImages() {
