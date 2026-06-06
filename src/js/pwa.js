@@ -783,30 +783,14 @@ initAll();
 
 
 // ==================== 计时页换装阿梓物理 Verlet版 ====================
-// 碰撞粒子特效——打击感
-function spawnCollisionParticles(cx, cy) {
-  var particles = ['💥','⚡','💢','✨','💫','🌟'];
-  for (var i=0;i<6;i++) {
-    var p=document.createElement('span');
-    p.className='chibi-emoji-particle';
-    p.textContent=particles[Math.floor(Math.random()*particles.length)];
-    p.style.left=cx+'px';p.style.top=cy+'px';
-    p.style.setProperty('--dx',(Math.random()-0.5)*80+'px');
-    p.style.setProperty('--dy',(Math.random()-0.5)*80+'px');
-    p.style.animationDuration=(0.3+Math.random()*0.4)+'s';
-    document.body.appendChild(p);
-    setTimeout(function(){p.remove();},800);
-  }
-}
-
 function initTimerDressup() {
   var wrap = document.getElementById('timerDressupWrap');
   if (!wrap) return;
 
   // 居中定位（同首页 chibi）
   wrap.style.position = 'absolute';
-  wrap.style.left = '50%'; wrap.style.top = '50%';
-  wrap.style.transform = 'translate(-50%,-50%)';
+  wrap.style.left = '16px'; wrap.style.top = 'auto'; wrap.style.bottom = '16px';
+  wrap.style.transform = 'translate(0,0)';
   wrap.style.cursor = 'grab';
   timerDressupState.x = 0; timerDressupState.y = 0;
 
@@ -965,42 +949,39 @@ function startTimerDressupPhysics() {
     var hitWall = false;
     if (timerDressupState.x > maxX) {
       var overshoot = timerDressupState.x - maxX;
-      timerDressupState.x = maxX - overshoot * PHYSICS.WALL_BOUNCE;
-      timerDressupState.vx = -Math.abs(timerDressupState.vx) * PHYSICS.WALL_BOUNCE;
+      timerDressupState.x = maxX - overshoot * tdWB;
+      timerDressupState.vx = -Math.abs(timerDressupState.vx) * tdWB;
       timerDressupState.oldX = timerDressupState.x + timerDressupState.vx;
       hitWall=true;
     }
     if (timerDressupState.x < minX) {
       var overshoot = minX - timerDressupState.x;
-      timerDressupState.x = minX + overshoot * PHYSICS.WALL_BOUNCE;
-      timerDressupState.vx = Math.abs(timerDressupState.vx) * PHYSICS.WALL_BOUNCE;
+      timerDressupState.x = minX + overshoot * tdWB;
+      timerDressupState.vx = Math.abs(timerDressupState.vx) * tdWB;
       timerDressupState.oldX = timerDressupState.x - timerDressupState.vx;
       hitWall=true;
     }
     if (timerDressupState.y > floorY) {
       var overshoot = timerDressupState.y - floorY;
-      timerDressupState.y = floorY - overshoot * PHYSICS.FLOOR_BOUNCE;
-      timerDressupState.vy = -Math.abs(timerDressupState.vy) * PHYSICS.FLOOR_BOUNCE;
+      timerDressupState.y = floorY - overshoot * tdFB;
+      timerDressupState.vy = -Math.abs(timerDressupState.vy) * tdFB;
       timerDressupState.vx *= PHYSICS.GROUND_FRICTION;
       timerDressupState.oldY = timerDressupState.y + timerDressupState.vy;
       hitWall=true;
     }
     if (timerDressupState.y < ceilY) {
       var overshoot = ceilY - timerDressupState.y;
-      timerDressupState.y = ceilY + overshoot * PHYSICS.CEIL_BOUNCE;
-      timerDressupState.vy = Math.abs(timerDressupState.vy) * PHYSICS.CEIL_BOUNCE;
+      timerDressupState.y = ceilY + overshoot * tdCB;
+      timerDressupState.vy = Math.abs(timerDressupState.vy) * tdCB;
       timerDressupState.oldY = timerDressupState.y - timerDressupState.vy;
       hitWall=true;
     }
     if (hitWall) {
-      if (typeof playBounceSound === 'function') playBounceSound();
-      var rect2 = wrap.getBoundingClientRect();
-      spawnCollisionParticles(rect2.left+rect2.width/2, rect2.top+rect2.height/2);
-      wrap.style.setProperty('--scl','0.88');
+      wrap.style.setProperty('--scl','0.92');
       var img = document.getElementById('timerDressupImg');
       if (img) { img.classList.add('squashing'); setTimeout(function(){ img.classList.remove('squashing'); }, 350); }
     }
-    if (Math.abs(timerDressupState.vx)<PHYSICS.SETTLE_THRESH && Math.abs(timerDressupState.vy)<PHYSICS.SETTLE_THRESH) {
+    if (Math.abs(timerDressupState.vx)<0.06 && Math.abs(timerDressupState.vy)<0.06) {
       timerDressupState.flying=false; timerDressupState.settled=true;
       wrap.classList.remove('thrown');
       wrap.style.setProperty('--rot','0deg'); wrap.style.setProperty('--scl','1');
