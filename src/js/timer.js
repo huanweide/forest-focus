@@ -52,6 +52,7 @@ function updateCurrentTree() {
 var currentTab = 0;
 function goTab(i) {
   currentTab = i;
+  if (typeof resetTimerDressup === 'function') resetTimerDressup();
   document.querySelectorAll('.page').forEach(function(p) { p.classList.remove('on'); });
   document.querySelectorAll('.tab').forEach(function(t, j) { t.classList.toggle('on', j === i); });
   document.getElementById(['pg5','pg0','pg1','pg2','pg3','pg4'][i]).classList.add('on');

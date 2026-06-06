@@ -1869,6 +1869,7 @@ function updateCurrentTree() {
 var currentTab = 0;
 function goTab(i) {
   currentTab = i;
+  if (typeof resetTimerDressup === 'function') resetTimerDressup();
   document.querySelectorAll('.page').forEach(function(p) { p.classList.remove('on'); });
   document.querySelectorAll('.tab').forEach(function(t, j) { t.classList.toggle('on', j === i); });
   document.getElementById(['pg5','pg0','pg1','pg2','pg3','pg4'][i]).classList.add('on');
@@ -6277,9 +6278,26 @@ document.addEventListener('visibilitychange', function() {
 initAll();
 
 
+
 // ==================== 计时页换装阿梓物理 ====================
 var timerDressupState = { x:0, y:0, vx:0, vy:0, dragging:false, flying:false, settled:true, startX:0, startY:0, origX:0, origY:0, lastX:0, lastY:0, lastT:0 };
 var timerDressupAnimId = null;
+
+// 碰撞粒子特效——打击感
+function spawnCollisionParticles(cx, cy) {
+  var particles = ['💥','⚡','💢','✨','💫','🌟'];
+  for (var i=0;i<6;i++) {
+    var p=document.createElement('span');
+    p.className='chibi-emoji-particle';
+    p.textContent=particles[Math.floor(Math.random()*particles.length)];
+    p.style.left=cx+'px';p.style.top=cy+'px';
+    p.style.setProperty('--dx',(Math.random()-0.5)*80+'px');
+    p.style.setProperty('--dy',(Math.random()-0.5)*80+'px');
+    p.style.animationDuration=(0.3+Math.random()*0.4)+'s';
+    document.body.appendChild(p);
+    setTimeout(function(){p.remove();},800);
+  }
+}
 
 function initTimerDressup() {
   var wrap = document.getElementById('timerDressupWrap');
@@ -6288,7 +6306,6 @@ function initTimerDressup() {
   wrap.addEventListener('pointerdown', function(e) {
     e.preventDefault(); e.stopPropagation();
     if (timerDressupAnimId) { cancelAnimationFrame(timerDressupAnimId); timerDressupAnimId = null; }
-    stopTimerDressupWander();
     timerDressupState.dragging = true;
     timerDressupState.flying = false;
     timerDressupState.settled = false;
@@ -6321,40 +6338,58 @@ function initTimerDressup() {
       timerDressupState.dragging = false;
       timerDressupState.settled = true;
       wrap.classList.remove('dragging');
-      // tap: 弹个气泡
+      // 多样化随机对话(10条)
+      var lines = ['今天穿这件~','好看吧？','斯瑞选的！','美美哒~','换新装啦','喜欢这件吗？','镜子镜子谁最美~','嘿嘿新衣服！','闪亮登场✨','阿梓今天也很可爱'];
       var b = document.getElementById('timerDressupBubble');
-      if (b) { b.textContent = '今天穿这件~'; b.style.display='block'; clearTimeout(b._t); b._t=setTimeout(function(){b.style.display='none';},2000); }
+      if (b) { b.textContent = lines[Math.floor(Math.random()*lines.length)]; b.style.display='block'; clearTimeout(b._t); b._t=setTimeout(function(){b.style.display='none';},2500); }
+      // 大号表情包弹出
+      var bigEmoji = document.createElement('div');
+      bigEmoji.textContent = ['😊','💕','✨','🥰','😘','💖','🎀','👑'][Math.floor(Math.random()*8)];
+      bigEmoji.style.cssText = 'position:fixed;font-size:48px;pointer-events:none;z-index:999;transition:all .6s cubic-bezier(.25,.8,.25,1.2);';
       var rect = wrap.getBoundingClientRect();
+      bigEmoji.style.left = (rect.left+rect.width/2-24)+'px';
+      bigEmoji.style.top = (rect.top-20)+'px';
+      bigEmoji.style.opacity = '1';
+      bigEmoji.style.transform = 'scale(1)';
+      document.body.appendChild(bigEmoji);
+      requestAnimationFrame(function(){
+        bigEmoji.style.opacity='0';
+        bigEmoji.style.transform='translateY(-70px) scale(1.6)';
+      });
+      setTimeout(function(){bigEmoji.remove();},700);
+      // 粒子散开
       var cx = rect.left + rect.width/2, cy = rect.top;
-      var emojis = ["💕","✨","🌸","💖","😊","👗","🎀","💝"];
-      for (var i=0;i<4;i++) {
-        var p=document.createElement("span");
-        p.className="chibi-emoji-particle";
+      var emojis = ['💕','✨','🌸','💖','😊','👗','🎀','💝','💫','🌷'];
+      for (var i=0;i<6;i++) {
+        var p=document.createElement('span');
+        p.className='chibi-emoji-particle';
         p.textContent=emojis[Math.floor(Math.random()*emojis.length)];
-        p.style.left=cx+"px";p.style.top=cy+"px";
-        p.style.setProperty("--dx",(Math.random()-0.5)*120+"px");
-        p.style.setProperty("--dy",-(40+Math.random()*80)+"px");
-        p.style.animationDuration=(0.5+Math.random())+"s";
+        p.style.left=cx+'px';p.style.top=cy+'px';
+        p.style.setProperty('--dx',(Math.random()-0.5)*140+'px');
+        p.style.setProperty('--dy',-(50+Math.random()*100)+'px');
+        p.style.animationDuration=(0.5+Math.random()*0.6)+'s';
         document.body.appendChild(p);
         setTimeout(function(){p.remove();},1000);
       }
       if (SFX&&SFX.click) SFX.click();
       return;
     }
+    // 投掷——力量感增强(参考格斗游戏打击感)
     timerDressupState.dragging = false;
     wrap.classList.remove('dragging');
     var dt = Math.max(1, Date.now() - timerDressupState.lastT);
-    timerDressupState.vx = (e.clientX - timerDressupState.lastX) / dt * 18;
-    timerDressupState.vy = (e.clientY - timerDressupState.lastY) / dt * 18;
-    var maxV = 20;
+    timerDressupState.vx = (e.clientX - timerDressupState.lastX) / dt * 25;
+    timerDressupState.vy = (e.clientY - timerDressupState.lastY) / dt * 25;
+    var maxV = 30;
     timerDressupState.vx = Math.max(-maxV, Math.min(maxV, timerDressupState.vx));
     timerDressupState.vy = Math.max(-maxV, Math.min(maxV, timerDressupState.vy));
+    // 投掷瞬间放大——力量爆发
+    wrap.style.setProperty('--scl','1.18');
     timerDressupState.flying = true;
     timerDressupState.settled = false;
     wrap.classList.add('thrown');
     startTimerDressupPhysics();
   });
-  startTimerDressupWander();
 }
 
 function startTimerDressupPhysics() {
@@ -6372,48 +6407,61 @@ function startTimerDressupPhysics() {
     timerDressupState.y += timerDressupState.vy;
     timerDressupState.vx *= 0.985;
     timerDressupState.vy *= 0.985;
-    // 旋转视觉
-    var rot = Math.atan2(timerDressupState.vy, Math.abs(timerDressupState.vx) + 0.1) * 8;
-    wrap.style.setProperty('--rot', rot + 'deg');
+    // 旋转——慢转优雅
+    var rot = Math.atan2(timerDressupState.vy, Math.abs(timerDressupState.vx)+0.1) * 5;
+    wrap.style.setProperty('--rot', rot+'deg');
+    // 缩放渐回
+    var scl = parseFloat(wrap.style.getPropertyValue('--scl')||'1');
+    if (scl > 1.01) { scl += (1-scl)*0.12; wrap.style.setProperty('--scl', scl); }
+
     var maxX = 80, minX = -100;
     var floorY = 80, ceilY = -120;
-    if (timerDressupState.x > maxX)  { timerDressupState.x = maxX;  timerDressupState.vx = -Math.abs(timerDressupState.vx)*0.6; }
-    if (timerDressupState.x < minX) { timerDressupState.x = minX; timerDressupState.vx = Math.abs(timerDressupState.vx)*0.6; }
+    var hitWall = false;
+    if (timerDressupState.x > maxX) { timerDressupState.x=maxX; timerDressupState.vx=-Math.abs(timerDressupState.vx)*0.5; hitWall=true; }
+    if (timerDressupState.x < minX) { timerDressupState.x=minX; timerDressupState.vx=Math.abs(timerDressupState.vx)*0.5; hitWall=true; }
     if (timerDressupState.y > floorY) {
-      timerDressupState.y = floorY;
-      timerDressupState.vy = -Math.abs(timerDressupState.vy)*0.5;
-      if (Math.abs(timerDressupState.vy) < 0.5) { timerDressupState.vy = 0; timerDressupState.vx *= 0.8; }
+      timerDressupState.y=floorY;
+      timerDressupState.vy=-Math.abs(timerDressupState.vy)*0.4;
+      hitWall=true;
+      if (Math.abs(timerDressupState.vy)<0.5) { timerDressupState.vy=0; timerDressupState.vx*=0.8; }
     }
-    if (timerDressupState.y < ceilY) { timerDressupState.y = ceilY; timerDressupState.vy = Math.abs(timerDressupState.vy)*0.5; }
-    if (Math.abs(timerDressupState.vx) < 0.08 && Math.abs(timerDressupState.vy) < 0.08 && timerDressupState.y >= floorY - 3) {
-      timerDressupState.flying = false; timerDressupState.settled = true;
-      timerDressupState.vx = 0; timerDressupState.vy = 0;
+    if (timerDressupState.y < ceilY) { timerDressupState.y=ceilY; timerDressupState.vy=Math.abs(timerDressupState.vy)*0.5; }
+    // 碰撞粒子+压扁反弹
+    if (hitWall) {
+      var rect2 = wrap.getBoundingClientRect();
+      spawnCollisionParticles(rect2.left+rect2.width/2, rect2.top+rect2.height/2);
+      wrap.style.setProperty('--scl','0.88');
+    }
+    // 静止——不复位，扔哪停哪
+    if (Math.abs(timerDressupState.vx)<0.08 && Math.abs(timerDressupState.vy)<0.08 && timerDressupState.y>=floorY-3) {
+      timerDressupState.flying=false; timerDressupState.settled=true;
+      timerDressupState.vx=0; timerDressupState.vy=0;
       wrap.classList.remove('thrown');
-      wrap.style.setProperty('--rot', '0deg');
-      timerDressupAnimId = null;
-      wrap.style.transform = 'translate(' + timerDressupState.x + 'px,' + timerDressupState.y + 'px)';
-      startTimerDressupWander();
+      wrap.style.setProperty('--rot','0deg');
+      wrap.style.setProperty('--scl','1');
+      timerDressupAnimId=null;
+      wrap.style.transform='translate('+timerDressupState.x+'px,'+timerDressupState.y+'px)';
       return;
     }
-    wrap.style.transform = 'translate(' + timerDressupState.x + 'px,' + timerDressupState.y + 'px)';
-    timerDressupAnimId = requestAnimationFrame(step);
-
-var timerDressupWanderId = null;
-function stopTimerDressupWander() { if (timerDressupWanderId) { clearInterval(timerDressupWanderId); timerDressupWanderId = null; } }
-function startTimerDressupWander() {
-  stopTimerDressupWander();
-  timerDressupWanderId = setInterval(function() {
-    if (timerDressupState.dragging || timerDressupState.flying || !timerDressupState.settled) return;
-    timerDressupState.vx = (Math.random()-0.5) * 2;
-    timerDressupState.vy = -(1 + Math.random() * 3);
-    timerDressupState.flying = true; timerDressupState.settled = false;
-    var wrap = document.getElementById('timerDressupWrap');
-    if (wrap) wrap.classList.add('thrown');
-    startTimerDressupPhysics();
-  }, 5000 + Math.random() * 7000);
-}
+    wrap.style.transform='translate('+timerDressupState.x+'px,'+timerDressupState.y+'px)';
+    timerDressupAnimId=requestAnimationFrame(step);
   }
-  timerDressupAnimId = requestAnimationFrame(step);
+  timerDressupAnimId=requestAnimationFrame(step);
+}
+
+// 页面离开时重置位置(切tab才重置,日常拖拽不复位)
+function resetTimerDressup() {
+  var wrap = document.getElementById('timerDressupWrap');
+  if (!wrap) return;
+  if (timerDressupAnimId) { cancelAnimationFrame(timerDressupAnimId); timerDressupAnimId = null; }
+  timerDressupState.x = 0; timerDressupState.y = 0;
+  timerDressupState.vx = 0; timerDressupState.vy = 0;
+  timerDressupState.flying = false; timerDressupState.settled = true;
+  timerDressupState.dragging = false;
+  wrap.classList.remove('thrown','dragging');
+  wrap.style.transform = 'translate(0,0)';
+  wrap.style.setProperty('--rot','0deg');
+  wrap.style.setProperty('--scl','1');
 }
 
 function updateTimerDressupImg() {
