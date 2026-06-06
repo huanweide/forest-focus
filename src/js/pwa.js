@@ -146,6 +146,8 @@ function handleChibiTap(e) {
   var now = Date.now();
   if (now - _lastTapTime < 500) return;
   _lastTapTime = now;
+  var homePage = document.getElementById('pg5');
+  if (homePage && !homePage.classList.contains('on')) return;
   var wrap = document.getElementById('homeAzusaWrap');
   if (!wrap) return;
   var rect = wrap.getBoundingClientRect();

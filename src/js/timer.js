@@ -1,4 +1,4 @@
-/* timer.js - 专注计时器、衣柜渲染、阿梓角色动画
+﻿/* timer.js - 专注计时器、衣柜渲染、阿梓角色动画
  * 依赖：core.js (AppState, Utils, sessions, habits, goals, azusaCoins, currentMood, streakFreezes)
  */
 
@@ -53,6 +53,10 @@ var currentTab = 0;
 function goTab(i) {
   currentTab = i;
   if (typeof resetTimerDressup === 'function') resetTimerDressup();
+  // 清除所有残留粒子
+  document.querySelectorAll('.chibi-emoji-particle').forEach(function(el){ el.remove(); });
+  var fxCanvas = document.getElementById('layerFx');
+  if (fxCanvas) { var ctx = fxCanvas.getContext('2d'); ctx.clearRect(0, 0, fxCanvas.width, fxCanvas.height); }
   document.querySelectorAll('.page').forEach(function(p) { p.classList.remove('on'); });
   document.querySelectorAll('.tab').forEach(function(t, j) { t.classList.toggle('on', j === i); });
   document.getElementById(['pg5','pg0','pg1','pg2','pg3','pg4'][i]).classList.add('on');
