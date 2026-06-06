@@ -143,7 +143,7 @@ function startChibiPhysics() {
   if (!wrap) return;
   var scene = document.getElementById('homeScene');
   var sceneRect = scene ? scene.getBoundingClientRect() : { width: 360, height: 280 };
-  var cw = 180, ch = 186;
+  var cw = 200, ch = 200;
 
   function step() {
     if (!chibiState.flying) { chibiAnimId = null; return; }
@@ -236,6 +236,144 @@ function resetChibi() {
   chibiResetAnimId = requestAnimationFrame(anim);
 }
 
+// ==================== 换装阿梓物理（第二个角色） ====================
+var dressupState = {
+  x:0, y:0, vx:0, vy:0,
+  dragging:false, flying:false, settled:true,
+  startX:0, startY:0, origX:0, origY:0,
+  lastX:0, lastY:0, lastT:0
+};
+var dressupAnimId = null;
+var dressupResetId = null;
+
+function initDressupPhysics() {
+  var wrap = document.getElementById('homeDressupWrap');
+  if (!wrap) return;
+
+  wrap.addEventListener('pointerdown', function(e) {
+    e.preventDefault();
+    if (dressupAnimId) { cancelAnimationFrame(dressupAnimId); dressupAnimId = null; }
+    if (dressupResetId) { cancelAnimationFrame(dressupResetId); dressupResetId = null; }
+    dressupState.dragging = true;
+    dressupState.flying = false;
+    dressupState.settled = false;
+    dressupState.startX = e.clientX;
+    dressupState.startY = e.clientY;
+    dressupState.origX = dressupState.x;
+    dressupState.origY = dressupState.y;
+    dressupState.lastX = e.clientX;
+    dressupState.lastY = e.clientY;
+    dressupState.lastT = Date.now();
+    wrap.classList.add('dragging');
+    wrap.style.zIndex = 998;
+  });
+
+  wrap.addEventListener('pointermove', function(e) {
+    if (!dressupState.dragging) return;
+    dressupState.x = dressupState.origX + (e.clientX - dressupState.startX);
+    dressupState.y = dressupState.origY + (e.clientY - dressupState.startY);
+    dressupState.lastX = e.clientX;
+    dressupState.lastY = e.clientY;
+    dressupState.lastT = Date.now();
+    wrap.style.transform = 'translate(' + dressupState.x + 'px,' + dressupState.y + 'px)';
+  });
+
+  wrap.addEventListener('pointerup', function(e) {
+    var dx = Math.abs(e.clientX - dressupState.startX);
+    var dy = Math.abs(e.clientY - dressupState.startY);
+    if (dx < 5 && dy < 5) {
+      dressupState.dragging = false;
+      dressupState.settled = true;
+      wrap.classList.remove('dragging');
+      dressupTap(e);
+      return;
+    }
+    dressupState.dragging = false;
+    wrap.classList.remove('dragging');
+    var dt = Math.max(1, Date.now() - dressupState.lastT);
+    dressupState.vx = (e.clientX - dressupState.lastX) / dt * 25;
+    dressupState.vy = (e.clientY - dressupState.lastY) / dt * 25;
+    var maxV = 35;
+    dressupState.vx = Math.max(-maxV, Math.min(maxV, dressupState.vx));
+    dressupState.vy = Math.max(-maxV, Math.min(maxV, dressupState.vy));
+    dressupState.flying = true;
+    dressupState.settled = false;
+    wrap.classList.add('thrown');
+    startDressupPhysics();
+  });
+}
+
+function dressupTap(e) {
+  var wrap = document.getElementById('homeDressupWrap');
+  if (!wrap) return;
+  var rect = wrap.getBoundingClientRect();
+  var cx = rect.left + rect.width/2, cy = rect.top;
+
+  var lines = [
+    '今天穿这件好看吗~','新衣服！','好看吧~','阿梓换新装啦',
+    '喜欢这件吗？','斯瑞选的！','美美哒~','嘿嘿~'
+  ];
+  var bubble = document.getElementById('homeDressupBubble');
+  if (bubble) {
+    bubble.textContent = lines[Math.floor(Math.random()*lines.length)];
+    bubble.style.display = 'block';
+    clearTimeout(bubble._t);
+    bubble._t = setTimeout(function(){bubble.style.display='none';},2000);
+  }
+
+  var flowers = ['🌸','🌺','💐','🌷','✨','💫','🎀','💝'];
+  for (var i=0;i<4;i++) {
+    var p = document.createElement('span');
+    p.className = 'chibi-emoji-particle';
+    p.textContent = flowers[Math.floor(Math.random()*flowers.length)];
+    p.style.left = cx + 'px'; p.style.top = cy + 'px';
+    p.style.setProperty('--dx', (Math.random()-0.5)*140+'px');
+    p.style.setProperty('--dy', -(50+Math.random()*90)+'px');
+    p.style.animationDuration = (0.5+Math.random())+'s';
+    document.body.appendChild(p);
+    setTimeout(function(){p.remove();},1000);
+  }
+  if (SFX&&SFX.click) SFX.click();
+}
+
+function startDressupPhysics() {
+  if (dressupAnimId) return;
+  var wrap = document.getElementById('homeDressupWrap');
+  if (!wrap) return;
+  var scene = document.getElementById('homeScene');
+  var sr = scene?scene.getBoundingClientRect():{width:360,height:280};
+  var cw=200,ch=200;
+
+  function step() {
+    if (!dressupState.flying) { dressupAnimId = null; return; }
+    dressupState.vy += 0.55;
+    dressupState.x += dressupState.vx;
+    dressupState.y += dressupState.vy;
+    dressupState.vx *= 0.985;
+    dressupState.vy *= 0.985;
+    var maxX = sr.width/2 - cw/2;
+    var floorY = sr.height/2 - ch/2 + 10;
+    var ceilY = -sr.height/2 + ch/2;
+    if (dressupState.x > maxX) { dressupState.x=maxX; dressupState.vx*=-0.5; }
+    if (dressupState.x < -maxX) { dressupState.x=-maxX; dressupState.vx*=-0.5; }
+    if (dressupState.y > floorY) {
+      dressupState.y=floorY; dressupState.vy*=-0.45;
+      if (Math.abs(dressupState.vy)<0.8) { dressupState.vy=0; dressupState.vx*=0.85; }
+    }
+    if (dressupState.y < ceilY) { dressupState.y=ceilY; dressupState.vy*=-0.3; }
+    if (Math.abs(dressupState.vx)<0.08 && Math.abs(dressupState.vy)<0.08 && dressupState.y>=floorY-3) {
+      dressupState.flying=false; dressupState.settled=true;
+      dressupState.vx=0; dressupState.vy=0;
+      wrap.classList.remove('thrown');
+      dressupAnimId=null;
+      return;
+    }
+    wrap.style.transform = 'translate('+dressupState.x+'px,'+dressupState.y+'px)';
+    dressupAnimId = requestAnimationFrame(step);
+  }
+  dressupAnimId = requestAnimationFrame(step);
+}
+
 // ==================== 精灵帧系统 ====================
 // Gemini生成的4帧精灵图，已带透明通道，无需去背景
 var CHIBI_SPRITES = {
@@ -289,6 +427,15 @@ function rHome() {
     homeAzusaImg.src = CHIBI_SPRITES[chibiCurrentFrame] || 'src/images/azusa/chibi_perfect.png';
     homeAzusaImg.onerror = function() {
       this.src = curTree.img || 'src/images/azusa/chibi_perfect.png';
+    };
+  }
+  // 换装角色——显示当前衣装
+  var dressupImg = document.getElementById('homeDressupImg');
+  if (dressupImg) {
+    var outfitSrc = curTree.img || 'src/images/azusa/outfits/jk_uniform.png';
+    dressupImg.src = outfitSrc;
+    dressupImg.onerror = function() {
+      this.src = 'src/images/azusa/outfits/jk_uniform.png';
     };
   }
   var homeAzusaName = document.getElementById('homeAzusaName');
@@ -440,6 +587,7 @@ function initAll() {
   updateCoinDisplay();
   initAzusaClick();
   initChibiPhysics();
+  initDressupPhysics();
   setTimeout(checkInstallAvailable, 3000);
 
   if (timerDefault) { goTab(1); } else { goTab(0); rHome(); }

@@ -67,13 +67,22 @@
   <div class="ground"></div>
 </div>
 <div class="home-mood-badge" id="homeMoodBadge">😊 阿梓心情很好</div>
-<!-- 互动阿梓：可拖拽、扔出、弹表情 -->
-<div class="azusa-interactive" id="homeAzusaWrap">
-  <img class="azusa-chibi" id="homeAzusaImg" src="src/images/azusa/chibi_perfect.png" alt="阿梓"
-    onerror="this.style.display='none';document.getElementById('homeAzusaWrap').innerHTML='<span style=font-size:80px>🌰</span>'">
-  <div class="azusa-bubble" id="homeAzusaBubble" style="display:none"></div>
-</div>
-<div class="char-label" id="homeAzusaName">阿梓的种子</div>
+<!-- 两个角色并排→小精灵+换装阿梓 -->
+<div class="home-chars" id="homeChars">
+  <div class="azusa-interactive" id="homeAzusaWrap">
+    <img class="azusa-chibi" id="homeAzusaImg" src="src/images/azusa/chibi_perfect.png" alt="小精灵"
+      onerror="this.style.display='none';this.parentElement.innerHTML='<span style=font-size:60px>🌰</span>'">
+    <div class="azusa-bubble" id="homeAzusaBubble" style="display:none"></div>
+    <div class="char-label-mini">小精灵</div>
+  </div>
+  <div class="azusa-interactive azusa-dressup" id="homeDressupWrap">
+    <img class="azusa-chibi azusa-dressup-img" id="homeDressupImg" src="src/images/azusa/outfits/jk_uniform.png" alt="阿梓"
+      onerror="this.style.display='none';this.parentElement.innerHTML='<span style=font-size:60px>👗</span>'">
+    <div class="azusa-bubble" id="homeDressupBubble" style="display:none"></div>
+    <div class="char-label-mini">阿梓</div>
+  </div>
+</div>😊 阿梓心情很好</div>
+
 </div>
 <div class="daily-quote" id="dailyQuote">"阿梓在等你开始今天的专注呢~"</div>
 <div class="quick-stats" id="quickStats"></div>
