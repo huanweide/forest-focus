@@ -62,7 +62,6 @@ function initChibiPhysics() {
     chibiState.lastY = e.clientY;
     chibiState.lastT = Date.now();
 
-    setChibiFrame('surprised'); // 被抓→惊讶
     wrap.classList.add('dragging');
     wrap.classList.remove('thrown');
     wrap.setPointerCapture(e.pointerId);
@@ -155,8 +154,6 @@ function handleChibiTap(e) {
     setTimeout(function() { particle.remove(); }, 1000);
   }
 
-  // 点击→开心表情
-  chibiReaction('happy', 1500);
   if (SFX && SFX.click) SFX.click();
 }
 
@@ -227,7 +224,6 @@ function resetChibi() {
   if (chibiAnimId) { cancelAnimationFrame(chibiAnimId); chibiAnimId = null; }
   if (chibiResetAnimId) { cancelAnimationFrame(chibiResetAnimId); }
 
-  setChibiFrame('idle');
   var wrap = document.getElementById('homeAzusaWrap');
   if (!wrap) return;
   wrap.classList.remove('thrown', 'dragging');
@@ -259,7 +255,7 @@ function resetChibi() {
   chibiResetAnimId = requestAnimationFrame(anim);
 }
 
-// 换装自主漫游
+// 换装自主漫游 - 重力驱动活跃移动
 var dressupWanderId = null;
 function stopDressupWander() { if (dressupWanderId) { clearInterval(dressupWanderId); dressupWanderId = null; } }
 function startDressupWander() {
@@ -269,14 +265,15 @@ function startDressupWander() {
     var scene = document.getElementById('homeScene');
     if (!scene) return;
     var sr = scene.getBoundingClientRect();
-    var maxX = sr.width/2 - 65, maxY = sr.height/2 - 65;
-    dressupState.vx = (Math.random()-0.5) * 2.5;
-    dressupState.vy = (Math.random()-0.5) * 2 - 0.5;
+    var maxX = sr.width/2 - 65, maxY = sr.height/4;
+    // 水平速度快一些，垂直给向上初速度让重力自然下落
+    dressupState.vx = (Math.random()-0.5) * 8;
+    dressupState.vy = -(3 + Math.random() * 6);
     dressupState.flying = true; dressupState.settled = false;
     var wrap = document.getElementById('homeDressupWrap');
     if (wrap) wrap.classList.add('thrown');
     startDressupPhysics();
-  }, 5000 + Math.random() * 8000);
+  }, 2000 + Math.random() * 3000);
 }
 
 // ==================== 换装阿梓物理（第二个角色） ====================
@@ -340,8 +337,8 @@ function initDressupPhysics() {
     dressupState.dragging = false;
     wrap.classList.remove('dragging');
     var dt = Math.max(1, Date.now() - dressupState.lastT);
-    dressupState.vx = (e.clientX - dressupState.lastX) / dt * 35;
-    dressupState.vy = (e.clientY - dressupState.lastY) / dt * 35;
+    dressupState.vx = (e.clientX - dressupState.lastX) / dt * 45;
+    dressupState.vy = (e.clientY - dressupState.lastY) / dt * 45;
     var maxV = 35;
     dressupState.vx = Math.max(-maxV, Math.min(maxV, dressupState.vx));
     dressupState.vy = Math.max(-maxV, Math.min(maxV, dressupState.vy));
@@ -415,6 +412,7 @@ function startDressupPhysics() {
       dressupState.vx=0; dressupState.vy=0;
       wrap.classList.remove('thrown');
       dressupAnimId=null;
+      wrap.style.transform = 'translate('+dressupState.x+'px,'+dressupState.y+'px)';
       startDressupWander();
       return;
     }
@@ -424,37 +422,7 @@ function startDressupPhysics() {
   dressupAnimId = requestAnimationFrame(step);
 }
 
-// ==================== 精灵帧系统 ====================
-// Gemini生成的4帧精灵图，已带透明通道，无需去背景
-var CHIBI_SPRITES = {
-  idle:      'src/images/azusa/sprites/chibi_idle.png',
-  happy:     'src/images/azusa/sprites/chibi_happy.png',
-  surprised: 'src/images/azusa/sprites/chibi_surprised.png',
-  shy:       'src/images/azusa/sprites/chibi_shy.png'
-};
-var chibiCurrentFrame = 'idle';
-var chibiFrameTimer = null;
 
-function setChibiFrame(frameName) {
-  if (frameName === chibiCurrentFrame) return;
-  var img = document.getElementById('homeAzusaImg');
-  if (!img || !CHIBI_SPRITES[frameName]) return;
-  chibiCurrentFrame = frameName;
-  img.src = CHIBI_SPRITES[frameName];
-  img.onerror = function() {
-    this.src = 'src/images/azusa/chibi_home.png';
-  };
-}
-
-function chibiReaction(frame, duration) {
-  setChibiFrame(frame);
-  if (chibiFrameTimer) clearTimeout(chibiFrameTimer);
-  chibiFrameTimer = setTimeout(function() {
-    if (!chibiState.dragging && !chibiState.flying) {
-      setChibiFrame('idle');
-    }
-  }, duration || 1500);
-}
 
 // ==================== 首页渲染 ====================
 function rHome() {
