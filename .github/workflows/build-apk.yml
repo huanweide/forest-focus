@@ -46,7 +46,7 @@ jobs:
         run: |
           mkdir -p twa-project
           cd twa-project
-          printf "n\n${JAVA_HOME}\n" | bubblewrap init \
+          { printf "n\n%s\n" "$JAVA_HOME"; yes ""; } | bubblewrap init \
             --manifest "https://huanweide.github.io/forest-focus/manifest.json" \
             --directory .
 
