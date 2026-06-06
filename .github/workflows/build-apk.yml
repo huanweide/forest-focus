@@ -1,44 +1,74 @@
-name: Build Android APK
+name: Build APK
+
 on:
-  push:
-    branches: [master, main]
   workflow_dispatch:
+  push:
+    branches: [master]
+    paths:
+      - 'docs/**'
 
 jobs:
-  build:
+  build-apk:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up JDK 17
+      - name: Setup Java
         uses: actions/setup-java@v4
         with:
-          java-version: '17'
           distribution: 'temurin'
+          java-version: '17'
 
-      - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
         with:
-          gradle-version: '8.4'
+          node-version: '20'
 
-      - name: Generate keystore
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v3
+        with:
+          packages: 'platforms;android-34 build-tools;34.0.0'
+
+      - name: Create keystore
         run: |
           keytool -genkey -v \
-            -keystore android/app/release.keystore \
-            -alias azusaforest \
+            -keystore forest-focus.keystore \
+            -alias forestfocus \
             -keyalg RSA -keysize 2048 -validity 10000 \
-            -storepass azusa2026 -keypass azusa2026 \
-            -dname "CN=Azusa, OU=Forest, O=Huanweide, L=Shanghai, ST=Shanghai, C=CN"
+            -storepass azusa2026 \
+            -keypass azusa2026 \
+            -dname "CN=Forest Focus, OU=Dev, O=HuanWei, L=Beijing, ST=Beijing, C=CN"
 
-      - name: Build release APK
-        working-directory: android
-        env:
-          ANDROID_HOME: /usr/local/lib/android/sdk
-          ANDROID_SDK_ROOT: /usr/local/lib/android/sdk
-        run: gradle assembleRelease
+      - name: Install bubblewrap
+        run: npm install -g @bubblewrap/cli
 
-      - name: Upload APK
+      - name: Initialize TWA
+        run: |
+          mkdir -p twa-project
+          cd twa-project
+          printf "n\n${JAVA_HOME}\n" | bubblewrap init \
+            --manifest "https://huanweide.github.io/forest-focus/manifest.json" \
+            --directory .
+
+      - name: Build APK
+        working-directory: twa-project
+        run: bubblewrap build
+
+      - name: Copy APK
+        run: |
+          mkdir -p docs/download
+          find twa-project -name "*.apk" -exec cp {} docs/download/forest-focus.apk \;
+
+      - name: Upload APK artifact
         uses: actions/upload-artifact@v4
         with:
-          name: azusa-forest-release
-          path: android/app/build/outputs/apk/release/*.apk
+          name: forest-focus-apk
+          path: docs/download/forest-focus.apk
+
+      - name: Commit APK to repo
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add docs/download/forest-focus.apk
+          git diff --staged --quiet || git commit -m "auto: build APK [skip ci]"
+          git push
