@@ -199,7 +199,6 @@ function startChibiPhysics() {
       wrap.style.setProperty('--rot', '0deg');
       wrap.style.setProperty('--scl', '1');
       chibiAnimId = null;
-      chibiReaction('shy', 2000);
       wrap.style.transform = 'translate(' + chibiState.x + 'px,' + chibiState.y + 'px)';
       startChibiWander();
       return;
@@ -447,17 +446,6 @@ function rHome() {
       this.src = curTree.img || 'src/images/azusa/chibi_home.png';
     };
   }
-  // 换装角色——显示当前衣装
-  var dressupImg = document.getElementById('homeDressupImg');
-  if (dressupImg) {
-    var outfitSrc = curTree.img || 'src/images/azusa/outfits/jk_uniform.png';
-    dressupImg.src = outfitSrc;
-    dressupImg.onerror = function() {
-      this.src = 'src/images/azusa/outfits/jk_uniform.png';
-    };
-  }
-  var homeAzusaName = document.getElementById('homeAzusaName');
-  if (homeAzusaName) homeAzusaName.textContent = curTree.name;
 
   // 心情
   var mood = AppState.mood;
@@ -723,11 +711,10 @@ function startTimerDressupPhysics() {
     timerDressupState.y += timerDressupState.vy;
     timerDressupState.vx *= 0.985;
     timerDressupState.vy *= 0.985;
-    var maxX = pr.width/2 - cw/2;
-    var floorY = pr.height/2 - ch;
-    var ceilY = -pr.height/2 + ch/2 + 40;
+    var maxX = 80, minX = -100;
+    var floorY = 80, ceilY = -120;
     if (timerDressupState.x > maxX)  { timerDressupState.x = maxX;  timerDressupState.vx = -Math.abs(timerDressupState.vx)*0.6; }
-    if (timerDressupState.x < -maxX) { timerDressupState.x = -maxX; timerDressupState.vx = Math.abs(timerDressupState.vx)*0.6; }
+    if (timerDressupState.x < minX) { timerDressupState.x = minX; timerDressupState.vx = Math.abs(timerDressupState.vx)*0.6; }
     if (timerDressupState.y > floorY) {
       timerDressupState.y = floorY;
       timerDressupState.vy = -Math.abs(timerDressupState.vy)*0.5;

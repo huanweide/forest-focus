@@ -357,6 +357,7 @@ function wearOutfit(idx) {
   if (currentTab === 2) rGallery();
   if (currentTab === 1) updateAzusaGrowth(0);
   if (currentTab === 0) rHome();
+  if (typeof updateTimerDressupImg === 'function') updateTimerDressupImg();
   toast('👗 ' + AZUSA_TREES[idx].name + ' 换上啦!');
 }
 

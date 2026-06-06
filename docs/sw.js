@@ -1,4 +1,4 @@
-const V='forest-v12';
+const V='forest-v13';
 // HTML用网络优先（始终最新），静态资源用缓存优先
 self.addEventListener('install',e=>{
   e.waitUntil(caches.open(V).then(c=>c.addAll([
