@@ -10,80 +10,18 @@ body{font-family:system-ui,-apple-system,sans-serif;background:linear-gradient(1
 .card{background:#fff;border-radius:24px;padding:30px;max-width:420px;width:100%;box-shadow:0 8px 40px rgba(76,175,80,.2);text-align:center}
 h1{font-size:28px;color:#2e7d32;margin-bottom:6px}
 .sub{font-size:14px;color:#666;margin-bottom:24px}
-.platform-tabs{display:flex;gap:8px;margin-bottom:24px}
-.ptab{flex:1;padding:10px;border-radius:14px;border:2px solid #e0e0e0;background:#fff;cursor:pointer;font-size:14px;font-weight:600;transition:all .2s}
-.ptab.sel{border-color:#4CAF50;background:#e8f5e9;color:#2e7d32}
-.steps{text-align:left;background:#f5f5f5;border-radius:16px;padding:20px;margin-bottom:20px}
-.step{display:flex;gap:12px;align-items:flex-start;margin-bottom:14px}
-.step:last-child{margin-bottom:0}
-.step-num{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,#4CAF50,#66BB6A);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;flex-shrink:0}
-.step-text{font-size:13px;color:#333;line-height:1.5}
-.btn{display:inline-block;padding:16px 36px;border-radius:20px;background:linear-gradient(135deg,#7C5CBF,#9C7CE5);color:#fff;font-size:16px;font-weight:700;text-decoration:none;box-shadow:0 4px 16px rgba(124,92,191,.35);transition:all .2s;margin:4px;cursor:pointer;border:none}
+.btn{display:inline-block;padding:16px 36px;border-radius:20px;background:linear-gradient(135deg,#7C5CBF,#9C7CE5);color:#fff;font-size:16px;font-weight:700;text-decoration:none;box-shadow:0 4px 16px rgba(124,92,191,.35);transition:all .2s;margin:8px;cursor:pointer;border:none}
 .btn:hover{transform:translateY(-2px);box-shadow:0 6px 24px rgba(124,92,191,.45)}
 .btn-outline{background:#fff;color:#7C5CBF;border:2px solid #7C5CBF;box-shadow:none}
-.note{font-size:11px;color:#999;margin-top:16px}
+.note{font-size:12px;color:#999;margin-top:16px}
 </style>
 </head>
 <body>
 <div class="card">
-<h1>🌳 阿梓的森林</h1>
-<div class="sub">v4.0 · 游戏化专注平台 · 跟阿梓一起专注</div>
-
-<div class="platform-tabs">
-<button class="ptab sel" id="tabAndroid" onclick="showTab('android')">🤖 Android</button>
-<button class="ptab" id="tabIOS" onclick="showTab('ios')">🍎 iOS</button>
-<button class="ptab" id="tabDesktop" onclick="showTab('desktop')">💻 电脑</button>
+<h1>🌳 阿梓的森林 v4.0</h1>
+<div class="sub">游戏化专注平台 · 跟阿梓一起专注</div>
+<a class="btn" href="forest-focus.apk" download>📥 下载 APK (2.3MB)</a>
+<div class="note">Android 直接安装 · 华为手机推荐用 Edge 打开网页安装 PWA</div>
 </div>
-
-<div class="steps" id="stepsAndroid">
-<div class="step"><span class="step-num">1</span><span class="step-text">用 <b>Chrome 或 Edge 浏览器</b>打开<br><a href="../" style="color:#7C5CBF">huanweide.github.io/forest-focus</a></span></div>
-<div class="step"><span class="step-num">2</span><span class="step-text">等待页面加载完成，会出现<b>"添加到手机桌面"</b>提示条</span></div>
-<div class="step"><span class="step-num">3</span><span class="step-text">点击提示条，或在浏览器菜单中选择<b>"添加到主屏幕"</b></span></div>
-<div class="step"><span class="step-num">4</span><span class="step-text">桌面出现 🌳 图标，点击即可全屏使用！</span></div>
-<div style="margin-top:12px;text-align:center">
-<a class="btn" href="../">📲 打开网站安装</a>
-</div>
-</div>
-
-<div class="steps" id="stepsIOS" style="display:none">
-<div class="step"><span class="step-num">1</span><span class="step-text">用 <b>Safari 浏览器</b>打开<br><a href="../" style="color:#7C5CBF">huanweide.github.io/forest-focus</a></span></div>
-<div class="step"><span class="step-num">2</span><span class="step-text">点击底部中间的 <b>分享按钮</b>（方框↑箭头）</span></div>
-<div class="step"><span class="step-num">3</span><span class="step-text">滑动找到并点击 <b>"添加到主屏幕"</b></span></div>
-<div class="step"><span class="step-num">4</span><span class="step-text">确认名称后点"添加"，桌面出现App图标</span></div>
-<div style="margin-top:12px;text-align:center">
-<a class="btn" href="../">📲 打开网站</a>
-</div>
-</div>
-
-<div class="steps" id="stepsDesktop" style="display:none">
-<div class="step"><span class="step-num">1</span><span class="step-text">用 <b>Chrome 或 Edge 浏览器</b>打开<br><a href="../" style="color:#7C5CBF">huanweide.github.io/forest-focus</a></span></div>
-<div class="step"><span class="step-num">2</span><span class="step-text">地址栏右侧会出现 <b>安装图标</b>，点击它</span></div>
-<div class="step"><span class="step-num">3</span><span class="step-text">确认安装，桌面出现 🌳 阿梓的森林快捷方式</span></div>
-<div style="margin-top:12px;text-align:center">
-<a class="btn" href="../">📲 打开网站安装</a>
-</div>
-</div>
-
-<div style="margin-top:20px;padding-top:20px;border-top:1px solid #eee">
-<div style="font-size:14px;font-weight:700;color:#333;margin-bottom:8px">📱 直接下载 APK 安装包</div>
-<div style="font-size:13px;color:#666;margin-bottom:12px">Android 用户下载后直接安装，无需浏览器</div>
-<a class="btn" href="forest-focus.apk" download>📥 下载 APK (v4.0)</a>
-<div class="note" style="margin-top:8px">文件由 GitHub Actions 自动构建 · 每天同步更新</div>
-</div>
-</div>
-
-<script>
-function showTab(p) {
-  document.querySelectorAll('.ptab').forEach(function(t){t.classList.remove('sel')});
-  document.getElementById('tab'+p.charAt(0).toUpperCase()+p.slice(1)).classList.add('sel');
-  document.getElementById('stepsAndroid').style.display=p==='android'?'block':'none';
-  document.getElementById('stepsIOS').style.display=p==='ios'?'block':'none';
-  document.getElementById('stepsDesktop').style.display=p==='desktop'?'block':'none';
-}
-var ua=navigator.userAgent;
-if(/iPhone|iPad|iPod/.test(ua)) showTab('ios');
-else if(/Android/.test(ua)) showTab('android');
-else showTab('desktop');
-</script>
 </body>
 </html>
