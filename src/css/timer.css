@@ -87,37 +87,6 @@
 .timer-dressup-wrap.dragging img{transform:scale(1.12)}
 
 
-/* ===== 阿梓小屋家园 ===== */
-.timer-house {
-  position: absolute;
-  bottom: 90px;
-  left: 50%;
-  transform: translateX(-50%);
-  text-align: center;
-  z-index: 5;
-  pointer-events: none;
-}
-.house-roof {
-  font-size: 36px;
-  line-height: 1;
-  filter: drop-shadow(0 2px 4px rgba(0,0,0,.1));
-  animation: houseFloat 4s ease-in-out infinite;
-}
-.house-base {
-  display: flex;
-  justify-content: center;
-  gap: 4px;
-  margin-top: -4px;
-}
-.house-door, .house-window {
-  font-size: 20px;
-  opacity: .6;
-}
-@keyframes houseFloat {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-3px); }
-}
-
 /* ===== 计时页阿梓：规律可爱运动（参考 mo.js 缓动 + CSS 动画） ===== */
 @keyframes azusaIdle {
   0%, 100% { transform: translateY(0) scale(1); }
@@ -169,4 +138,45 @@
   font-size: 18px;
   z-index: 60;
   animation: azusaSparkle .7s ease-out forwards;
+}
+
+/* ===== 阿梓规律运动（参考 anime.js 弹性缓动 + mo.js 路径动画） ===== */
+@keyframes azuFloat {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  20% { transform: translateY(-8px) rotate(1deg); }
+  40% { transform: translateY(-2px) rotate(-0.5deg); }
+  60% { transform: translateY(-10px) rotate(0.5deg); }
+  80% { transform: translateY(-4px) rotate(-1deg); }
+}
+@keyframes azuBreathe {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.04); }
+}
+@keyframes azuBounceClick {
+  0% { transform: translateY(0) scale(1); }
+  20% { transform: translateY(-16px) scale(1.12) rotate(-4deg); }
+  40% { transform: translateY(-4px) scale(0.93) rotate(2deg); }
+  60% { transform: translateY(0) scale(1.06) rotate(-1deg); }
+  80% { transform: translateY(-3px) scale(0.97); }
+  100% { transform: translateY(0) scale(1) rotate(0deg); }
+}
+@keyframes sparkleFloat {
+  0% { opacity: 1; transform: translate(0,0) scale(0); }
+  30% { opacity: 1; transform: translate(calc(var(--sx)*0.3),calc(var(--sy)*0.3)) scale(1.3); }
+  100% { opacity: 0; transform: translate(var(--sx),var(--sy)) scale(0); }
+}
+/* 角色浮游 + 呼吸叠加 */
+.azusa-character .body-outfit {
+  animation: azuFloat 5s ease-in-out infinite, azuBreathe 3s ease-in-out infinite;
+}
+.azusa-character.clicked .body-outfit {
+  animation: azuBounceClick .55s cubic-bezier(.25,.46,.45,.94) !important;
+}
+/* 点击粒子 */
+.azu-sparkle {
+  position: fixed;
+  pointer-events: none;
+  font-size: 16px;
+  z-index: 60;
+  animation: sparkleFloat .65s ease-out forwards;
 }

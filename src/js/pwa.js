@@ -800,52 +800,49 @@ function spawnCollisionParticles(cx, cy) {
 }
 
 function initTimerDressup() {
+  // 移除多余的 timerDressupWrap，交互已合并到主角色 azusaChar
   var wrap = document.getElementById('timerDressupWrap');
-  if (!wrap) return;
+  if (wrap) wrap.style.display = 'none';
 
-  // 规律可爱运动：CSS动画自动驱动（参考 mo.js 缓动模式）
-  wrap.style.position = 'relative';
-  wrap.style.left = '50%';
-  wrap.style.top = '60px';
-  wrap.style.transform = 'translateX(-50%)';
-  wrap.style.cursor = 'pointer';
+  // 给主角色 azusaChar 添加点击交互
+  var char = document.getElementById('azusaChar');
+  if (!char) return;
 
-  // 点击：可爱弹跳 + 风铃粒子 + 铃铛音效
   var _lastClick = 0;
-  wrap.addEventListener('pointerdown', function(e) {
+  char.addEventListener('pointerdown', function(e) {
     e.preventDefault(); e.stopPropagation();
     var now = Date.now();
     if (now - _lastClick < 600) return;
     _lastClick = now;
 
     // 弹跳动画
-    wrap.classList.remove('bouncing');
-    void wrap.offsetWidth;
-    wrap.classList.add('bouncing');
-    setTimeout(function() { wrap.classList.remove('bouncing'); }, 600);
+    char.classList.remove('clicked');
+    void char.offsetWidth;
+    char.classList.add('clicked');
+    setTimeout(function() { char.classList.remove('clicked'); }, 550);
 
     // 风铃音效
     if (typeof playTapSound === 'function') playTapSound();
 
-    // 风铃粒子（参考 tsParticles 轻量粒子）
-    var rect = wrap.getBoundingClientRect();
+    // 粒子（参考 mo.js 轻量粒子模式）
+    var rect = char.getBoundingClientRect();
     var cx = rect.left + rect.width/2;
     var cy = rect.top + rect.height/3;
-    var sparkles = ['✨','🌟','💫','🫧','🌸','💖','🎀'];
-    for (var i = 0; i < 4; i++) {
+    var sparkles = ['✨','💫','🌸','💖','🎀','🫧','🌟'];
+    for (var i = 0; i < 3; i++) {
       var p = document.createElement('span');
-      p.className = 'sparkle-particle';
+      p.className = 'azu-sparkle';
       p.textContent = sparkles[Math.floor(Math.random() * sparkles.length)];
       p.style.left = cx + 'px';
       p.style.top = cy + 'px';
-      p.style.setProperty('--sx', (Math.random() - 0.5) * 60 + 'px');
-      p.style.setProperty('--sy', -(30 + Math.random() * 40) + 'px');
+      p.style.setProperty('--sx', (Math.random() - 0.5) * 70 + 'px');
+      p.style.setProperty('--sy', -(25 + Math.random() * 45) + 'px');
       document.body.appendChild(p);
-      setTimeout(function() { p.remove(); }, 700);
+      setTimeout(function() { p.remove(); }, 650);
     }
 
-    // 随机对话
-    var lines = ['嘻嘻~','在呢！','好舒服呀~','今天也要加油哦！','斯瑞最棒了！','叮咚~','风铃好听吗？','小屋子好温馨~'];
+    // 对话
+    var lines = ['嘻嘻~','在呢！','好舒服呀~','今天也要加油哦！','斯瑞最棒了！','叮咚~','风铃好听吗？'];
     var b = document.getElementById('timerDressupBubble');
     if (b) {
       b.textContent = lines[Math.floor(Math.random() * lines.length)];
