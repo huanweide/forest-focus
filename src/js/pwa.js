@@ -420,11 +420,11 @@ function rHome() {
     '<div class="quick-stat"><div class="qs-val">' + AppState.coins + '</div><div class="qs-lbl">🪙 阿梓币</div></div>' +
     '<div class="quick-stat"><div class="qs-val">🔥 ' + Utils.calcStreak(Array.from(new Set(sessions.filter(function(s) { return s.completed; }).map(function(s) { return s.date; })))) + '</div><div class="qs-lbl">连续天数</div></div>';
 
-  // 首页精灵——直接用Gemini生成的完美透明图
+  // 首页精灵——用完整单图(不切帧，避免裁切)
   var curTree = AZUSA_TREES[currentTreeIdx] || AZUSA_TREES[0];
   var homeAzusaImg = document.getElementById('homeAzusaImg');
   if (homeAzusaImg) {
-    homeAzusaImg.src = CHIBI_SPRITES[chibiCurrentFrame] || 'src/images/azusa/chibi_perfect.png';
+    homeAzusaImg.src = 'src/images/azusa/chibi_perfect.png';
     homeAzusaImg.onerror = function() {
       this.src = curTree.img || 'src/images/azusa/chibi_perfect.png';
     };
