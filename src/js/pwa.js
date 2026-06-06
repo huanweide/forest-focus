@@ -177,19 +177,18 @@ function startChibiPhysics() {
     chibiState.vx *= 0.985;
     chibiState.vy *= 0.985;
 
-    // 边界碰撞
-    var maxX = sceneRect.width / 2 - cw / 2;
-    var floorY = sceneRect.height / 2 - ch / 2 + 10;
-    var ceilY = -sceneRect.height / 2 + ch / 2;
-
-    if (chibiState.x > maxX)  { chibiState.x = maxX;  chibiState.vx *= -0.5; }
-    if (chibiState.x < -maxX) { chibiState.x = -maxX; chibiState.vx *= -0.5; }
+    // 边界碰撞——碰到立刻弹回
+    var maxX = sceneRect.width/2 - cw/2;
+    var floorY = sceneRect.height/2 - ch;
+    var ceilY = -sceneRect.height/2 + ch/2;
+    if (chibiState.x > maxX)  { chibiState.x = maxX;  chibiState.vx = -Math.abs(chibiState.vx)*0.6; }
+    if (chibiState.x < -maxX) { chibiState.x = -maxX; chibiState.vx = Math.abs(chibiState.vx)*0.6; }
     if (chibiState.y > floorY) {
       chibiState.y = floorY;
-      chibiState.vy *= -0.45;
-      if (Math.abs(chibiState.vy) < 0.8) { chibiState.vy = 0; chibiState.vx *= 0.85; }
+      chibiState.vy = -Math.abs(chibiState.vy)*0.5;
+      if (Math.abs(chibiState.vy) < 0.5) { chibiState.vy = 0; chibiState.vx *= 0.8; }
     }
-    if (chibiState.y < ceilY) { chibiState.y = ceilY; chibiState.vy *= -0.3; }
+    if (chibiState.y < ceilY) { chibiState.y = ceilY; chibiState.vy = Math.abs(chibiState.vy)*0.5; }
 
     // 静止判定
     if (Math.abs(chibiState.vx) < 0.08 && Math.abs(chibiState.vy) < 0.08 && chibiState.y >= floorY - 3) {
@@ -400,13 +399,14 @@ function startDressupPhysics() {
     var maxX = sr.width/2 - cw/2;
     var floorY = sr.height/2 - ch/2 + 10;
     var ceilY = -sr.height/2 + ch/2;
-    if (dressupState.x > maxX) { dressupState.x=maxX; dressupState.vx*=-0.5; }
-    if (dressupState.x < -maxX) { dressupState.x=-maxX; dressupState.vx*=-0.5; }
+    if (dressupState.x > maxX)  { dressupState.x=maxX;  dressupState.vx = -Math.abs(dressupState.vx)*0.6; }
+    if (dressupState.x < -maxX) { dressupState.x=-maxX; dressupState.vx = Math.abs(dressupState.vx)*0.6; }
     if (dressupState.y > floorY) {
-      dressupState.y=floorY; dressupState.vy*=-0.45;
-      if (Math.abs(dressupState.vy)<0.8) { dressupState.vy=0; dressupState.vx*=0.85; }
+      dressupState.y=floorY;
+      dressupState.vy = -Math.abs(dressupState.vy)*0.5;
+      if (Math.abs(dressupState.vy)<0.5) { dressupState.vy=0; dressupState.vx*=0.8; }
     }
-    if (dressupState.y < ceilY) { dressupState.y=ceilY; dressupState.vy*=-0.3; }
+    if (dressupState.y < ceilY) { dressupState.y=ceilY; dressupState.vy = Math.abs(dressupState.vy)*0.5; }
     if (Math.abs(dressupState.vx)<0.08 && Math.abs(dressupState.vy)<0.08 && dressupState.y>=floorY-3) {
       dressupState.flying=false; dressupState.settled=true;
       dressupState.vx=0; dressupState.vy=0;

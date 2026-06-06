@@ -32,22 +32,18 @@
   position:absolute;bottom:0;left:0;right:0;height:40px;
   background:linear-gradient(180deg,#66bb6a,#43a047);border-radius:0 0 20px 20px;
 }
-/* 互动角色基础 */
+/* 互动角色基础 - 精简避免拖动碎块 */
 .azusa-interactive{
   position:absolute;z-index:99;
   cursor:grab;user-select:none;-webkit-user-select:none;
-  will-change:transform;
-  filter:drop-shadow(0 2px 10px rgba(124,92,191,.3));
+  touch-action:none;
 }
 .azusa-interactive:active{cursor:grabbing}
 .azusa-interactive.dragging{
   cursor:grabbing;z-index:999;
-  filter:drop-shadow(0 8px 24px rgba(124,92,191,.5)) brightness(1.05);
+  filter:drop-shadow(0 4px 12px rgba(0,0,0,.25));
 }
-.azusa-interactive.thrown{
-  z-index:999;
-  filter:drop-shadow(0 4px 14px rgba(124,92,191,.4));
-}
+.azusa-interactive.thrown{z-index:999;}
 .azusa-chibi{
   width:200px;height:auto;display:block;
   border:none;background:transparent;
