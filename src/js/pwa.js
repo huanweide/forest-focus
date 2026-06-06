@@ -717,10 +717,6 @@ function checkInstallAvailable() {
 
 // ==================== 应用初始化 ====================
 
-// 计时页换装阿梓物理状态（必须在 initAll 之前定义，goTab -> resetTimerDressup 依赖此变量）
-var timerDressupState = { x:0, y:0, oldX:0, oldY:0, vx:0, vy:0, dragging:false, flying:false, settled:true, startX:0, startY:0, origX:0, origY:0, lastX:0, lastY:0, lastT:0, velHistory:[] };
-var timerDressupAnimId = null;
-
 function initAll() {
   rHabits();
   rGoals();
@@ -738,7 +734,7 @@ function initAll() {
   initAzusaClick();
   initChibiPhysics();
   initDressupPhysics();
-  initTimerDressup();
+  initTimerDressupSimple();
   setTimeout(checkInstallAvailable, 3000);
   // 同步所有页面的阿梓形象
   setTimeout(function(){ syncAllAzusaImages(); }, 200);
@@ -782,231 +778,41 @@ initAll();
 
 
 
-// ==================== 计时页换装阿梓物理 Verlet版 ====================
-function initTimerDressup() {
+
+// ==================== 计时页阿梓——轻量点击表情 ====================
+function initTimerDressupSimple() {
   var wrap = document.getElementById('timerDressupWrap');
   if (!wrap) return;
-
-  // 居中定位（同首页 chibi）
   wrap.style.position = 'absolute';
   wrap.style.left = '16px'; wrap.style.top = 'auto'; wrap.style.bottom = '16px';
   wrap.style.transform = 'translate(0,0)';
-  wrap.style.cursor = 'grab';
-  timerDressupState.x = 0; timerDressupState.y = 0;
+  wrap.style.cursor = 'pointer';
 
-  // 防止重复绑定
-  if (wrap._tdBound) return;
-  wrap._tdBound = true;
+  wrap.addEventListener('click', function(e) {
+    e.stopPropagation();
+    var bubble = document.getElementById('timerDressupBubble');
+    if (!bubble) return;
+    var msgs = ['别戳我啦~', '在呢！', '嘿嘿~', '想我了？', '加油哦！', '阿梓在呢~', '干什么！', '好痒！', '啊！', '斯瑞！', '最喜欢你了~'];
+    bubble.textContent = msgs[Math.floor(Math.random() * msgs.length)];
+    bubble.style.display = 'block';
+    clearTimeout(bubble._t);
+    bubble._t = setTimeout(function() { bubble.style.display = 'none'; }, 2000);
 
-  wrap.addEventListener('pointerdown', function(e) {
-    e.preventDefault(); e.stopPropagation();
-    if (timerDressupAnimId) { cancelAnimationFrame(timerDressupAnimId); timerDressupAnimId = null; }
-    timerDressupState.dragging = true;
-    timerDressupState.flying = false;
-    timerDressupState.settled = false;
-    timerDressupState.startX = e.clientX;
-    timerDressupState.startY = e.clientY;
-    timerDressupState.origX = timerDressupState.x;
-    timerDressupState.origY = timerDressupState.y;
-    timerDressupState.lastX = e.clientX;
-    timerDressupState.lastY = e.clientY;
-    timerDressupState.lastT = Date.now();
-    wrap.classList.add('dragging');
-    wrap.classList.remove('thrown');
-    wrap.setPointerCapture(e.pointerId);
-  });
+    var wrap2 = document.getElementById('timerDressupWrap');
+    if (wrap2) { wrap2.classList.add('clicked'); setTimeout(function(){ wrap2.classList.remove('clicked'); }, 550); }
 
-  wrap.addEventListener('pointermove', function(e) {
-    if (!timerDressupState.dragging) return;
-    var now = Date.now();
-    var h = timerDressupState.velHistory;
-    h.push({x:e.clientX, y:e.clientY, t:now});
-    if (h.length > PHYSICS.VEL_SMOOTH) h.shift();
-    timerDressupState.x = timerDressupState.origX + (e.clientX - timerDressupState.startX);
-    timerDressupState.y = timerDressupState.origY + (e.clientY - timerDressupState.startY);
-    timerDressupState.lastX = e.clientX;
-    timerDressupState.lastY = e.clientY;
-    timerDressupState.lastT = now;
-    wrap.style.transform = 'translate(' + timerDressupState.x + 'px,' + timerDressupState.y + 'px)';
-  });
-
-  wrap.addEventListener('pointerup', function(e) {
-    var totalDx = Math.abs(e.clientX - timerDressupState.startX);
-    var totalDy = Math.abs(e.clientY - timerDressupState.startY);
-    var moved = totalDx > 5 || totalDy > 5;
-
-    if (!moved) {
-      timerDressupState.dragging = false;
-      timerDressupState.settled = true;
-      wrap.classList.remove('dragging');
-      timerDressupTap(e);
-      return;
-    }
-
-    if (typeof playThrowSound === 'function') playThrowSound();
-    timerDressupState.dragging = false;
-    wrap.classList.remove('dragging');
-
-    var h = timerDressupState.velHistory;
-    var throwVX = 0, throwVY = 0;
-    if (h.length >= 2) {
-      var first = h[0], last = h[h.length-1];
-      var totalDt = Math.max(1, last.t - first.t);
-      throwVX = (last.x - first.x) / totalDt * PHYSICS.THROW_MULT;
-      throwVY = (last.y - first.y) / totalDt * PHYSICS.THROW_MULT;
-    } else {
-      var dt2 = Math.max(1, Date.now() - timerDressupState.lastT);
-      throwVX = (e.clientX - timerDressupState.lastX) / dt2 * PHYSICS.THROW_MULT;
-      throwVY = (e.clientY - timerDressupState.lastY) / dt2 * PHYSICS.THROW_MULT;
-    }
-    throwVX = Math.max(-PHYSICS.MAX_SPEED, Math.min(PHYSICS.MAX_SPEED, throwVX));
-    throwVY = Math.max(-PHYSICS.MAX_SPEED, Math.min(PHYSICS.MAX_SPEED, throwVY));
-    timerDressupState.oldX = timerDressupState.x - throwVX;
-    timerDressupState.oldY = timerDressupState.y - throwVY;
-    timerDressupState.velHistory = [];
-    timerDressupState.flying = true;
-    timerDressupState.settled = false;
-    wrap.classList.add('thrown');
-    startTimerDressupPhysics();
-  });
-
-  // 双击归位
-  wrap.addEventListener('dblclick', function(e) {
-    e.preventDefault();
-    resetTimerDressup();
+    if (SFX && SFX.click) SFX.click();
   });
 }
 
-// 计时页点击——表情粒子（同首页 handleChibiTap）
-var _tdTapTime = 0;
-function timerDressupTap(e) {
-  var now = Date.now();
-  if (now - _tdTapTime < 500) return;
-  _tdTapTime = now;
-  var wrap = document.getElementById('timerDressupWrap');
-  if (!wrap) return;
-  var rect = wrap.getBoundingClientRect();
-  var cx = rect.left + rect.width/2;
-  var cy = rect.top;
-
-  if (typeof playTapSound === 'function') playTapSound();
-
-  var lines = ['今天穿这件~','好看吧？','斯瑞选的！','美美哒~','换新装啦','喜欢这件吗？','镜子镜子谁最美~','嘿嘿新衣服！','阿梓今天也很可爱'];
-  var b = document.getElementById('timerDressupBubble');
-  if (b) {
-    b.textContent = lines[Math.floor(Math.random()*lines.length)];
-    b.style.display = 'block';
-    clearTimeout(b._t);
-    b._t = setTimeout(function(){ b.style.display = 'none'; }, 2500);
-  }
-
-  var emojis = ['💕','✨','🌸','💖','😊','🥰','🎉','💝','💫','🌟','🎀'];
-  for (var i = 0; i < 3; i++) {
-    var p = document.createElement('span');
-    p.className = 'chibi-emoji-particle';
-    p.textContent = emojis[Math.floor(Math.random()*emojis.length)];
-    p.style.left = cx + 'px';
-    p.style.top = cy + 'px';
-    p.style.setProperty('--dx', (Math.random()-0.5)*80+'px');
-    p.style.setProperty('--dy', -(40+Math.random()*60)+'px');
-    if (i === 0 && typeof playPopSound === 'function') playPopSound();
-    p.style.animationDuration = (0.4+Math.random()*0.4)+'s';
-    document.body.appendChild(p);
-    setTimeout(function(){ p.remove(); }, 800);
-  }
-}
-
-function startTimerDressupPhysics() {
-  if (timerDressupAnimId) return;
-  var wrap = document.getElementById('timerDressupWrap');
-  if (!wrap) return;
-  var page = document.getElementById('pg0');
-  var pr = page ? page.getBoundingClientRect() : { width: 360, height: 600 };
-  var cw = 140, ch = 200;
-
-  function step() {
-    if (!timerDressupState.flying) { timerDressupAnimId = null; return; }
-
-    // === Verlet积分 ===
-    var velX = timerDressupState.x - timerDressupState.oldX;
-    var velY = timerDressupState.y - timerDressupState.oldY;
-    timerDressupState.oldX = timerDressupState.x;
-    timerDressupState.oldY = timerDressupState.y;
-    timerDressupState.x += velX * PHYSICS.AIR_DRAG;
-    timerDressupState.y += velY * PHYSICS.AIR_DRAG + PHYSICS.GRAVITY;
-    timerDressupState.vx = timerDressupState.x - timerDressupState.oldX;
-    timerDressupState.vy = timerDressupState.y - timerDressupState.oldY;
-
-    var speed = Math.sqrt(timerDressupState.vx*timerDressupState.vx + timerDressupState.vy*timerDressupState.vy);
-    var rot = Math.atan2(timerDressupState.vy, Math.abs(timerDressupState.vx)+0.1) * Math.min(12, speed*0.4);
-    wrap.style.setProperty('--rot', rot+'deg');
-    var scl = parseFloat(wrap.style.getPropertyValue('--scl')||'1');
-    if (scl > 1.01) { scl += (1-scl)*0.1; wrap.style.setProperty('--scl', scl); }
-
-    var pr2 = page ? page.getBoundingClientRect() : { width:360, height:600 };
-    var maxX = pr2.width/2 - cw/2, minX = -pr2.width/2 + cw/2;
-    var floorY = pr2.height/2 - ch, ceilY = -pr2.height/2 + ch/2;
-    var hitWall = false;
-    if (timerDressupState.x > maxX) {
-      var overshoot = timerDressupState.x - maxX;
-      timerDressupState.x = maxX - overshoot * tdWB;
-      timerDressupState.vx = -Math.abs(timerDressupState.vx) * tdWB;
-      timerDressupState.oldX = timerDressupState.x + timerDressupState.vx;
-      hitWall=true;
-    }
-    if (timerDressupState.x < minX) {
-      var overshoot = minX - timerDressupState.x;
-      timerDressupState.x = minX + overshoot * tdWB;
-      timerDressupState.vx = Math.abs(timerDressupState.vx) * tdWB;
-      timerDressupState.oldX = timerDressupState.x - timerDressupState.vx;
-      hitWall=true;
-    }
-    if (timerDressupState.y > floorY) {
-      var overshoot = timerDressupState.y - floorY;
-      timerDressupState.y = floorY - overshoot * tdFB;
-      timerDressupState.vy = -Math.abs(timerDressupState.vy) * tdFB;
-      timerDressupState.vx *= PHYSICS.GROUND_FRICTION;
-      timerDressupState.oldY = timerDressupState.y + timerDressupState.vy;
-      hitWall=true;
-    }
-    if (timerDressupState.y < ceilY) {
-      var overshoot = ceilY - timerDressupState.y;
-      timerDressupState.y = ceilY + overshoot * tdCB;
-      timerDressupState.vy = Math.abs(timerDressupState.vy) * tdCB;
-      timerDressupState.oldY = timerDressupState.y - timerDressupState.vy;
-      hitWall=true;
-    }
-    if (hitWall) {
-      wrap.style.setProperty('--scl','0.92');
-      var img = document.getElementById('timerDressupImg');
-      if (img) { img.classList.add('squashing'); setTimeout(function(){ img.classList.remove('squashing'); }, 350); }
-    }
-    if (Math.abs(timerDressupState.vx)<0.06 && Math.abs(timerDressupState.vy)<0.06) {
-      timerDressupState.flying=false; timerDressupState.settled=true;
-      wrap.classList.remove('thrown');
-      wrap.style.setProperty('--rot','0deg'); wrap.style.setProperty('--scl','1');
-      timerDressupAnimId=null;
-      wrap.style.transform='translate('+timerDressupState.x+'px,'+timerDressupState.y+'px)';
-      return;
-    }
-    wrap.style.transform='translate('+timerDressupState.x+'px,'+timerDressupState.y+'px)';
-    timerDressupAnimId=requestAnimationFrame(step);
-  }
-  timerDressupAnimId=requestAnimationFrame(step);
-}
-
-// 不复位模式：切tab时保留阿梓位置和动画状态
 function resetTimerDressup() {
   var wrap = document.getElementById('timerDressupWrap');
   if (!wrap) return;
-  // 仅停止动画循环，不重置位置/速度/旋转
-  if (timerDressupAnimId) { cancelAnimationFrame(timerDressupAnimId); timerDressupAnimId = null; }
-  timerDressupState.dragging = false;
-  wrap.classList.remove('dragging');
-  // 保留 thrown 状态和当前位置
+  wrap.style.left = '16px';
+  wrap.style.bottom = '16px';
+  wrap.style.top = 'auto';
+  wrap.style.transform = 'translate(0,0)';
 }
-
-
 function updateTimerDressupImg() {
   var img = document.getElementById('timerDressupImg');
   if (!img) return;
