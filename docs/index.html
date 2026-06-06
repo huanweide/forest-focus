@@ -6617,6 +6617,7 @@ function initTimerDressup() {
   if (!wrap) return;
   // 初始居中
   wrap.style.position = 'absolute';
+  wrap.style.right = 'auto'; wrap.style.bottom = 'auto';
   wrap.style.left = '50%'; wrap.style.top = '40%';
   wrap.style.transform = 'translate(-50%,-50%)';
   wrap.style.cursor = 'grab';
@@ -6935,9 +6936,9 @@ function resetTimerDressup() {
   timerDressupState.oldX = 0; timerDressupState.oldY = 0;
   timerDressupState.vx = 0; timerDressupState.vy = 0;
   wrap.classList.remove('thrown','dragging');
+  wrap.style.right = 'auto'; wrap.style.bottom = 'auto';
+  wrap.style.left = '50%'; wrap.style.top = '40%';
   wrap.style.transform = 'translate(-50%,-50%)';
-  wrap.style.left = '50%';
-  wrap.style.top = '40%';
   wrap.style.setProperty('--rot','0deg');
   wrap.style.setProperty('--scl','1');
 }
