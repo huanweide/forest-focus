@@ -2,7 +2,7 @@
 
 > 🍅 番茄钟自律PWA — 专注种树，收集阿梓(VTuber)全部14套衣装皮肤
 
-[![Version](https://img.shields.io/badge/version-v2.6-7C5CBF)](https://github.com/huanweide/forest-focus/releases)
+[![Version](https://img.shields.io/badge/version-v4.2-7C5CBF)](https://github.com/huanweide/forest-focus/releases)
 [![PWA](https://img.shields.io/badge/PWA-ready-7C5CBF)](https://huanweide.github.io/forest-focus/)
 [![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 
@@ -55,7 +55,7 @@
 
 ## 📦 下载
 
-[最新 Release v2.6](https://github.com/huanweide/forest-focus/releases/latest)
+[最新 Release v4.2](https://github.com/huanweide/forest-focus/releases/latest)
 
 ---
 

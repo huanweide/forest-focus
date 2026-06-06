@@ -1,0 +1,52 @@
+﻿name: 定期维护优化
+
+on:
+  schedule:
+    - cron: '0 4 */3 * *'  # 每3天 北京时间12:00
+  workflow_dispatch:
+
+jobs:
+  maintenance:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: 检查项目状态
+        run: |
+          echo "## 🌳 阿梓的森林 · 定期维护报告" >> $GITHUB_STEP_SUMMARY
+          echo "**时间**: $(date -u '+%Y-%m-%d %H:%M UTC')" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+          # 检查文件大小
+          echo "### 📊 项目规模" >> $GITHUB_STEP_SUMMARY
+          echo "- JS 文件: $(find src/js -name '*.js' | wc -l) 个" >> $GITHUB_STEP_SUMMARY
+          echo "- CSS 文件: $(find src/css -name '*.css' | wc -l) 个" >> $GITHUB_STEP_SUMMARY
+          echo "- HTML: $(wc -c < docs/index.html) 字节" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+          # 检查冗余文件
+          echo "### 🧹 冗余文件检查" >> $GITHUB_STEP_SUMMARY
+          BAK_COUNT=$(find . -name "*.bak" -not -path "./node_modules/*" | wc -l)
+          if [ "$BAK_COUNT" -gt 0 ]; then
+            echo "⚠️ 发现 $BAK_COUNT 个备份文件:" >> $GITHUB_STEP_SUMMARY
+            find . -name "*.bak" -not -path "./node_modules/*" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "✅ 无冗余备份文件" >> $GITHUB_STEP_SUMMARY
+          fi
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+          # 检查死链接
+          echo "### 🔗 链接检查" >> $GITHUB_STEP_SUMMARY
+          grep -rn "https://" src/ docs/ --include="*.html" --include="*.js" | head -20 >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+          # 代码行数统计
+          echo "### 📏 代码统计" >> $GITHUB_STEP_SUMMARY
+          echo "- 总 JS 行数: $(find src/js -name '*.js' -exec cat {} + | wc -l)" >> $GITHUB_STEP_SUMMARY
+          echo "- 总 CSS 行数: $(find src/css -name '*.css' -exec cat {} + | wc -l)" >> $GITHUB_STEP_SUMMARY
+
+      - name: 无优化点则跳过
+        run: |
+          echo "✅ 本次检查无需优化——项目健康运行"
+          echo "如有需求可手动触发 workflow_dispatch 进行深度维护"

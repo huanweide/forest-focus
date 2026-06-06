@@ -3653,7 +3653,7 @@ function getBetStats() {
 console.log('🎲 押注系统已加载: ' + BET_OPTIONS.length + '档');
 
 // === shop.js ===
-/* shop.js - 商城 + 背包系统 (Phase 3: 30+商品)
+﻿/* shop.js - 商城 + 背包系统 (Phase 3: 30+商品)
  * 依赖：core.js (AppState, EventBus)
  */
 
@@ -3711,7 +3711,22 @@ const SHOP_ITEMS = [
   { id:'frame_gold', name:'金色边框', icon:'img:crown.png', price:20, cat:'frame', slot:'frame', rarity:'common', desc:'金色头像框', img:'' },
   { id:'frame_fire', name:'火焰边框', icon:'img:star_red.png', price:30, cat:'frame', slot:'frame', rarity:'rare', desc:'燃烧的火焰边框', img:'' },
   { id:'frame_rainbow', name:'彩虹边框', icon:'img:gem_large.png', price:50, cat:'frame', slot:'frame', rarity:'epic', desc:'七彩渐变边框', img:'' },
-];
+
+
+  // 🎵 音效主题 (3)
+  { id:'sfx_nature', name:'自然之声', icon:'🌿', price:20, cat:'sfx', slot:'sfx', rarity:'rare', desc:'森林鸟鸣+溪流——最治愈的专注伴侣', effect:'sfx_nature' },
+  { id:'sfx_rain', name:'雨夜咖啡馆', icon:'🌧️', price:25, cat:'sfx', slot:'sfx', rarity:'rare', desc:'窗外细雨+爵士钢琴', effect:'sfx_rain' },
+  { id:'sfx_lofi', name:'Lo-fi 节拍', icon:'🎧', price:30, cat:'sfx', slot:'sfx', rarity:'epic', desc:'温暖低保真节拍，专注力翻倍', effect:'sfx_lofi' },
+
+  // 🎨 主题配色 (4)
+  { id:'theme_sakura', name:'樱花粉主题', icon:'🌸', price:15, cat:'theme', slot:'theme', rarity:'common', desc:'温柔樱花粉——少女心满满', effect:'theme_sakura' },
+  { id:'theme_ocean', name:'海洋蓝主题', icon:'🌊', price:15, cat:'theme', slot:'theme', rarity:'common', desc:'沉静深海蓝——冷静思考', effect:'theme_ocean' },
+  { id:'theme_sunset', name:'日落橙主题', icon:'🌅', price:20, cat:'theme', slot:'theme', rarity:'rare', desc:'温暖日落——给努力的自己一点甜', effect:'theme_sunset' },
+  { id:'theme_midnight', name:'午夜紫主题', icon:'🌙', price:25, cat:'theme', slot:'theme', rarity:'rare', desc:'深邃夜空紫——夜间专注模式', effect:'theme_midnight' },
+
+  // 🎁 限时特惠 (2)
+  { id:'gift_box', name:'神秘礼盒', icon:'🎁', price:40, cat:'tool', slot:'tool', rarity:'epic', desc:'随机开出稀有道具或大量阿梓币', effect:'gift_box' },
+  { id:'streak_insurance', name:'连续守护符', icon:'🛡️', price:50, cat:'tool', slot:'tool', rarity:'legend', desc:'断签时自动使用，保护连续记录不中断', effect:'streak_insurance' },];
 
 const SHOP_CATEGORIES = [
   { id:'all', name:'全部', icon:'🏪' },
@@ -3721,6 +3736,8 @@ const SHOP_CATEGORIES = [
   { id:'tool', name:'道具', icon:'🔧' },
   { id:'diary', name:'日记', icon:'📔' },
   { id:'frame', name:'边框', icon:'🖼' },
+  { id:'sfx', name:'音效', icon:'🎵' },
+  { id:'theme', name:'主题', icon:'🎨' },
 ];
 
 var shopCatFilter = 'all';
