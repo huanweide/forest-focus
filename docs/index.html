@@ -6222,6 +6222,11 @@ function checkInstallAvailable() {
 }
 
 // ==================== 应用初始化 ====================
+
+// 计时页换装阿梓物理状态（必须在 initAll 之前定义，goTab -> resetTimerDressup 依赖此变量）
+var timerDressupState = { x:0, y:0, oldX:0, oldY:0, vx:0, vy:0, dragging:false, flying:false, settled:true, startX:0, startY:0, origX:0, origY:0, lastX:0, lastY:0, lastT:0, velHistory:[] };
+var timerDressupAnimId = null;
+
 function initAll() {
   rHabits();
   rGoals();

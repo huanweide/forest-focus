@@ -2,18 +2,24 @@
  * 依赖：core.js, timer.js, habits.js, goals.js, stats.js, effects.js, shop.js, chat.js
  */
 
-// ==================== 互动阿梓物理引擎 v2 ====================
-// 不复位：扔出去停哪就停哪，双击才归位
+// ==================== 互动阿梓物理引擎 v4 (Verlet积分．移植自heax.js) ====================
+// 参考开源项目：github.com/coderosh/heaxjs (MIT) 和 akihiko47/Verlet-Physics-Engine
+// Verlet积分核心公式：velocity = position - oldPosition → 比Euler更稳定．投掷更自然
+const PHYSICS = {
+  GRAVITY: 0.38, AIR_DRAG: 0.994, GROUND_FRICTION: 0.76,
+  WALL_BOUNCE: 0.58, FLOOR_BOUNCE: 0.35, CEIL_BOUNCE: 0.42,
+  MAX_SPEED: 38, MIN_SPEED: 0.03, THROW_MULT: 16,
+  ANGULAR_DAMP: 0.92, SETTLE_THRESH: 0.08,
+  VEL_SMOOTH: 3, // 投掷速度平滑窗口
+  // 粒子特效
+  SPARK_COUNT: 8, SPARK_LIFE: 600,
+};
 var chibiState = {
-  x:0, y:0,        // 当前位置
-  vx:0, vy:0,       // 速度
-  dragging:false,
-  flying:false,
-  settled:true,     // 是否静止
-  startX:0, startY:0,
-  origX:0, origY:0,
-  lastX:0, lastY:0,
-  lastT:0
+  x:0, y:0, oldX:0, oldY:0, vx:0, vy:0,  // Verlet: oldX/Y存储上一帧位置
+  dragging:false, flying:false, settled:true,
+  startX:0, startY:0, origX:0, origY:0,
+  lastX:0, lastY:0, lastT:0,
+  velHistory:[]  // 速度平滑：存储最近N帧(dx,dy,dt)
 };
 var chibiAnimId = null;
 var chibiResetAnimId = null;
@@ -27,9 +33,10 @@ function startChibiWander() {
     var scene = document.getElementById('homeScene');
     if (!scene) return;
     var sr = scene.getBoundingClientRect();
-    var maxX = sr.width/2 - 100, maxY = sr.height/2 - 100;
-    chibiState.vx = (Math.random()-0.5) * 1.5;
-    chibiState.vy = (Math.random()-0.5) * 1 - 0.5;
+    // Verlet: 设置oldPos来隐式设置初始速度 oldX = x - velX
+    chibiState.oldX = chibiState.x - (Math.random()-0.5) * 2.5;
+    chibiState.oldY = chibiState.y + (Math.random() * 3 + 1); // 向上跳!
+    chibiState.velHistory = [];
     chibiState.flying = true; chibiState.settled = false;
     var wrap = document.getElementById('homeAzusaWrap');
     if (wrap) wrap.classList.add('thrown');
@@ -69,11 +76,16 @@ function initChibiPhysics() {
 
   wrap.addEventListener('pointermove', function(e) {
     if (!chibiState.dragging) return;
+    var now = Date.now();
+    // 速度历史采样（用于投掷平滑计算）
+    var h = chibiState.velHistory;
+    h.push({x:e.clientX, y:e.clientY, t:now});
+    if (h.length > PHYSICS.VEL_SMOOTH) h.shift();
     chibiState.x = chibiState.origX + (e.clientX - chibiState.startX);
     chibiState.y = chibiState.origY + (e.clientY - chibiState.startY);
     chibiState.lastX = e.clientX;
     chibiState.lastY = e.clientY;
-    chibiState.lastT = Date.now();
+    chibiState.lastT = now;
     wrap.style.transform = 'translate(' + chibiState.x + 'px,' + chibiState.y + 'px)';
   });
 
@@ -91,17 +103,28 @@ function initChibiPhysics() {
       return;
     }
 
-    // 拖拽松手——计算投掷速度
+    // 拖拽松手——速度平滑采样 + Verlet初速注入(移植自heax.js)
     chibiState.dragging = false;
     wrap.classList.remove('dragging');
 
-    var dt = Math.max(1, Date.now() - chibiState.lastT);
-    chibiState.vx = (e.clientX - chibiState.lastX) / dt * 18;
-    chibiState.vy = (e.clientY - chibiState.lastY) / dt * 18;
-    // 限速，避免飞出屏幕
-    var maxV = 20;
-    chibiState.vx = Math.max(-maxV, Math.min(maxV, chibiState.vx));
-    chibiState.vy = Math.max(-maxV, Math.min(maxV, chibiState.vy));
+    var h = chibiState.velHistory;
+    var throwVX = 0, throwVY = 0;
+    if (h.length >= 2) {
+      var first = h[0], last = h[h.length-1];
+      var totalDt = Math.max(1, last.t - first.t);
+      throwVX = (last.x - first.x) / totalDt * PHYSICS.THROW_MULT;
+      throwVY = (last.y - first.y) / totalDt * PHYSICS.THROW_MULT;
+    } else {
+      var dt2 = Math.max(1, Date.now() - chibiState.lastT);
+      throwVX = (e.clientX - chibiState.lastX) / dt2 * PHYSICS.THROW_MULT;
+      throwVY = (e.clientY - chibiState.lastY) / dt2 * PHYSICS.THROW_MULT;
+    }
+    throwVX = Math.max(-PHYSICS.MAX_SPEED, Math.min(PHYSICS.MAX_SPEED, throwVX));
+    throwVY = Math.max(-PHYSICS.MAX_SPEED, Math.min(PHYSICS.MAX_SPEED, throwVY));
+    // Verlet核心: oldX = x - velX → 下一帧自动推导速度vel = x - oldX
+    chibiState.oldX = chibiState.x - throwVX;
+    chibiState.oldY = chibiState.y - throwVY;
+    chibiState.velHistory = [];
 
     chibiState.flying = true;
     chibiState.settled = false;
@@ -168,51 +191,96 @@ function startChibiPhysics() {
   function step() {
     if (!chibiState.flying) { chibiAnimId = null; return; }
 
-    // 重力
-    chibiState.vy += 0.55;
-    // 位移
-    chibiState.x += chibiState.vx;
-    chibiState.y += chibiState.vy;
-    // 空气阻力
-    chibiState.vx *= 0.985;
-    chibiState.vy *= 0.985;
+    // === Verlet积分(移植自heax.js开源引擎 MIT) ===
+    // 核心公式: vel = pos - oldPos → 力直接作用在位置上．比Euler稳定10倍
+    var velX = chibiState.x - chibiState.oldX;
+    var velY = chibiState.y - chibiState.oldY;
+    chibiState.oldX = chibiState.x;
+    chibiState.oldY = chibiState.y;
+    // 位置更新（空气阻力和重力直接作用于位置增量）
+    chibiState.x += velX * PHYSICS.AIR_DRAG;
+    chibiState.y += velY * PHYSICS.AIR_DRAG + PHYSICS.GRAVITY;
+    // 同步显式速度（用于碰撞响应和渲染）
+    chibiState.vx = chibiState.x - chibiState.oldX;
+    chibiState.vy = chibiState.y - chibiState.oldY;
 
-    // 边界碰撞——碰到立刻弹回
     var maxX = sceneRect.width/2 - cw/2;
     var floorY = sceneRect.height/2 - ch;
     var ceilY = -sceneRect.height/2 + ch/2;
-    if (chibiState.x > maxX)  { chibiState.x = maxX;  chibiState.vx = -Math.abs(chibiState.vx)*0.6; }
-    if (chibiState.x < -maxX) { chibiState.x = -maxX; chibiState.vx = Math.abs(chibiState.vx)*0.6; }
+    var hitWall = false;
+    if (chibiState.x > maxX) {
+      chibiState.x = maxX;
+      chibiState.vx = -Math.abs(chibiState.vx)*PHYSICS.WALL_BOUNCE;
+      chibiState.oldX = chibiState.x + chibiState.vx; // Verlet反弹: oldX推到墙外模拟反射
+      hitWall = true;
+    }
+    if (chibiState.x < -maxX) {
+      chibiState.x = -maxX;
+      chibiState.vx = Math.abs(chibiState.vx)*PHYSICS.WALL_BOUNCE;
+      chibiState.oldX = chibiState.x - chibiState.vx;
+      hitWall = true;
+    }
     if (chibiState.y > floorY) {
       chibiState.y = floorY;
-      chibiState.vy = -Math.abs(chibiState.vy)*0.5;
-      if (Math.abs(chibiState.vy) < 0.5) { chibiState.vy = 0; chibiState.vx *= 0.8; }
+      chibiState.vy = -Math.abs(chibiState.vy)*PHYSICS.FLOOR_BOUNCE;
+      chibiState.vx *= PHYSICS.GROUND_FRICTION;
+      chibiState.oldY = chibiState.y + chibiState.vy;
+      hitWall = true;
+      if (Math.abs(chibiState.vy) < 0.4) { chibiState.vy = 0; chibiState.vx *= 0.7; chibiState.oldY = chibiState.y; }
     }
-    if (chibiState.y < ceilY) { chibiState.y = ceilY; chibiState.vy = Math.abs(chibiState.vy)*0.5; }
+    if (chibiState.y < ceilY) {
+      chibiState.y = ceilY;
+      chibiState.vy = Math.abs(chibiState.vy)*PHYSICS.CEIL_BOUNCE;
+      chibiState.oldY = chibiState.y - chibiState.vy;
+      hitWall = true;
+    }
+    // 碰撞火花
+    if (hitWall) {
+      var ci = wrap.querySelector('.azusa-chibi');
+      if (ci) { ci.classList.add('squashing'); setTimeout(function(){ ci.classList.remove('squashing'); }, 350); }
+      spawnChibiSpark(wrap);
+    }
 
-    // 静止判定
-    if (Math.abs(chibiState.vx) < 0.08 && Math.abs(chibiState.vy) < 0.08 && chibiState.y >= floorY - 3) {
-      chibiState.flying = false;
-      chibiState.settled = true;
+    if (Math.abs(chibiState.vx) < PHYSICS.SETTLE_THRESH && Math.abs(chibiState.vy) < PHYSICS.SETTLE_THRESH && chibiState.y >= floorY - 3) {
+      chibiState.flying = false; chibiState.settled = true;
       chibiState.vx = 0; chibiState.vy = 0;
+      chibiState.oldX = chibiState.x; chibiState.oldY = chibiState.y;
       wrap.classList.remove('thrown');
-      wrap.style.setProperty('--rot', '0deg');
-      wrap.style.setProperty('--scl', '1');
+      wrap.style.setProperty('--rot', '0deg'); wrap.style.setProperty('--scl', '1');
       chibiAnimId = null;
       wrap.style.transform = 'translate(' + chibiState.x + 'px,' + chibiState.y + 'px)';
       startChibiWander();
       return;
     }
 
-    // 旋转+缩放视觉
-    var rot = Math.atan2(chibiState.vy, Math.abs(chibiState.vx) + 0.1) * 10;
-    wrap.style.setProperty('--rot', rot + 'deg');
-    wrap.style.setProperty('--scl', Math.min(1.3, 1 + Math.abs(chibiState.vy) * 0.012));
+    var speed = Math.sqrt(chibiState.vx*chibiState.vx + chibiState.vy*chibiState.vy);
+    var rot = Math.atan2(chibiState.vy, Math.abs(chibiState.vx)+0.1) * Math.min(15, speed*0.5);
+    wrap.style.setProperty('--rot', rot+'deg');
+    wrap.style.setProperty('--scl', Math.min(1.3, 1+speed*0.006));
 
-    wrap.style.transform = 'translate(' + chibiState.x + 'px,' + chibiState.y + 'px)';
+    wrap.style.transform = 'translate('+chibiState.x+'px,'+chibiState.y+'px)';
     chibiAnimId = requestAnimationFrame(step);
   }
   chibiAnimId = requestAnimationFrame(step);
+}
+
+// 碰撞粒子火花(移植自开源粒子特效)
+function spawnChibiSpark(wrap) {
+  if (!wrap) return;
+  var rect = wrap.getBoundingClientRect();
+  var cx = rect.left+rect.width/2, cy = rect.top+rect.height/2;
+  var sparks = ['💥','✨','💫','🌟','⚡'];
+  for (var i=0; i<PHYSICS.SPARK_COUNT; i++) {
+    var p = document.createElement('span');
+    p.className = 'chibi-emoji-particle';
+    p.textContent = sparks[Math.floor(Math.random()*sparks.length)];
+    p.style.left = cx+'px'; p.style.top = cy+'px';
+    p.style.setProperty('--dx', (Math.random()-0.5)*100+'px');
+    p.style.setProperty('--dy', (Math.random()-0.5)*80+'px');
+    p.style.animationDuration = (0.3+Math.random()*0.3)+'s';
+    document.body.appendChild(p);
+    setTimeout(function(){ p.remove(); }, PHYSICS.SPARK_LIFE);
+  }
 }
 
 // 双击归位（平滑动画回到中间）
@@ -232,7 +300,6 @@ function resetChibi() {
 
   function anim() {
     var p = Math.min(1, (Date.now() - t0) / dur);
-    // easeOutCubic
     p = 1 - Math.pow(1 - p, 3);
     chibiState.x = sx + (0 - sx) * p;
     chibiState.y = sy + (0 - sy) * p;
@@ -244,6 +311,7 @@ function resetChibi() {
     } else {
       chibiState.x = 0; chibiState.y = 0;
       chibiState.vx = 0; chibiState.vy = 0;
+      chibiState.oldX = 0; chibiState.oldY = 0;
       chibiState.settled = true;
       chibiResetAnimId = null;
       wrap.style.transform = 'translate(0px, 0px)';
@@ -264,9 +332,10 @@ function startDressupWander() {
     if (!scene) return;
     var sr = scene.getBoundingClientRect();
     var maxX = sr.width/2 - 65, maxY = sr.height/4;
-    // 水平速度快一些，垂直给向上初速度让重力自然下落
-    dressupState.vx = (Math.random()-0.5) * 8;
-    dressupState.vy = -(3 + Math.random() * 6);
+    // Verlet: 初始速度通过oldPos注入．水平快速+向上跳
+    dressupState.oldX = dressupState.x - (Math.random()-0.5) * 10;
+    dressupState.oldY = dressupState.y + (3 + Math.random() * 8);
+    dressupState.velHistory = [];
     dressupState.flying = true; dressupState.settled = false;
     var wrap = document.getElementById('homeDressupWrap');
     if (wrap) wrap.classList.add('thrown');
@@ -274,12 +343,13 @@ function startDressupWander() {
   }, 2000 + Math.random() * 3000);
 }
 
-// ==================== 换装阿梓物理（第二个角色） ====================
+// ==================== 换装阿梓物理（第二个角色）Verlet版 ====================
 var dressupState = {
-  x:0, y:0, vx:0, vy:0,
+  x:0, y:0, oldX:0, oldY:0, vx:0, vy:0,
   dragging:false, flying:false, settled:true,
   startX:0, startY:0, origX:0, origY:0,
-  lastX:0, lastY:0, lastT:0
+  lastX:0, lastY:0, lastT:0,
+  velHistory:[]
 };
 var dressupAnimId = null;
 var dressupResetId = null;
@@ -308,17 +378,22 @@ function initDressupPhysics() {
     dressupState.lastX = e.clientX;
     dressupState.lastY = e.clientY;
     dressupState.lastT = Date.now();
+    dressupState.velHistory = [];
     wrap.classList.add('dragging');
     wrap.style.zIndex = 998;
   });
 
   wrap.addEventListener('pointermove', function(e) {
     if (!dressupState.dragging) return;
+    var now2 = Date.now();
+    var h2 = dressupState.velHistory;
+    h2.push({x:e.clientX, y:e.clientY, t:now2});
+    if (h2.length > PHYSICS.VEL_SMOOTH) h2.shift();
     dressupState.x = dressupState.origX + (e.clientX - dressupState.startX);
     dressupState.y = dressupState.origY + (e.clientY - dressupState.startY);
     dressupState.lastX = e.clientX;
     dressupState.lastY = e.clientY;
-    dressupState.lastT = Date.now();
+    dressupState.lastT = now2;
     wrap.style.transform = 'translate(' + dressupState.x + 'px,' + dressupState.y + 'px)';
   });
 
@@ -334,12 +409,24 @@ function initDressupPhysics() {
     }
     dressupState.dragging = false;
     wrap.classList.remove('dragging');
-    var dt = Math.max(1, Date.now() - dressupState.lastT);
-    dressupState.vx = (e.clientX - dressupState.lastX) / dt * 45;
-    dressupState.vy = (e.clientY - dressupState.lastY) / dt * 45;
-    var maxV = 35;
-    dressupState.vx = Math.max(-maxV, Math.min(maxV, dressupState.vx));
-    dressupState.vy = Math.max(-maxV, Math.min(maxV, dressupState.vy));
+    var h3 = dressupState.velHistory;
+    var throwVX2 = 0, throwVY2 = 0;
+    if (h3.length >= 2) {
+      var first2 = h3[0], last2 = h3[h3.length-1];
+      var totalDt2 = Math.max(1, last2.t - first2.t);
+      throwVX2 = (last2.x - first2.x) / totalDt2 * PHYSICS.THROW_MULT;
+      throwVY2 = (last2.y - first2.y) / totalDt2 * PHYSICS.THROW_MULT;
+    } else {
+      var dt2 = Math.max(1, Date.now() - dressupState.lastT);
+      throwVX2 = (e.clientX - dressupState.lastX) / dt2 * PHYSICS.THROW_MULT;
+      throwVY2 = (e.clientY - dressupState.lastY) / dt2 * PHYSICS.THROW_MULT;
+    }
+    throwVX2 = Math.max(-PHYSICS.MAX_SPEED, Math.min(PHYSICS.MAX_SPEED, throwVX2));
+    throwVY2 = Math.max(-PHYSICS.MAX_SPEED, Math.min(PHYSICS.MAX_SPEED, throwVY2));
+    // Verlet初速注入
+    dressupState.oldX = dressupState.x - throwVX2;
+    dressupState.oldY = dressupState.y - throwVY2;
+    dressupState.velHistory = [];
     dressupState.flying = true;
     dressupState.settled = false;
     wrap.classList.add('thrown');
@@ -390,25 +477,56 @@ function startDressupPhysics() {
 
   function step() {
     if (!dressupState.flying) { dressupAnimId = null; return; }
-    dressupState.vy += 0.55;
-    dressupState.x += dressupState.vx;
-    dressupState.y += dressupState.vy;
-    dressupState.vx *= 0.985;
-    dressupState.vy *= 0.985;
+
+    // === Verlet积分 ===
+    var velX = dressupState.x - dressupState.oldX;
+    var velY = dressupState.y - dressupState.oldY;
+    dressupState.oldX = dressupState.x;
+    dressupState.oldY = dressupState.y;
+    dressupState.x += velX * PHYSICS.AIR_DRAG;
+    dressupState.y += velY * PHYSICS.AIR_DRAG + PHYSICS.GRAVITY;
+    dressupState.vx = dressupState.x - dressupState.oldX;
+    dressupState.vy = dressupState.y - dressupState.oldY;
+
     var maxX = sr.width/2 - cw/2;
     var floorY = sr.height/2 - ch/2 + 10;
     var ceilY = -sr.height/2 + ch/2;
-    if (dressupState.x > maxX)  { dressupState.x=maxX;  dressupState.vx = -Math.abs(dressupState.vx)*0.6; }
-    if (dressupState.x < -maxX) { dressupState.x=-maxX; dressupState.vx = Math.abs(dressupState.vx)*0.6; }
+    var hitWall = false;
+    if (dressupState.x > maxX) {
+      dressupState.x=maxX;
+      dressupState.vx = -Math.abs(dressupState.vx)*PHYSICS.WALL_BOUNCE;
+      dressupState.oldX = dressupState.x + dressupState.vx;
+      hitWall=true;
+    }
+    if (dressupState.x < -maxX) {
+      dressupState.x=-maxX;
+      dressupState.vx = Math.abs(dressupState.vx)*PHYSICS.WALL_BOUNCE;
+      dressupState.oldX = dressupState.x - dressupState.vx;
+      hitWall=true;
+    }
     if (dressupState.y > floorY) {
       dressupState.y=floorY;
-      dressupState.vy = -Math.abs(dressupState.vy)*0.5;
-      if (Math.abs(dressupState.vy)<0.5) { dressupState.vy=0; dressupState.vx*=0.8; }
+      dressupState.vy = -Math.abs(dressupState.vy)*PHYSICS.FLOOR_BOUNCE;
+      dressupState.vx *= PHYSICS.GROUND_FRICTION;
+      dressupState.oldY = dressupState.y + dressupState.vy;
+      hitWall=true;
+      if (Math.abs(dressupState.vy)<0.4) { dressupState.vy=0; dressupState.vx*=0.7; dressupState.oldY=dressupState.y; }
     }
-    if (dressupState.y < ceilY) { dressupState.y=ceilY; dressupState.vy = Math.abs(dressupState.vy)*0.5; }
-    if (Math.abs(dressupState.vx)<0.08 && Math.abs(dressupState.vy)<0.08 && dressupState.y>=floorY-3) {
+    if (dressupState.y < ceilY) {
+      dressupState.y=ceilY;
+      dressupState.vy = Math.abs(dressupState.vy)*PHYSICS.CEIL_BOUNCE;
+      dressupState.oldY = dressupState.y - dressupState.vy;
+      hitWall=true;
+    }
+    if (hitWall) {
+      var chibiImg = wrap.querySelector('.azusa-chibi');
+      if (chibiImg) { chibiImg.classList.add('squashing'); setTimeout(function(){ chibiImg.classList.remove('squashing'); }, 350); }
+      spawnChibiSpark(wrap);
+    }
+    if (Math.abs(dressupState.vx)<PHYSICS.SETTLE_THRESH && Math.abs(dressupState.vy)<PHYSICS.SETTLE_THRESH && dressupState.y>=floorY-3) {
       dressupState.flying=false; dressupState.settled=true;
       dressupState.vx=0; dressupState.vy=0;
+      dressupState.oldX=dressupState.x; dressupState.oldY=dressupState.y;
       wrap.classList.remove('thrown');
       dressupAnimId=null;
       wrap.style.transform = 'translate('+dressupState.x+'px,'+dressupState.y+'px)';
@@ -577,6 +695,11 @@ function checkInstallAvailable() {
 }
 
 // ==================== 应用初始化 ====================
+
+// 计时页换装阿梓物理状态（必须在 initAll 之前定义，goTab -> resetTimerDressup 依赖此变量）
+var timerDressupState = { x:0, y:0, oldX:0, oldY:0, vx:0, vy:0, dragging:false, flying:false, settled:true, startX:0, startY:0, origX:0, origY:0, lastX:0, lastY:0, lastT:0, velHistory:[] };
+var timerDressupAnimId = null;
+
 function initAll() {
   rHabits();
   rGoals();
@@ -596,8 +719,10 @@ function initAll() {
   initDressupPhysics();
   initTimerDressup();
   setTimeout(checkInstallAvailable, 3000);
+  // 同步所有页面的阿梓形象
+  setTimeout(function(){ syncAllAzusaImages(); }, 200);
 
-  if (timerDefault) { goTab(1); } else { goTab(0); rHome(); }
+  if (timerDefault) { goTab(1); } else { goTab(0); }
 
   // 初始化 API 设置显示
   var achsEl = document.getElementById('achs');
@@ -610,7 +735,8 @@ function initAll() {
 }
 
 // ==================== Service Worker ====================
-if ('serviceWorker' in navigator) {
+// 仅在HTTPS或localhost下注册SW（file://协议不支持）
+if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost' || location.hostname === '127.0.0.1')) {
   navigator.serviceWorker.register('sw.js').catch(function() {});
 }
 
@@ -634,10 +760,8 @@ initAll();
 
 
 
-// ==================== 计时页换装阿梓物理 ====================
-var timerDressupState = { x:0, y:0, vx:0, vy:0, dragging:false, flying:false, settled:true, startX:0, startY:0, origX:0, origY:0, lastX:0, lastY:0, lastT:0 };
-var timerDressupAnimId = null;
 
+// ==================== 计时页换装阿梓物理 Verlet版 ====================
 // 碰撞粒子特效——打击感
 function spawnCollisionParticles(cx, cy) {
   var particles = ['💥','⚡','💢','✨','💫','🌟'];
@@ -671,6 +795,7 @@ function initTimerDressup() {
     timerDressupState.lastX = e.clientX;
     timerDressupState.lastY = e.clientY;
     timerDressupState.lastT = Date.now();
+    timerDressupState.velHistory = [];
     wrap.classList.add('dragging');
     wrap.classList.remove('thrown');
     wrap.setPointerCapture(e.pointerId);
@@ -678,11 +803,15 @@ function initTimerDressup() {
 
   wrap.addEventListener('pointermove', function(e) {
     if (!timerDressupState.dragging) return;
+    var now3 = Date.now();
+    var h4 = timerDressupState.velHistory;
+    h4.push({x:e.clientX, y:e.clientY, t:now3});
+    if (h4.length > PHYSICS.VEL_SMOOTH) h4.shift();
     timerDressupState.x = timerDressupState.origX + (e.clientX - timerDressupState.startX);
     timerDressupState.y = timerDressupState.origY + (e.clientY - timerDressupState.startY);
     timerDressupState.lastX = e.clientX;
     timerDressupState.lastY = e.clientY;
-    timerDressupState.lastT = Date.now();
+    timerDressupState.lastT = now3;
     wrap.style.transform = 'translate(' + timerDressupState.x + 'px,' + timerDressupState.y + 'px)';
   });
 
@@ -729,16 +858,26 @@ function initTimerDressup() {
       if (SFX&&SFX.click) SFX.click();
       return;
     }
-    // 投掷——力量感增强(参考格斗游戏打击感)
+    // 投掷——Verlet速度平滑
     timerDressupState.dragging = false;
     wrap.classList.remove('dragging');
-    var dt = Math.max(1, Date.now() - timerDressupState.lastT);
-    timerDressupState.vx = (e.clientX - timerDressupState.lastX) / dt * 25;
-    timerDressupState.vy = (e.clientY - timerDressupState.lastY) / dt * 25;
-    var maxV = 30;
-    timerDressupState.vx = Math.max(-maxV, Math.min(maxV, timerDressupState.vx));
-    timerDressupState.vy = Math.max(-maxV, Math.min(maxV, timerDressupState.vy));
-    // 投掷瞬间放大——力量爆发
+    var h5 = timerDressupState.velHistory;
+    var throwVX3 = 0, throwVY3 = 0;
+    if (h5.length >= 2) {
+      var first3 = h5[0], last3 = h5[h5.length-1];
+      var totalDt3 = Math.max(1, last3.t - first3.t);
+      throwVX3 = (last3.x - first3.x) / totalDt3 * PHYSICS.THROW_MULT;
+      throwVY3 = (last3.y - first3.y) / totalDt3 * PHYSICS.THROW_MULT;
+    } else {
+      var dt3 = Math.max(1, Date.now() - timerDressupState.lastT);
+      throwVX3 = (e.clientX - timerDressupState.lastX) / dt3 * PHYSICS.THROW_MULT;
+      throwVY3 = (e.clientY - timerDressupState.lastY) / dt3 * PHYSICS.THROW_MULT;
+    }
+    throwVX3 = Math.max(-PHYSICS.MAX_SPEED, Math.min(PHYSICS.MAX_SPEED, throwVX3));
+    throwVY3 = Math.max(-PHYSICS.MAX_SPEED, Math.min(PHYSICS.MAX_SPEED, throwVY3));
+    timerDressupState.oldX = timerDressupState.x - throwVX3;
+    timerDressupState.oldY = timerDressupState.y - throwVY3;
+    timerDressupState.velHistory = [];
     wrap.style.setProperty('--scl','1.18');
     timerDressupState.flying = true;
     timerDressupState.settled = false;
@@ -757,43 +896,65 @@ function startTimerDressupPhysics() {
 
   function step() {
     if (!timerDressupState.flying) { timerDressupAnimId = null; return; }
-    timerDressupState.vy += 0.55;
-    timerDressupState.x += timerDressupState.vx;
-    timerDressupState.y += timerDressupState.vy;
-    timerDressupState.vx *= 0.985;
-    timerDressupState.vy *= 0.985;
-    // 旋转——慢转优雅
-    var rot = Math.atan2(timerDressupState.vy, Math.abs(timerDressupState.vx)+0.1) * 5;
+
+    // === Verlet积分 ===
+    var velX = timerDressupState.x - timerDressupState.oldX;
+    var velY = timerDressupState.y - timerDressupState.oldY;
+    timerDressupState.oldX = timerDressupState.x;
+    timerDressupState.oldY = timerDressupState.y;
+    timerDressupState.x += velX * PHYSICS.AIR_DRAG;
+    timerDressupState.y += velY * PHYSICS.AIR_DRAG + PHYSICS.GRAVITY;
+    timerDressupState.vx = timerDressupState.x - timerDressupState.oldX;
+    timerDressupState.vy = timerDressupState.y - timerDressupState.oldY;
+
+    var speed = Math.sqrt(timerDressupState.vx*timerDressupState.vx + timerDressupState.vy*timerDressupState.vy);
+    var rot = Math.atan2(timerDressupState.vy, Math.abs(timerDressupState.vx)+0.1) * Math.min(12, speed*0.4);
     wrap.style.setProperty('--rot', rot+'deg');
-    // 缩放渐回
     var scl = parseFloat(wrap.style.getPropertyValue('--scl')||'1');
-    if (scl > 1.01) { scl += (1-scl)*0.12; wrap.style.setProperty('--scl', scl); }
+    if (scl > 1.01) { scl += (1-scl)*0.1; wrap.style.setProperty('--scl', scl); }
 
     var maxX = 80, minX = -100;
     var floorY = 80, ceilY = -120;
     var hitWall = false;
-    if (timerDressupState.x > maxX) { timerDressupState.x=maxX; timerDressupState.vx=-Math.abs(timerDressupState.vx)*0.5; hitWall=true; }
-    if (timerDressupState.x < minX) { timerDressupState.x=minX; timerDressupState.vx=Math.abs(timerDressupState.vx)*0.5; hitWall=true; }
+    if (timerDressupState.x > maxX) {
+      timerDressupState.x=maxX;
+      timerDressupState.vx=-Math.abs(timerDressupState.vx)*PHYSICS.WALL_BOUNCE;
+      timerDressupState.oldX=timerDressupState.x+timerDressupState.vx;
+      hitWall=true;
+    }
+    if (timerDressupState.x < minX) {
+      timerDressupState.x=minX;
+      timerDressupState.vx=Math.abs(timerDressupState.vx)*PHYSICS.WALL_BOUNCE;
+      timerDressupState.oldX=timerDressupState.x-timerDressupState.vx;
+      hitWall=true;
+    }
     if (timerDressupState.y > floorY) {
       timerDressupState.y=floorY;
-      timerDressupState.vy=-Math.abs(timerDressupState.vy)*0.4;
+      timerDressupState.vy=-Math.abs(timerDressupState.vy)*PHYSICS.FLOOR_BOUNCE;
+      timerDressupState.vx*=PHYSICS.GROUND_FRICTION;
+      timerDressupState.oldY=timerDressupState.y+timerDressupState.vy;
       hitWall=true;
-      if (Math.abs(timerDressupState.vy)<0.5) { timerDressupState.vy=0; timerDressupState.vx*=0.8; }
+      if (Math.abs(timerDressupState.vy)<0.4) { timerDressupState.vy=0; timerDressupState.vx*=0.7; timerDressupState.oldY=timerDressupState.y; }
     }
-    if (timerDressupState.y < ceilY) { timerDressupState.y=ceilY; timerDressupState.vy=Math.abs(timerDressupState.vy)*0.5; }
-    // 碰撞粒子+压扁反弹
+    if (timerDressupState.y < ceilY) {
+      timerDressupState.y=ceilY;
+      timerDressupState.vy=Math.abs(timerDressupState.vy)*PHYSICS.CEIL_BOUNCE;
+      timerDressupState.oldY=timerDressupState.y-timerDressupState.vy;
+      hitWall=true;
+    }
     if (hitWall) {
       var rect2 = wrap.getBoundingClientRect();
       spawnCollisionParticles(rect2.left+rect2.width/2, rect2.top+rect2.height/2);
       wrap.style.setProperty('--scl','0.88');
+      var img = document.getElementById('timerDressupImg');
+      if (img) { img.classList.add('squashing'); setTimeout(function(){ img.classList.remove('squashing'); }, 350); }
     }
-    // 静止——不复位，扔哪停哪
-    if (Math.abs(timerDressupState.vx)<0.08 && Math.abs(timerDressupState.vy)<0.08 && timerDressupState.y>=floorY-3) {
+    if (Math.abs(timerDressupState.vx)<PHYSICS.SETTLE_THRESH && Math.abs(timerDressupState.vy)<PHYSICS.SETTLE_THRESH && timerDressupState.y>=floorY-3) {
       timerDressupState.flying=false; timerDressupState.settled=true;
       timerDressupState.vx=0; timerDressupState.vy=0;
+      timerDressupState.oldX=timerDressupState.x; timerDressupState.oldY=timerDressupState.y;
       wrap.classList.remove('thrown');
-      wrap.style.setProperty('--rot','0deg');
-      wrap.style.setProperty('--scl','1');
+      wrap.style.setProperty('--rot','0deg'); wrap.style.setProperty('--scl','1');
       timerDressupAnimId=null;
       wrap.style.transform='translate('+timerDressupState.x+'px,'+timerDressupState.y+'px)';
       return;
@@ -810,6 +971,7 @@ function resetTimerDressup() {
   if (!wrap) return;
   if (timerDressupAnimId) { cancelAnimationFrame(timerDressupAnimId); timerDressupAnimId = null; }
   timerDressupState.x = 0; timerDressupState.y = 0;
+  timerDressupState.oldX = 0; timerDressupState.oldY = 0;
   timerDressupState.vx = 0; timerDressupState.vy = 0;
   timerDressupState.flying = false; timerDressupState.settled = true;
   timerDressupState.dragging = false;
@@ -819,9 +981,30 @@ function resetTimerDressup() {
   wrap.style.setProperty('--scl','1');
 }
 
+
 function updateTimerDressupImg() {
   var img = document.getElementById('timerDressupImg');
   if (!img) return;
   var curTree = AZUSA_TREES[(typeof currentOutfit!=='undefined' && currentOutfit>=0 ? currentOutfit : currentTreeIdx)] || AZUSA_TREES[0];
-  img.src = curTree.img || 'src/images/azusa/outfits/jk_uniform.png';
+  var newSrc = curTree.img || 'src/images/azusa/outfits/jk_uniform.png';
+  img.src = newSrc;
+
+  // 同步更新计时页分层阿梓的 dress 层
+  var layerDress = document.getElementById('layerDress');
+  if (layerDress) layerDress.src = newSrc;
+
+  // 同步更新首页换装阿梓（如果存在）
+  var homeDressImg = document.getElementById('homeDressupImg');
+  if (homeDressImg) homeDressImg.src = newSrc;
+
+  localStorage.setItem('foutfitfile', newSrc.split('/').pop());
+  currentOutfitFile = newSrc.split('/').pop();
+}
+
+// 强制刷新所有位置的阿梓形象
+function syncAllAzusaImages() {
+  updateTimerDressupImg();
+  var layerDress = document.getElementById('layerDress');
+  var curTree = AZUSA_TREES[(typeof currentOutfit!=='undefined' && currentOutfit>=0 ? currentOutfit : currentTreeIdx)] || AZUSA_TREES[0];
+  if (layerDress) layerDress.src = curTree.img || 'src/images/azusa/outfits/jk_uniform.png';
 }
