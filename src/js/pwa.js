@@ -17,17 +17,40 @@ var chibiState = {
 };
 var chibiAnimId = null;
 var chibiResetAnimId = null;
+var chibiWanderId = null;
+
+function stopChibiWander() { if (chibiWanderId) { clearInterval(chibiWanderId); chibiWanderId = null; } }
+function startChibiWander() {
+  stopChibiWander();
+  chibiWanderId = setInterval(function() {
+    if (chibiState.dragging || chibiState.flying || !chibiState.settled) return;
+    var scene = document.getElementById('homeScene');
+    if (!scene) return;
+    var sr = scene.getBoundingClientRect();
+    var maxX = sr.width/2 - 100, maxY = sr.height/2 - 100;
+    chibiState.vx = (Math.random()-0.5) * 3;
+    chibiState.vy = (Math.random()-0.5) * 2 - 0.5;
+    chibiState.flying = true; chibiState.settled = false;
+    var wrap = document.getElementById('homeAzusaWrap');
+    if (wrap) wrap.classList.add('thrown');
+    startChibiPhysics();
+  }, 4000 + Math.random() * 6000);
+}
 
 function initChibiPhysics() {
   var wrap = document.getElementById('homeAzusaWrap');
   if (!wrap) return;
+  // 初始居中
+  wrap.style.left = '50%'; wrap.style.top = '50%';
+  wrap.style.transform = 'translate(-50%,-50%)';
+  chibiState.x = 0; chibiState.y = 0;
+  startChibiWander();
 
   wrap.addEventListener('pointerdown', function(e) {
-    e.preventDefault();
-    // 打断任何进行中的动画
+    e.preventDefault(); e.stopPropagation();
+    stopChibiWander();
     if (chibiAnimId) { cancelAnimationFrame(chibiAnimId); chibiAnimId = null; }
     if (chibiResetAnimId) { cancelAnimationFrame(chibiResetAnimId); chibiResetAnimId = null; }
-
     chibiState.dragging = true;
     chibiState.flying = false;
     chibiState.settled = false;
@@ -74,8 +97,8 @@ function initChibiPhysics() {
     wrap.classList.remove('dragging');
 
     var dt = Math.max(1, Date.now() - chibiState.lastT);
-    chibiState.vx = (e.clientX - chibiState.lastX) / dt * 25;
-    chibiState.vy = (e.clientY - chibiState.lastY) / dt * 25;
+    chibiState.vx = (e.clientX - chibiState.lastX) / dt * 35;
+    chibiState.vy = (e.clientY - chibiState.lastY) / dt * 35;
     // 限速，避免飞出屏幕
     var maxV = 35;
     chibiState.vx = Math.max(-maxV, Math.min(maxV, chibiState.vx));
@@ -171,7 +194,7 @@ function startChibiPhysics() {
     }
     if (chibiState.y < ceilY) { chibiState.y = ceilY; chibiState.vy *= -0.3; }
 
-    // 静止判定：在地面上且速度极低 → 停住不动，不复位！
+    // 静止判定
     if (Math.abs(chibiState.vx) < 0.08 && Math.abs(chibiState.vy) < 0.08 && chibiState.y >= floorY - 3) {
       chibiState.flying = false;
       chibiState.settled = true;
@@ -180,10 +203,9 @@ function startChibiPhysics() {
       wrap.style.setProperty('--rot', '0deg');
       wrap.style.setProperty('--scl', '1');
       chibiAnimId = null;
-      // 落地→害羞→恢复idle
       chibiReaction('shy', 2000);
-      // 停在当前位置，不复位
       wrap.style.transform = 'translate(' + chibiState.x + 'px,' + chibiState.y + 'px)';
+      startChibiWander();
       return;
     }
 
@@ -231,9 +253,30 @@ function resetChibi() {
       chibiState.settled = true;
       chibiResetAnimId = null;
       wrap.style.transform = 'translate(0px, 0px)';
+      startChibiWander();
     }
   }
   chibiResetAnimId = requestAnimationFrame(anim);
+}
+
+// 换装自主漫游
+var dressupWanderId = null;
+function stopDressupWander() { if (dressupWanderId) { clearInterval(dressupWanderId); dressupWanderId = null; } }
+function startDressupWander() {
+  stopDressupWander();
+  dressupWanderId = setInterval(function() {
+    if (dressupState.dragging || dressupState.flying || !dressupState.settled) return;
+    var scene = document.getElementById('homeScene');
+    if (!scene) return;
+    var sr = scene.getBoundingClientRect();
+    var maxX = sr.width/2 - 65, maxY = sr.height/2 - 65;
+    dressupState.vx = (Math.random()-0.5) * 2.5;
+    dressupState.vy = (Math.random()-0.5) * 2 - 0.5;
+    dressupState.flying = true; dressupState.settled = false;
+    var wrap = document.getElementById('homeDressupWrap');
+    if (wrap) wrap.classList.add('thrown');
+    startDressupPhysics();
+  }, 5000 + Math.random() * 8000);
 }
 
 // ==================== 换装阿梓物理（第二个角色） ====================
@@ -249,9 +292,15 @@ var dressupResetId = null;
 function initDressupPhysics() {
   var wrap = document.getElementById('homeDressupWrap');
   if (!wrap) return;
+  // 初始左下
+  wrap.style.left = '5px'; wrap.style.bottom = '5px'; wrap.style.top = 'auto';
+  wrap.style.transform = 'translate(0,0)';
+  dressupState.x = 0; dressupState.y = 0;
+  startDressupWander();
 
   wrap.addEventListener('pointerdown', function(e) {
-    e.preventDefault();
+    e.preventDefault(); e.stopPropagation();
+    stopDressupWander();
     if (dressupAnimId) { cancelAnimationFrame(dressupAnimId); dressupAnimId = null; }
     if (dressupResetId) { cancelAnimationFrame(dressupResetId); dressupResetId = null; }
     dressupState.dragging = true;
@@ -291,8 +340,8 @@ function initDressupPhysics() {
     dressupState.dragging = false;
     wrap.classList.remove('dragging');
     var dt = Math.max(1, Date.now() - dressupState.lastT);
-    dressupState.vx = (e.clientX - dressupState.lastX) / dt * 25;
-    dressupState.vy = (e.clientY - dressupState.lastY) / dt * 25;
+    dressupState.vx = (e.clientX - dressupState.lastX) / dt * 35;
+    dressupState.vy = (e.clientY - dressupState.lastY) / dt * 35;
     var maxV = 35;
     dressupState.vx = Math.max(-maxV, Math.min(maxV, dressupState.vx));
     dressupState.vy = Math.max(-maxV, Math.min(maxV, dressupState.vy));
@@ -366,6 +415,7 @@ function startDressupPhysics() {
       dressupState.vx=0; dressupState.vy=0;
       wrap.classList.remove('thrown');
       dressupAnimId=null;
+      startDressupWander();
       return;
     }
     wrap.style.transform = 'translate('+dressupState.x+'px,'+dressupState.y+'px)';
