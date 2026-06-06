@@ -3,1823 +3,293 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no,viewport-fit=cover">
-<meta name="theme-color" content="#2E7D32">
+<meta name="theme-color" content="#7C5CBF">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="src/images/azusa/icon-192.png">
 <title>阿梓的森林</title>
-<style>
-:root,[data-theme=purple]{--g:#5C6BC0;--gl:#7986CB;--bg:#f0f2fa;--accent:#7E57C2}[data-theme=green]{--g:#2E7D32;--gl:#4CAF50;--bg:#f0f4f0;--accent:#388E3C}[data-theme=blue]{--g:#1565C0;--gl:#42A5F5;--bg:#f0f4fa;--accent:#1976D2}[data-theme=pink]{--g:#C2185B;--gl:#F06292;--bg:#faf0f4;--accent:#D81B60}[data-theme=orange]{--g:#E65100;--gl:#FF9800;--bg:#faf5f0;--accent:#F57C00}
-:root{--g:#5C6BC0;--gl:#7986CB;--bg:#f0f2fa;--c:#fff;--t:#1a1a1a;--gr:#888;--r:#e53935;--o:#ff9800;--b:#7E57C2;--rad:14px;--sh:0 2px 8px rgba(0,0,0,.06)}
-*{margin:0;padding:0;box-sizing:border-box}
-body{font-family:-apple-system,'PingFang SC','Noto Sans SC',sans-serif;background:var(--bg);color:var(--t);-webkit-tap-highlight-color:transparent;user-select:none;-webkit-user-select:none;padding-bottom:72px;overscroll-behavior:none;font-size:15px;}
-
-.appbar,.tabbar,.page{;z-index:1}
-body.dark{--bg:#1a1a2e;--c:#16213e;--t:#e0e0e0;--gr:#999;--sh:0 2px 8px rgba(0,0,0,.3)}
-body.locked{overflow:hidden;position:fixed;width:100%;height:100%}
-.appbar{background:var(--g);color:#fff;padding:12px 16px;text-align:center;font-weight:700;font-size:17px;position:sticky;top:0;z-index:10}
-.tabbar{position:fixed;bottom:0;left:0;right:0;background:var(--c);display:flex;border-top:1px solid rgba(0,0,0,.08);z-index:10;padding-bottom:env(safe-area-inset-bottom,0)}
-.tab{flex:1;text-align:center;padding:7px 0 5px;font-size:10px;color:var(--gr);transition:.15s;cursor:pointer}
-.tab.on{color:var(--g)}
-.tab .ic{font-size:21px;display:block;margin-bottom:1px}
-.page{display:none;padding:10px 14px;animation:fIn .2s ease}
-.page.on{display:block}
-@keyframes fIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
-
-.card{background:var(--c);border-radius:var(--rad);padding:14px;margin:8px 0;box-shadow:var(--sh);transition:.2s}.card:active{transform:scale(.98)}
-.btn{display:block;width:100%;padding:16px;border:none;border-radius:var(--rad);font-size:17px;font-weight:600;cursor:pointer;margin:12px 0;transition:.15s;letter-spacing:.5px}
-.btn:active{transform:scale(.97)}
-.btn-g{background:var(--g);color:#fff}
-.btn-r{background:var(--r);color:#fff}
-.btn-o{background:var(--o);color:#fff}
-
-.tree-box{text-align:center;min-height:260px;display:flex;align-items:center;justify-content:center;transition:.4s;overflow:visible;margin:4px 0;background:linear-gradient(180deg,rgba(200,220,255,.2) 0%,rgba(230,210,250,.15) 50%,rgba(200,240,220,.1) 100%);border-radius:24px;border:2px solid rgba(124,92,191,.12);box-shadow:0 4px 24px rgba(124,92,191,.08),inset 0 0 80px rgba(180,160,220,.04);position:relative}
-/* 树区装饰：小星星和花瓣 */
-.tree-box::before{content:'';position:absolute;top:0;left:0;right:0;bottom:0;border-radius:24px;background:radial-gradient(circle at 20% 30%,rgba(255,200,220,.15) 0%,transparent 50%),radial-gradient(circle at 80% 70%,rgba(180,200,255,.12) 0%,transparent 50%),radial-gradient(circle at 50% 20%,rgba(255,255,200,.1) 0%,transparent 40%);pointer-events:none}
-/* 浮动装饰粒子 */
-.tree-decor{position:absolute;font-size:18px;pointer-events:none;opacity:.6;animation:tFloat 3s ease-in-out infinite}
-.tree-decor:nth-child(1){top:12%;left:8%;animation-delay:0s}
-.tree-decor:nth-child(2){top:18%;right:10%;animation-delay:.8s}
-.tree-decor:nth-child(3){bottom:22%;left:12%;animation-delay:1.6s}
-.tree-decor:nth-child(4){bottom:15%;right:15%;animation-delay:2.2s}
-.tree-decor:nth-child(5){top:40%;left:6%;font-size:14px;animation-delay:.4s}
-.tree-decor:nth-child(6){top:35%;right:8%;font-size:14px;animation-delay:1.2s}
-@keyframes tFloat{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-8px) rotate(5deg)}}
-.ring-wrap{width:210px;height:210px;margin:0 auto;position:relative}
-.ring-wrap canvas{width:100%;height:100%}
-.ring-t{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center}
-.ring-t .tm{font-size:40px;font-weight:700;font-family:'SF Mono','Cascadia Code',monospace;letter-spacing:2px;color:#5C3D7A;text-shadow:0 2px 8px rgba(124,92,191,.15)}
-.ring-t .lb{font-size:12px;color:var(--g);margin-top:2px;font-weight:500}
-/* 环背景光晕 */
-.ring-glow{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:190px;height:190px;border-radius:50%;background:radial-gradient(circle,rgba(180,160,220,.12) 0%,rgba(200,180,240,.05) 50%,transparent 70%);pointer-events:none}
-.chips{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin:14px 0}
-.chip{padding:7px 14px;border-radius:18px;border:2px solid #ddd;background:var(--c);font-size:13px;font-weight:500;cursor:pointer;transition:.15s}
-.chip.sel{border-color:var(--g);background:var(--g);color:#fff}
-.task-sel{margin:12px 0;padding:12px;background:var(--c);border-radius:var(--rad);box-shadow:var(--sh);display:flex;align-items:center;gap:10px;flex-wrap:wrap}
-.task-sel select{flex:1;min-width:120px;padding:10px;border:1px solid #ddd;border-radius:10px;font-size:14px;background:var(--bg);color:var(--t)}
-
-.ht-row{display:flex;align-items:center;gap:10px}
-.ht-ck{min-width:40px;height:40px;border-radius:50%;background:#e8e8e8;display:flex;align-items:center;justify-content:center;font-size:17px;cursor:pointer;transition:.15s;flex-shrink:0}
-.ht-ck.done{background:var(--g);color:#fff}
-.ht-info{flex:1;min-width:0}
-.ht-n{font-weight:600;font-size:14px}
-.ht-d{font-size:11px;color:var(--gr);margin-top:2px}
-.ht-bar{height:5px;border-radius:3px;background:#e8e8e8;margin-top:5px}
-.ht-fill{height:100%;border-radius:3px;transition:.4s}
-.ht-s{min-width:36px;text-align:center;font-size:17px;font-weight:700;color:var(--g)}
-.ht-s span{display:block;font-size:9px;color:var(--gr);font-weight:400}
-
-.g-row{display:flex;align-items:center;gap:8px}
-.g-pct{font-size:14px;font-weight:700;color:var(--g);min-width:40px;text-align:center}
-.g-bar{flex:1;height:7px;border-radius:4px;background:#e8e8e8;overflow:hidden}
-.g-fill{height:100%;border-radius:4px;background:var(--g);transition:.4s}
-
-/* Tree Gallery */
-.tree-gallery{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:8px}
-.tg-card{background:var(--c);border-radius:var(--rad);padding:10px 8px 12px;text-align:center;box-shadow:var(--sh);transition:.3s;;overflow:hidden;cursor:pointer}.tg-card:active{transform:scale(.95)}.tg-card.unlocked:hover{box-shadow:0 4px 16px rgba(92,107,192,.2)}
-.tg-card.locked{opacity:.85}.tg-card.locked .tg-img{filter:brightness(.7) saturate(.5)}
-.tg-card.unlocked{border:2px solid var(--g)}
-.tg-card.current{border:2px solid var(--g);box-shadow:0 0 16px rgba(92,107,192,.3)}
-.tg-emoji{font-size:50px;display:block}
-.tg-name{font-weight:700;font-size:14px;margin:6px 0 2px}
-.tg-sub{font-size:11px;color:var(--gr);line-height:1.4}
-.tg-badge{position:absolute;top:8px;right:8px;background:var(--g);color:#fff;font-size:10px;padding:3px 8px;border-radius:10px}
-.tg-badge.lock{background:#ccc}
-.tg-progress{height:4px;border-radius:2px;background:#e8e8e8;margin-top:8px;overflow:hidden}
-.tg-progress div{height:100%;border-radius:2px;background:var(--g);transition:.4s}
-.tg-img{width:100%;height:180px;object-fit:contain;border-radius:10px;background:linear-gradient(135deg,#f5f0ff,#faf5ff);display:block;margin:0 auto;filter:brightness(1.05) saturate(1.1)}
-.tree-img{max-height:280px;max-width:85%;object-fit:contain;transition:all .5s ease;border-radius:16px;filter:brightness(1.08) saturate(1.08);display:block;margin:0 auto}
-/* DUPLICATE REMOVED - using line 36 definition */
-@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}
-.pulse{animation:pulse 1.5s ease-in-out infinite;display:inline-block}
-@keyframes unlockPop{0%{transform:scale(.5);opacity:0}60%{transform:scale(1.1)}100%{transform:scale(1);opacity:1}}
-.unlock-pop{animation:unlockPop .6s ease}
-.ach-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}
-.ach-card{background:var(--c);border-radius:10px;padding:10px 6px;text-align:center;box-shadow:var(--sh);transition:.2s;}
-.ach-card.locked{opacity:.45;filter:grayscale(.8)}
-.ach-card.unlocked{border:1px solid var(--g)}
-.ach-card.tier-legend{background:linear-gradient(135deg,#fce4ec,#f3e5f5)}
-.ach-icon{font-size:28px;display:block;margin-bottom:2px}
-.ach-name{font-weight:600;font-size:11px;line-height:1.3}
-.ach-tier{font-size:9px;margin-top:2px;padding:1px 6px;border-radius:8px;display:inline-block}
-.tier-bronze{background:#ffe0b2;color:#e65100}
-.tier-silver{background:#e0e0e0;color:#424242}
-.tier-gold{background:#fff8e1;color:#f57f17}
-.tier-legend{background:#f3e5f5;color:#6a1b9a}
-.ach-header{display:flex;justify-content:space-between;align-items:center;margin:12px 0 6px}
-.ach-count{font-size:13px;color:var(--g);font-weight:600}
-
-/* Lock overlay */
-.lock-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:50;flex-direction:column;align-items:center;justify-content:center;text-align:center;color:#fff;padding:20px}
-.lock-overlay.show{display:flex}
-.lock-overlay .lo-icon{font-size:80px;margin-bottom:16px}
-.lock-overlay .lo-title{font-size:22px;font-weight:700;margin-bottom:8px}
-.lock-overlay .lo-sub{font-size:14px;color:#ccc;margin-bottom:20px;line-height:1.6}
-.lock-overlay .lo-btn{padding:12px 30px;border-radius:20px;border:none;font-size:16px;font-weight:600;cursor:pointer;margin:6px}
-.lock-count{font-size:12px;color:#999;margin-top:12px}
-
-.st-row{display:flex;gap:8px;margin-bottom:12px}
-.st{flex:1;background:var(--c);border-radius:var(--rad);padding:12px;text-align:center;box-shadow:var(--sh)}
-.st .n{font-size:24px;font-weight:700}
-.st .l{font-size:10px;color:var(--gr);margin-top:2px}
-
-.chart{display:flex;align-items:flex-end;gap:5px;height:120px;justify-content:center}
-.chart .col{display:flex;flex-direction:column;align-items:center;gap:3px}
-.chart .bar{width:24px;border-radius:5px 5px 0 0;background:var(--gl);min-height:4px;transition:.4s}
-.chart .lbl{font-size:10px;color:var(--gr)}
-.hm{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;margin-top:10px}
-.hm div{aspect-ratio:1;border-radius:3px;background:#e8e8e8}
-.achs{display:flex;flex-wrap:wrap;gap:6px}
-.ach{padding:5px 10px;border-radius:14px;font-size:12px;background:#e8f5e9}
-.ach.lk{background:#eee;opacity:.4}
-.btn-sm{font-size:13px;padding:10px;border:1px solid var(--r);color:var(--r);background:transparent;border-radius:var(--rad);cursor:pointer;margin:4px;width:100%}
-.toast{position:fixed;top:20px;left:50%;transform:translateX(-50%);background:#333;color:#fff;padding:10px 20px;border-radius:20px;font-size:13px;z-index:60;opacity:0;transition:opacity .3s;pointer-events:none}
-.toast.show{opacity:1}
-
-/* Section title */
-.sec-title{font-size:16px;font-weight:700;margin:8px 0 4px;display:flex;align-items:center;gap:8px}
-.sec-title .tip{font-size:11px;color:var(--gr);font-weight:400}
-
-/* ===== 阿梓の手帳 - Dashboard Styles ===== */
-/* Period selector */
-.period-bar{display:flex;gap:6px;justify-content:center;margin:0 0 12px}
-.period-chip{flex:1;max-width:72px;text-align:center;padding:8px 0;border-radius:20px;font-size:12px;font-weight:600;cursor:pointer;transition:all .2s;background:var(--c);color:var(--gr);border:2px solid transparent;box-shadow:var(--sh)}
-.period-chip.on{background:var(--b);color:#fff;border-color:var(--b);box-shadow:0 2px 12px rgba(126,87,194,.3)}
-.period-chip:active{transform:scale(.94)}
-
-/* Stat cards 2x2 */
-.stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}
-.stat-card{background:var(--c);border-radius:var(--rad);padding:12px 10px;text-align:center;box-shadow:var(--sh);transition:.2s;;overflow:hidden}
-.stat-card::after{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--b),#CE93D8)}
-.stat-card .val{font-size:26px;font-weight:800;color:var(--b);line-height:1.1}
-.stat-card .val small{font-size:14px;font-weight:500}
-.stat-card .lbl{font-size:10px;color:var(--gr);margin-top:4px;text-transform:uppercase;letter-spacing:.5px}
-
-/* Chart containers */
-.chart-box{background:var(--c);border-radius:var(--rad);padding:14px;margin-bottom:12px;box-shadow:var(--sh)}
-.chart-box .chart-title{font-size:14px;font-weight:700;margin-bottom:8px;display:flex;align-items:center;gap:6px}
-.chart-box canvas{display:block;margin:0 auto;max-width:100%}
-
-/* Pie sub-tabs */
-.pie-tabs{display:flex;gap:4px;margin-bottom:10px;justify-content:center}
-.pie-tab{padding:4px 10px;border-radius:12px;font-size:11px;cursor:pointer;background:var(--bg);color:var(--gr);border:1px solid transparent;transition:.15s;font-weight:500}
-.pie-tab.on{background:var(--b);color:#fff;border-color:var(--b)}
-
-/* Year heatmap */
-.heatmap-year{overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:4px}
-.heatmap-year-table{border-collapse:separate;border-spacing:3px;margin:0 auto}
-.heatmap-year-table td{width:13px;height:13px;border-radius:3px;transition:.15s;cursor:default;}
-.heatmap-year-table td:hover{transform:scale(1.4);z-index:2;box-shadow:0 2px 8px rgba(0,0,0,.2)}
-.heatmap-legend{display:flex;align-items:center;gap:3px;justify-content:flex-end;font-size:9px;color:var(--gr);margin-top:4px}
-.heatmap-legend span{width:11px;height:11px;border-radius:2px;display:inline-block}
-.heatmap-months{display:flex;justify-content:space-around;font-size:10px;color:var(--gr);margin-bottom:4px;padding:0 20px}
-.heatmap-weekdays{display:flex;flex-direction:column;gap:3px;margin-right:3px}
-.heatmap-weekdays span{font-size:9px;color:var(--gr);height:13px;line-height:13px}
-
-/* Achievement detail modal */
-.ach-modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:40;align-items:center;justify-content:center}
-.ach-modal-overlay.show{display:flex}
-.ach-modal{background:var(--c);border-radius:16px;padding:20px;width:280px;text-align:center;box-shadow:0 8px 32px rgba(0,0,0,.2);animation:unlockPop .3s ease}
-.ach-modal .ach-m-icon{font-size:56px;display:block;margin-bottom:8px}
-.ach-modal .ach-m-name{font-size:18px;font-weight:700;margin-bottom:4px}
-.ach-modal .ach-m-tier{font-size:12px;padding:3px 12px;border-radius:10px;display:inline-block;margin-bottom:8px}
-.ach-modal .ach-m-cond{font-size:12px;color:var(--gr);line-height:1.5;margin-bottom:12px}
-.ach-modal .ach-m-btn{padding:10px 32px;border-radius:20px;border:none;background:var(--b);color:#fff;font-size:14px;font-weight:600;cursor:pointer}
-.ach-modal .ach-m-date{font-size:10px;color:var(--gr);margin-top:6px}
-
-/* Achievement 2-col grid (handbook) */
-.ach-grid-hb{display:grid;grid-template-columns:1fr 1fr;gap:7px}
-.ach-card-hb{background:var(--c);border-radius:var(--rad);padding:10px;display:flex;align-items:center;gap:8px;border:2px solid #e0e0e0;cursor:pointer;transition:all .2s;;overflow:hidden}
-.ach-card-hb:active{transform:scale(.96)}
-.ach-card-hb.earned{border-color:var(--b);background:linear-gradient(135deg,#F5F3FA,var(--c))}
-.ach-card-hb.earned.tier-gold{border-color:#FFD700;background:linear-gradient(135deg,#FFFDE7,var(--c))}
-.ach-card-hb.earned.tier-legend{border-color:#E040FB;background:linear-gradient(135deg,#FCE4EC,#F3E5F5)}
-.ach-card-hb.locked{opacity:.55;filter:grayscale(.5)}
-.ach-card-hb .ach-hb-icon{font-size:24px;flex-shrink:0;width:32px;text-align:center}
-.ach-card-hb .ach-hb-info{flex:1;min-width:0}
-.ach-card-hb .ach-hb-name{font-size:12px;font-weight:700;line-height:1.3}
-.ach-card-hb .ach-hb-tier{font-size:9px;margin-top:1px;display:inline-block;padding:1px 6px;border-radius:8px}
-.ach-card-hb .ach-hb-check{color:var(--b);font-size:14px;flex-shrink:0}
-
-/* Ach summary bar */
-.ach-summary{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
-.ach-summary .ach-total{font-size:13px;font-weight:700;color:var(--b)}
-.ach-summary .ach-tiers{font-size:10px;color:var(--gr);display:flex;gap:6px}
-.ach-summary .ach-tiers span{display:inline-flex;align-items:center;gap:1px}
-
-/* Period stat highlight */
-.period-highlight{color:var(--b);font-weight:700}
-
-/* 皮套切换提示 */
-
-@keyframes mExprPop{0%{transform:scale(.3);opacity:0}60%{transform:scale(1.15)}100%{transform:scale(1);opacity:1}}
-/* 待机浮动 */
-
-@keyframes mFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
-/* 庆祝跳跃 */
-
-@keyframes mJump{0%,100%{transform:translateY(0)}30%{transform:translateY(-18px) rotate(-5deg)}60%{transform:translateY(-8px) rotate(3deg)}}
-/* 生气抖动 */
-
-@keyframes mShake{0%,100%{transform:translateX(0)}50%{transform:translateX(-7px)}}
-/* 思考歪头 */
-
-@keyframes mTilt{0%,100%{transform:rotate(0)}30%{transform:rotate(-8deg)}70%{transform:rotate(5deg)}}
-/* 困倦摇摆 */
-
-@keyframes mSway{0%,100%{transform:rotate(0) translateY(0)}25%{transform:rotate(-3deg) translateY(-2px)}75%{transform:rotate(3deg) translateY(-1px)}}
-/* 星星眼脉冲 */
-
-@keyframes mPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.12)}}
-/* 专注呼吸 */
-
-@keyframes mBreathe{0%,100%{transform:scale(1)}50%{transform:scale(1.06)}}
-/* 难过缩小 */
-
-/* 对话气泡 */
-
-/* 粒子特效容器 */
-
-.m-particle{position:absolute;font-size:14px;animation:mParticle .8s ease-out forwards;pointer-events:none}
-@keyframes mParticle{0%{opacity:1;transform:translate(0,0) scale(1)}100%{opacity:0;transform:translate(var(--dx),var(--dy)) scale(.3)}}
-/* 戳一戳反馈 */
-
-@keyframes mPoke{0%{transform:scale(1)}30%{transform:scale(1.2) rotate(5deg)}60%{transform:scale(.9) rotate(-3deg)}100%{transform:scale(1) rotate(0)}}
-/* 移动端优化 */
-@media(max-width:400px){}
-
-/* ===== 习惯 + 目标 重设计 ===== */
-.hb-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
-.hb-add-btn{background:var(--b);color:#fff;border:none;padding:7px 14px;border-radius:16px;font-size:12px;font-weight:600;cursor:pointer;box-shadow:0 2px 8px rgba(124,92,191,.25);transition:.15s}
-.hb-add-btn:active{transform:scale(.94)}
-.hb-summary{background:var(--c);border-radius:var(--rad);padding:10px 12px;margin-bottom:10px;box-shadow:var(--sh);display:flex;gap:12px;align-items:center;font-size:12px;color:var(--t);flex-wrap:wrap}
-.hb-summary .hs-stat{text-align:center;flex:1;min-width:50px}
-.hb-summary .hs-stat .hs-val{font-size:18px;font-weight:800;color:var(--b)}
-.hb-summary .hs-stat .hs-lbl{font-size:10px;color:var(--gr);margin-top:1px}
-
-/* 习惯卡片 */
-.habit-card{background:var(--c);border-radius:var(--rad);padding:12px;margin-bottom:8px;box-shadow:var(--sh);display:flex;gap:10px;align-items:center;border-left:4px solid #ddd;transition:.2s;}
-.habit-card.t-micro{border-left-color:#81C784}
-.habit-card.t-normal{border-left-color:#FFB74D}
-.habit-card.t-challenge{border-left-color:#E57373}
-.habit-card.done-today{background:linear-gradient(135deg,#f1f8e9,var(--c))}
-.hb-left{display:flex;flex-direction:column;align-items:center;gap:2px;flex-shrink:0;min-width:36px}
-.hb-check{width:34px;height:34px;border-radius:50%;border:2px solid #ddd;display:flex;align-items:center;justify-content:center;font-size:16px;cursor:pointer;transition:.2s;background:#fafafa}
-.hb-check.done{background:var(--b);border-color:var(--b);color:#fff}
-.hb-check:active{transform:scale(.9)}
-.hb-mid{flex:1;min-width:0}
-.hb-name{font-weight:700;font-size:14px;display:flex;align-items:center;gap:6px}
-.hb-meta{font-size:11px;color:var(--gr);margin-top:2px;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
-.hb-meta span{display:inline-flex;align-items:center;gap:2px}
-.hb-bar-wrap{height:5px;border-radius:3px;background:#e8e8e8;margin-top:5px;overflow:hidden}
-.hb-bar-fill{height:100%;border-radius:3px;transition:.4s}
-.hb-right{text-align:center;flex-shrink:0;min-width:40px}
-.hb-streak{font-size:20px;font-weight:800;color:var(--b);line-height:1}
-.hb-streak span{display:block;font-size:9px;color:var(--gr);font-weight:400}
-.hb-mini-week{display:flex;gap:2px;margin-top:3px;justify-content:flex-end}
-.hb-mini-week span{width:8px;height:8px;border-radius:50%;background:#e0e0e0}
-.hb-mini-week span.done{background:var(--b)}
-.hb-delete{position:absolute;top:6px;right:8px;font-size:16px;cursor:pointer;opacity:.4;transition:.2s;background:none;border:none}
-.hb-delete:hover{opacity:1}
-
-/* 预设标签 */
-.hb-presets{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-top:8px;padding:8px 0}
-.hb-preset-label{font-size:11px;color:var(--gr);flex-shrink:0}
-.hb-preset-chip{padding:5px 12px;border-radius:14px;font-size:11px;font-weight:500;background:var(--c);color:var(--t);cursor:pointer;border:1.5px solid #e0e0e0;transition:.15s;box-shadow:var(--sh)}
-.hb-preset-chip:active{transform:scale(.94);border-color:var(--b);background:#F5F3FA}
-
-/* 目标卡片 */
-.goal-card{background:var(--c);border-radius:var(--rad);padding:14px;margin-bottom:8px;box-shadow:var(--sh);}
-.goal-top{display:flex;align-items:flex-start;gap:10px;margin-bottom:8px}
-.goal-progress-ring{flex-shrink:0;;width:52px;height:52px}
-.goal-progress-ring canvas{width:100%;height:100%}
-.goal-ring-pct{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:13px;font-weight:800;color:var(--b)}
-.goal-info{flex:1;min-width:0}
-.goal-title{font-weight:700;font-size:14px}
-.goal-meta{font-size:11px;color:var(--gr);margin-top:3px;display:flex;gap:10px;flex-wrap:wrap}
-.goal-meta span{display:inline-flex;align-items:center;gap:3px}
-.goal-deadline{color:#e53935;font-weight:600}
-.goal-actions{display:flex;gap:6px;margin-top:8px}
-.goal-actions button{padding:5px 12px;border-radius:12px;border:none;font-size:11px;font-weight:600;cursor:pointer;transition:.15s}
-.goal-inc-btn{background:var(--b);color:#fff}
-.goal-inc-btn:active{transform:scale(.9)}
-.goal-del-btn{background:transparent;color:var(--gr)}
-/* 子任务 */
-.goal-subtasks{margin-top:8px;padding-top:8px;border-top:1px solid #eee}
-.goal-subtask{display:flex;align-items:center;gap:6px;padding:3px 0;font-size:12px;cursor:pointer}
-.goal-subtask .gs-ck{width:18px;height:18px;border-radius:50%;border:2px solid #ccc;display:flex;align-items:center;justify-content:center;font-size:10px;flex-shrink:0;transition:.15s;background:#fafafa}
-.goal-subtask .gs-ck.done{background:var(--b);border-color:var(--b);color:#fff}
-.goal-subtask.done .gs-text{text-decoration:line-through;color:var(--gr)}
-.goal-add-sub{padding:3px 8px;border-radius:10px;border:1px dashed #ccc;font-size:10px;cursor:pointer;color:var(--gr);background:transparent;margin-top:4px;transition:.15s}
-.goal-add-sub:active{border-color:var(--b);color:var(--b)}
-
-/* 空状态 */
-.empty-state{text-align:center;color:var(--gr);padding:40px 20px;font-size:13px;line-height:1.8}
-.empty-state .empty-icon{font-size:48px;display:block;margin-bottom:10px;opacity:.6}
-.empty-state .empty-hint{font-size:11px;margin-top:4px;color:#aaa}
-.chat-fab{position:fixed;bottom:85px;right:12px;width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,#7C5CBF,#9575CD);color:#fff;font-size:22px;border:none;cursor:pointer;z-index:150;box-shadow:0 4px 16px rgba(124,92,191,.4);transition:.2s;display:flex;align-items:center;justify-content:center}.chat-fab:active{transform:scale(.9)}.chat-modal{position:fixed;bottom:0;left:0;right:0;top:0;z-index:350;display:flex;flex-direction:column;background:var(--bg);transform:translateY(100%);transition:transform .3s ease-out}.chat-modal.open{transform:translateY(0)}.chat-hdr{background:linear-gradient(135deg,#5C6BC0,#7C5CBF);color:#fff;padding:12px 16px;display:flex;align-items:center;justify-content:space-between}.chat-hdr .ch-t{font-weight:700;font-size:15px;display:flex;align-items:center;gap:8px}.chat-hdr .ch-close{width:30px;height:30px;border-radius:50%;border:none;background:rgba(255,255,255,.2);color:#fff;font-size:16px;cursor:pointer}.chat-body{flex:1;overflow-y:auto;padding:12px;display:flex;flex-direction:column;gap:8px}.chat-msg{max-width:85%;padding:10px 14px;border-radius:16px;font-size:14px;line-height:1.5;animation:msgIn .3s ease-out;word-break:break-word}@keyframes msgIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}.chat-msg.user{align-self:flex-end;background:linear-gradient(135deg,#5C6BC0,#7C5CBF);color:#fff;border-bottom-right-radius:4px}.chat-msg.azusa{align-self:flex-start;background:var(--c);color:var(--t);border-bottom-left-radius:4px;box-shadow:0 2px 8px rgba(0,0,0,.06)}.chat-msg.diary{align-self:flex-start;background:linear-gradient(135deg,#FFF3E0,#FFE0B2);color:#5D4037;border-radius:16px;max-width:95%;font-size:13px;line-height:1.7}.chat-typing{align-self:flex-start;padding:10px 16px;border-radius:16px;font-size:13px;color:#999;display:flex;gap:4px;background:var(--c)}.chat-typing span{width:6px;height:6px;background:#ccc;border-radius:50%;animation:tBounce 1.4s ease-in-out infinite}.chat-typing span:nth-child(2){animation-delay:.2s}.chat-typing span:nth-child(3){animation-delay:.4s}@keyframes tBounce{0%,80%,100%{transform:scale(.6)}40%{transform:scale(1)}}.chat-input-wrap{display:flex;gap:8px;padding:10px 12px;background:var(--c);border-top:1px solid #eee}.chat-input-wrap input{flex:1;padding:10px 14px;border-radius:20px;border:2px solid #e0e0e0;font-size:14px;outline:none;transition:border .2s;background:var(--bg);color:var(--t)}.chat-input-wrap input:focus{border-color:#7C5CBF}.chat-input-wrap button{width:40px;height:40px;border-radius:50%;border:none;background:linear-gradient(135deg,#5C6BC0,#7C5CBF);color:#fff;font-size:18px;cursor:pointer}
-.todo-input-wrap{display:flex;gap:8px;margin-bottom:12px}
-.todo-input-wrap input{flex:1;padding:10px 14px;border-radius:12px;border:2px solid #e0e0e0;font-size:14px;background:var(--bg);color:var(--t);outline:none}
-.todo-input-wrap input:focus{border-color:var(--g)}
-.todo-input-wrap button{padding:10px 16px;border-radius:12px;border:none;background:var(--g);color:#fff;font-size:14px;cursor:pointer;white-space:nowrap}
-.todo-item{display:flex;align-items:center;gap:10px;padding:12px;background:var(--c);border-radius:12px;margin:6px 0;box-shadow:var(--sh);transition:.2s}
-.todo-item.done{opacity:.5}
-.todo-item.done .todo-title{text-decoration:line-through}
-.todo-check{width:22px;height:22px;border-radius:50%;border:2px solid #ccc;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:.2s;flex-shrink:0}
-.todo-check.done{background:var(--g);border-color:var(--g);color:#fff}
-.todo-info{flex:1;min-width:0}
-.todo-title{font-size:14px;font-weight:500}
-.todo-meta{font-size:11px;color:var(--gr);margin-top:2px}
-.todo-est{font-size:11px;color:var(--g);font-weight:600;white-space:nowrap}
-.todo-group{margin:12px 0}
-.todo-group-title{font-size:13px;font-weight:600;color:var(--gr);margin-bottom:6px;text-transform:uppercase}
-.focus-motto{text-align:center;font-size:14px;color:var(--g);margin:8px 0;min-height:20px;font-style:italic;transition:.3s}
-.f-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(100px,1fr));gap:8px;margin-top:8px}
-.f-card{background:var(--c);border-radius:12px;padding:10px 8px;text-align:center;box-shadow:var(--sh);transition:.2s;cursor:default}
-.f-card:active{transform:scale(.96)}
-.f-emoji{font-size:36px;display:block;margin-bottom:4px}
-.f-info{font-size:11px;color:var(--gr);line-height:1.5}
-
-.chat-fab{position:fixed;bottom:85px;right:12px;width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,#7C5CBF,#9575CD);color:#fff;font-size:22px;border:none;cursor:pointer;z-index:150;box-shadow:0 4px 16px rgba(124,92,191,.4);transition:.2s;display:flex;align-items:center;justify-content:center}.chat-fab:active{transform:scale(.9)}.chat-modal{position:fixed;bottom:0;left:0;right:0;top:0;z-index:350;display:flex;flex-direction:column;background:var(--bg);transform:translateY(100%);transition:transform .3s ease-out}.chat-modal.open{transform:translateY(0)}.chat-hdr{background:linear-gradient(135deg,#5C6BC0,#7C5CBF);color:#fff;padding:12px 16px;display:flex;align-items:center;justify-content:space-between}.chat-hdr .ch-t{font-weight:700;font-size:15px;display:flex;align-items:center;gap:8px}.chat-hdr .ch-close{width:30px;height:30px;border-radius:50%;border:none;background:rgba(255,255,255,.2);color:#fff;font-size:16px;cursor:pointer}.chat-body{flex:1;overflow-y:auto;padding:12px;display:flex;flex-direction:column;gap:8px}.chat-msg{max-width:85%;padding:10px 14px;border-radius:16px;font-size:14px;line-height:1.5;animation:msgIn .3s ease-out;word-break:break-word}@keyframes msgIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}.chat-msg.user{align-self:flex-end;background:linear-gradient(135deg,#5C6BC0,#7C5CBF);color:#fff;border-bottom-right-radius:4px}.chat-msg.azusa{align-self:flex-start;background:var(--c);color:var(--t);border-bottom-left-radius:4px;box-shadow:0 2px 8px rgba(0,0,0,.06)}.chat-msg.diary{align-self:flex-start;background:linear-gradient(135deg,#FFF3E0,#FFE0B2);color:#5D4037;border-radius:16px;max-width:95%;font-size:13px;line-height:1.7}.chat-typing{align-self:flex-start;padding:10px 16px;border-radius:16px;font-size:13px;color:#999;display:flex;gap:4px;background:var(--c)}.chat-typing span{width:6px;height:6px;background:#ccc;border-radius:50%;animation:tBounce 1.4s ease-in-out infinite}.chat-typing span:nth-child(2){animation-delay:.2s}.chat-typing span:nth-child(3){animation-delay:.4s}@keyframes tBounce{0%,80%,100%{transform:scale(.6)}40%{transform:scale(1)}}.chat-input-wrap{display:flex;gap:8px;padding:10px 12px;background:var(--c);border-top:1px solid #eee}.chat-input-wrap input{flex:1;padding:10px 14px;border-radius:20px;border:2px solid #e0e0e0;font-size:14px;outline:none;transition:border .2s;background:var(--bg);color:var(--t)}.chat-input-wrap input:focus{border-color:#7C5CBF}.chat-input-wrap button{width:40px;height:40px;border-radius:50%;border:none;background:linear-gradient(135deg,#5C6BC0,#7C5CBF);color:#fff;font-size:18px;cursor:pointer}
-
-
-#mascot{position:fixed;bottom:85px;right:70px;z-index:145;cursor:grab;user-select:none;-webkit-user-select:none;transition:transform .1s}.mascot-body{width:100px;height:100px;object-fit:contain;border-radius:50%;background:transparent;border:none;filter:drop-shadow(0 4px 18px rgba(124,92,191,.5));transition:filter .3s}.mascot-badge{position:absolute;top:-8px;left:50%;transform:translateX(-50%);background:#7C5CBF;color:#fff;font-size:9px;padding:2px 8px;border-radius:10px;white-space:nowrap;opacity:0;transition:opacity .3s}.mascot-badge.show{opacity:1}.mascot-bubble{position:absolute;bottom:80px;right:-4px;background:#fff;color:#333;padding:6px 12px;border-radius:14px;font-size:12px;max-width:160px;box-shadow:0 4px 16px rgba(0,0,0,.1);opacity:0;transition:opacity .2s;pointer-events:none;white-space:nowrap}.mascot-bubble.show{opacity:1}.mascot-particles{position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;overflow:visible}.m-particle{position:absolute;font-size:16px;animation:mParticle 1s ease-out forwards;pointer-events:none}@keyframes mParticle{0%{opacity:1;transform:translate(0,0) scale(1)}100%{opacity:0;transform:translate(var(--dx),var(--dy)) scale(.3)}}.mascot-shrink{transform:scale(.7)!important}.mascot-poke{animation:mPoke .4s ease}@keyframes mPoke{0%{transform:scale(1)}30%{transform:scale(1.2) rotate(5deg)}60%{transform:scale(.9) rotate(-3deg)}100%{transform:scale(1) rotate(0)}}
-
-</style>
+<!-- BUILD:CSS -->
+<link rel="stylesheet" href="src/css/variables.css">
+<link rel="stylesheet" href="src/css/base.css">
+<link rel="stylesheet" href="src/css/timer.css">
+<link rel="stylesheet" href="src/css/dressup.css">
+<link rel="stylesheet" href="src/css/stats.css">
+<link rel="stylesheet" href="src/css/chat.css">
+<link rel="stylesheet" href="src/css/effects.css">
+<!-- /BUILD:CSS -->
 </head>
 <body>
 
-<div class="appbar" id="bar">🌸 阿梓的森林 <span style="font-size:9px;opacity:.5;font-weight:400">v20260605r</span></div>
+<div class="appbar" id="bar"><span class="mood-face azusa-live" id="moodIcon" style="font-size:22px;margin-right:4px">😊</span>阿梓的森林<span style="float:right;display:flex;align-items:center;gap:6px"><span class="coin-display" id="coinDisplay" style="font-size:11px">🪙<span id="coinVal">0</span></span><span style="cursor:pointer;font-size:18px" onclick="toggleDark()" id="darkIcon">🌙</span></span></div>
+
+<!-- ===== CHAT FAB ===== -->
+<button class="chat-fab" id="chatFab" onclick="toggleChat()">💬<span class="badge" id="chatBadge" style="display:none">1</span></button>
+
+<!-- ===== CHAT MODAL ===== -->
+<div class="chat-modal" id="chatModal">
+<div class="chat-header">
+<span class="ch-title">🤖 和阿梓聊天</span>
+<div style="display:flex;gap:8px;align-items:center">
+<span style="font-size:11px;opacity:.7" id="chatStatus">离线模式</span>
+<button class="ch-close" onclick="toggleChat()">✕</button>
+</div>
+</div>
+<div class="chat-body" id="chatBody">
+<div class="chat-msg azusa"><span class="az-avatar">😊</span> 嗨！我是阿梓~ 今天想和我聊什么？</div>
+</div>
+<div class="chat-input-wrap">
+<input type="text" id="chatInput" placeholder="和阿梓说点什么..." onkeydown="if(event.key==='Enter')sendChat()">
+<button onclick="sendChat()">➤</button>
+</div>
+</div>
+
+<!-- ===== DIALOGUE BUBBLE ===== -->
+<div class="bubble-wrap" id="bubbleWrap" style="display:none"><div class="bubble" id="bubbleText"></div></div>
 
 <!-- ===== LOCK OVERLAY ===== -->
 <div class="lock-overlay" id="lockOverlay">
 <div class="lo-icon">🌳</div>
-<div class="lo-title" id="lockTitle">正在种树...</div>
-<div class="lo-sub" id="lockMsg">你离开了专注页面<br>快回来！阿梓还在等你完成这棵树 🌸</div>
-<button class="lo-btn" style="background:#4CAF50;color:#fff" onclick="resumeFocus()">🌱 回去继续专注</button>
+<div class="lo-title" id="lockTitle">阿梓在等你...</div>
+<div class="lo-sub" id="lockMsg">你离开了专注页面<br>阿梓还在等你回来呀~ 🌸</div>
+<button class="lo-btn" style="background:#4CAF50;color:#fff" onclick="resumeFocus()">🌱 回去陪阿梓</button>
 <button class="lo-btn" style="background:rgba(255,255,255,.15);color:#fff" id="lockAbort" onclick="lockAbort()">放弃（还剩 <span id="lockLeft">0</span> 分钟）</button>
-<div class="lock-count">今天已离开 <span id="lockCount">0</span>/3 次 · 超过3次树会枯萎</div>
+<div class="lock-count">今天已离开 <span id="lockCount">0</span>/3 次 · 超过3次阿梓会伤心的 😢</div>
+</div>
+
+<!-- BUILD:HTML -->
+<!-- ===== HOME PAGE (pg5) ===== -->
+<div class="page on" id="pg5">
+<div style="max-width:360px;margin:0 auto">
+<div class="home-scene" id="homeScene">
+<div class="scene-bg-inner">
+  <div class="sky-stars" id="homeStars"></div>
+  <div class="ground"></div>
+</div>
+<div class="home-mood-badge" id="homeMoodBadge">😊 阿梓心情很好</div>
+<!-- 互动阿梓：可拖拽、扔出、弹表情 -->
+<div class="azusa-interactive" id="homeAzusaWrap">
+  <img class="azusa-chibi" id="homeAzusaImg" src="src/images/azusa/chibi_perfect.png" alt="阿梓"
+    onerror="this.style.display='none';document.getElementById('homeAzusaWrap').innerHTML='<span style=font-size:80px>🌰</span>'">
+  <div class="azusa-bubble" id="homeAzusaBubble" style="display:none"></div>
+</div>
+<div class="char-label" id="homeAzusaName">阿梓的种子</div>
+</div>
+<div class="daily-quote" id="dailyQuote">"阿梓在等你开始今天的专注呢~"</div>
+<div class="quick-stats" id="quickStats"></div>
+<div id="duoWarning"></div>
+<div class="install-bar hidden" id="installBar" onclick="installApp()">
+<div class="inst-icon">📲</div>
+<div class="inst-text"><div class="inst-title">添加到手机桌面</div><div class="inst-sub">像App一样使用，无需每次打开浏览器</div></div>
+<button class="inst-btn" onclick="event.stopPropagation();installApp()">安装</button>
+</div>
+<div class="install-guide" id="installGuide">
+<button class="ig-close" onclick="closeInstallGuide()">✕</button>
+<h3>📱 华为手机安装指南</h3>
+<div class="step"><span class="step-num">1</span><span class="step-text">推荐使用 <b>Edge浏览器</b> 打开此页面（华为应用市场可下载）</span></div>
+<div class="step"><span class="step-num">2</span><span class="step-text">点击上方紫色「安装」按钮，或浏览器底部菜单 → <b>添加到主屏幕</b></span></div>
+<div class="step"><span class="step-num">3</span><span class="step-text">确认后桌面会出现「阿梓森林」图标，点击即可全屏使用</span></div>
+<div style="font-size:12px;color:#999;margin-top:12px;text-align:center">华为自带浏览器可能不支持PWA，建议用Edge打开</div>
+</div>
+<div class="home-actions">
+<button class="home-btn primary" onclick="goTab(1)">🌱 开始专注</button>
+<button class="home-btn secondary" onclick="goTab(2)">👗 衣柜</button>
+<button class="home-btn secondary" onclick="showBackgroundPanel()">🖼 背景</button>
+</div>
+<div class="home-actions">
+<button class="home-btn secondary" onclick="goTab(5)">📊 统计</button>
+<button class="home-btn secondary" onclick="randomBubble()">💬 戳阿梓</button>
+<button class="home-btn secondary" onclick="window.open('download/','_blank')">📲 下载App</button>
+	</div>
+</div>
+<div style="max-width:360px;margin:12px auto;padding:12px;background:var(--c);border-radius:14px;box-shadow:var(--sh)" id="homeSettings">
+<div class="setting-row"><span style="font-size:13px">⏱ 计时页设为首页</span><div class="toggle" onclick="toggleTimerDefault()" id="timerToggle"></div></div>
+<div style="font-size:11px;color:var(--gr);margin-top:4px">开启后每次打开直接进入计时页面</div>
+</div>
 </div>
 
 <!-- ===== FOCUS PAGE ===== -->
-<div class="page on" id="pg0">
-<div style="max-width:400px;margin:0 auto;display:flex;flex-direction:column;align-items:center;gap:8px">
-<div class="tree-box" id="tree"><span class="tree-decor">✨</span><span class="tree-decor">🌸</span><span class="tree-decor">💫</span><span class="tree-decor">🌿</span><span class="tree-decor">⭐</span><span class="tree-decor">🍃</span><img src="src/images/azusa/azusa_touming_liren.png" class="tree-img" style="max-height:280px;max-width:85%;opacity:.95;object-fit:contain;display:block;margin:0 auto;filter:drop-shadow(0 6px 24px rgba(124,92,191,.25))" alt="阿梓"></div>
-<div class="ring-wrap"><div class="ring-glow"></div><canvas id="ring"></canvas><div class="ring-t"><div class="tm" id="time">25:00</div><div class="lb" id="status">选个目标，开始种阿梓吧</div></div></div>
+<div class="page" id="pg0">
+<div style="max-width:360px;margin:0 auto">
+<!-- 分层角色容器 -->
+<div class="azusa-character seed" id="azusaChar">
+  <div class="layer-scene" id="layerScene"></div>
+  <img class="layer layer-body" id="layerBody" src="" alt="身体" style="display:none">
+  <img class="layer layer-bottom" id="layerBottom" src="" alt="下装" style="display:none">
+  <img class="layer layer-top" id="layerTop" src="" alt="上装" style="display:none">
+  <img class="layer layer-dress body-outfit" id="layerDress" src="src/images/azusa/outfits/jk_uniform.png" alt="阿梓">
+  <img class="layer layer-neck" id="layerNeck" src="" alt="颈部" style="display:none">
+  <img class="layer layer-head" id="layerHead" src="" alt="头饰" style="display:none">
+  <img class="layer layer-face" id="layerFace" src="" alt="面部" style="display:none">
+  <img class="layer layer-hand" id="layerHand" src="" alt="手持" style="display:none">
+  <canvas class="layer layer-fx" id="layerFx"></canvas>
+  <div class="face-bubble" id="azusaFace">😊</div>
+  <div class="speech-bubble" id="speechBubble" style="display:none"></div>
+</div>
+<div class="ring-wrap"><canvas id="ring"></canvas><div class="ring-t"><div class="tm" id="time">25:00</div><div class="lb" id="status">选个目标，阿梓陪你一起种树吧 🌸</div></div></div>
 <div class="chips" id="chips"></div>
-<div class="focus-motto" id="focusMotto">千里之行，始于足下</div><div class="task-sel">
+<div class="task-sel">
 <select id="taskType" onchange="onTaskType()"><option value="">-- 选任务类型 --</option><option value="habit">✅ 习惯</option><option value="goal">🎯 目标</option><option value="free">🌸 自由种树</option></select>
 <select id="taskPick" style="display:none" onchange="onTaskPick()"></select>
 </div>
 <div id="taskHint" style="text-align:center;font-size:12px;color:var(--gr);margin:4px 0;min-height:18px"></div>
+<div class="bet-row" id="betRow">
+<span>🎲 押注</span>
+<select id="betAmount" onchange="updateBetInfo()">
+<option value="0">不押注</option>
+<option value="5">🪙5</option>
+<option value="10">🪙10</option>
+<option value="20">🪙20</option>
+<option value="50">🪙50</option>
+</select>
+<span class="bet-info" id="betInfo"></span>
+</div>
 <button class="btn btn-g" id="btnGo" onclick="start()">🌱 开始种树</button>
-<button class="btn btn-r" id="btnStop" onclick="abort()" style="display:none">放弃（树会受伤的 😢）</button><div style="text-align:center;margin-top:6px;font-size:11px;color:var(--gr);opacity:.7">🌸 每次专注都会让阿梓长大一点点 ✨</div>
+<button class="btn btn-r" id="btnStop" onclick="abort()" style="display:none">放弃（树会受伤的 😢）</button>
 </div>
 </div>
 
 <!-- ===== TREE GALLERY PAGE ===== -->
 <div class="page" id="pg1">
-<h3 class="sec-title">🌸 阿梓树 · 升级路线 <span class="tip">| 专注就能解锁新衣服</span></h3>
+<h3 class="sec-title">👗 换装衣柜 <span class="tip">| 点击卡片穿上·已解锁的衣服随时换</span></h3>
 <div class="tree-gallery" id="treeGallery"></div>
-<div style="margin-top:16px">
-<h3 class="sec-title">📊 我的进度</h3>
-<div class="st-row" id="galleryStats"></div>
-</div>
-<div style="margin-top:16px"><h3 class="sec-title">🌳 我的森林</h3>
-<div class="st-row" id="forestStats"></div>
-<div class="f-grid" id="forestGrid"></div></div>
 </div>
 
 <!-- ===== HABITS PAGE ===== -->
 <div class="page" id="pg2">
-<div class="hb-header"><h3 class="sec-title" style="margin:0">✅ 习惯追踪</h3><button class="hb-add-btn" onclick="addHabit()">+ 新建</button></div>
-<div class="hb-summary" id="habitsSummary"></div>
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px"><h3 class="sec-title">✅ 习惯追踪</h3><button style="background:var(--g);color:#fff;border:none;padding:7px 12px;border-radius:14px;font-size:12px;cursor:pointer" onclick="addHabit()">+ 新建</button></div>
 <div id="habitsList"></div>
-<div class="hb-presets">
-<span class="hb-preset-label">⚡ 快速添加：</span>
-<span class="hb-preset-chip" onclick="addHabitPreset('喝水','micro')">💧 喝水</span>
-<span class="hb-preset-chip" onclick="addHabitPreset('阅读','normal')">📖 阅读</span>
-<span class="hb-preset-chip" onclick="addHabitPreset('运动','challenge')">🏃 运动</span>
-<span class="hb-preset-chip" onclick="addHabitPreset('早睡','micro')">😴 早睡</span>
-<span class="hb-preset-chip" onclick="addHabitPreset('冥想','normal')">🧘 冥想</span>
-<span class="hb-preset-chip" onclick="addHabitPreset('背单词','challenge')">📝 背单词</span>
-</div>
-<div style="margin-top:14px"><div class="chart-box"><div class="chart-title">📅 本月打卡热力图</div><div class="hm" id="heatmap"></div></div></div>
-<!-- Todo stays inside pg2 (habits page) -->
-<div style="margin-top:20px"><h3 class="sec-title">📋 待办清单</h3>
-<div class="todo-input-wrap"><input id="todoInput" placeholder="添加新任务..." onkeydown="if(event.key==='Enter')addTodo()"><button onclick="addTodo()">添加</button></div>
-<div><select id="todoFilter" onchange="rTodos()" style="padding:6px 12px;border-radius:10px;border:1px solid #ddd;font-size:12px;background:var(--bg);color:var(--t)"><option value="all">全部</option><option value="active">进行中</option><option value="done">已完成</option><option value="today">今天</option></select></div>
-<div id="todoList"></div>
-<div id="todoStats" style="font-size:11px;color:var(--gr);margin-top:4px"></div>
-<div style="margin-top:8px"><select id="todoCollection" onchange="rTodos()" style="padding:6px 12px;border-radius:10px;border:1px solid #ddd;font-size:12px;background:var(--bg);color:var(--t)"><option value="">全部待办集</option></select><button onclick="addCollection()" style="border:1px solid var(--g);background:transparent;color:var(--g);border-radius:8px;padding:4px 10px;font-size:11px;cursor:pointer;margin-left:6px">+ 新建集</button></div></div>
+<div style="margin-top:12px"><strong style="font-size:12px;color:var(--gr)">📅 本月打卡热力图</strong></div>
+<div class="hm" id="heatmap"></div>
 </div>
 
 <!-- ===== GOALS PAGE ===== -->
 <div class="page" id="pg3">
-<div class="hb-header"><h3 class="sec-title" style="margin:0">🎯 目标计划</h3><button class="hb-add-btn" onclick="addGoal()">+ 新建</button></div>
-<div class="hb-summary" id="goalsSummary"></div>
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px"><h3 class="sec-title">🎯 目标计划</h3><button style="background:var(--g);color:#fff;border:none;padding:7px 12px;border-radius:14px;font-size:12px;cursor:pointer" onclick="addGoal()">+ 新建</button></div>
 <div id="goalsList"></div>
 </div>
 
-<!-- ===== HANDBOOK PAGE (手帳) ===== -->
+<!-- ===== PROFILE PAGE ===== -->
 <div class="page" id="pg4">
+<h3 class="sec-title">📊 数据统计 <span class="tip">| 专注可视化</span></h3>
+<div class="stats-bar" id="periodBar">
+<span class="stats-chip sel" onclick="setPeriod(0)">📅 今日</span>
+<span class="stats-chip" onclick="setPeriod(1)">📅 本周</span>
+<span class="stats-chip" onclick="setPeriod(2)">📅 本月</span>
+<span class="stats-chip" onclick="setPeriod(3)">📅 本年</span>
+<span class="stats-chip" onclick="setPeriod(4)">📊 累计</span>
+</div>
+<div class="stats-summary" id="statsSummary"></div>
+<div id="statsImprove" style="text-align:center;font-size:13px;font-weight:600;margin:4px 0;min-height:20px"></div>
 
-<!-- 用户信息 -->
-<div class="card" style="text-align:center;padding:16px">
-<div style="font-size:44px;margin-bottom:4px">🌸</div>
-<div style="font-size:17px;font-weight:700">斯瑞</div>
-<div style="font-size:12px;color:var(--gr);margin:2px 0" id="profileMotto" onclick="editMotto()">千里之行，始于足下</div>
-<div style="display:flex;gap:6px;justify-content:center;margin-top:10px">
-<div style="flex:1;max-width:80px;text-align:center"><div style="font-size:20px;font-weight:700;color:var(--g)" id="totalFocusDays">0</div><div style="font-size:10px;color:var(--gr)">专注天</div></div>
-<div style="flex:1;max-width:80px;text-align:center"><div style="font-size:20px;font-weight:700" id="currentStreak">0</div><div style="font-size:10px;color:var(--gr)">连续天</div></div>
-<div style="flex:1;max-width:80px;text-align:center"><div style="font-size:20px;font-weight:700" id="totalTrees">0</div><div style="font-size:10px;color:var(--gr)">种树</div></div>
+<!-- Canvas 图表区 -->
+<div class="charts-row" id="chartsRow">
+  <div class="chart-card">
+    <div class="chart-title">📊 类型分布</div>
+    <canvas id="donutChart" width="300" height="300"></canvas>
+  </div>
+  <div class="chart-card">
+    <div class="chart-title">🕐 时段分布</div>
+    <canvas id="timeDonut" width="300" height="300"></canvas>
+  </div>
+</div>
+<div class="chart-card" id="trendCard">
+  <div class="chart-title">📈 趋势图</div>
+  <canvas id="trendChart" width="700" height="300"></canvas>
+</div>
+<div class="chart-card" id="heatmapCard" style="display:none">
+  <div class="chart-title">🔥 年度热力图</div>
+  <div class="heatmap-year" id="yearHeatmap"></div>
+  <div class="heatmap-legend"><span>少</span><span style="background:#ebedf0"></span><span style="background:#D1C4E9"></span><span style="background:#B39DDB"></span><span style="background:#7C5CBF"></span><span style="background:#512DA8"></span><span>多</span></div>
+</div>
+
+<div style="display:flex;gap:8px;margin:8px 0">
+<button class="home-btn primary" onclick="toggleShop()" style="font-size:14px;padding:12px">🏪 阿梓杂货铺</button>
+<button class="home-btn secondary" onclick="toggleBag()" style="font-size:14px;padding:12px">🎒 背包</button>
+<button class="home-btn secondary" onclick="showCheckinCard()" style="font-size:14px;padding:12px">📅 签到</button>
+<button class="home-btn secondary" onclick="showDiaryList()" style="font-size:14px;padding:12px">📔 日记</button>
+</div>
+<div id="shopContainer"></div>
+<div style="display:flex;gap:8px;flex-wrap:wrap;margin:8px 0">
+<div class="card" style="flex:1;min-width:140px">
+<div class="pie-wrap">
+<div class="pie-chart" id="pieChart"></div>
+<div class="pie-legend" id="pieLegend"></div>
+</div>
+</div>
+<div class="streak-box" style="flex:1;min-width:120px">
+<span class="streak-fire" id="streakFireIcon">🔥</span>
+<div class="streak-num" id="streakNum">0</div>
+<div class="streak-lbl">连续专注天数</div>
+<div style="font-size:11px;color:var(--gr);margin-top:2px" id="streakBest"></div>
+<div style="margin-top:6px"><span class="freeze-badge">🔰 <span id="freezeCount">0</span> 护符</span></div>
+</div>
+</div>
+<div class="phase-grid" id="phaseGrid"></div>
+<!-- Achievement tabs -->
+<div class="ach-tabs" id="achTabs">
+<span class="ach-tab sel" onclick="filterAch('all')">全部</span>
+<span class="ach-tab" onclick="filterAch('unlocked')">已解锁</span>
+<span class="ach-tab" onclick="filterAch('locked')">未解锁</span>
+<span style="flex:1"></span>
+<select id="achRarityFilter" onchange="filterAch()" style="padding:4px 8px;border-radius:10px;border:1px solid #ddd;font-size:12px">
+<option value="all">全部稀有度</option>
+<option value="bronze">🥉 铜</option>
+<option value="silver">🥈 银</option>
+<option value="gold">🥇 金</option>
+<option value="legend">👑 传说</option>
+<option value="hidden">❓ 隐藏</option>
+</select>
+</div>
+<div id="achs"></div>
+</div>
+
+<!-- ===== STREAK LOST OVERLAY ===== -->
+<div class="streak-lost-overlay hidden" id="streakLostOverlay">
+<div class="streak-lost-card">
+<div class="lost-icon">😢</div>
+<div class="lost-title" id="lostTitle">阿梓很伤心...</div>
+<div class="lost-msg" id="lostMsg">你已经3天没有专注了！<br>你的连续记录即将清空</div>
+<button class="lost-btn primary" onclick="useFreezeRecovery()">🔰 使用护符保护 (剩余 <span id="lostFreezeCount">0</span>)</button>
+<button class="lost-btn secondary" onclick="acceptStreakLoss()">接受断签 😔</button>
 </div>
 </div>
 
-<!-- 倒计时 -->
-<div class="card"><h3 style="font-size:14px;margin-bottom:6px">⏳ 倒计时</h3><div id="countdownList" style="font-size:12px"></div><button class="btn-sm" onclick="addCountdown()" style="border-color:var(--g);color:var(--g);margin-top:4px">+ 添加</button></div>
+<!-- ===== REWARD BOX ===== -->
+<div class="box-overlay hidden" id="boxOverlay"><div class="box"><div class="chest">🎁</div><div class="reward" id="boxReward"></div><div class="reward-text" id="boxText"></div><button class="box-btn" onclick="closeBox()">收下！</button></div></div>
 
-<!-- 本周统计 -->
-<div class="card"><h3 style="font-size:14px;margin-bottom:6px">📊 本周专注（分钟）</h3><div class="chart" id="barChart"></div></div>
-
-<!-- 周总结 -->
-<div class="card"><h3 style="font-size:14px;margin-bottom:4px">📝 周总结</h3><div id="weeklySummary" style="font-size:12px;line-height:1.6"></div></div>
-
-<!-- 时间轴 -->
-<div class="card"><h3 style="font-size:14px;margin-bottom:4px">📜 时间轴</h3><div id="focusTimeline" style="max-height:160px;overflow-y:auto;font-size:11px"></div></div>
-
-<!-- 背景 -->
-<div class="card"><h3 style="font-size:14px;margin-bottom:6px">🖼️ 背景</h3><div style="display:flex;gap:6px" id="bgPicker"></div></div>
-
-<!-- 主题+深色 -->
-<div class="card">
-<h3 style="font-size:14px;margin-bottom:6px">🎨 外观</h3>
-<div style="display:flex;gap:6px;flex-wrap:wrap">
-<button class="btn-sm" onclick="cycleTheme()" style="border-color:var(--accent);color:var(--accent);flex:1;min-width:70px">切换主题</button>
-<button class="btn-sm" onclick="toggleDark()" style="flex:1;min-width:70px">🌓 深色</button>
-</div>
-</div>
-
-<!-- 锁机+设置 -->
-<div class="card"><h3 style="font-size:14px;margin-bottom:6px">🔒 锁机 & 设置</h3>
-<div style="display:flex;align-items:center;justify-content:space-between;margin:4px 0"><span style="font-size:12px">专注锁机</span><button id="lockToggle" style="padding:4px 12px;border-radius:10px;border:none;font-size:11px;cursor:pointer;background:#4CAF50;color:#fff" onclick="toggleLock()">已启用</button></div>
-<div style="font-size:10px;color:var(--gr)">紧急解锁: <b id="emergencyCount">3</b>/3次</div>
-<div style="margin-top:6px;font-size:11px;color:var(--gr)">休息: <b id="breakMins">5</b>分 <button onclick="setBreak()" style="border:1px solid var(--g);background:transparent;color:var(--g);border-radius:6px;padding:1px 6px;font-size:10px;cursor:pointer;margin-left:4px">改</button> | 目标: <b id="dailyGoal">8</b>个/天 <button onclick="setGoal()" style="border:1px solid var(--g);background:transparent;color:var(--g);border-radius:6px;padding:1px 6px;font-size:10px;cursor:pointer;margin-left:4px">改</button></div>
-</div>
-
-<!-- 工具 -->
-<div class="card"><h3 style="font-size:14px;margin-bottom:6px">🧰 工具</h3>
-<div style="display:flex;gap:6px;flex-wrap:wrap">
-<button class="btn-sm" onclick="calcPomo()" style="border-color:var(--g);color:var(--g);flex:1;min-width:70px">🍅 番茄计算</button>
-<button class="btn-sm" onclick="importData()" style="border-color:#FF9800;color:#FF9800;flex:1;min-width:70px">📥 导入</button>
-<button class="btn-sm" onclick="exportData()" style="border-color:var(--b);color:var(--b);flex:1;min-width:70px">📤 导出</button>
-</div>
-<div style="margin-top:6px;font-size:10px;color:var(--gr)">🤖 AI: <button onclick="setApiKey()" style="border:1px solid #7C5CBF;background:transparent;color:#7C5CBF;border-radius:6px;padding:1px 6px;font-size:10px;cursor:pointer">设置密钥</button></div>
-</div>
-
-<div class="card"><h3 style="font-size:14px;margin-bottom:6px">🏆 成就</h3><div class="achs" id="achs"></div></div>
-<!-- 积分 -->
-<div style="text-align:center;padding:12px;font-size:11px;color:var(--gr)">
-🌟 积分: <b id="scoreVal">0</b> · 总专注 <b id="totalMin">0</b>分 · <b id="totalSessions">0</b>次
-</div>
-<button class="btn-sm" onclick="resetAll()">🔄 重置</button>
-
-</div><div class="tabbar">
-<div class="tab on" onclick="goTab(0)"><span class="ic">🌸</span>种树</div>
-<div class="tab" onclick="goTab(1)"><span class="ic">👗</span>衣柜</div>
-<div class="tab" onclick="goTab(2)"><span class="ic">✅</span>习惯</div>
-<div class="tab" onclick="goTab(3)"><span class="ic">🎯</span>目标</div>
-<div class="tab" onclick="goTab(4)"><span class="ic">👤</span>我的</div>
+<div class="tabbar">
+<div class="tab on" onclick="goTab(0)"><span class="ic">🏠</span>首页</div>
+<div class="tab" onclick="goTab(1)"><span class="ic">⏱</span>计时</div>
+<div class="tab" onclick="goTab(2)"><span class="ic">👗</span>衣柜</div>
+<div class="tab" onclick="goTab(3)"><span class="ic">✅</span>习惯</div>
+<div class="tab" onclick="goTab(4)"><span class="ic">🎯</span>目标</div>
+<div class="tab" onclick="goTab(5)"><span class="ic">👤</span>我的</div>
 </div>
 
 <div class="toast" id="toast"></div>
+<!-- /BUILD:HTML -->
+
+<!-- BUILD:JS_CORE -->
+<script src="src/js/core.js"></script>
+<!-- /BUILD:JS_CORE -->
+
+<!-- BUILD:JS_MODULES -->
+<script src="src/js/timer.js"></script>
+<script src="src/js/habits.js"></script>
+<script src="src/js/goals.js"></script>
+<script src="src/js/stats.js"></script>
+<script src="src/js/achievements.js"></script>
+<script src="src/js/economy.js"></script>
+<script src="src/js/betting.js"></script>
+<script src="src/js/shop.js"></script>
+<script src="src/js/checkin.js"></script>
+<script src="src/js/dressup.js"></script>
+<script src="src/js/effects.js"></script>
+<script src="src/js/diary.js"></script>
+<script src="src/js/chat.js"></script>
+<script src="src/js/pwa.js"></script>
+<!-- /BUILD:JS_MODULES -->
 
-<button class="chat-fab" id="chatFab" onclick="toggleChat()" title="和阿梓聊天">💬</button><div class="chat-modal" id="chatModal"><div class="chat-hdr"><div class="ch-t"><span id="chatStatus">阿梓在家</span></div><div style="display:flex;gap:8px"><button class="ch-close" onclick="showDiary()" title="阿梓日记">📔</button><button class="ch-close" onclick="toggleChat()">X</button></div></div><div class="chat-body" id="chatBody"></div><div class="chat-input-wrap"><input id="chatInput" placeholder="和阿梓说点什么..." onkeydown="if(event.key==='Enter')sendChat()"><button onclick="sendChat()">↑</button></div></div>
-<div id="mascot"><img class="mascot-body" id="mascotBody" src="src/images/azusa/azusa_fan_model1.jpg" alt="阿梓小精灵"><div class="mascot-badge" id="mascotBadge"></div><div class="mascot-bubble" id="mascotBubble"></div><div class="mascot-particles" id="mascotParticles"></div></div>
-<script>
-function getPeriodRange(period) {
-  const now = new Date();
-  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-  switch (period) {
-    case 'today': return { start: today, end: new Date(today.getTime() + 86400000) };
-    case 'week': {
-      const dow = today.getDay();
-      const monOff = dow === 0 ? -6 : 1 - dow;
-      const mon = new Date(today.getTime() + monOff * 86400000);
-      return { start: mon, end: new Date(mon.getTime() + 7 * 86400000) };
-    }
-    case 'month': {
-      const ms = new Date(now.getFullYear(), now.getMonth(), 1);
-      return { start: ms, end: new Date(now.getFullYear(), now.getMonth() + 1, 1) };
-    }
-    case 'year': {
-      const ys = new Date(now.getFullYear(), 0, 1);
-      return { start: ys, end: new Date(now.getFullYear() + 1, 0, 1) };
-    }
-    default: return getPeriodRange('week');
-  }
-}
-
-function getFilteredSessions(period) {
-  const { start, end } = getPeriodRange(period);
-  return sessions.filter(s => {
-    const d = new Date(s.date + 'T00:00:00');
-    return d >= start && d < end && s.completed;
-  });
-}
-
-function calcStreak() {
-  const dates = [...new Set(sessions.filter(s => s.completed).map(s => s.date))].sort().reverse();
-  if (dates.length === 0) return 0;
-  let streak = 0;
-  const check = new Date();
-  check.setHours(0, 0, 0, 0);
-  for (let i = 0; i < dates.length; i++) {
-    const d = new Date(dates[i] + 'T00:00:00');
-    const exp = new Date(check.getTime() - i * 86400000);
-    if (d.getTime() === exp.getTime()) streak++;
-    else break;
-  }
-  return streak;
-}
-
-function getStats(period) {
-  const filtered = getFilteredSessions(period);
-  const totalMins = filtered.reduce((a, s) => a + s.minutes, 0);
-  const today = new Date().toISOString().slice(0, 10);
-  const todayMins = sessions.filter(s => s.date === today && s.completed).reduce((a, s) => a + s.minutes, 0);
-  const completedTasks = filtered.length;
-  const streak = calcStreak();
-  // by type
-  const byType = { habit: 0, goal: 0, free: 0 };
-  filtered.forEach(s => { byType[s.taskType] = (byType[s.taskType] || 0) + s.minutes; });
-  // by difficulty
-  const byDifficulty = { micro: 0, normal: 0, challenge: 0 };
-  filtered.forEach(s => {
-    if (s.taskType === 'habit' && s.taskId) {
-      const h = habits.find(x => x.id === s.taskId);
-      const tier = h ? (h.tier || 'normal') : 'normal';
-      byDifficulty[tier] = (byDifficulty[tier] || 0) + s.minutes;
-    }
-  });
-  // by time of day - approximate using date distribution
-  const byTimeOfDay = { morning: 0, afternoon: 0, evening: 0, night: 0 };
-  filtered.forEach(s => { byTimeOfDay.afternoon += s.minutes; }); // default afternoon
-  // by weekday
-  const byWeekday = Array(7).fill(0);
-  filtered.forEach(s => {
-    const d = new Date(s.date + 'T00:00:00');
-    byWeekday[d.getDay()] += s.minutes;
-  });
-  // all habits done today
-  const activeHabits = habits.filter(h => !h.archived);
-  const allHabitsDoneToday = activeHabits.length > 0 && activeHabits.every(h => h.dates && h.dates.includes(today));
-  const unlockedSkins = 0;
-  return { totalMins, todayMins, completedTasks, streak, byType, byDifficulty, byTimeOfDay, byWeekday, allHabitsDoneToday, unlockedSkins, filtered };
-}
-
-function getTrendData(period) {
-  const { start, end } = getPeriodRange(period);
-  const diffDays = Math.round((end - start) / 86400000);
-  let labels, data;
-  if (period === 'today') {
-    labels = ['专注'];
-    data = [getFilteredSessions('today').reduce((a, s) => a + s.minutes, 0)];
-  } else if (period === 'week') {
-    const weekDays = ['一', '二', '三', '四', '五', '六', '日'];
-    labels = weekDays;
-    data = Array(7).fill(0);
-    for (let i = 0; i < 7; i++) {
-      const d = new Date(start.getTime() + i * 86400000);
-      const ds = d.toISOString().slice(0, 10);
-      data[i] = sessions.filter(s => s.date === ds && s.completed).reduce((a, s) => a + s.minutes, 0);
-    }
-  } else if (period === 'month') {
-    const totalDays = diffDays;
-    const weekCount = Math.ceil(totalDays / 7);
-    labels = Array.from({ length: weekCount }, (_, i) => 'W' + (i + 1));
-    data = Array(weekCount).fill(0);
-    for (let i = 0; i < totalDays; i++) {
-      const d = new Date(start.getTime() + i * 86400000);
-      const ds = d.toISOString().slice(0, 10);
-      const wi = Math.floor(i / 7);
-      data[wi] += sessions.filter(s => s.date === ds && s.completed).reduce((a, s) => a + s.minutes, 0);
-    }
-  } else if (period === 'year') {
-    labels = ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'];
-    data = Array(12).fill(0);
-    const year = start.getFullYear();
-    for (let m = 0; m < 12; m++) {
-      const ms = new Date(year, m, 1);
-      const me = new Date(year, m + 1, 1);
-      data[m] = sessions.filter(s => {
-        const d = new Date(s.date + 'T00:00:00');
-        return d >= ms && d < me && s.completed;
-      }).reduce((a, s) => a + s.minutes, 0);
-    }
-  }
-  return { labels, data };
-}
-
-// ==================== 0.5 图表引擎 (Chart Engine) ====================
-function drawPieChart(canvasId, data) {
-  const canvas = document.getElementById(canvasId);
-  if (!canvas) return;
-  const dpr = window.devicePixelRatio || 1;
-  const size = 200;
-  canvas.width = size * dpr;
-  canvas.height = size * dpr;
-  canvas.style.width = size + 'px';
-  canvas.style.height = size + 'px';
-  const ctx = canvas.getContext('2d');
-  ctx.scale(dpr, dpr);
-  const cx = size / 2, cy = size / 2, radius = 78;
-  ctx.clearRect(0, 0, size, size);
-  const total = data.reduce((sum, d) => sum + d.value, 0);
-  if (total === 0) {
-    ctx.fillStyle = '#999';
-    ctx.font = '14px -apple-system,sans-serif';
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-    ctx.fillText('暂无数据', cx, cy);
-    return;
-  }
-  let startAngle = -Math.PI / 2;
-  data.forEach(d => {
-    if (d.value <= 0) return;
-    const sliceAngle = (d.value / total) * 2 * Math.PI;
-    ctx.beginPath();
-    ctx.moveTo(cx, cy);
-    ctx.arc(cx, cy, radius, startAngle, startAngle + sliceAngle);
-    ctx.closePath();
-    ctx.fillStyle = d.color;
-    ctx.fill();
-    ctx.strokeStyle = '#fff';
-    ctx.lineWidth = 2;
-    ctx.stroke();
-    const pct = Math.round((d.value / total) * 100);
-    if (pct >= 10) {
-      const midA = startAngle + sliceAngle / 2;
-      ctx.fillStyle = '#fff';
-      ctx.font = 'bold 11px -apple-system,sans-serif';
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      ctx.fillText(d.label, cx + Math.cos(midA) * (radius * 0.62), cy + Math.sin(midA) * (radius * 0.62));
-    }
-    startAngle += sliceAngle;
-  });
-  // center
-  ctx.fillStyle = '#333';
-  ctx.font = 'bold 15px -apple-system,sans-serif';
-  ctx.textAlign = 'center';
-  ctx.textBaseline = 'middle';
-  const hrs = Math.floor(total / 60);
-  const mins = total % 60;
-  ctx.fillText((hrs > 0 ? hrs + 'h' : '') + (mins > 0 || hrs === 0 ? mins + 'm' : ''), cx, cy - 5);
-  ctx.font = '10px -apple-system,sans-serif';
-  ctx.fillStyle = '#888';
-  ctx.fillText('总计', cx, cy + 12);
-}
-
-function drawLineChart(canvasId, labels, data) {
-  const canvas = document.getElementById(canvasId);
-  if (!canvas) return;
-  const dpr = window.devicePixelRatio || 1;
-  const w = 340, h = 150;
-  canvas.width = w * dpr;
-  canvas.height = h * dpr;
-  canvas.style.width = '100%';
-  canvas.style.height = 'auto';
-  canvas.style.maxWidth = w + 'px';
-  const ctx = canvas.getContext('2d');
-  ctx.scale(dpr, dpr);
-  ctx.clearRect(0, 0, w, h);
-  const padL = 36, padR = 14, padT = 12, padB = 28;
-  const plotW = w - padL - padR, plotH = h - padT - padB;
-  const maxVal = Math.max(...data, 1);
-  if (data.every(v => v === 0)) {
-    ctx.fillStyle = '#999';
-    ctx.font = '13px -apple-system,sans-serif';
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-    ctx.fillText('暂无数据', w / 2, h / 2);
-    return;
-  }
-  // grid
-  ctx.strokeStyle = '#e8e8e8';
-  ctx.lineWidth = 0.8;
-  for (let i = 0; i <= 4; i++) {
-    const y = padT + (plotH / 4) * i;
-    ctx.beginPath();
-    ctx.moveTo(padL, y);
-    ctx.lineTo(w - padR, y);
-    ctx.stroke();
-    ctx.fillStyle = '#999';
-    ctx.font = '9px -apple-system,sans-serif';
-    ctx.textAlign = 'right';
-    ctx.textBaseline = 'middle';
-    ctx.fillText(Math.round(maxVal * (1 - i / 4)), padL - 5, y);
-  }
-  // points
-  const points = data.map((v, i) => ({
-    x: padL + (i / Math.max(data.length - 1, 1)) * plotW,
-    y: padT + plotH - (v / maxVal) * plotH
-  }));
-  // area
-  ctx.beginPath();
-  points.forEach((p, i) => { i === 0 ? ctx.moveTo(p.x, p.y) : ctx.lineTo(p.x, p.y); });
-  ctx.lineTo(points[points.length - 1].x, padT + plotH);
-  ctx.lineTo(points[0].x, padT + plotH);
-  ctx.closePath();
-  const grad = ctx.createLinearGradient(0, padT, 0, padT + plotH);
-  grad.addColorStop(0, 'rgba(124,92,191,0.22)');
-  grad.addColorStop(1, 'rgba(124,92,191,0.01)');
-  ctx.fillStyle = grad;
-  ctx.fill();
-  // line
-  ctx.beginPath();
-  ctx.strokeStyle = '#7C5CBF';
-  ctx.lineWidth = 2.5;
-  ctx.lineJoin = 'round';
-  ctx.lineCap = 'round';
-  points.forEach((p, i) => { i === 0 ? ctx.moveTo(p.x, p.y) : ctx.lineTo(p.x, p.y); });
-  ctx.stroke();
-  // dots
-  points.forEach(p => {
-    ctx.beginPath();
-    ctx.arc(p.x, p.y, 3.5, 0, 2 * Math.PI);
-    ctx.fillStyle = '#fff';
-    ctx.fill();
-    ctx.strokeStyle = '#7C5CBF';
-    ctx.lineWidth = 2;
-    ctx.stroke();
-  });
-  // x labels
-  ctx.fillStyle = '#888';
-  ctx.font = '9px -apple-system,sans-serif';
-  ctx.textAlign = 'center';
-  ctx.textBaseline = 'top';
-  labels.forEach((l, i) => {
-    const step = Math.max(1, Math.ceil(labels.length / 8));
-    if (i % step === 0 || i === labels.length - 1) {
-      ctx.fillText(l, points[i].x, padT + plotH + 8);
-    }
-  });
-}
-
-function renderYearHeatmap(year) {
-  const container = document.getElementById('heatmapYear');
-  if (!container) return;
-
-  const yearData = {};
-  for (let m = 0; m < 12; m++) {
-    const dim = new Date(year, m + 1, 0).getDate();
-    for (let d = 1; d <= dim; d++) {
-      const ds = `${year}-${String(m + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
-      yearData[ds] = sessions.filter(s => s.date === ds && s.completed).reduce((a, s) => a + s.minutes, 0);
-    }
-  }
-
-  const values = Object.values(yearData);
-  const maxVal = Math.max(...values, 1);
-  function getColor(mins) {
-    if (mins === 0) return '#ebedf0';
-    const r = mins / maxVal;
-    if (r < 0.2) return '#E8D5F5';
-    if (r < 0.4) return '#B39DDB';
-    if (r < 0.7) return '#7C5CBF';
-    return '#512DA8';
-  }
-
-  const months = ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'];
-  const firstDay = new Date(year, 0, 1);
-  let startDow = firstDay.getDay();
-  startDow = startDow === 0 ? 6 : startDow - 1; // Mon=0
-
-  const allDays = [];
-  for (let m = 0; m < 12; m++) {
-    const dim = new Date(year, m + 1, 0).getDate();
-    for (let d = 1; d <= dim; d++) {
-      const ds = `${year}-${String(m + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
-      allDays.push({ ds, mins: yearData[ds] || 0, month: m });
-    }
-  }
-
-  const leading = Array(startDow).fill(null);
-  const full = [...leading, ...allDays];
-  const weeks = [];
-  for (let i = 0; i < full.length; i += 7) weeks.push(full.slice(i, i + 7));
-
-  // Find first row of each month
-  const monthRows = Array(12).fill(-1);
-  for (let row = 0; row < weeks.length; row++) {
-    for (let col = 0; col < 7; col++) {
-      const cell = weeks[row] && weeks[row][col];
-      if (cell && monthRows[cell.month] === -1) monthRows[cell.month] = row;
-    }
-  }
-
-  // Month labels
-  let html = '<div style="display:flex;padding-left:18px;margin-bottom:3px">';
-  let lastLabelRow = -2;
-  for (let row = 0; row < weeks.length; row++) {
-    const mIdx = monthRows.indexOf(row);
-    if (mIdx >= 0 && row - lastLabelRow >= 1) {
-      html += `<span style="font-size:9px;color:#888;width:16px;flex-shrink:0">${months[mIdx]}</span>`;
-      lastLabelRow = row;
-    } else {
-      html += '<span style="width:16px;flex-shrink:0"></span>';
-    }
-  }
-  html += '</div>';
-
-  // Table
-  html += '<table class="heatmap-year-table"><tbody>';
-  const wl = ['', '一', '', '三', '', '五', ''];
-  for (let col = 0; col < 7; col++) {
-    html += '<tr>';
-    html += `<td style="font-size:9px;color:#888;width:14px;text-align:right;padding-right:3px">${wl[col]}</td>`;
-    for (let row = 0; row < weeks.length; row++) {
-      const cell = weeks[row] && weeks[row][col];
-      if (!cell) html += '<td style="background:transparent"></td>';
-      else html += `<td style="background:${getColor(cell.mins)}" title="${cell.ds}: ${cell.mins}分钟"></td>`;
-    }
-    html += '</tr>';
-  }
-  html += '</tbody></table>';
-  container.innerHTML = html;
-}
-
-// ==================== 0.6 成就引擎 (Achievement Engine 2.0) ====================
-const ACHIEVEMENTS = [
-  // Bronze - 入门里程碑
-  { id: 'first_focus',   name: '初次专注',       icon: '🌱', tier: 'bronze',  cond: s => s.totalSessions >= 1 },
-  { id: 'total_10h',     name: '累计10小时',     icon: '⏳', tier: 'bronze',  cond: s => s.totalMins >= 600 },
-  { id: 'sessions_5',    name: '5次专注',        icon: '🌿', tier: 'bronze',  cond: s => s.totalSessions >= 5 },
-  { id: 'all_habits',    name: '今日全勤',       icon: '🎯', tier: 'bronze',  cond: s => s.allHabitsDoneToday, hide: true },
-  { id: 'score_50',      name: '积分新苗',       icon: '🌱', tier: 'bronze',  cond: s => s.score >= 50 },
-  // Silver - 进阶成就
-  { id: 'daily_4h',      name: '小孩梓徽章',     icon: '🍼', tier: 'silver',  cond: s => s.todayMins >= 240, hide: true },
-  { id: 'total_30h',     name: '累计30小时',     icon: '⏰', tier: 'silver',  cond: s => s.totalMins >= 1800 },
-  { id: 'sessions_20',   name: '20次专注',       icon: '🌳', tier: 'silver',  cond: s => s.totalSessions >= 20 },  { id: 'habit_perfect', name: '完美习惯周',     icon: '✅', tier: 'silver',  cond: s => s.habitStreak7 },
-  { id: 'score_200',     name: '积分达人',       icon: '⭐', tier: 'silver',  cond: s => s.score >= 200 },
-  // Gold - 高阶成就
-  { id: 'streak_7',      name: '连续7天',        icon: '🔥', tier: 'gold',    cond: s => s.streak >= 7 },
-  { id: 'total_60h',     name: '累计60小时',     icon: '⌛', tier: 'gold',    cond: s => s.totalMins >= 3600 },
-  { id: 'sessions_50',   name: '50次专注',       icon: '🌲', tier: 'gold',    cond: s => s.totalSessions >= 50 },
-  { id: 'streak_14',     name: '连续14天',       icon: '💪', tier: 'gold',    cond: s => s.streak >= 14 },  { id: 'score_500',     name: '积分大师',       icon: '🌟', tier: 'gold',    cond: s => s.score >= 500 },
-  // Legend - 传说成就
-  { id: 'streak_30',     name: '连续30天',        icon: '🔥', tier: 'legend', cond: s => s.streak >= 30 },
-  { id: 'total_120h',    name: '累计120小时',    icon: '🏆', tier: 'legend',  cond: s => s.totalMins >= 7200 },
-  { id: 'sessions_100',  name: '100次专注',      icon: '🌍', tier: 'legend',  cond: s => s.totalSessions >= 100 },  { id: 'score_1000',    name: '积分传说',       icon: '💎', tier: 'legend',  cond: s => s.score >= 1000 },
-  { id: 'streak_60',     name: '连续60天',        icon: '🐉', tier: 'legend', cond: s => s.streak >= 60, hide: true },
-];
-
-function checkAchievements(stats) {
-  const today = new Date().toISOString().slice(0, 10);
-  const todaySessions = sessions.filter(s => s.date === today && s.completed);
-  const allTimeMins = sessions.filter(s => s.completed).reduce((a, s) => a + s.minutes, 0);
-  const allTimeSessions = sessions.filter(s => s.completed).length;
-  const activeHabits = habits.filter(h => !h.archived);
-  const habitStreak7 = activeHabits.length > 0 && activeHabits.every(h => (h.dates || []).length >= 7);
-
-  const s = {
-    ...stats,
-    totalMins: allTimeMins,
-    totalSessions: allTimeSessions,
-    todayMins: todaySessions.reduce((a, s) => a + s.minutes, 0),
-    score,
-    habitStreak7,
-  };
-
-  return ACHIEVEMENTS.map(a => ({ ...a, unlocked: a.cond(s) }));
-}
-
-function renderAchievements() {
-  const stats = getStats(currentPeriod);
-  const ach = checkAchievements(stats);
-  const unlocked = ach.filter(a => a.unlocked);
-  const visible = ach.filter(a => !a.hide || a.unlocked);
-
-  // Summary
-  document.getElementById('achUnlocked').textContent = unlocked.length;
-  document.getElementById('achTotal').textContent = ACHIEVEMENTS.length;
-
-  const tiers = { bronze: 0, silver: 0, gold: 0, legend: 0 };
-  unlocked.forEach(a => tiers[a.tier]++);
-  document.getElementById('achTiers').innerHTML =
-    `<span>🥉${tiers.bronze}</span><span>🥈${tiers.silver}</span><span>🥇${tiers.gold}</span><span>👑${tiers.legend}</span>`;
-
-  // Grid
-  const grid = document.getElementById('achGridHb');
-  const tierColors = { bronze: '#CD7F32', silver: '#A0A0A0', gold: '#FFD700', legend: '#E040FB' };
-  const tierLabels = { bronze: '🥉铜', silver: '🥈银', gold: '🥇金', legend: '👑传说' };
-
-  grid.innerHTML = visible.map(a => {
-    const cls = a.unlocked ? 'earned tier-' + a.tier : 'locked';
-    return `
-      <div class="ach-card-hb ${cls}" style="${a.unlocked ? 'border-color:' + tierColors[a.tier] : ''}"
-           onclick="showAchDetail('${a.id}')">
-        <span class="ach-hb-icon">${a.unlocked ? a.icon : '❓'}</span>
-        <div class="ach-hb-info">
-          <div class="ach-hb-name">${a.name}</div>
-          ${a.unlocked ? `<span class="ach-hb-tier tier-${a.tier}">${tierLabels[a.tier]}</span>` : ''}
-        </div>
-        ${a.unlocked ? '<span class="ach-hb-check">✓</span>' : ''}
-      </div>`;
-  }).join('');
-}
-
-function showAchDetail(id) {
-  const a = ACHIEVEMENTS.find(x => x.id === id);
-  if (!a) return;
-  const stats = getStats(currentPeriod);
-  const allStats = {
-    ...stats,
-    totalMins: sessions.filter(s => s.completed).reduce((a, s) => a + s.minutes, 0),
-    totalSessions: sessions.filter(s => s.completed).length,
-    todayMins: sessions.filter(s => s.date === new Date().toISOString().slice(0, 10) && s.completed).reduce((a, s) => a + s.minutes, 0),
-    score,
-    habitStreak7: habits.filter(h => !h.archived).length > 0 && habits.filter(h => !h.archived).every(h => (h.dates || []).length >= 7),
-  };
-  const unlocked = a.cond(allStats);
-  const tierLabels = { bronze: '🥉 铜', silver: '🥈 银', gold: '🥇 金', legend: '👑 传说' };
-  const tierColors = { bronze: '#ffe0b2', silver: '#e0e0e0', gold: '#fff8e1', legend: '#f3e5f5' };
-
-  document.getElementById('achMIcon').textContent = unlocked ? a.icon : '❓';
-  document.getElementById('achMName').textContent = a.name;
-  document.getElementById('achMTier').textContent = tierLabels[a.tier] || '';
-  document.getElementById('achMTier').style.background = tierColors[a.tier] || '#eee';
-  document.getElementById('achMCond').textContent = unlocked ? '🎉 已解锁！继续保持！' : (a.hide ? '🔒 隐藏成就——达到条件后揭晓' : '🔒 继续努力解锁此成就');
-  document.getElementById('achMDate').textContent = '';
-  document.getElementById('achModal').classList.add('show');
-}
-
-function closeAchModal() {
-  document.getElementById('achModal').classList.remove('show');
-}
-
-let currentPeriod="week";let currentPieTab="type";
-// ==================== 0.7 手帳页渲染 (Handbook Renderer) ====================
-function switchPeriod(p) {
-  currentPeriod = p;
-  document.querySelectorAll('.period-chip').forEach(c => c.classList.toggle('on', c.dataset.p === p));
-  rHandbook();
-}
-
-function switchPieTab(t) {
-  currentPieTab = t;
-  document.querySelectorAll('.pie-tab').forEach(c => c.classList.toggle('on', c.dataset.pt === t));
-  rHandbook();
-}
-
-function rHandbook() {
-  const stats = getStats(currentPeriod);
-
-  // Stat cards
-  const totalH = Math.floor(stats.totalMins / 60);
-  const totalRem = stats.totalMins % 60;
-  document.getElementById('statTotal').innerHTML = (totalH > 0 ? totalH + '<small>h</small>' : stats.totalMins + '<small>min</small>');
-
-  const todayH = Math.floor(stats.todayMins / 60);
-  const todayRem = stats.todayMins % 60;
-  const periodTodayVal = currentPeriod === 'today' ? stats.totalMins : stats.todayMins;
-  const periodH = Math.floor(periodTodayVal / 60);
-  const periodRem = periodTodayVal % 60;
-  document.getElementById('statToday').innerHTML = (periodH > 0 ? periodH + '<small>h</small>' : periodTodayVal + '<small>min</small>');
-  document.getElementById('statToday').parentElement.querySelector('.lbl').textContent =
-    '🌸 ' + ({ today: '今日专注', week: '本周专注', month: '本月专注', year: '本年专注' })[currentPeriod];
-
-  document.getElementById('statSessions').textContent = stats.completedTasks;
-  document.getElementById('statStreak').innerHTML = stats.streak + '<small>天</small>';
-
-  // Score
-  document.getElementById('scoreVal').textContent = score;
-  const allTotalMin = sessions.filter(s => s.completed).reduce((a, s) => a + s.minutes, 0);
-  document.getElementById('totalMin').textContent = allTotalMin;
-  document.getElementById('totalSessions').textContent = sessions.filter(s => s.completed).length;
-
-  // Pie chart
-  let pieData;
-  if (currentPieTab === 'type') {
-    pieData = [
-      { label: '习惯', value: stats.byType.habit, color: '#7C5CBF' },
-      { label: '目标', value: stats.byType.goal, color: '#FF9A9E' },
-      { label: '自由', value: stats.byType.free, color: '#A0E7E5' }
-    ];
-  } else if (currentPieTab === 'difficulty') {
-    pieData = [
-      { label: '🌱微', value: stats.byDifficulty.micro, color: '#81C784' },
-      { label: '🌿常', value: stats.byDifficulty.normal, color: '#FFB74D' },
-      { label: '🌳挑', value: stats.byDifficulty.challenge, color: '#E57373' }
-    ];
-  } else {
-    pieData = [
-      { label: '☀️早', value: stats.byTimeOfDay.morning, color: '#FFCC80' },
-      { label: '🌤午', value: stats.byTimeOfDay.afternoon, color: '#EF6C00' },
-      { label: '🌙晚', value: stats.byTimeOfDay.evening, color: '#7E57C2' },
-      { label: '🌚深', value: stats.byTimeOfDay.night, color: '#37474F' }
-    ];
-  }
-  drawPieChart('pieChart', pieData);
-
-  // Line chart
-  const trend = getTrendData(currentPeriod);
-  drawLineChart('lineChart', trend.labels, trend.data);
-
-  // Year heatmap
-  renderYearHeatmap(new Date().getFullYear());
-
-  // Achievements
-  renderAchievements();
-}
-
-// ==================== 阿梓树系统 ====================
-// 阿梓的8套衣服 = 8个树等级。越专注解锁越多衣服。
-const AZUSA_TREES=[
-{id:'seed',name:'阿梓的种子',img:'',emoji:'🌰',unlock:0,sub:'初始形态·第一次专注即可发芽',color:'#8D6E63'},{id:'default',name:'默认衣装',img:'src/images/azusa/azusa_default.png',emoji:'🌸',unlock:0,sub:'完成20次·阿梓日常默认形象',color:'#90CAF9'},
-{id:'newyear',name:'新年衣装',img:'src/images/azusa/azusa_newyear.png',emoji:'🎊',unlock:0,sub:'完成28次·新年限定和服',color:'#EF5350'},
-{id:'summer',name:'夏日衣装',img:'src/images/azusa/azusa_summer.png',emoji:'🏖️',unlock:0,sub:'完成36次·清凉夏日',color:'#FF7043'},
-{id:'panda',name:'熊猫阿梓',img:'src/images/azusa/azusa_panda.png',emoji:'🐼',unlock:0,sub:'完成44次·超萌熊猫外套',color:'#4CAF50'},
-{id:'rabbit',name:'兔兔阿梓',img:'src/images/azusa/azusa_rabbit.png',emoji:'🐰',unlock:0,sub:'完成52次·软萌兔耳',color:'#FF80AB'},
-{id:'frog',name:'青蛙阿梓',img:'src/images/azusa/azusa_frog.png',emoji:'🐸',unlock:0,sub:'完成60次·呱娃子青蛙装',color:'#66BB6A'},
-{id:'butterfly',name:'蝴蝶阿梓',img:'src/images/azusa/azusa_butterfly.png',emoji:'🦋',unlock:0,sub:'完成70次·蝴蝶精灵',color:'#CE93D8'},
-{id:'eggplant',name:'茄子阿梓',img:'src/images/azusa/azusa_eggplant.png',emoji:'🍆',unlock:0,sub:'完成80次·紫色茄子主题',color:'#9575CD'},
-{id:'spring',name:'春装阿梓',img:'src/images/azusa/azusa_spring_new.png',emoji:'🌿',unlock:0,sub:'完成92次·春日樱花限定',color:'#81C784'},
-{id:'chibi',name:'Q版阿梓',img:'src/images/azusa/azusa_chibi.png',emoji:'💎',unlock:0,sub:'完成110次·超Q小呡梓',color:'#FFD700'},
-{id:'gift',name:'微信表情阿梓',img:'src/images/azusa/azusa_wechat1.jpg',emoji:'💬',unlock:0,sub:'完成130次·微信表情包限定',color:'#FF8A65'},
-{id:'ninja',name:'忍者阿梓',img:'src/images/azusa/azusa_ninja.png',emoji:'🥷',unlock:0,sub:'完成155次·暗夜忍者',color:'#7E57C2'},
-{id:'ultimate',name:'终极阿梓',img:'src/images/azusa/azusa_touming_liren.png',emoji:'👑',unlock:0,sub:'完成180次·全衣装制霸',color:'#E040FB'},
-{id:'fan1',name:'粉丝作品·春',img:'src/images/azusa/azusa_fan_model1.jpg',emoji:'🎨',unlock:0,sub:'完成195次·粉丝创作模型',color:'#FFAB91'},
-{id:'box',name:'盒蛋阿梓',img:'src/images/azusa/azusa_box.png',emoji:'📦',unlock:0,sub:'完成210次·超Q弹盒蛋',color:'#FFCC80'},
-{id:'rabbit24',name:'兔兔2024',img:'src/images/azusa/azusa_rabbit_2024.jpg',emoji:'🐇',unlock:0,sub:'完成230次·2024兔年限定',color:'#F48FB1'},
-{id:'summer2',name:'夏日祭阿梓',img:'src/images/azusa/azusa_summer_festival_hd.jpg',emoji:'🎆',unlock:0,sub:'完成260次·夏日祭典限定',color:'#B39DDB'},
-{id:'beizi',name:'贝梓·居家',img:'src/images/azusa/azusa_beizi.png',emoji:'🧸',unlock:0,sub:'完成280次·贝雷帽居家服',color:'#FFCC80'},
-{id:'huazi',name:'华梓2.0',img:'src/images/azusa/azusa_huazi.png',emoji:'🏮',unlock:0,sub:'完成300次·拜年纪华服',color:'#EF5350'},
-{id:'tuozi',name:'坨梓·常规',img:'src/images/azusa/azusa_tuozi_normal_crop.png',emoji:'🍡',unlock:0,sub:'完成320次·Q弹坨梓',color:'#FFAB91'},
-{id:'default_hd',name:'默认立绘·高清',img:'src/images/azusa/azusa_default_hd.png',emoji:'💜',unlock:0,sub:'完成340次·经典阿梓立绘去白边',color:'#90CAF9'},
-];
-
-let currentTreeIdx=0; // 最高已解锁的衣装索引
-let currentOutfit=0; // 当前穿着的衣装索引（可自由切换已解锁的）
-let totalCompletions=0; // total completed sessions
-
-// ==================== STATE ====================
-const DURS=[20,25,30,45,60];
-let timerId=null,elapsed=0,totalSec=1500,isBreak=false,lockExits=0;
-let habits=JSON.parse(localStorage.getItem('fh')||'[]');
-let goals=JSON.parse(localStorage.getItem('fg')||'[]');
-let sessions=JSON.parse(localStorage.getItem('fs')||'[]');
-let score=parseInt(localStorage.getItem('fsc')||'0');
-let dark=localStorage.getItem('fdark')==='1';
-let selectedTask=null;
-totalCompletions=sessions.filter(s=>s.completed).length;
-updateCurrentTree();
-currentOutfit=parseInt(localStorage.getItem('fco')||String(currentTreeIdx));
-if(currentOutfit>currentTreeIdx)currentOutfit=currentTreeIdx; // 不能穿未解锁的
-if(dark)document.body.classList.add('dark');
-
-function updateCurrentTree(){
-for(let i=AZUSA_TREES.length-1;i>=0;i--){if(totalCompletions>=AZUSA_TREES[i].unlock){currentTreeIdx=i;break}}
-}
-function save(k){
-let map={h:['fh',JSON.stringify(habits)],g:['fg',JSON.stringify(goals)],s:['fs',JSON.stringify(sessions)],c:['fsc',String(score)],d:['fdark',dark?'1':'0'],o:['fco',String(currentOutfit)]};
-let[key,val]=map[k];localStorage.setItem(key,val)
-}
-function toast(m){let t=document.getElementById('toast');t.textContent=m;t.classList.add('show');clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('show'),2000)}
-function esc(s){let d=document.createElement('div');d.textContent=s;return d.innerHTML}
-function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,6)}
-function fmtMins(m){if(m<60)return m+'分钟';let h=Math.floor(m/60);let r=m%60;return h+'小时'+(r>0?r+'分钟':'')}
-
-// ==================== TABS ====================
-let currentTab=0;
-
-// ==================== FOCUS TIMER ====================
-function drawRing(p){let c=document.getElementById('ring'),dpr=window.devicePixelRatio||1,sz=210;c.width=c.height=sz*dpr;c.style.width=c.style.height=sz+'px';let ctx=c.getContext('2d');ctx.scale(dpr,dpr);let cx=sz/2,cy=sz/2,r=84;ctx.clearRect(0,0,sz,sz);ctx.beginPath();ctx.arc(cx,cy,r,0,Math.PI*2);ctx.strokeStyle='#e0e0e0';ctx.lineWidth=9;ctx.stroke();if(p>0){ctx.beginPath();ctx.arc(cx,cy,r,-Math.PI/2,-Math.PI/2+Math.PI*2*p);ctx.strokeStyle=isBreak?'#ff9800':'#7E57C2';ctx.lineWidth=9;ctx.lineCap='round';ctx.stroke()}}
-(function initFocus(){
-let c=document.getElementById('chips');
-DURS.forEach((d,i)=>{let e=document.createElement('div');e.className='chip'+(i===1?' sel':'');e.textContent=d+'分钟';e.onclick=()=>{c.querySelectorAll('.chip').forEach(x=>x.classList.remove('sel'));e.classList.add('sel');totalSec=d*60;if(!timerId)document.getElementById('time').textContent=d+':00'};c.appendChild(e)});
-updateTaskSelects();setTimeout(function(){drawRing(0)},100);
-document.getElementById('lockLeft').textContent=Math.floor(totalSec/60);
-})();
-
-function onTaskType(){
-let t=document.getElementById('taskType').value;
-let pick=document.getElementById('taskPick');pick.style.display='none';pick.innerHTML='';
-selectedTask=null;document.getElementById('taskHint').textContent='';
-if(t==='habit'){pick.style.display='block';pick.innerHTML='<option value="">-- 选习惯 --</option>'+habits.filter(h=>!h.archived).map(h=>`<option value="${h.id}">${esc(h.name)} · 🔥${h.streak||0}天</option>`).join('')}
-else if(t==='goal'){pick.style.display='block';pick.innerHTML='<option value="">-- 选目标 --</option>'+goals.filter(g=>!g.archived).map(g=>`<option value="${g.id}">${esc(g.title)} · ${Math.round((g.done||0)/(g.tomatoes||10)*100)}%</option>`).join('')}
-else if(t==='free'){selectedTask={type:'free',id:'',name:'自由种树'};document.getElementById('taskHint').textContent='🌸 自由种树模式 · 为阿梓收集衣装'}
-}
-function onTaskPick(){
-let type=document.getElementById('taskType').value,id=document.getElementById('taskPick').value;
-if(!id){selectedTask=null;document.getElementById('taskHint').textContent='';return}
-if(type==='habit'){let h=habits.find(x=>x.id===id);if(h)selectedTask={type:'habit',id:h.id,name:h.name};document.getElementById('taskHint').textContent='✅ '+h.name+' · 坚持就是胜利'}
-else if(type==='goal'){let g=goals.find(x=>x.id===id);if(g)selectedTask={type:'goal',id:g.id,name:g.title};document.getElementById('taskHint').textContent='🎯 '+g.title+' · 加油！'}
-}
-function updateTaskSelects(){onTaskType()}
-
-function start(){Mascot.react('focus_start');
-if(timerId||isBreak)return;
-elapsed=0;isBreak=false;lockExits=0;
-document.getElementById('btnGo').style.display='none';document.getElementById('btnStop').style.display='block';
-document.getElementById('status').textContent=selectedTask?'和阿梓一起专注 · '+selectedTask.name:'和阿梓一起专注';
-document.getElementById('tree').textContent='🌰';
-document.querySelectorAll('#chips .chip').forEach(c=>c.style.pointerEvents='none');
-document.getElementById('taskType').disabled=true;document.getElementById('taskPick').disabled=true;
-document.getElementById('lockLeft').textContent=Math.floor(totalSec/60);
-document.getElementById('lockCount').textContent='0';
-drawRing(0);updateTree(0);
-timerId=setInterval(tick,1000);
-}
-
-function tick(){
-elapsed++;
-let rem=Math.max(0,totalSec-elapsed);let m=Math.floor(rem/60),s=rem%60;
-document.getElementById('time').textContent=m+':'+(s<10?'0':'')+s;
-document.getElementById('lockLeft').textContent=m;
-let p=Math.min(elapsed/totalSec,1);drawRing(p);updateTree(p);
-if(elapsed>=totalSec){clearInterval(timerId);timerId=null;onDone();}
-}
-
-function onDone(){Mascot.react('focus_complete');
-document.getElementById('status').textContent='🎉 太棒了！';
-// Current tree emoji based on what was unlocked
-let curTree=AZUSA_TREES[Math.min(currentTreeIdx+1,AZUSA_TREES.length-1)];
-if(curTree.img)document.getElementById('tree').innerHTML='<img src='+curTree.img+' class=tree-img>';else document.getElementById('tree').textContent=curTree.emoji||'??';
-document.getElementById('btnStop').style.display='none';document.getElementById('btnGo').style.display='block';
-document.getElementById('btnGo').textContent='☕ 休息一下';document.getElementById('btnGo').onclick=startBreak;
-document.querySelectorAll('#chips .chip').forEach(c=>c.style.pointerEvents='auto');
-document.getElementById('taskType').disabled=false;document.getElementById('taskPick').disabled=false;
-
-let mins=Math.round(totalSec/60);
-sessions.push({date:new Date().toISOString().slice(0,10),minutes:mins,completed:true,taskType:selectedTask?.type||'free',taskId:selectedTask?.id||'',taskName:selectedTask?.name||'自由种树'});
-save('s');updateScore(10);
-totalCompletions=sessions.filter(s=>s.completed).length;updateCurrentTree();
-
-if(selectedTask&&selectedTask.type==='goal'){let g=goals.find(x=>x.id===selectedTask.id);if(g){g.done=(g.done||0)+1;g.totalMins=(g.totalMins||0)+mins;save('g')}}
-if(selectedTask&&selectedTask.type==='habit'){let h=habits.find(x=>x.id===selectedTask.id);if(h){h.done=true;h.streak=(h.streak||0)+1;h.health=Math.min(100,(h.health||50)+5);h.dates=h.dates||[];let t=new Date().toISOString().slice(0,10);if(!h.dates.includes(t))h.dates.push(t);h.totalMins=(h.totalMins||0)+mins;h.totalSessions=(h.totalSessions||0)+1;save('h');updateScore(5)}}
-
-// Check if new tree unlocked
-let newTree=null;
-for(let i=AZUSA_TREES.length-1;i>currentTreeIdx;i--){if(totalCompletions>=AZUSA_TREES[i].unlock){newTree=AZUSA_TREES[i];break}}
-selectedTask=null;updateTaskSelects();
-try{navigator.vibrate?.([200,100,200])}catch(e){}
-// 检测里程碑
-const newStreak=calcStreak();
-// 检测成就解锁
-const achNow=checkAchievements(getStats('today'));
-const justUnlocked=achNow.filter(a=>a.unlocked&&a.hide);
-if(currentTab===1){rForest();rGallery();}
-}
-
-function startBreak(){
-if(timerId)return;
-elapsed=0;totalSec=300;isBreak=true;
-document.getElementById('status').textContent='休息一下 ☕';document.getElementById('tree').textContent='😴';
-document.getElementById('btnGo').style.display='none';document.getElementById('btnGo').textContent='🌱 开始种树';document.getElementById('btnGo').onclick=start;
-drawRing(0);updateTree(0);
-timerId=setInterval(()=>{
-elapsed++;let rem=Math.max(0,totalSec-elapsed);let m=Math.floor(rem/60),s=rem%60;
-document.getElementById('time').textContent=m+':'+(s<10?'0':'')+s;drawRing(elapsed/totalSec);
-if(elapsed>=totalSec){clearInterval(timerId);timerId=null;isBreak=false;document.getElementById('status').textContent='准备开始';document.getElementById('tree').textContent='🌰';document.getElementById('btnGo').style.display='block';document.getElementById('btnGo').textContent='🌱 开始种树';document.getElementById('btnGo').onclick=start;drawRing(0);document.getElementById('time').textContent=totalSec/60+':00';toast('☕ 休息好了，继续加油！');try{navigator.vibrate?.([300])}catch(e){}}
-},1000);
-}
-
-function abort(){Mascot.react('focus_abandon');
-document.getElementById('btnGo').style.display='block';document.getElementById('btnStop').style.display='none';
-document.getElementById('status').textContent='没关系，下次一定可以的 🌸';
-document.getElementById('tree').textContent='😢';document.getElementById('btnGo').textContent='🌱 重新开始';
-document.getElementById('btnGo').onclick=start;
-document.querySelectorAll('#chips .chip').forEach(c=>c.style.pointerEvents='auto');
-document.getElementById('taskType').disabled=false;document.getElementById('taskPick').disabled=false;
-sessions.push({date:new Date().toISOString().slice(0,10),minutes:Math.floor(elapsed/60),completed:false,taskType:selectedTask?.type||'free',taskId:selectedTask?.id||''});
-save('s');
-if(selectedTask&&selectedTask.type==='habit'){let h=habits.find(x=>x.id===selectedTask.id);if(h){h.health=Math.max(5,(h.health||50)-3);save('h')}}
-selectedTask=null;updateTaskSelects();
-drawRing(0);updateTree(0,true);document.getElementById('time').textContent=totalSec/60+':00';
-document.getElementById('lockOverlay').classList.remove('show');
-toast('\u{1F338} 没关系，阿梓会等你');
-}
-
-function resumeFocus(){
-document.getElementById('lockOverlay').classList.remove('show');
-toast('\u{1F338} 欢迎回来！继续加油');
-}
-function lockAbort(){
-document.getElementById('lockOverlay').classList.remove('show');
-if(timerId){clearInterval(timerId);timerId=null}
-document.getElementById('btnGo').style.display='block';document.getElementById('btnStop').style.display='none';
-document.getElementById('status').textContent='树受伤了，下次加油 \u{1F338}';document.getElementById('tree').textContent='\u{1F622}';
-document.getElementById('btnGo').textContent='\u{1F331} 重新开始';document.getElementById('btnGo').onclick=start;
-document.querySelectorAll('#chips .chip').forEach(c=>c.style.pointerEvents='auto');
-document.getElementById('taskType').disabled=false;document.getElementById('taskPick').disabled=false;
-selectedTask=null;updateTaskSelects();
-drawRing(0);updateTree(0,true);document.getElementById('time').textContent=totalSec/60+':00';
-toast('\u{1F338} 下次一定会更好的');
-}
-
-function updateTree(p,dead){
-let e=document.getElementById('tree');
-if(dead){e.innerHTML="<span style='font-size:80px'>😢</span>";return}
-var curImg,curEmoji;
-if(currentOutfit===0){
-  curImg='src/images/azusa/azusa_touming_liren.png';
-  curEmoji='🌰';
-}else{
-  curImg=AZUSA_TREES[currentOutfit]&&AZUSA_TREES[currentOutfit].img;
-  curEmoji=(AZUSA_TREES[currentOutfit]||{}).emoji||'🌸';
-}
-if(p<0.15){
-  if(curImg)e.innerHTML="<span class='tree-decor'>✨</span><span class='tree-decor'>🌸</span><span class='tree-decor'>💫</span><span class='tree-decor'>🌿</span><span class='tree-decor'>⭐</span><span class='tree-decor'>🍃</span><img src="+curImg+" class=tree-img style='opacity:.92;transform:scale(.95);filter:drop-shadow(0 6px 24px rgba(124,92,191,.25))'>";
-  else e.innerHTML="<span style='font-size:60px'>"+curEmoji+"</span>"
-}else if(p<0.4){
-// 幼苗期 → 显示当前穿着衣装的前一级（或种子）
-let prev=Math.max(0,currentOutfit-1);
-img=AZUSA_TREES[prev].img;
-if(img)e.innerHTML="<img src="+img+" class=tree-img style='opacity:.4;transform:scale(.6)'>";
-else e.innerHTML="<span style='font-size:60px'>"+AZUSA_TREES[prev].emoji+"</span>"
-}else if(p<0.75){
-// 成长中 → 显示当前穿着
-img=AZUSA_TREES[currentOutfit].img;
-if(img)e.innerHTML="<img src="+img+" class=tree-img style='opacity:.75;transform:scale(.85)'>";
-else e.innerHTML="<span style='font-size:70px'>"+AZUSA_TREES[currentOutfit].emoji+"</span>"
-}else{
-// 接近完成 → 显示下一级衣装（如果存在）
-let nxt=Math.min(currentOutfit+1,AZUSA_TREES.length-1);
-img=AZUSA_TREES[nxt].img;
-if(img)e.innerHTML="<img src="+img+" class=tree-img style='opacity:1;transform:scale(1)'>";
-else e.innerHTML="<span style='font-size:80px'>"+AZUSA_TREES[nxt].emoji+"</span>"
-}}
-function rGallery(){
-let el=document.getElementById('treeGallery');
-el.innerHTML=AZUSA_TREES.map((t,i)=>{
-let unlocked=i<=currentTreeIdx;
-let wearing=i===currentOutfit;
-let isNext=i===currentTreeIdx+1;
-let pct=unlocked?100:isNext?Math.round((totalCompletions-AZUSA_TREES[currentTreeIdx].unlock)/(t.unlock-AZUSA_TREES[currentTreeIdx].unlock)*100):0;
-let cls=unlocked?'unlocked':'locked';
-if(wearing)cls='current';
-let badge=wearing?'🌸 穿着中':unlocked?'✅ 已解锁':'🔒';
-let visual=t.img?`<img src="${t.img}" class="tg-img" alt="${t.name}" loading="lazy">`:`<span class="tg-emoji">${t.emoji}</span>`;
-return`<div class="tg-card ${cls}" ${unlocked?'onclick="changeOutfit('+i+')"':''}>
-<span class="tg-badge ${unlocked?'':'lock'}">${badge}</span>
-${visual}
-<div class="tg-name">${esc(t.name)}</div>
-<div class="tg-sub">${esc(t.sub)}</div>
-${!unlocked?`<div class="tg-progress"><div style="width:${isNext?pct:0}%"></div></div><div style="font-size:10px;color:var(--gr);margin-top:2px">${isNext?pct+'% 进行中':t.unlock+'次专注解锁'}</div>`:wearing?`<div style="font-size:10px;color:var(--b);margin-top:2px;font-weight:600">👈 当前穿着</div>`:`<div style="font-size:10px;color:var(--gr);margin-top:2px">点击穿着</div>`}
-</div>`}).join('')
-
-// Gallery stats
-let stats=document.getElementById('galleryStats');
-let remaining=AZUSA_TREES[Math.min(currentTreeIdx+1,AZUSA_TREES.length-1)].unlock-totalCompletions;
-stats.innerHTML=`<div class="st"><div class="n" style="color:#5C6BC0">${totalCompletions}</div><div class="l">🌸 完成次数</div></div><div class="st"><div class="n" style="color:#7E57C2">${currentTreeIdx+1}/${AZUSA_TREES.length}</div><div class="l">👗 已解锁衣装</div></div><div class="st"><div class="n" style="color:#FF7043">${remaining>0?remaining:0}</div><div class="l">下次解锁还需</div></div>`;
-}
-	function changeOutfit(idx){
-		if(idx>currentTreeIdx){toast('🔒 还未解锁，继续专注吧！');return}
-		currentOutfit=idx;
-		localStorage.setItem('fco',idx);
-		rGallery();try{Mascot.updateSkin()}catch(e){};
-		toast('👗 换上了 '+AZUSA_TREES[idx].name);
-	}
-
-// ==================== HABITS ====================
-function rHabits(){
-const active=habits.filter(h=>!h.archived);
-const today=new Date().toISOString().slice(0,10);
-
-// Summary bar
-const doneToday=active.filter(h=>h.dates&&h.dates.includes(today)).length;
-const bestH=active.reduce((b,h)=>((h.streak||0)>(b.streak||0)?h:b),{streak:0});
-const avgHealth=active.length?Math.round(active.reduce((s,h)=>s+(h.health||50),0)/active.length):0;
-document.getElementById('habitsSummary').innerHTML=active.length?`
-<div class="hs-stat"><div class="hs-val">${doneToday}/${active.length}</div><div class="hs-lbl">✅ 今日完成</div></div>
-<div class="hs-stat"><div class="hs-val">🔥${bestH.streak||0}天</div><div class="hs-lbl">🏆 ${bestH.name||'--'} 最佳</div></div>
-<div class="hs-stat"><div class="hs-val">❤️${avgHealth}%</div><div class="hs-lbl">📊 平均健康度</div></div>
-`:`<div style="text-align:center;width:100%;color:var(--gr)">👋 还没有习惯，点「+ 新建」开始吧</div>`;
-
-// Habit list
-const el=document.getElementById('habitsList');
-if(active.length===0){
-el.innerHTML='<div class="empty-state"><span class="empty-icon">🌱</span>这里空空如也<br><span class="empty-hint">点击上方 + 新建 或下方快速添加</span></div>';
-}else{
-el.innerHTML=active.map(h=>{
-const done=h.dates&&h.dates.includes(today);
-const tierIcon=h.tier==='micro'?'🌱':h.tier==='challenge'?'🌳':'🌿';
-const tierLabel=h.tier==='micro'?'微习惯':h.tier==='challenge'?'挑战':'正常';
-const health=h.health||50;
-const healthColor=health>80?'#4CAF50':health>50?'#FFB74D':'#E57373';
-// Mini 7-day dots
-const last7=[];
-for(let i=6;i>=0;i--){
-const d=new Date();d.setDate(d.getDate()-i);
-const ds=d.toISOString().slice(0,10);
-last7.push((h.dates||[]).includes(ds));
-}
-const miniDots=last7.map(d=>`<span${d?' class=done':''}></span>`).join('');
-return`<div class="habit-card t-${h.tier}${done?' done-today':''}">
-<div class="hb-left">
-<div class="hb-check${done?' done':''}" onclick="togH('${h.id}')">${done?'✓':'○'}</div>
-</div>
-<div class="hb-mid">
-<div class="hb-name">${tierIcon} ${esc(h.name)} <span style="font-size:10px;color:var(--gr);font-weight:400">· ${tierLabel}</span></div>
-<div class="hb-meta">
-<span>🍅 ${h.totalSessions||0}次</span>
-<span>⏱ ${h.totalMins?fmtMins(h.totalMins):'0'}</span>
-</div>
-<div class="hb-bar-wrap"><div class="hb-bar-fill" style="width:${health}%;background:${healthColor}"></div></div>
-</div>
-<div class="hb-right">
-<div class="hb-streak">${h.streak||0}<span>天🔥</span></div>
-<div class="hb-mini-week">${miniDots}</div>
-</div>
-<button class="hb-delete" onclick="delH('${h.id}')" title="删除">×</button>
-</div>`}).join('')}
-
-rHeatmap();
-}
-
-function addHabitPreset(name,tier){
-if(habits.find(h=>h.name===name&&!h.archived)){toast(name+' 已存在');return}
-const tierMap={micro:'🌱微习惯',normal:'🌿正常',challenge:'🌳挑战'};
-habits.push({id:uid(),name:name,tier:tier,done:false,streak:0,health:50,dates:[],totalMins:0,totalSessions:0,createdAt:new Date().toISOString()});
-save('h');rHabits();updateTaskSelects();
-toast('✅ '+name+' · '+tierMap[tier]);
-}
-
-function togH(id){let h=habits.find(x=>x.id===id);if(!h)return;h.done=!h.done;if(h.done){h.streak=(h.streak||0)+1;h.health=Math.min(100,(h.health||50)+5);h.totalSessions=(h.totalSessions||0)+1;h.dates=h.dates||[];let t=new Date().toISOString().slice(0,10);if(!h.dates.includes(t))h.dates.push(t);updateScore(3)}else{h.streak=Math.max(0,(h.streak||1)-1);h.health=Math.max(5,(h.health||50)-3)}save('h');rHabits()}
-function addHabit(){let n=prompt('习惯名称：');if(!n||!n.trim())return;let t=prompt('难度：1=🌱微习惯 2=🌿正常 3=🌳挑战','2');habits.push({id:uid(),name:n.trim(),tier:t==='1'?'micro':t==='3'?'challenge':'normal',done:false,streak:0,health:50,dates:[],totalMins:0,totalSessions:0,createdAt:new Date().toISOString()});save('h');rHabits();updateTaskSelects();toast('✅ 习惯已添加')}
-function delH(id){if(!confirm('确定删除「'+((habits.find(h=>h.id===id)||{}).name||'')+'」？'))return;habits=habits.filter(h=>h.id!==id);save('h');rHabits();updateTaskSelects()}
-function rHeatmap(){
-let hm=document.getElementById('heatmap'),now=new Date(),cells=[];
-let start=new Date(now.getFullYear(),now.getMonth(),1);
-let totalDays=new Date(now.getFullYear(),now.getMonth()+1,0).getDate();
-let dayOff=(start.getDay()+6)%7;
-for(let i=0;i<dayOff;i++)cells.push('<div></div>');
-for(let d=1;d<=totalDays;d++){
-let ds=`${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
-let cnt=habits.reduce((s,h)=>s+((h.dates||[]).includes(ds)?1:0),0);
-cells.push(`<div style="background:${['#ebedf0','#c6e48b','#7bc96f','#239a3b','#196127'][Math.min(cnt,4)]}" title="${ds}: ${cnt}完成"></div>`);
-}
-hm.innerHTML=cells.join('');
-}
-
-// ==================== GOALS ====================
-function drawGoalRing(canvasId,pct){
-const canvas=document.getElementById(canvasId);if(!canvas)return;
-const dpr=window.devicePixelRatio||1,sz=52;
-canvas.width=canvas.height=sz*dpr;canvas.style.width=canvas.style.height=sz+'px';
-const ctx=canvas.getContext('2d');ctx.scale(dpr,dpr);
-const cx=sz/2,cy=sz/2,r=20,lw=4;
-ctx.clearRect(0,0,sz,sz);
-// bg
-ctx.beginPath();ctx.arc(cx,cy,r,0,Math.PI*2);
-ctx.strokeStyle='#e8e8e8';ctx.lineWidth=lw;ctx.stroke();
-// progress
-if(pct>0){
-ctx.beginPath();ctx.arc(cx,cy,r,-Math.PI/2,-Math.PI/2+Math.PI*2*(pct/100));
-const grad=ctx.createLinearGradient(0,cy-r,0,cy+r);
-grad.addColorStop(0,'#7C5CBF');grad.addColorStop(1,'#CE93D8');
-ctx.strokeStyle=grad;ctx.lineWidth=lw;ctx.lineCap='round';ctx.stroke();
-}
-// pct text
-ctx.fillStyle='var(--b)';ctx.font='bold 12px -apple-system,sans-serif';
-ctx.textAlign='center';ctx.textBaseline='middle';
-ctx.fillText(pct+'%',cx,cy);
-}
-
-function rGoals(){
-const active=goals.filter(g=>!g.archived);
-const totalPct=active.length?Math.round(active.reduce((s,g)=>s+Math.min(100,((g.done||0)/(g.tomatoes||10))*100),0)/active.length):0;
-const inProgress=active.filter(g=>(g.done||0)<(g.tomatoes||10)).length;
-const completed=active.filter(g=>(g.done||0)>=(g.tomatoes||10)).length;
-
-document.getElementById('goalsSummary').innerHTML=active.length?`
-<div class="hs-stat"><div class="hs-val">${totalPct}%</div><div class="hs-lbl">📊 总进度</div></div>
-<div class="hs-stat"><div class="hs-val">${inProgress}</div><div class="hs-lbl">🏃 进行中</div></div>
-<div class="hs-stat"><div class="hs-val">${completed}</div><div class="hs-lbl">🏆 已完成</div></div>
-`:`<div style="text-align:center;width:100%;color:var(--gr)">🎯 还没有目标，点「+ 新建」设定一个吧</div>`;
-
-const el=document.getElementById('goalsList');
-if(active.length===0){
-el.innerHTML='<div class="empty-state"><span class="empty-icon">🎯</span>设定你的第一个目标<br><span class="empty-hint">比如「学会Python」「读完5本书」</span></div>';
-}else{
-// Assign unique IDs for each canvas
-el.innerHTML=active.map((g,i)=>{
-const pct=Math.min(100,Math.round(((g.done||0)/(g.tomatoes||10))*100));
-const cid='goalRing'+i;
-const deadline=g.deadline||'';
-const deadlineInfo=deadline?(()=>{
-const dd=new Date(deadline),now=new Date();
-const daysLeft=Math.ceil((dd-now)/86400000);
-if(daysLeft<0)return'<span class="goal-deadline">⏰ 已过期</span>';
-if(daysLeft<=7)return`<span class="goal-deadline">⏰ 剩${daysLeft}天</span>`;
-return`<span>📅 ${deadline}</span>`;
-})():'';
-// Subtasks
-const subs=g.subtasks||[];
-const subsHtml=subs.length?`
-<div class="goal-subtasks">
-${subs.map((s,si)=>`<div class="goal-subtask${s.done?' done':''}" onclick="togSubGoal('${g.id}',${si})">
-<div class="gs-ck${s.done?' done':''}">${s.done?'✓':''}</div>
-<span class="gs-text">${esc(s.text)}</span>
-</div>`).join('')}
-</div>`:'';
-return`<div class="goal-card">
-<div class="goal-top">
-<div class="goal-progress-ring"><canvas id="${cid}"></canvas><div class="goal-ring-pct" style="display:none">${pct}%</div></div>
-<div class="goal-info">
-<div class="goal-title">${esc(g.title)}</div>
-<div class="goal-meta">
-<span>🍅 ${g.done||0}/${g.tomatoes||10} 番茄</span>
-${deadlineInfo}
-${g.totalMins?`<span>⏱ ${fmtMins(g.totalMins)}</span>`:''}
-</div>
-</div>
-</div>
-${subsHtml}
-<div class="goal-actions">
-<button class="goal-inc-btn" onclick="incG('${g.id}')">🍅 +1 番茄</button>
-<button class="goal-add-sub" onclick="addSubGoal('${g.id}')">+ 子任务</button>
-<button class="goal-del-btn" onclick="delG('${g.id}')">🗑</button>
-</div>
-</div>`}).join('');
-// Draw rings after DOM inserted
-setTimeout(()=>{active.forEach((g,i)=>{
-const cid='goalRing'+i;
-const pct=Math.min(100,Math.round(((g.done||0)/(g.tomatoes||10))*100));
-drawGoalRing(cid,pct);
-})},50)}
-}
-
-function addGoal(){let t=prompt('目标名称：');if(!t||!t.trim())return;let tom=parseInt(prompt('预估番茄钟数','20'))||20;let dl=prompt('截止日期（可选，格式：YYYY-MM-DD）','');goals.push({id:uid(),title:t.trim(),tomatoes:tom,done:0,totalMins:0,deadline:dl||'',subtasks:[],createdAt:new Date().toISOString()});save('g');rGoals();updateTaskSelects();toast('🎯 已添加')}
-function delG(id){if(!confirm('确定删除「'+((goals.find(g=>g.id===id)||{}).title||'')+'」？'))return;goals=goals.filter(g=>g.id!==id);save('g');rGoals();updateTaskSelects()}
-function togSubGoal(gid,si){let g=goals.find(x=>x.id===gid);if(!g||!g.subtasks)return;g.subtasks[si].done=!g.subtasks[si].done;save('g');rGoals()}
-function addSubGoal(gid){let g=goals.find(x=>x.id===gid);if(!g)return;let t=prompt('子任务名称：');if(!t||!t.trim())return;if(!g.subtasks)g.subtasks=[];g.subtasks.push({text:t.trim(),done:false});save('g');rGoals()}
-
-function updateScore(n){score+=n;save('c');if(currentTab===4)rHandbook()}
-
-var lockEnabled=localStorage.getItem("flock")!=="0";
-var emergencyLeft=parseInt(localStorage.getItem("fem")||"3");
-function toggleLock(){lockEnabled=!lockEnabled;localStorage.setItem("flock",lockEnabled?"1":"0");var b=document.getElementById("lockToggle");b.textContent=lockEnabled?"已启用":"已关闭";b.style.background=lockEnabled?"#4CAF50":"#e53935"}
-function renderLockSettings(){try{var b=document.getElementById("lockToggle");if(b){b.textContent=lockEnabled?"已启用":"已关闭";b.style.background=lockEnabled?"#4CAF50":"#e53935";b.style.color="#fff"}var e=document.getElementById("emergencyCount");if(e)e.textContent=emergencyLeft}catch(e){}}
-
-function toggleDark(){dark=!dark;document.body.classList.toggle('dark',dark);save('d')}
-function exportData(){let data={habits,goals,sessions,score,exported:new Date().toISOString()};let b=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});let a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='azusa-forest-'+new Date().toISOString().slice(0,10)+'.json';a.click();toast('📤 已导出')}
-function resetAll(){if(!confirm('确定删除？建议先导出备份。'))return;habits=[];goals=[];sessions=[];score=0;totalCompletions=0;currentTreeIdx=0;currentOutfit=0;['fh','fg','fs','fsc','fco'].forEach(k=>localStorage.removeItem(k));save('c');if(currentTab===1)rGallery();if(currentTab===2)rHabits();if(currentTab===3)rGoals();rForest();updateTaskSelects();toast('🔄 已重置')}
-
-  
-// 全局闲置监听
-
-var dsApiKey=localStorage.getItem("ds_key")||"";var chatOpen=false,diaryOpen=false;function toggleChat(){chatOpen=!chatOpen;diaryOpen=false;document.getElementById("chatModal").classList.toggle("open",chatOpen);document.getElementById("chatFab").style.display=chatOpen?"none":"flex";if(chatOpen){document.getElementById("chatInput").focus();updateChatStatus()}}function updateChatStatus(){var el=document.getElementById("chatStatus");el.textContent=dsApiKey?"阿梓在家":"阿梓出门了(离线)";el.style.color=dsApiKey?"#a5d6a7":"rgba(255,255,255,.5)"}function sendChat(){var input=document.getElementById("chatInput"),msg=input.value.trim();if(!msg)return;input.value="";addMsg(msg,"user");var body=document.getElementById("chatBody");var typing=document.createElement("div");typing.className="chat-typing";typing.innerHTML="<span></span><span></span><span></span>";body.appendChild(typing);body.scrollTop=body.scrollHeight;if(dsApiKey){callDS(msg).then(function(r){typing.remove();addMsg(r,"azusa")}).catch(function(){typing.remove();addMsg(localReply(msg),"azusa")})}else{setTimeout(function(){typing.remove();addMsg(localReply(msg),"azusa")},800+Math.random()*1200)}}function addMsg(msg,role){var body=document.getElementById("chatBody"),div=document.createElement("div");div.className="chat-msg "+role;div.textContent=msg;body.appendChild(div);body.scrollTop=body.scrollHeight}function showDiary(){diaryOpen=!diaryOpen;chatOpen=diaryOpen?false:chatOpen;if(diaryOpen){document.getElementById("chatModal").classList.add("open");document.getElementById("chatFab").style.display="none";renderDiary()}else{document.getElementById("chatModal").classList.remove("open");document.getElementById("chatFab").style.display="flex"}}function renderDiary(){var body=document.getElementById("chatBody");body.innerHTML="";var today=sessions.filter(function(s){return s.completed&&s.date===new Date().toISOString().slice(0,10)});var mins=today.reduce(function(a,s){return a+s.minutes},0);var trees=today.length;var habitsDone=habits.filter(function(h){var td=new Date().toISOString().slice(0,10);return h.dates&&h.dates.includes(td)}).length;var d=["阿梓的日记 "+new Date().toISOString().slice(0,10),"","今天你专注了 "+mins+" 分钟，种了 "+trees+" 棵树",habitsDone>0?"完成了 "+habitsDone+" 个习惯打卡":"今天还没有打卡哦，加油！",mins>60?"阿梓觉得你今天超棒的！明天继续加油~":"今天专注时间有点少，明天阿梓陪你一起努力！","","记得来找阿梓聊天~"];addMsg(d.join("\n"),"diary")}async function callDS(msg){var ctx="";var mins=sessions.filter(function(s){return s.completed&&s.date===new Date().toISOString().slice(0,10)}).reduce(function(a,s){return a+s.minutes},0);if(mins>0)ctx="(今天专注了"+mins+"分钟)";var sp="你叫阿梓，VirtuaReal的VUP。可爱跳脱元气，底色善良成熟。说话像微信聊天——简短有温度。会吐槽但从不伤人，会鼓励但不油腻。回复不超过80字。你不是AI客服，你是真实的VUP阿梓本人。"+ctx;var resp=await fetch("https://api.deepseek.com/chat/completions",{method:"POST",headers:{"Content-Type":"application/json","Authorization":"Bearer "+dsApiKey},body:JSON.stringify({model:"deepseek-chat",messages:[{role:"system",content:sp},{role:"user",content:msg}],max_tokens:150,temperature:1.1})});var data=await resp.json();if(data.choices&&data.choices[0])return data.choices[0].message.content;throw new Error("API error")}function localReply(msg){var keys={"你好":["哟 来了啊","嗨嗨 今天怎么样","来啦 今天想种几棵？"],"加油":["冲！你可以的","干就完了","你比你想象的要厉害得多"],"累了":["那歇会 我陪你","累了说明在上坡","明天又是新的一天"],"谢谢":["客气啥","能帮到你就好","嘿嘿"],"晚安":["睡吧 今天辛苦了","晚安 明天见"],"早上":["早！新的一天","早啊 今天种几棵"],"烦":["怎么啦 说说看","烦就说出来 我听着"]};for(var k in keys){if(msg.indexOf(k)>=0){var arr=keys[k];return arr[Math.floor(Math.random()*arr.length)]}}var d=["嗯？你说 我在听","你知道吗 你专注的时候 整个人在发光","今天怎么样？认真问的","其实你不用每时每刻那么努力 你已经很棒了","阿梓在想你什么时候种下一棵树"];return d[Math.floor(Math.random()*d.length)]}function setApiKey(){var key=prompt("输入阿梓的API密钥（platform.deepseek.com免费拿）：\n留空阿梓就不在家了",dsApiKey);if(key!==null){dsApiKey=key.trim();localStorage.setItem("ds_key",dsApiKey);updateChatStatus();toast(dsApiKey?"阿梓在家了！":"阿梓出门了（离线）")}}
-
-// ========== THEME ==========
-var themes=["purple","green","blue","pink","orange"];
-var currentTheme=parseInt(localStorage.getItem("ftheme")||"0");
-function applyTheme(){document.documentElement.setAttribute("data-theme",themes[currentTheme])}
-function cycleTheme(){currentTheme=(currentTheme+1)%themes.length;localStorage.setItem("ftheme",currentTheme);applyTheme();toast("主题已切换")}
-applyTheme();
-
-// ========== PROFILE ==========
-function editMotto(){var m=prompt("修改签名",localStorage.getItem("fmotto")||"千里之行，始于足下");if(m){localStorage.setItem("fmotto",m);document.getElementById("profileMotto").textContent=m}}
-function updateProfile(){var motto=localStorage.getItem("fmotto")||"千里之行，始于足下";document.getElementById("profileMotto").textContent=motto;var days=new Set(sessions.filter(function(s){return s.completed}).map(function(s){return s.date})).size;document.getElementById("totalFocusDays").textContent=days;document.getElementById("currentStreak").textContent=getStreak();document.getElementById("totalTrees").textContent=sessions.filter(function(s){return s.completed}).length;renderCountdowns()}
-function getStreak(){var dates=[].concat(new Set(sessions.filter(function(s){return s.completed}).map(function(s){return s.date}))).sort().reverse();if(!dates.length)return 0;var s=1;for(var i=1;i<dates.length;i++){if((new Date(dates[i-1])-new Date(dates[i]))/864e5===1)s++;else break}return s}
-
-// ========== COUNTDOWN ==========
-var countdowns=JSON.parse(localStorage.getItem("fcd")||"[]");
-function addCountdown(){var t=prompt("事件名称（如：期末考试）");if(!t)return;var d=prompt("日期（如：2026-07-01）");if(!d)return;countdowns.push({name:t,date:d});saveCD();renderCountdowns()}
-function saveCD(){localStorage.setItem("fcd",JSON.stringify(countdowns))}
-function delCD(i){countdowns.splice(i,1);saveCD();renderCountdowns()}
-function showCountdown(){toast("倒计时在「我的」页面查看")}
-
-function renderTimeline(){var el=document.getElementById("focusTimeline");if(!el)return;var recent=sessions.filter(function(s){return s.completed}).slice(-10).reverse();if(recent.length===0){el.innerHTML="<span style=color:var(--gr)>还没有专注记录</span>";return}el.innerHTML=recent.map(function(s){return"<div style=display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid #eee><span>\u{1f338} "+(s.taskName||"自由专注")+"</span><span style=color:var(--gr)>"+s.date.slice(5)+" · "+s.minutes+"分钟</span></div>"}).join("")}
-
-function renderCountdowns(){var el=document.getElementById("countdownList");if(!el)return;if(countdowns.length===0){el.innerHTML="<span style=color:var(--gr)>暂无倒计时，点下方添加</span>";return}el.innerHTML=countdowns.map(function(c,i){var days=Math.ceil((new Date(c.date)-new Date())/(864e5));var label=days>0?"还有 "+days+" 天":days===0?"就是今天！":"已过 "+(-days)+" 天";return"<div style=display:flex;justify-content:space-between;align-items:center;padding:4px 0;border-bottom:1px solid #eee><span>"+c.name+"</span><span style=color:var(--g);font-weight:600>"+label+"</span><button onclick=delCD("+i+") style=background:transparent;border:none;color:var(--gr);cursor:pointer;font-size:11px>X</button></div>"}).join("")}
-
-// ========== SETTINGS ==========
-function setBreak(){var m=parseInt(prompt("休息时长（分钟）",localStorage.getItem("fbreak")||"5"));if(m&&m>0){localStorage.setItem("fbreak",m);document.getElementById("breakMins").textContent=m;toast("休息时长已更新")}}
-function setGoal(){var g=parseInt(prompt("每日番茄目标（个）",localStorage.getItem("fgoal")||"8"));if(g&&g>0){localStorage.setItem("fgoal",g);document.getElementById("dailyGoal").textContent=g;toast("每日目标已更新")}}
-
-// Init settings display
-(function(){var bm=document.getElementById("breakMins");if(bm)bm.textContent=localStorage.getItem("fbreak")||"5";var dg=document.getElementById("dailyGoal");if(dg)dg.textContent=localStorage.getItem("fgoal")||"8"})();
-
-// Update profile on profile tab
-
-var todos=JSON.parse(localStorage.getItem("ftodos")||"[]");
-function addTodo(){var input=document.getElementById("todoInput");var t=input.value.trim();if(!t)return;var est=1;todos.push({id:Date.now().toString(36),title:t,est:est,donePomos:0,completed:false,created:new Date().toISOString().slice(0,10),category:""});input.value="";saveTodos();rTodos();toast("任务已添加")}
-function togTodo(id){var t=todos.find(function(x){return x.id===id});if(!t)return;t.completed=!t.completed;if(t.completed){t.donePomos=t.est;t.doneDate=new Date().toISOString().slice(0,10)}else{t.donePomos=0;t.doneDate=""}saveTodos();rTodos()}
-function delTodo(id){todos=todos.filter(function(t){return t.id!==id});saveTodos();rTodos()}
-function addPomo(id){var t=todos.find(function(x){return x.id===id});if(!t)return;t.donePomos=(t.donePomos||0)+1;if(t.donePomos>=t.est)t.completed=true;saveTodos();rTodos();toast("🍅 +1")}
-function setEst(id){var t=todos.find(function(x){return x.id===id});if(!t)return;var e=parseInt(prompt("预估番茄钟数",t.est||1));if(e&&e>0){t.est=e;saveTodos();rTodos()}}
-function saveTodos(){localStorage.setItem("ftodos",JSON.stringify(todos))}
-function rTodos(){var el=document.getElementById("todoList");var filter=document.getElementById("todoFilter").value;var list=todos.slice();if(filter==="active")list=list.filter(function(t){return !t.completed});if(filter==="done")list=list.filter(function(t){return t.completed});if(filter==="today")list=list.filter(function(t){return t.created===new Date().toISOString().slice(0,10)});if(list.length===0){el.innerHTML="<p style='text-align:center;color:var(--gr);padding:20px;font-size:13px'>暂无任务</p>"}else{el.innerHTML=list.map(function(t){var a="<div class='todo-item "+(t.completed?"done":"")+"'>";var b="<div class='todo-check "+(t.completed?"done":"")+"' onclick=\"togTodo('"+t.id+"')\">"+(t.completed?"✓":"")+"</div>";var c="<div class='todo-info'><div class='todo-title'>"+t.title+"</div><div class='todo-meta'>"+t.created+" · "+(t.category||"未分类")+"</div></div>";var d="<div class='todo-est' onclick=\"setEst('"+t.id+"')\">🍅"+(t.donePomos||0)+"/"+(t.est||1)+"</div>";var e="<button onclick=\"addPomo('"+t.id+"')\" style='border:none;background:var(--g);color:#fff;width:26px;height:26px;border-radius:50%;font-size:14px;cursor:pointer;flex-shrink:0'>+</button>";var f="<button onclick=\"delTodo('"+t.id+"')\" style='border:none;background:transparent;color:var(--gr);font-size:12px;cursor:pointer;flex-shrink:0'>X</button>";return a+b+c+d+e+f+"</div>"}).join("")}var total=todos.length,active=todos.filter(function(t){return !t.completed}).length,done=todos.filter(function(t){return t.completed}).length;var stats=document.getElementById("todoStats");if(stats)stats.textContent="共 "+total+" 个任务 · "+active+" 进行中 · "+done+" 已完成"}
-var pomodoroPhase="idle";var completedRounds=0;
-function startSM(){pomodoroPhase="focus";completedRounds=0;start()}
-function onFocusDone(){completedRounds++;if(completedRounds%4===0){toast("完成4轮！长休15分钟");startLongBreak()}else{toast("专注完成！短休5分钟");startShortBreak()}}
-function startShortBreak(){var bm=parseInt(localStorage.getItem("fbreak")||"5");pomodoroPhase="shortBreak";elapsed=0;totalSec=bm*60;isBreak=true;document.getElementById("time").textContent=bm+":00";document.getElementById("status").textContent="短休";document.getElementById("tree").textContent="😴";document.getElementById("btnGo").style.display="none";document.getElementById("btnStop").style.display="block";timerId=setInterval(tickBreak,1000)}
-function startLongBreak(){pomodoroPhase="longBreak";elapsed=0;totalSec=900;isBreak=true;document.getElementById("time").textContent="15:00";document.getElementById("status").textContent="长休";document.getElementById("tree").textContent="☕";document.getElementById("btnGo").style.display="none";document.getElementById("btnStop").style.display="block";timerId=setInterval(tickBreak,1000)}
-function tickBreak(){elapsed++;var rem=Math.max(0,totalSec-elapsed);var m=Math.floor(rem/60),s=rem%60;document.getElementById("time").textContent=m+":"+(s<10?"0":"")+s;drawRing(elapsed/totalSec);if(elapsed>=totalSec){clearInterval(timerId);timerId=null;isBreak=false;pomodoroPhase="idle";document.getElementById("status").textContent="准备开始";document.getElementById("tree").textContent="🌰";document.getElementById("btnGo").style.display="block";document.getElementById("btnStop").style.display="none";document.getElementById("time").textContent=totalSec/60+":00";drawRing(0);toast("休息结束！开始下一轮吧")}}
-
-
-// ========== TODO COLLECTIONS ==========
-var todoCollections=JSON.parse(localStorage.getItem("ftcol")||"[\"默认\"]");
-function addCollection(){var n=prompt("待办集名称");if(!n||!n.trim())return;todoCollections.push(n.trim());saveCol();updateColSelect();toast("待办集已创建")}
-function saveCol(){localStorage.setItem("ftcol",JSON.stringify(todoCollections))}
-function updateColSelect(){var sel=document.getElementById("todoCollection");if(!sel)return;sel.innerHTML="<option value=''>全部待办集</option>"+todoCollections.map(function(c){return"<option>"+c+"</option>"}).join("")}
-updateColSelect();
-
-// ========== BACKGROUNDS ==========
-var bgs=["linear-gradient(135deg,#E8EAF6,#C5CAE9)","linear-gradient(135deg,#E8F5E9,#C8E6C9)","linear-gradient(135deg,#FFF3E0,#FFE0B2)","linear-gradient(135deg,#FCE4EC,#F8BBD0)","linear-gradient(135deg,#E0F7FA,#B2EBF2)","linear-gradient(135deg,#F3E5F5,#E1BEE7)"];
-var currentBg=parseInt(localStorage.getItem("fbg")||"0");
-function applyBg(){document.body.style.background=bgs[currentBg];document.body.style.backgroundAttachment="fixed"}
-function cycleBg(){currentBg=(currentBg+1)%bgs.length;localStorage.setItem("fbg",currentBg);applyBg();renderBgPicker();toast("背景已切换")}
-function renderBgPicker(){var el=document.getElementById("bgPicker");if(!el)return;el.innerHTML=bgs.map(function(b,i){return"<div onclick='selectBg("+i+")' style='width:36px;height:36px;border-radius:50%;background:"+b+";cursor:pointer;border:3px solid "+(i===currentBg?"var(--g)":"transparent")+"'></div>"}).join("")}
-function selectBg(i){currentBg=i;localStorage.setItem("fbg",i);applyBg();renderBgPicker()}
-applyBg();
-
-// ========== MOTTOS ==========
-var mottos=["千里之行，始于足下","不积跬步，无以至千里","专注当下，未来自来","种一棵树最好的时间是十年前，其次是现在","每一次专注，都在成为更好的自己","你专注的样子很耀眼","今天比昨天多坚持一分钟"];  
-function randomMotto(){var i=Math.floor(Math.random()*mottos.length);var el=document.getElementById("focusMotto");if(el)el.textContent=mottos[i]}
-randomMotto();
-
-// ========== WEEKLY SUMMARY ==========
-function renderWeeklySummary(){var el=document.getElementById("weeklySummary");if(!el)return;var weekStart=new Date();weekStart.setDate(weekStart.getDate()-weekStart.getDay()+1);weekStart.setHours(0,0,0,0);var weekSessions=sessions.filter(function(s){return s.completed&&new Date(s.date)>=weekStart});var totalMins=weekSessions.reduce(function(a,s){return a+s.minutes},0);var totalTrees=weekSessions.length;var daysWithFocus=new Set(weekSessions.map(function(s){return s.date})).size;var habitsWeek=habits.filter(function(h){return h.done}).length;var summary=["本周专注 "+totalMins+" 分钟","种了 "+totalTrees+" 棵树","打卡 "+daysWithFocus+" 天","完成 "+habitsWeek+" 个习惯"].join(" · ");el.innerHTML="<div style=font-weight:600;color:var(--g);margin-bottom:4px>"+summary+"</div>"+(totalMins>300?"<div>阿梓点评：这周表现超棒！继续保持~</div>":totalMins>100?"<div>阿梓点评：还不错！下周可以再进一步</div>":"<div>阿梓点评：下周一起加油吧！</div>")}
-
-// ========== TOOLBOX ==========  
-function calcPomo(){var h=parseInt(prompt("剩余小时数"))||0;var m=parseInt(prompt("剩余分钟数"))||0;var total=h*60+m;var pomos=Math.floor(total/25);toast("约需要 "+pomos+" 个番茄钟（25分钟/个）")}
-function showStudyRoom(){toast("自习室功能开发中... 敬请期待")}
-function importData(){var input=document.createElement("input");input.type="file";input.accept=".json";input.onchange=function(e){var file=e.target.files[0];var reader=new FileReader();reader.onload=function(ev){try{var data=JSON.parse(ev.target.result);if(data.habits)habits=data.habits;if(data.goals)goals=data.goals;if(data.sessions)sessions=data.sessions;if(data.score)score=data.score;if(data.todos)todos=data.todos;["fh","fg","fs","fsc","ftodos"].forEach(function(k){localStorage.removeItem(k)});save("h");save("g");save("s");save("c");saveTodos();rTodos();rHabits();rGoals();rForest();toast("数据已导入！请刷新页面")}catch(ex){toast("文件格式错误")}};reader.readAsText(file)};input.click()}
-
-
-// ===== CORE FUNCTIONS (restored) =====
-function goTab(i){
-  // 锁机检测：专注中不能切页面
-  if(lockEnabled && timerId && i!==0 && !isBreak){
-    lockExits++;
-    document.getElementById('lockCount').textContent=lockExits;
-    document.getElementById('lockLeft').textContent=Math.floor((totalSec-elapsed)/60);
-    document.getElementById('lockOverlay').classList.add('show');
-    if(lockExits>=3){
-      document.getElementById('lockMsg').innerHTML='超过3次了！<br>阿梓很伤心，这棵树要枯萎了...';
-      document.getElementById('lockAbort').style.display='none';
-    }
-    return;
-  }
-  currentTab=i;
-  document.querySelectorAll(".page").forEach(function(p){p.classList.remove("on")});
-  document.querySelectorAll(".tab").forEach(function(t,j){t.classList.toggle("on",j===i)});
-  var pages=["pg0","pg1","pg2","pg3","pg4"];
-  var titles=["🌸 阿梓的森林","👗 衣柜","✅ 习惯","🎯 目标","👤 我的"];
-  var el=document.getElementById(pages[i]);if(el)el.classList.add("on");
-  document.getElementById("bar").textContent=titles[i]||"阿梓的森林";
-  if(i===0){updateTree(0,false);setTimeout(function(){drawRing(0)},200);}
-  if(i===1){rGallery();rForest();}if(i===2){rHabits();rTodos();updateColSelect();}if(i===3)rGoals();if(i===4)rProfile();
-}
-function rProfile(){
-  document.getElementById("scoreVal").textContent=score;
-  var totalMin=sessions.filter(function(s){return s.completed}).reduce(function(a,s){return a+s.minutes},0);
-  document.getElementById("totalMin").textContent=totalMin;
-  document.getElementById("totalSessions").textContent=sessions.filter(function(s){return s.completed}).length;
-  var days=["一","二","三","四","五","六","日"];
-  var wd=days.map(function(_,i){var d=new Date();d.setDate(d.getDate()-(6-i));var ds=d.toISOString().slice(0,10);return sessions.filter(function(s){return s.date===ds&&s.completed}).reduce(function(a,s){return a+s.minutes},0)});
-  var mx=Math.max.apply(null,wd.concat([10]));
-  var bc=document.getElementById("barChart");if(bc)bc.innerHTML=wd.map(function(v,i){return"<div class=col><div class=bar style=height:"+Math.max(4,(v/mx)*110)+"px;background:"+(i===6?"#81C784":"#5C6BC0")+"></div><div class=lbl>"+days[i]+"</div></div>"}).join("");
-  updateProfile();renderTimeline();renderWeeklySummary();renderCountdowns();renderBgPicker();renderLockSettings();
-  var ach=[{n:"🌸 初次种树",u:totalCompletions>=1},{n:"🌲 10棵树",u:totalCompletions>=10},{n:"📚 50棵",u:totalCompletions>=50},{n:"⭐ 500积分",u:score>=500},{n:"🏅 100棵",u:totalCompletions>=100},{n:"👑 200棵",u:totalCompletions>=200}];
-  var ae=document.getElementById("achs");if(ae)ae.innerHTML=ach.map(function(a){return"<div class=ach"+(a.u?"":" lk")+">"+a.n+"</div>"}).join("");
-}
-function rForest(){
-  var total=sessions.length,alive=sessions.filter(function(s){return s.completed}).length,dead=total-alive,totalMin=sessions.reduce(function(a,s){return a+s.minutes},0);
-  var fs=document.getElementById("forestStats");if(fs)fs.innerHTML="<div class=st><div class=n style=color:#4CAF50>"+total+"</div><div class=l>总次数</div></div><div class=st><div class=n style=color:#2E7D32>"+alive+"</div><div class=l>🌳成活</div></div><div class=st><div class=n style=color:#e53935>"+dead+"</div><div class=l>🥀枯萎</div></div><div class=st><div class=n style=color:#ff9800>"+totalMin+"分</div><div class=l>总时长</div></div>";
-  var fg=document.getElementById("forestGrid");if(!fg)return;if(sessions.length===0){fg.innerHTML="<p style=text-align:center;color:var(--gr);padding:30px;grid-column:1/-1;font-size:13px>还没有种过树<br>去专注页开始吧 🌱</p>";return}
-  var emojis=["🌳","🌲","🌸","🎋","🌵","🍁","🌿","🏔️","🌴","🪴"];fg.innerHTML=sessions.slice(-15).reverse().map(function(s){return"<div class=f-card><div class=f-emoji>"+(s.completed?emojis[Math.floor(Math.random()*emojis.length)]:"🥀")+"</div><div class=f-info>"+(s.taskName||"自由专注")+"<br>"+s.date.slice(5)+" · "+s.minutes+"分钟</div></div>"}).join("");
-}
-function incG(id){var g=goals.find(function(x){return x.id===id});if(!g)return;g.done=(g.done||0)+1;save("g");rGoals();toast("🍅 +1")}
-function mark(lvl){document.querySelectorAll(".attn").forEach(function(a){a.classList.remove("on")});var m={deep:"attn-deep",ok:"attn-ok",drift:"attn-drift",off:"attn-off"};if(m[lvl]){var el=document.getElementById(m[lvl]);if(el)el.classList.add("on")}}
-
-
-// ===== MASCOT =====
-var Mascot={
-  el:null,body:null,bubble:null,badge:null,particles:null,
-  posX:null,posY:null,drag:{active:false,ox:0,oy:0,sx:0,sy:0},
-  curState:'idle',curSkin:0,idleSince:Date.now(),bubbleTimer:null,
-  skinMap:[
-    {name:'粉丝作品·春',img:'src/images/azusa/azusa_fan_model1.jpg',upTo:4},
-    {name:'Q版阿梓',img:'src/images/azusa/azusa_chibi.png',upTo:8},
-    {name:'坨梓·常规',img:'src/images/azusa/azusa_tuozi_normal_crop.png',upTo:12},
-    {name:'盒蛋阿梓',img:'src/images/azusa/azusa_box.png',upTo:16},
-    {name:'默认立绘',img:'src/images/azusa/azusa_default_hd.png',upTo:999}
-  ],
-  exprMap:{
-    idle:'src/images/azusa/stickers/阿梓从小就很可爱新装扮_大家好.gif',
-    focus:'src/images/azusa/stickers/阿梓从小就很可爱新装扮_拳头硬了.gif',
-    celebrate:'src/images/azusa/stickers/阿梓从小就很可爱新装扮_真牛哇.gif',
-    sad:'src/images/azusa/stickers/阿梓从小就很可爱新装扮_哭哭.gif',
-    sleepy:'src/images/azusa/stickers/阿梓从小就很可爱新装扮_晚安.gif',
-    star:'src/images/azusa/stickers/阿梓从小就很可爱新装扮_打call.gif',
-    think:'src/images/azusa/stickers/阿梓从小就很可爱新装扮_就这啊.gif'
-  },
-  talks:{
-    idle:['今天也要加油哦~','摸鱼的时候记得来看阿梓','点我可以聊天！'],
-    focus:['加油！专注的你最帅了','别分心，阿梓看着你呢','冲冲冲！'],
-    celebrate:['太棒了！','你真厉害！','又完成了一棵树！'],
-    sad:['没关系，下次一定行','阿梓陪你再来一次','歇会儿呗'],
-    sleepy:['阿梓困了...','你好久没来了...','zzz...'],
-    think:['让我想想...','嗯...这个数据有意思','你种了好多树呀'],
-    star:['哇！新衣服！','好漂亮！','这身真好看~']
-  },
-  init:function(){
-    this.el=document.getElementById('mascot');
-    this.el.style.cursor='grab';
-    this.el.title='拖我可以移动 | 双击归位 | 点击互动';
-    this.body=document.getElementById('mascotBody');
-    this.bubble=document.getElementById('mascotBubble');
-    this.badge=document.getElementById('mascotBadge');
-    this.particles=document.getElementById('mascotParticles');
-    var saved=localStorage.getItem('mascotPos');
-    if(saved){var p=JSON.parse(saved);this.posX=p.x;this.posY=p.y;this.el.style.left=p.x+'px';this.el.style.top=p.y+'px';this.el.style.right='auto';this.el.style.bottom='auto'}
-    this._bindDrag();this._bindDoubleTap();this.resetIdleTimer();
-    this.updateSkin();
-  },
-  _bindDrag:function(){
-    var self=this;
-    var startDrag=function(e){
-      // 不preventDefault——让click事件能正常触发（poke需要）
-      self.drag._startX=(e.touches?e.touches[0]:e).clientX;
-      self.drag._startY=(e.touches?e.touches[0]:e).clientY;
-      self.drag.pending=true;
-      self.drag.sx=(e.touches?e.touches[0]:e).clientX-self.el.offsetLeft;
-      self.drag.sy=(e.touches?e.touches[0]:e).clientY-self.el.offsetTop;
-    };
-    var moveDrag=function(e){
-      if(!self.drag.pending)return;
-      var t=e.touches?e.touches[0]:e;
-      var dx=Math.abs(t.clientX-self.drag._startX);
-      var dy=Math.abs(t.clientY-self.drag._startY);
-      // 移动超过3px才算真正拖拽
-      if(dx<3&&dy<3)return;
-      if(!self.drag.active){
-        self.drag.active=true;
-        self.el.style.cursor='grabbing';
-        self.el.style.transition='none';
-      }
-      e.preventDefault();
-      var x=t.clientX-self.drag.sx,y=t.clientY-self.drag.sy;
-      self.el.style.left=x+'px';self.el.style.top=y+'px';
-      self.el.style.right='auto';self.el.style.bottom='auto';
-    };
-    var endDrag=function(){
-      self.drag.pending=false;
-      if(!self.drag.active)return; // 不是拖拽，是轻触→留给click处理
-      self.drag.active=false;
-      self.el.style.cursor='grab';
-      self.el.style.transition='transform .1s';
-      self.posX=self.el.offsetLeft;self.posY=self.el.offsetTop;
-      localStorage.setItem('mascotPos',JSON.stringify({x:self.posX,y:self.posY}));
-      self.resetIdleTimer();
-    };
-    this.el.addEventListener('touchstart',startDrag,{passive:false});
-    this.el.addEventListener('mousedown',startDrag);
-    document.addEventListener('touchmove',moveDrag,{passive:false});
-    document.addEventListener('mousemove',moveDrag);
-    document.addEventListener('touchend',endDrag);
-    document.addEventListener('mouseup',endDrag);
-  },
-  _bindDoubleTap:function(){
-    var self=this,tapTimer=null;
-    this.el.addEventListener('click',function(e){
-      if(self.drag.active)return; // 拖拽中不处理
-      if(tapTimer){clearTimeout(tapTimer);tapTimer=null;
-        // 双击：归位
-        self.posX=null;self.posY=null;localStorage.removeItem('mascotPos');
-        self.el.style.left='';self.el.style.top='';self.el.style.right='70px';self.el.style.bottom='85px';
-        self.say('我回来啦~',1500);return}
-      tapTimer=setTimeout(function(){tapTimer=null;self.poke()},250);
-    });
-  },
-  updateSkin:function(){
-    var self=this;
-    var newIdx=0;
-    for(var i=0;i<this.skinMap.length;i++){if(currentOutfit<=this.skinMap[i].upTo){newIdx=i;break}}
-    if(newIdx!==this.curSkin){
-      this.curSkin=newIdx;this.body.src=this.skinMap[newIdx].img;
-      this.body.classList.add('unlock-pop');
-      setTimeout(function(){self.body.classList.remove('unlock-pop')},600);
-    }
-    if(this.badge){this.badge.textContent=this.skinMap[this.curSkin].name;this.badge.classList.add('show');
-    setTimeout(function(){self.badge.classList.remove('show')},2000)}
-  },
-  setState:function(state){
-    if(this.curState===state)return;
-    this.el.classList.remove('mascot-shrink','mascot-poke');
-    this.curState=state;
-    this.body.style.filter='drop-shadow(0 2px 6px rgba(124,92,191,.3))';
-    if(state==='sleepy')this.body.style.filter='drop-shadow(0 2px 6px rgba(124,92,191,.3)) brightness(.7) saturate(.6)';
-    if(state==='sad')this.body.style.filter='drop-shadow(0 2px 6px rgba(124,92,191,.3)) brightness(.75) saturate(.4)';
-    if(state==='star')this.body.style.filter='drop-shadow(0 2px 6px rgba(124,92,191,.3)) brightness(1.2) saturate(1.3)';
-  },
-  say:function(text,duration){
-    if(!text)return;if(!duration)duration=2800;
-    clearTimeout(this.bubbleTimer);
-    this.bubble.textContent=text;this.bubble.classList.add('show');
-    var self=this;
-    this.bubbleTimer=setTimeout(function(){self.bubble.classList.remove('show')},duration);
-  },
-  randomTalk:function(state){
-    var list=this.talks[state]||this.talks.idle;
-    this.say(list[Math.floor(Math.random()*list.length)]);
-  },
-  spawnParticles:function(emojis,count){
-    if(!emojis)emojis=['✨','\U0001f31f','\U0001f4ab','⭐'];
-    if(!count)count=6;
-    this.particles.innerHTML='';
-    for(var i=0;i<count;i++){
-      var p=document.createElement('span');p.className='m-particle';
-      p.textContent=emojis[Math.floor(Math.random()*emojis.length)];
-      p.style.left=(30+Math.random()*40)+'%';p.style.top=(10+Math.random()*30)+'%';
-      p.style.setProperty('--dx',(Math.random()-.5)*80+'px');
-      p.style.setProperty('--dy',-(20+Math.random()*60)+'px');
-      p.style.animationDuration=(.6+Math.random()*.6)+'s';
-      p.style.animationDelay=Math.random()*.2+'s';
-      this.particles.appendChild(p);
-    }
-    var self=this;
-    setTimeout(function(){self.particles.innerHTML=''},1200);
-  },
-  poke:function(){
-    if(this.curState==='focus'){this.say('别戳啦！在专注呢！',1500);return}
-    this.el.classList.add('mascot-poke');
-    var self=this;
-    setTimeout(function(){self.el.classList.remove('mascot-poke')},400);
-    var stickers=['src/images/azusa/stickers/阿梓从小就很可爱新装扮_比心.gif','src/images/azusa/stickers/阿梓从小就很可爱新装扮_打call.gif','src/images/azusa/stickers/阿梓从小就很可爱新装扮_大家好.gif','src/images/azusa/stickers/阿梓从小就很可爱新装扮_真牛哇.gif','src/images/azusa/stickers/阿梓从小就很可爱新装扮_拳头硬了.gif','src/images/azusa/stickers/阿梓从小就很可爱新装扮_哭哭.gif','src/images/azusa/stickers/阿梓从小就很可爱新装扮_晚安.gif','src/images/azusa/stickers/阿梓从小就很可爱新装扮_就这啊.gif'];
-    var sticker=stickers[Math.floor(Math.random()*stickers.length)];
-    var pop=document.createElement('img');pop.src=sticker;
-    // 获取精灵当前位置，表情包在精灵上方弹出
-    var rect=self.el.getBoundingClientRect();
-    var cx=rect.left+rect.width/2;
-    var cy=rect.top;
-    // 随机偏移：向左或向右偏移20-50px，向上偏移40-80px
-    var ox=(Math.random()-.5)*60;
-    var oy=-(50+Math.random()*50);
-    pop.style.cssText='position:fixed;z-index:400;width:80px;height:80px;object-fit:contain;pointer-events:none;animation:mParticle 1.5s ease-out forwards;left:'+(cx+ox-40)+'px;top:'+(cy+oy)+'px';
-    document.body.appendChild(pop);setTimeout(function(){pop.remove()},1600);
-    var msgs=['嘿嘿~','喜欢这个表情吗？','阿梓厉害吧！','可爱吧！','诶嘿~','被你发现了！','人家可爱吗？'];
-    this.say(msgs[Math.floor(Math.random()*msgs.length)],2000);
-    this.spawnParticles(['✨','💫','💕','🌟'],5);
-    this.resetIdleTimer();
-  },
-  resetIdleTimer:function(){
-    this.idleSince=Date.now();
-    if(this.curState==='sleepy')this.setState('idle');
-    clearTimeout(this._idleCheck);
-    var self=this;
-    this._idleCheck=setTimeout(function(){
-      if(self.curState==='idle'&&!timerId){self.setState('sleepy');self.randomTalk('sleepy')}
-    },1800000);
-  },
-  react:function(event,data){
-    switch(event){
-      case 'focus_start':this.setState('focus');this.say('加油！阿梓看着你~');break;
-      case 'focus_complete':this.setState('celebrate');this.spawnParticles(['\U0001f389','\U0001f338','✨','\U0001f4ab','⭐'],10);this.say('太棒了！阿梓好开心！');var self=this;setTimeout(function(){self.setState('idle');self.resetIdleTimer();self.updateSkin()},3500);break;
-      case 'focus_abandon':this.setState('sad');this.randomTalk('sad');var self2=this;setTimeout(function(){self2.setState('idle');self2.resetIdleTimer()},3000);break;
-      case 'achievement_unlock':this.setState('celebrate');this.spawnParticles(['\U0001f3c6','\U0001f451','✨','\U0001f48e'],8);this.say('解锁成就：'+(data?data.name:'新成就！'),3500);var self3=this;setTimeout(function(){self3.setState('idle');self3.resetIdleTimer()},4000);break;
-      case 'skin_unlock':this.setState('star');this.spawnParticles(['\U0001f457','✨','\U0001f338','\U0001f4ab'],10);this.say('新衣装！'+(data||'')+' \U0001f389',3500);var self4=this;setTimeout(function(){self4.setState('idle');self4.resetIdleTimer();self4.updateSkin()},4000);break;
-      case 'streak_milestone':this.setState('celebrate');this.spawnParticles(['\U0001f525','\U0001f4aa','✨','\U0001f31f'],8);this.say('连续'+(data||'多')+'天！你太强了！');var self5=this;setTimeout(function(){self5.setState('idle');self5.resetIdleTimer()},3500);break;
-      case 'open_stats':this.setState('think');this.randomTalk('think');var self6=this;setTimeout(function(){self6.setState('idle');self6.resetIdleTimer()},3000);break;
-      default:this.setState('idle');
-    }
-  }
-};
-document.addEventListener('touchstart',function(){Mascot.resetIdleTimer()},{passive:true});
-document.addEventListener('mousemove',function(){Mascot.resetIdleTimer()},{passive:true});
-
-// ========== 锁机：检测切后台/锁屏 ==========
-document.addEventListener('visibilitychange',function(){
-  if(document.hidden && lockEnabled && timerId && !isBreak){
-    lockExits++;
-    document.getElementById('lockCount').textContent=lockExits;
-    document.getElementById('lockLeft').textContent=Math.floor((totalSec-elapsed)/60);
-    document.getElementById('lockOverlay').classList.add('show');
-    if(lockExits>=3){
-      document.getElementById('lockMsg').innerHTML='超过3次了！<br>阿梓很伤心，这棵树要枯萎了...';
-      document.getElementById('lockAbort').style.display='none';
-    }
-  }
-});
-
-// ==================== INIT ====================
-function initAll(){rTodos();rHabits();rGoals();rForest();rProfile();try{Mascot.init()}catch(e){};updateChatStatus();updateTree(0,false);setTimeout(function(){drawRing(0)},200)}
-initAll();
-if('serviceWorker' in navigator){
-  // 强制清理所有旧SW缓存，解决更新不生效问题
-  navigator.serviceWorker.getRegistrations().then(function(regs){
-    regs.forEach(function(r){r.unregister()});
-  }).then(function(){
-    return caches.keys().then(function(keys){return Promise.all(keys.map(function(k){return caches.delete(k)}))});
-  }).then(function(){
-    navigator.serviceWorker.register('sw.js?v=10');
-  });
-}
-</script>
 </body>
 </html>
