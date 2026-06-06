@@ -1,4 +1,4 @@
-/* effects.css - 动画特效、Duolingo风格提醒、断签覆盖层 */
+﻿/* effects.css - 动画特效、Duolingo风格提醒、断签覆盖层 */
 /* Azusa mood animations */
 @keyframes azBreathe{0%,100%{transform:scale(1)}50%{transform:scale(1.03)}}
 .azusa-live{animation:azBreathe 4s ease-in-out infinite;display:inline-block}
@@ -48,7 +48,19 @@
   width:200px;height:auto;display:block;
   border:none;background:transparent;
   pointer-events:none;
-  image-rendering:auto;
+  image-rendering:crisp-edges;
+  filter:
+    drop-shadow(0 0 1px rgba(124,92,191,.12))
+    drop-shadow(0 2px 6px rgba(0,0,0,.08));
+  will-change:transform;
+  backface-visibility:hidden;
+  -webkit-backface-visibility:hidden;
+}
+/* 白底图上消除白边——暗色模式下调整混合 */
+body.dark .azusa-chibi{
+  filter:
+    drop-shadow(0 0 2px rgba(255,255,255,.06))
+    drop-shadow(0 2px 8px rgba(0,0,0,.2));
 }
 /* 双角色容器 */
 .home-chars{
@@ -74,12 +86,22 @@
   75%{transform:translateY(2px) rotate(-1deg)}
 }
 .azusa-interactive.dragging .azusa-chibi{
-  animation:none;transform:scale(1.08);
+  animation:none;transform:scale(1.12);
+  filter:
+    drop-shadow(0 8px 20px rgba(124,92,191,.25))
+    drop-shadow(0 0 3px rgba(0,0,0,.15));
+  transition:transform .08s ease-out;
 }
 .azusa-interactive.thrown .azusa-chibi{
   animation:none;
   transform:rotate(var(--rot,0deg)) scale(var(--scl,1));
+  filter:
+    drop-shadow(0 4px 16px rgba(0,0,0,.18))
+    drop-shadow(0 0 3px rgba(124,92,191,.1));
 }
+/* 投掷碰撞压扁反弹 */
+@keyframes squashBounce{0%{transform:scale(1)}20%{transform:scale(1.18,.82)}35%{transform:scale(.88,1.12)}60%{transform:scale(1.04,.96)}100%{transform:scale(1)}}
+.azusa-interactive .azusa-chibi.squashing{animation:squashBounce .35s ease-out}
 /* 阿梓对话气泡 */
 .azusa-bubble{
   position:absolute;bottom:100%;left:50%;transform:translateX(-50%);
@@ -97,8 +119,11 @@
   animation:emojiFly .8s ease-out forwards;
 }
 @keyframes emojiFly{
-  0%{opacity:1;transform:translate(0,0) scale(1)}
-  100%{opacity:0;transform:translate(var(--dx),var(--dy)) scale(0)}
+  0%{opacity:1;transform:translate(0,0) scale(0.3) rotate(0deg)}
+  15%{opacity:1;transform:translate(calc(var(--dx)*0.1),calc(var(--dy)*0.1)) scale(1.4) rotate(-8deg)}
+  30%{opacity:1;transform:translate(calc(var(--dx)*0.25),calc(var(--dy)*0.2)) scale(1) rotate(5deg)}
+  70%{opacity:0.6;transform:translate(calc(var(--dx)*0.7),calc(var(--dy)*0.65)) scale(0.5) rotate(-3deg)}
+  100%{opacity:0;transform:translate(var(--dx),var(--dy)) scale(0) rotate(12deg)}
 }
 
 .home-scene .azusa-char{

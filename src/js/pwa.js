@@ -104,6 +104,7 @@ function initChibiPhysics() {
     }
 
     // 拖拽松手——速度平滑采样 + Verlet初速注入(移植自heax.js)
+    if (typeof playThrowSound === 'function') playThrowSound();
     chibiState.dragging = false;
     wrap.classList.remove('dragging');
 
@@ -160,8 +161,11 @@ function handleChibiTap(e) {
     bubble._t = setTimeout(function() { bubble.style.display = 'none'; }, 2500);
   }
 
+  // 音效反馈
+  if (typeof playTapSound === 'function') playTapSound();
+
   // 表情粒子
-  var emojis = ['💕','✨','🌸','💖','😊','🥰','🔥','💪','🌱','⭐','🎉','💝','😘','🥺'];
+  var emojis = ['💕','✨','🌸','💖','😊','🥰','🔥','💪','🌱','⭐','🎉','💝','😘','🥺','🫧','💫','🌷','🍀','🦋','🎀','💎','🌟','🍬','🫶','😻'];
   var scene = document.getElementById('homeScene');
   if (!scene) return;
   for (var i = 0; i < 5; i++) {
@@ -171,6 +175,7 @@ function handleChibiTap(e) {
     particle.style.left = cx + 'px';
     particle.style.top = cy + 'px';
     particle.style.setProperty('--dx', (Math.random() - 0.5) * 160 + 'px');
+    if (i === 0 && typeof playPopSound === 'function') playPopSound();
     particle.style.setProperty('--dy', -(60 + Math.random() * 100) + 'px');
     particle.style.animationDuration = (0.5 + Math.random()) + 's';
     document.body.appendChild(particle);
@@ -943,6 +948,7 @@ function startTimerDressupPhysics() {
       hitWall=true;
     }
     if (hitWall) {
+      if (typeof playBounceSound === 'function') playBounceSound();
       var rect2 = wrap.getBoundingClientRect();
       spawnCollisionParticles(rect2.left+rect2.width/2, rect2.top+rect2.height/2);
       wrap.style.setProperty('--scl','0.88');
