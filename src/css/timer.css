@@ -1,3 +1,14 @@
+﻿
+/* 计时页阿梓场景（同首页homeScene） */
+.timer-scene {
+  position: relative;
+  width: 100%;
+  height: 280px;
+  overflow: hidden;
+  border-radius: 20px;
+  background: linear-gradient(180deg, #f0e6ff 0%, #e8d5f5 50%, #d4c4e8 100%);
+  margin-bottom: 12px;
+}
 /* timer.css - 计时器：环形进度条、时长芯片、任务选择、习惯/目标行 */
 .tree-box{
   text-align:center;height:150px;display:flex;align-items:center;
@@ -76,7 +87,7 @@
 
 /* 计时页可拖拽换装阿梓 */
 .timer-dressup-wrap{
-  position:absolute;z-index:50;right:10px;bottom:60px;
+  position:absolute;z-index:50;
   cursor:grab;user-select:none;-webkit-user-select:none;
   touch-action:none;filter:drop-shadow(0 2px 8px rgba(0,0,0,.2));
 }
@@ -107,10 +118,7 @@
   50% { opacity: 1; transform: translate(var(--sx),var(--sy)) scale(1); }
   100% { opacity: 0; transform: translate(var(--sx),calc(var(--sy)*2)) scale(0); }
 }
-.timer-dressup-wrap {
-  animation: azusaIdle 3s ease-in-out infinite;
-  transition: none;
-}
+
 .timer-dressup-wrap.bouncing {
   animation: azusaBounce .6s cubic-bezier(.34,1.56,.64,1);
 }
@@ -166,9 +174,7 @@
   100% { opacity: 0; transform: translate(var(--sx),var(--sy)) scale(0); }
 }
 /* 角色浮游 + 呼吸叠加 */
-.timer-dressup-wrap img {
-  animation: azuFloat 5s ease-in-out infinite, azuBreathe 3s ease-in-out infinite;
-}
+.timer-dressup-wrap img {}
 .timer-dressup-wrap.clicked img {
   animation: azuBounceClick .55s cubic-bezier(.25,.46,.45,.94) !important;
 }

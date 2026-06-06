@@ -53,21 +53,16 @@ var currentTab = 0;
 function goTab(i) {
   currentTab = i;
   if (typeof resetTimerDressup === 'function') resetTimerDressup();
-  document.querySelectorAll('.page').forEach(function(p) { p.classList.remove('on'); p.style.display = 'none'; });
+  document.querySelectorAll('.page').forEach(function(p) { p.classList.remove('on'); });
   document.querySelectorAll('.tab').forEach(function(t, j) { t.classList.toggle('on', j === i); });
-  var targetPage = document.getElementById(['pg5','pg0','pg1','pg2','pg3','pg4'][i]);
-  if (targetPage) { targetPage.classList.add('on'); targetPage.style.display = 'block'; }
-  var bt = document.getElementById('barTitle'); if (bt) bt.textContent = ['🏠 阿梓的森林','⏱ 专注计时','👗 换装衣柜','✅ 习惯追踪','🎯 目标计划','👤 我的数据'][i];
+  document.getElementById(['pg5','pg0','pg1','pg2','pg3','pg4'][i]).classList.add('on');
+  document.getElementById('bar').textContent = ['🏠 阿梓的森林','⏱ 专注计时','👗 换装衣柜','✅ 习惯追踪','🎯 目标计划','👤 我的数据'][i];
   if (i === 0) rHome();
   if (i === 2) rGallery();
   if (i === 3) rHabits();
   if (i === 4) rGoals();
   if (i === 5) rProfile();
   updateCoinDisplay();
-
-  // 计时页阿梓显隐控制
-  var tdw = document.getElementById('timerDressupWrap');
-  if (tdw) { tdw.style.display = (i === 1) ? 'block' : 'none'; }
 }
 
 // ==================== 专注计时器 ====================
