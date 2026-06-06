@@ -143,7 +143,7 @@ function startChibiPhysics() {
   if (!wrap) return;
   var scene = document.getElementById('homeScene');
   var sceneRect = scene ? scene.getBoundingClientRect() : { width: 360, height: 280 };
-  var cw = 120, ch = 180;
+  var cw = 180, ch = 186;
 
   function step() {
     if (!chibiState.flying) { chibiAnimId = null; return; }

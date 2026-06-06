@@ -857,8 +857,7 @@ body.dark .chat-modal{background:#1a1a2e}
   filter:drop-shadow(0 4px 16px rgba(124,92,191,.45));
 }
 .azusa-chibi{
-  width:120px;height:auto;display:block;
-  /* 洪水填充已真正去背——不需要multiply */
+  width:180px;height:auto;display:block;
   border:none;background:transparent;
   pointer-events:none;
   image-rendering:auto;
@@ -5760,7 +5759,7 @@ function startChibiPhysics() {
   if (!wrap) return;
   var scene = document.getElementById('homeScene');
   var sceneRect = scene ? scene.getBoundingClientRect() : { width: 360, height: 280 };
-  var cw = 120, ch = 180;
+  var cw = 180, ch = 186;
 
   function step() {
     if (!chibiState.flying) { chibiAnimId = null; return; }

@@ -51,8 +51,7 @@
   filter:drop-shadow(0 4px 16px rgba(124,92,191,.45));
 }
 .azusa-chibi{
-  width:120px;height:auto;display:block;
-  /* 洪水填充已真正去背——不需要multiply */
+  width:180px;height:auto;display:block;
   border:none;background:transparent;
   pointer-events:none;
   image-rendering:auto;
