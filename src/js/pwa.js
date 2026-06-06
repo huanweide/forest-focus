@@ -200,6 +200,7 @@ function startChibiPhysics() {
 
   function step() {
     if (!chibiState.flying) { chibiAnimId = null; return; }
+    if (!document.getElementById("pg5").classList.contains("on")) { chibiAnimId = null; return; }
 
     // === Verlet积分(移植自heax.js开源引擎 MIT) ===
     // 核心公式: vel = pos - oldPos → 力直接作用在位置上．比Euler稳定10倍
@@ -280,6 +281,9 @@ function startChibiPhysics() {
 // 碰撞粒子火花(移植自开源粒子特效)
 function spawnChibiSpark(wrap) {
   if (!wrap) return;
+  // 仅当所在页面可见时才生成粒子
+  var pageEl = wrap.closest(".page");
+  if (pageEl && !pageEl.classList.contains("on")) return;
   var rect = wrap.getBoundingClientRect();
   var cx = rect.left+rect.width/2, cy = rect.top+rect.height/2;
   var sparks = ['💥','✨','💫','🌟','⚡'];
@@ -495,6 +499,7 @@ function startDressupPhysics() {
 
   function step() {
     if (!dressupState.flying) { dressupAnimId = null; return; }
+    if (!document.getElementById("pg5").classList.contains("on")) { dressupAnimId = null; return; }
 
     // === Verlet积分 ===
     var velX = dressupState.x - dressupState.oldX;
