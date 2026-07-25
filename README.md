@@ -66,3 +66,6 @@
 ---
 
 Made with ❤️ for 阿梓 fans · [阿梓 - 萌娘百科](https://mzh.moegirl.org.cn/%E9%98%BF%E6%A2%93)
+## 项目合并说明
+
+本仓库已合并并取代 [`self-discipline-forest`](https://github.com/huanweide/self-discipline-forest)（该仓库已归档）。后续维护统一在此进行。
