@@ -1,3 +1,9 @@
+<!-- badges -->
+[![License](https://img.shields.io/github/license/huanweide/forest-focus)](LICENSE)
+[![CI](https://github.com/huanweide/forest-focus/actions/workflows/ci.yml/badge.svg)](https://github.com/huanweide/forest-focus/actions/workflows/ci.yml)
+[![Stars](https://img.shields.io/github/stars/huanweide/forest-focus)](https://github.com/huanweide/forest-focus/stargazers)
+<!-- /badges -->
+
 ﻿# 🌸 阿梓的森林 · Forest Focus
 
 > 🍅 番茄钟自律PWA — 专注种树，收集阿梓(VTuber)全部14套衣装皮肤
