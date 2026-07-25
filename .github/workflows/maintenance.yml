@@ -1,4 +1,4 @@
-﻿name: 定期维护优化
+name: 定期维护优化
 
 on:
   schedule:
@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: 检查项目状态
         run: |
