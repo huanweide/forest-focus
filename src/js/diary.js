@@ -170,7 +170,10 @@ function generateDailyDiary() {
       max_tokens: Math.min(4096, wordCount * 3),
       temperature: 0.95,
     })
-  }).then(function(r) { return r.json(); })
+  }).then(function(r) {
+    if (!r.ok) throw new Error('DeepSeek API error: ' + r.status);
+    return r.json();
+  })
   .then(function(data) {
     if (data.choices && data.choices[0]) {
       var content = data.choices[0].message.content;
@@ -205,7 +208,7 @@ function generateLocalDiary(today, aff) {
   ];
 
   var pool = entries[Math.min(stage - 1, 3)];
-  return pool[Math.floor(Math.random() * pool.length * 0.5)] || pool[0];
+  return pool[Math.floor(Math.random() * pool.length)];
 }
 
 function saveDiary(date, content) {
