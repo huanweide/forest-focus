@@ -135,3 +135,8 @@
 @keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}
 .pulse{animation:pulse 1.5s ease-in-out infinite;display:inline-block}
 @keyframes slideDown{from{transform:translateY(-20px);opacity:0}to{transform:translateY(0);opacity:1}}
+
+/* 轻量 UI 美化：平滑滚动 / 选区配色 / 键盘聚焦可见 */
+html { scroll-behavior: smooth; }
+::selection { background: #7C5CBF; color: #fff; }
+:focus-visible { outline: 2px solid #7C5CBF; outline-offset: 2px; border-radius: 4px; }
