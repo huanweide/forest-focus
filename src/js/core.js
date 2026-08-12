@@ -260,8 +260,8 @@ const AppState = (function() {
     if (_state.coinLog.length > 1000) _state.coinLog.shift();
 
     Storage.saveState();
-    EventBus.emit('coin:changed', { amount: actual, reason: reason, balance: _state.coins });
-    return actual;
+    EventBus.emit('coin:changed', { amount: amount, reason: reason, balance: _state.coins });
+    return amount;
   }
 
   function spendCoins(amount, reason) {

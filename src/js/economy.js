@@ -25,7 +25,7 @@ function earnCoins(amount, reason) {
     if (actual <= 0) return 0;
   }
   dailyEarned += actual;
-  AppState.addCoins(actual, reason);
+  _origAddCoins.call(AppState, actual, reason);
   return actual;
 }
 
@@ -68,7 +68,7 @@ function trackPurchase(amount) {
 }
 
 // 重写核心addCoins以纳入上限
-var _origAddCoins = AppState.addCoins;
+const _origAddCoins = AppState.addCoins.bind(AppState);
 AppState.addCoins = function(amount, reason) {
   _checkDailyReset();
   // 成就奖励和签到不计入上限
