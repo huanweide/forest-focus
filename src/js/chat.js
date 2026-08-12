@@ -65,7 +65,11 @@ function addChatMsg(msg, role) {
   var div = document.createElement('div');
   div.className = 'chat-msg ' + role;
   if (role === 'azusa') {
-    div.innerHTML = '<span class="az-avatar">😊</span> ' + msg;
+    var avatar = document.createElement('span');
+    avatar.className = 'az-avatar';
+    avatar.textContent = '😊';
+    div.appendChild(avatar);
+    div.appendChild(document.createTextNode(' ' + msg));
   } else {
     div.textContent = msg;
   }
@@ -118,6 +122,7 @@ async function callDeepSeek(msg) {
       temperature: 0.9
     })
   });
+  if (!resp.ok) throw new Error('DeepSeek API error: ' + resp.status);
   var data = await resp.json();
   if (data.choices && data.choices[0]) return data.choices[0].message.content;
   throw new Error('API error');
