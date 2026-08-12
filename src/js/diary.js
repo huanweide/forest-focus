@@ -254,10 +254,10 @@ function showDiaryList() {
       var entry = entries[date];
       var preview = entry.content ? entry.content.slice(0, 80).replace(/\n/g, ' ') + '...' : '(无内容)';
       var wc = entry.content ? entry.content.length : 0;
-      html += '<div class="shop-card" style="margin:4px 0;cursor:pointer;padding:12px;text-align:left" onclick="this.closest(\'.checkin-overlay\').remove();showDiaryEntry(\'' + date + '\')">' +
-        '<b>📅 ' + date + '</b>' +
+      html += '<div class="shop-card diary-date-card" data-date="' + Utils.esc(date) + '" style="margin:4px 0;cursor:pointer;padding:12px;text-align:left">' +
+        '<b>📅 ' + Utils.esc(date) + '</b>' +
         '<span style="float:right;font-size:10px;color:var(--gr)">' + wc + '字 · 💕' + (entry.affection||0) + '</span>' +
-        '<div style="font-size:12px;color:#555;margin-top:4px;line-height:1.5">' + preview + '</div>' +
+        '<div style="font-size:12px;color:#555;margin-top:4px;line-height:1.5">' + Utils.esc(preview) + '</div>' +
       '</div>';
     });
     html += '</div>';
@@ -269,6 +269,15 @@ function showDiaryList() {
 
   overlay.innerHTML = html;
   document.body.appendChild(overlay);
+
+  // IMP-037: 用 addEventListener + dataset 传 date，避免拼接进 onclick 属性
+  Array.prototype.forEach.call(overlay.querySelectorAll('.diary-date-card'), function(card) {
+    card.addEventListener('click', function() {
+      var ov = card.closest('.checkin-overlay');
+      if (ov) ov.remove();
+      showDiaryEntry(card.getAttribute('data-date'));
+    });
+  });
 }
 
 function showDiaryEntry(date) {
@@ -281,11 +290,14 @@ function showDiaryEntry(date) {
   overlay.style.zIndex = '650';
   overlay.innerHTML =
     '<div class="diary-card" style="max-height:85vh;overflow-y:auto;max-width:420px">' +
-      '<div class="diary-header">📔 ' + date + '</div>' +
+      '<div class="diary-header">📔 ' + Utils.esc(date) + '</div>' +
       '<div class="diary-stage">💕 好感度' + (entry.affection||0) + ' · 专注' + (entry.focusMinutes||0) + '分钟 · ' + (entry.wordCount||0) + '字</div>' +
-      '<div class="diary-content" style="max-height:55vh;white-space:pre-wrap;font-style:normal;line-height:1.8;font-size:14px">' + (entry.content || '(空)') + '</div>' +
+      '<div class="diary-content" style="max-height:55vh;white-space:pre-wrap;font-style:normal;line-height:1.8;font-size:14px"></div>' +
       '<button class="checkin-btn secondary" onclick="this.closest(\'.checkin-overlay\').remove()">关上日记本</button>' +
     '</div>';
+  // IMP-033: 日记正文经 textContent 渲染，避免 AI 输出触发存储型 XSS
+  var contentEl = overlay.querySelector('.diary-content');
+  if (contentEl) contentEl.textContent = entry.content || '(空)';
   document.body.appendChild(overlay);
 }
 

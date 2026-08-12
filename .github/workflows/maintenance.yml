@@ -22,7 +22,7 @@ jobs:
           echo "### 📊 项目规模" >> $GITHUB_STEP_SUMMARY
           echo "- JS 文件: $(find src/js -name '*.js' | wc -l) 个" >> $GITHUB_STEP_SUMMARY
           echo "- CSS 文件: $(find src/css -name '*.css' | wc -l) 个" >> $GITHUB_STEP_SUMMARY
-          echo "- HTML: $(wc -c < docs/index.html) 字节" >> $GITHUB_STEP_SUMMARY
+          echo "- HTML: $(wc -c < index.html) 字节" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
 
           # 检查冗余文件

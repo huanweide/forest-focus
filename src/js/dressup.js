@@ -251,7 +251,7 @@ function renderOutfitList() {
     var layerCount = Object.values(o.layers).filter(Boolean).length;
     return '<div class="wcard unlocked">' +
       '<div class="wemoji">👗</div>' +
-      '<div class="wname">' + o.name + '</div>' +
+      '<div class="wname">' + Utils.esc(o.name) + '</div>' +
       '<div class="wsub">' + layerCount + '层 · ' + o.created + '</div>' +
       '<button class="wbtn" onclick="loadOutfit(\'' + o.id + '\')">穿上</button>' +
       '<button style="background:none;border:none;font-size:14px;cursor:pointer;position:absolute;top:4px;right:4px" onclick="deleteOutfit(\'' + o.id + '\');renderOutfitList()">🗑</button>' +
