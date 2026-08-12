@@ -1,4 +1,5 @@
 const V='forest-v13';
+const MAX_CACHE_ENTRIES=50; // 运行时缓存最大条数，超出按插入顺序(LRU)删除最旧项
 // HTML用网络优先（始终最新），静态资源用缓存优先
 self.addEventListener('install',e=>{
   e.waitUntil(caches.open(V).then(c=>c.addAll([
@@ -29,14 +30,38 @@ self.addEventListener('activate',e=>{
   e.waitUntil(caches.keys().then(ks=>Promise.all(ks.filter(k=>k!==V).map(k=>caches.delete(k)))).then(()=>self.clients.claim()));
 });
 self.addEventListener('fetch',e=>{
+  var req=e.request;
   // HTML请求用网络优先，确保始终获取最新版
-  if (e.request.mode==='navigate'||e.request.destination==='document'){
-    e.respondWith(fetch(e.request).then(r=>{
-      let clone=r.clone();caches.open(V).then(c=>c.put(e.request,clone));return r;
-    }).catch(()=>caches.match(e.request)));
-  }else{
-    e.respondWith(caches.match(e.request).then(r=>r||fetch(e.request).then(res=>{
-      if(res&&res.status===200){let clone=res.clone();caches.open(V).then(c=>c.put(e.request,clone));}return res;
-    })));
+  if (req.mode==='navigate'||req.destination==='document'){
+    e.respondWith(fetch(req).then(r=>{
+      let clone=r.clone();caches.open(V).then(c=>c.put(req,clone));return r;
+    }).catch(()=>caches.match(req)));
+    return;
   }
+  // 仅对同源静态资源做运行时缓存；外部 API(api. 子域或 /api/ 路径)与带查询串的动态请求跳过，避免 Cache Storage 膨胀
+  var url=new URL(req.url);
+  var isStatic=req.method==='GET'
+    && url.origin===self.location.origin
+    && url.hostname.indexOf('api.')!==0
+    && url.pathname.indexOf('/api/')===-1
+    && !url.search;
+  if(!isStatic){
+    e.respondWith(fetch(req).catch(()=>caches.match(req)));
+    return;
+  }
+  e.respondWith(caches.match(req).then(r=>r||fetch(req).then(res=>{
+    if(res&&res.status===200){
+      let clone=res.clone();
+      caches.open(V).then(c=>{
+        c.put(req,clone);
+        // LRU：超出最大条数时删除最旧的插入项
+        c.keys().then(keys=>{
+          if(keys.length>MAX_CACHE_ENTRIES){
+            keys.slice(0,keys.length-MAX_CACHE_ENTRIES).forEach(k=>c.delete(k));
+          }
+        });
+      });
+    }
+    return res;
+  })));
 });

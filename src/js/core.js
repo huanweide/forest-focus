@@ -103,27 +103,15 @@ const Storage = (function() {
       score: AppState.score,
     };
 
-    // 先存备份，再存主数据
-    var backupJson = localStorage.getItem('fs');
-    if (backupJson) {
-      _set(_backupKey, {
-        sessions: backupJson,
-        habits: localStorage.getItem('fh'),
-        goals: localStorage.getItem('fg'),
-        timestamp: Date.now()
-      });
+    // 先存备份（单一真相源 fstate 的迁移前快照），便于异常时恢复
+    var prev = localStorage.getItem('fstate');
+    if (prev) {
+      _set(_backupKey, { fstate: prev, timestamp: Date.now() });
     }
 
+    // 单一真相源：仅写入 fstate。旧键(fs/fh/fg/fcoin/fsc/fmood/ffreeze/fdark)
+    // 已由 loadState/_loadLegacy 一次性迁移，迁移完成后不再双写，显著减少序列化与 I/O
     _set('fstate', state);
-    // 兼容旧存储键
-    localStorage.setItem('fs', JSON.stringify(state.sessions));
-    localStorage.setItem('fh', JSON.stringify(state.habits));
-    localStorage.setItem('fg', JSON.stringify(state.goals));
-    localStorage.setItem('fcoin', String(state.coins));
-    localStorage.setItem('fsc', String(state.score));
-    localStorage.setItem('fmood', String(state.mood));
-    localStorage.setItem('ffreeze', String(state.streakFreezes));
-    localStorage.setItem('fdark', state.darkMode ? '1' : '0');
   }
 
   function loadState() {

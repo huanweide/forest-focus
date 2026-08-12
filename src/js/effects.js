@@ -190,6 +190,11 @@ _audioMuted = localStorage.getItem('fmuted') === '1';
 // ==================== Canvas粒子特效 ====================
 var _particles = [];
 var _particleRAF = null;
+// 缓存 DOM 引用（首帧获取），避免每帧 getElementById；并记录上一次画布尺寸，仅在尺寸真正变化时重设 canvas.width（重设会触发清屏，避免每帧清屏浪费）
+var _layerFxEl = null;
+var _azusaCharEl = null;
+var _layerFxW = 0;
+var _layerFxH = 0;
 
 function startParticleLoop() {
   if (_particleRAF) return;
@@ -213,19 +218,25 @@ function startParticleLoop() {
 }
 
 function drawParticles() {
-  var canvas = document.getElementById('layerFx');
-  if (!canvas) return;
-  var charEl = document.getElementById('azusaChar');
-  if (!charEl) return;
+  if (!_layerFxEl) _layerFxEl = document.getElementById('layerFx');
+  if (!_layerFxEl) return;
+  if (!_azusaCharEl) _azusaCharEl = document.getElementById('azusaChar');
+  if (!_azusaCharEl) return;
 
-  var rect = charEl.getBoundingClientRect();
-  canvas.width = rect.width || 200;
-  canvas.height = rect.height || 280;
-  canvas.style.width = canvas.width + 'px';
-  canvas.style.height = canvas.height + 'px';
+  var rect = _azusaCharEl.getBoundingClientRect();
+  var w = rect.width || 200;
+  var h = rect.height || 280;
+  // 仅在尺寸真正变化时重设画布（重设触发清屏），其余帧只 clearRect + 重绘
+  if (w !== _layerFxW || h !== _layerFxH) {
+    _layerFxW = w; _layerFxH = h;
+    _layerFxEl.width = w;
+    _layerFxEl.height = h;
+    _layerFxEl.style.width = w + 'px';
+    _layerFxEl.style.height = h + 'px';
+  }
 
-  var ctx = canvas.getContext('2d');
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  var ctx = _layerFxEl.getContext('2d');
+  ctx.clearRect(0, 0, _layerFxW, _layerFxH);
 
   _particles.forEach(function(p) {
     ctx.save();
@@ -253,10 +264,11 @@ function drawParticles() {
 }
 
 function spawnParticles(type, count, options) {
-  var canvas = document.getElementById('layerFx');
+  if (!_layerFxEl) _layerFxEl = document.getElementById('layerFx');
+  var canvas = _layerFxEl;
   if (!canvas) return;
-  var w = canvas.width || 200;
-  var h = canvas.height || 280;
+  var w = _layerFxW || canvas.width || 200;
+  var h = _layerFxH || canvas.height || 280;
   var colors = options && options.colors ? options.colors : ['#7C5CBF','#FF7043','#66BB6A','#FFD54F','#FF80AB','#4FC3F7'];
   var cx = (options && options.x) || w / 2;
   var cy = (options && options.y) || h / 2;
@@ -437,9 +449,14 @@ function checkReminder() {
 // ==================== 断签系统 ====================
 var streakLostDays = 0;
 
+// 已完成日期集合（去重 + 排序），rHome / checkStreakDanger / checkStreakRecovery 共用，避免重复 filter+map+Set+sort
+function completedDates() {
+  return Array.from(new Set(sessions.filter(function(s) { return s.completed; }).map(function(s) { return s.date; }))).sort();
+}
+
 function checkStreakDanger() {
   var today = Utils.today();
-  var dates = Array.from(new Set(sessions.filter(function(s) { return s.completed; }).map(function(s) { return s.date; }))).sort();
+  var dates = completedDates();
   if (!dates.length || dates[dates.length - 1] === today) return;
   var lastDate = dates[dates.length - 1];
   var missed = Utils.daysBetween(today, lastDate);
@@ -451,7 +468,7 @@ function checkStreakDanger() {
 
 function checkStreakRecovery() {
   var today = Utils.today();
-  var dates = Array.from(new Set(sessions.filter(function(s) { return s.completed; }).map(function(s) { return s.date; }))).sort();
+  var dates = completedDates();
   if (!dates.length) return;
   var lastDate = dates[dates.length - 1];
   if (lastDate === today) return;

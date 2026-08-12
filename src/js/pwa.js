@@ -25,6 +25,13 @@ var chibiAnimId = null;
 var chibiResetAnimId = null;
 var chibiWanderId = null;
 
+// 缓存首页元素引用（首帧获取一次），动画循环内直接复用，避免每帧 getElementById
+var _pg5El = null;
+function pg5Visible() {
+  if (!_pg5El) _pg5El = document.getElementById('pg5');
+  return _pg5El && _pg5El.classList.contains('on');
+}
+
 function stopChibiWander() { if (chibiWanderId) { clearInterval(chibiWanderId); chibiWanderId = null; } }
 function startChibiWander() {
   stopChibiWander();
@@ -202,7 +209,7 @@ function startChibiPhysics() {
 
   function step() {
     if (!chibiState.flying) { chibiAnimId = null; return; }
-    if (!document.getElementById("pg5").classList.contains("on")) { chibiAnimId = null; return; }
+    if (!pg5Visible()) { chibiAnimId = null; return; }
 
     // === Verlet积分(移植自heax.js开源引擎 MIT) ===
     // 核心公式: vel = pos - oldPos → 力直接作用在位置上．比Euler稳定10倍
@@ -501,7 +508,7 @@ function startDressupPhysics() {
 
   function step() {
     if (!dressupState.flying) { dressupAnimId = null; return; }
-    if (!document.getElementById("pg5").classList.contains("on")) { dressupAnimId = null; return; }
+    if (!pg5Visible()) { dressupAnimId = null; return; }
 
     // === Verlet积分 ===
     var velX = dressupState.x - dressupState.oldX;
@@ -575,13 +582,14 @@ function rHome() {
   var todaySessions = sessions.filter(function(s) { return s.completed && s.date === today; });
   var todayMins = todaySessions.reduce(function(a, s) { return a + s.minutes; }, 0);
   var todayCount = todaySessions.length;
+  var dates = completedDates();
 
   // 快捷统计
   document.getElementById('quickStats').innerHTML =
     '<div class="quick-stat"><div class="qs-val">' + Utils.fmtMins(todayMins) + '</div><div class="qs-lbl">📅 今日专注</div></div>' +
     '<div class="quick-stat"><div class="qs-val">' + todayCount + '</div><div class="qs-lbl">🌳 完成次数</div></div>' +
     '<div class="quick-stat"><div class="qs-val">' + AppState.coins + '</div><div class="qs-lbl">🪙 阿梓币</div></div>' +
-    '<div class="quick-stat"><div class="qs-val">🔥 ' + Utils.calcStreak(Array.from(new Set(sessions.filter(function(s) { return s.completed; }).map(function(s) { return s.date; })))) + '</div><div class="qs-lbl">连续天数</div></div>';
+    '<div class="quick-stat"><div class="qs-val">🔥 ' + Utils.calcStreak(dates) + '</div><div class="qs-lbl">连续天数</div></div>';
 
   // 首页精灵——用完整单图(不切帧，避免裁切)
   var curTree = AZUSA_TREES[currentTreeIdx] || AZUSA_TREES[0];
@@ -628,7 +636,6 @@ function rHome() {
   }
 
   // 断签危险提醒
-  var dates = Array.from(new Set(sessions.filter(function(s) { return s.completed; }).map(function(s) { return s.date; }))).sort();
   var lastDate = dates[dates.length - 1];
   var duoEl = document.getElementById('duoWarning');
   if (duoEl) {
