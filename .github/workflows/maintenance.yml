@@ -36,8 +36,8 @@ jobs:
           fi
           echo "" >> $GITHUB_STEP_SUMMARY
 
-          # 检查死链接
-          echo "### 🔗 链接检查" >> $GITHUB_STEP_SUMMARY
+          # 罗列链接（仅检查，不做连通性验证）
+          echo "### 🔗 链接罗列" >> $GITHUB_STEP_SUMMARY
           grep -rn "https://" src/ docs/ --include="*.html" --include="*.js" | head -20 >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
 
