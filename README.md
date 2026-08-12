@@ -1,71 +1,147 @@
-<!-- badges -->
 [![License](https://img.shields.io/github/license/huanweide/forest-focus)](LICENSE)
 [![CI](https://github.com/huanweide/forest-focus/actions/workflows/ci.yml/badge.svg)](https://github.com/huanweide/forest-focus/actions/workflows/ci.yml)
 [![Stars](https://img.shields.io/github/stars/huanweide/forest-focus)](https://github.com/huanweide/forest-focus/stargazers)
-<!-- /badges -->
+[![PWA](https://img.shields.io/badge/PWA-可安装·离线可用-7C5CBF)](https://huanweide.github.io/forest-focus/)
+[![Release](https://img.shields.io/github/v/release/huanweide/forest-focus)](https://github.com/huanweide/forest-focus/releases/latest)
 
-﻿# 🌸 阿梓的森林 · Forest Focus
+# 阿梓的森林 · Forest Focus —— 番茄钟自律 PWA，专注种树收集阿梓全部衣装
 
-> 🍅 番茄钟自律PWA — 专注种树，收集阿梓(VTuber)全部14套衣装皮肤
+一款**零依赖、可安装、离线可用**的番茄钟自律 PWA：每次完成专注就为阿梓（VTuber）种下一棵树，逐步解锁她全部衣装皮肤与成就。把「自律」变成一场看得见的收集旅程。
 
-[![Version](https://img.shields.io/badge/version-v4.2-7C5CBF)](https://github.com/huanweide/forest-focus/releases)
-[![PWA](https://img.shields.io/badge/PWA-ready-7C5CBF)](https://huanweide.github.io/forest-focus/)
-[![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
+> 即刻使用：**https://huanweide.github.io/forest-focus/**
 
-**即刻使用** → [huanweide.github.io/forest-focus](https://huanweide.github.io/forest-focus/)
+## 项目简介
 
----
+- 用番茄钟管理专注，用「种树 + 衣装收集」把枯燥的自律变得有反馈、有动力。
+- 内置习惯打卡、目标追踪、数据仪表盘与成就系统，覆盖从单次专注到长期习惯的完整闭环。
+- 纯前端单页应用，支持「添加到主屏幕」与离线运行，数据全部保存在本地。
 
-## ✨ 功能
+## 核心特性
 
-- 🍅 **番茄钟** 20/25/30/45/60分钟 · 紫色渐变计时环
-- 🌳 **种树系统** 每完成专注解锁阿梓新衣装 · 共14级
-- 👗 **衣柜画廊** 查看所有阿梓形象+解锁进度
-- ✅ **习惯打卡** 三级难度 · 连续天数 · 健康值 · 月热力图
-- 🎯 **目标追踪** 番茄数进度 · 手动增量
-- 📊 **数据仪表盘** 饼图 · 连续天数 · 今日/本周/本月/本年切换
-- 🏆 **17项成就** 进度条 · 🥉🥈🥇👑四级稀有度
-- 🔒 **专注锁定** 切走页面触发遮罩
-- 🌙 **暗色模式** 一键切换
-- 📱 **PWA** 添加到主屏幕 · 离线可用
+| 特性 | 说明 |
+|------|------|
+| 番茄钟 | 20 / 25 / 30 / 45 / 60 分钟多档时长，紫色渐变计时环 |
+| 种树系统 | 每完成一次专注解锁阿梓新衣装，共 14 级收集路线 |
+| 衣柜画廊 | 查看所有阿梓形象与解锁进度 |
+| 习惯打卡 | 三级难度、连续天数、健康值、月度热力图 |
+| 目标追踪 | 番茄数进度，可手动增量 |
+| 数据仪表盘 | 饼图、连续天数，支持今日 / 本周 / 本月 / 本年切换 |
+| 成就系统 | 17 项成就，含稀有度分级与进度条 |
+| 专注锁定 | 切走页面触发遮罩，强制保持专注 |
+| 暗色模式 | 一键切换，偏好本地保存 |
+| 阿梓聊天 | 内置与阿梓的轻量对话陪伴（离线模式可用） |
+| PWA | 可添加到主屏幕、离线可用 |
 
-## 🎨 阿梓衣装解锁路线
+## 阿梓衣装解锁路线
 
 | 等级 | 衣装 | 需要专注次数 |
 |------|------|-------------|
-| 0 | 🌰 种子 | 初始 |
-| 1 | 🌸 默认衣装 | 1次 |
-| 2 | 🎊 新年衣装 | 5次 |
-| 3 | 🏖️ 夏日衣装 | 12次 |
-| 4 | 🐼 熊猫阿梓 | 20次 |
-| 5 | 🐰 兔兔阿梓 | 30次 |
-| 6 | 🐸 青蛙阿梓 | 40次 |
-| 7 | 🦋 蝴蝶阿梓 | 55次 |
-| 8 | 🍆 茄子阿梓 | 70次 |
-| 9 | 🌿 春装阿梓 | 90次 |
-| 10 | 💎 Q版阿梓 | 110次 |
-| 11 | 🎁 礼物阿梓(Live2D) | 130次 |
-| 12 | 🥷 忍者阿梓 | 155次 |
-| 13 | 👑 终极阿梓 | 180次 |
+| 0 | 种子 | 初始 |
+| 1 | 默认衣装 | 1 次 |
+| 2 | 新年衣装 | 5 次 |
+| 3 | 夏日衣装 | 12 次 |
+| 4 | 熊猫阿梓 | 20 次 |
+| 5 | 兔兔阿梓 | 30 次 |
+| 6 | 青蛙阿梓 | 40 次 |
+| 7 | 蝴蝶阿梓 | 55 次 |
+| 8 | 茄子阿梓 | 70 次 |
+| 9 | 春装阿梓 | 90 次 |
+| 10 | Q 版阿梓 | 110 次 |
+| 11 | 礼物阿梓（Live2D） | 130 次 |
+| 12 | 忍者阿梓 | 155 次 |
+| 13 | 终极阿梓 | 180 次 |
 
-## 📱 安装到手机
+## 快速开始
+
+**网页版**：直接用浏览器打开 [应用链接](https://huanweide.github.io/forest-focus/) 即可使用，无需安装。
+
+**安装到手机（PWA）**：
 
 1. 用浏览器打开 [应用链接](https://huanweide.github.io/forest-focus/)
-2. iPhone: 点分享 → 添加到主屏幕
-3. Android: 点菜单 → 添加到主屏幕
-4. 主屏出现阿梓图标 → 点击即全屏运行
+2. iPhone：点「分享」→「添加到主屏幕」
+3. Android：点菜单 →「添加到主屏幕」
+4. 主屏出现阿梓图标，点击即全屏运行，可离线使用
 
-## 🛠 技术栈
+**本地运行**：
 
-单文件纯HTML/CSS/JS · 零依赖 · 零框架 · ~44KB
+```bash
+# 任意静态服务器即可，例如
+python -m http.server 8080
+# 浏览器访问 http://localhost:8080
+```
 
-## 📦 下载
+## 配置说明
 
-[最新 Release v4.2](https://github.com/huanweide/forest-focus/releases/latest)
+应用以本地偏好为主，无需服务端配置：
 
----
+| 选项 | 说明 |
+|------|------|
+| 专注时长 | 20 / 25 / 30 / 45 / 60 分钟，随时切换 |
+| 暗色模式 | 一键切换，偏好保存在本地 |
+| 专注锁定 | 开启后切走页面触发遮罩，强制专注 |
+| 数据备份 | 所有进度存于浏览器本地存储，可导出 / 清除以换新设备 |
 
-Made with ❤️ for 阿梓 fans · [阿梓 - 萌娘百科](https://mzh.moegirl.org.cn/%E9%98%BF%E6%A2%93)
+## 工作原理
+
+```
+开始专注（选定时长）
+      │  计时进行中
+      │  若切走页面且开启「专注锁定」→ 遮罩拦截
+      ▼
+专注完成 ✔
+      │  累计专注次数 +1
+      ▼
+达成衣装解锁阈值？── 是 ──▶ 解锁阿梓新衣装（衣柜画廊更新）
+      │  否
+      ▼
+同步习惯打卡 / 目标进度 / 成就进度 / 数据仪表盘
+      │
+      ▼
+本地存储持久化（刷新、离线均保留）
+```
+
+## 目录结构
+
+```
+index.html              单页应用入口
+manifest.json           PWA 清单（名称 / 图标 / 主题色）
+sw.js                    Service Worker（离线缓存）
+src/css/                样式（变量 / 基础 / 计时 / 衣装 / 统计 / 聊天 / 特效）
+src/js/                 逻辑模块
+  ├─ core.js            核心状态与存储
+  ├─ timer.js           番茄钟计时
+  ├─ habits.js          习惯打卡
+  ├─ goals.js           目标追踪
+  ├─ stats.js           数据仪表盘
+  ├─ achievements.js    成就系统
+  ├─ economy.js         金币经济
+  ├─ betting.js         小游戏
+  ├─ shop.js            商店
+  ├─ checkin.js         打卡
+  ├─ dressup.js         衣装解锁与画廊
+  ├─ effects.js         视觉特效
+  ├─ diary.js           日记
+  ├─ chat.js            与阿梓聊天
+  └─ pwa.js             PWA 注册
+src/images/azusa/       阿梓形象与衣装资源
+docs/                   文档与构建产物说明
+build-apk.js / build.py  APK 打包脚本
+```
+
+## 技术栈
+
+单文件纯 HTML / CSS / JS，零依赖、零框架；通过 Service Worker 实现 PWA 离线能力，可经 `build-apk.js` / `build.py` 打包为 Android APK。
+
+## 贡献指南
+
+- 功能建议或 Bug 反馈请走 [Issues](https://github.com/huanweide/forest-focus/issues)。
+- 提交前请确保 CI 通过（`.github/workflows/ci.yml`）。
+- 资源与文案请尊重阿梓形象相关版权，仅作非商业粉丝向用途。
+
+## 许可证
+
+[MIT License](LICENSE) —— 详见仓库 LICENSE 文件。
+
 ## 项目合并说明
 
 本仓库已合并并取代 [`self-discipline-forest`](https://github.com/huanweide/self-discipline-forest)（该仓库已归档）。后续维护统一在此进行。
