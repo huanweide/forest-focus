@@ -157,8 +157,31 @@ function generateDailyDiary() {
     return;
   }
 
+  /* AOA 防护：DeepSeek 调用的超时 + 熔断（防 UI 卡死 / 故障级联） */
+  var __diaryFailures = 0, __diaryOpenedAt = 0;
+  var DIARY_THRESHOLD = 3, DIARY_RESET = 30000, DIARY_TIMEOUT = 30000;
+  function __diaryAoaFetch(url, opts) {
+    if (__diaryOpenedAt !== 0 && (Date.now() - __diaryOpenedAt) < DIARY_RESET) {
+      return Promise.reject(new Error('DeepSeek 接口熔断中，请稍后再试'));
+    }
+    var ctrl = (typeof AbortController !== 'undefined') ? new AbortController() : null;
+    var timer = ctrl ? setTimeout(function () { ctrl.abort(); }, DIARY_TIMEOUT) : null;
+    return fetch(url, Object.assign({}, opts, ctrl ? { signal: ctrl.signal } : {}))
+      .then(function (res) {
+        if (timer) clearTimeout(timer);
+        if (!res.ok) { __diaryFailures++; if (__diaryFailures >= DIARY_THRESHOLD) __diaryOpenedAt = Date.now(); }
+        else { __diaryFailures = 0; }
+        return res;
+      }, function (err) {
+        if (timer) clearTimeout(timer);
+        __diaryFailures++;
+        if (__diaryFailures >= DIARY_THRESHOLD) __diaryOpenedAt = Date.now();
+        throw err;
+      });
+  }
+
   // 调用DeepSeek
-  fetch('https://api.deepseek.com/chat/completions', {
+  __diaryAoaFetch('https://api.deepseek.com/chat/completions', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + dsApiKey },
     body: JSON.stringify({

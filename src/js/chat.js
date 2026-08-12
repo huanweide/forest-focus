@@ -101,6 +101,29 @@ function localReply(msg) {
   return defaults[Math.floor(Math.random() * defaults.length)];
 }
 
+/* AOA 防护：DeepSeek 调用的超时 + 熔断（防 UI 卡死 / 故障级联） */
+var __chatFailures = 0, __chatOpenedAt = 0;
+var CHAT_THRESHOLD = 3, CHAT_RESET = 30000, CHAT_TIMEOUT = 30000;
+function __chatAoaFetch(url, opts) {
+  if (__chatOpenedAt !== 0 && (Date.now() - __chatOpenedAt) < CHAT_RESET) {
+    return Promise.reject(new Error('DeepSeek 接口熔断中，请稍后再试'));
+  }
+  var ctrl = (typeof AbortController !== 'undefined') ? new AbortController() : null;
+  var timer = ctrl ? setTimeout(function () { ctrl.abort(); }, CHAT_TIMEOUT) : null;
+  return fetch(url, Object.assign({}, opts, ctrl ? { signal: ctrl.signal } : {}))
+    .then(function (res) {
+      if (timer) clearTimeout(timer);
+      if (!res.ok) { __chatFailures++; if (__chatFailures >= CHAT_THRESHOLD) __chatOpenedAt = Date.now(); }
+      else { __chatFailures = 0; }
+      return res;
+    }, function (err) {
+      if (timer) clearTimeout(timer);
+      __chatFailures++;
+      if (__chatFailures >= CHAT_THRESHOLD) __chatOpenedAt = Date.now();
+      throw err;
+    });
+}
+
 async function callDeepSeek(msg) {
   var todayMins = sessions.filter(function(s) {
     return s.completed && s.date === Utils.today();
@@ -109,7 +132,7 @@ async function callDeepSeek(msg) {
   var streak = Utils.calcStreak(dates);
 
   var systemPrompt = '你是阿梓，一个可爱的VTuber，也是用户的自律伙伴。说话傲娇可爱，爱用颜文字，会撒娇也会吐槽。回复简洁（50字以内）。用户今天专注' + todayMins + '分钟，连续' + streak + '天，解锁了' + (currentTreeIdx + 1) + '件衣装。';
-  var resp = await fetch('https://api.deepseek.com/chat/completions', {
+  var resp = await __chatAoaFetch('https://api.deepseek.com/chat/completions', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + dsApiKey },
     body: JSON.stringify({
