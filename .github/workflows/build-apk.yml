@@ -71,7 +71,7 @@ jobs:
           find twa-project -name "*.apk" -exec cp {} docs/download/forest-focus.apk \;
 
       - name: Upload APK artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: forest-focus-apk
           path: docs/download/forest-focus.apk
