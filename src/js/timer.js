@@ -64,7 +64,7 @@ function goTab(i) {
   // 桌面侧栏同步高亮（前 6 个 sb-item 对应 0~5 页）
   document.querySelectorAll('.sb-item').forEach(function(b, idx) { if (idx < 6) b.classList.toggle('on', idx === i); });
   document.getElementById(['pg5','pg0','pg1','pg2','pg3','pg4'][i]).classList.add('on');
-  document.getElementById('bar').textContent = ['🏠 阿梓的森林','⏱ 专注计时','👗 换装衣柜','✅ 习惯追踪','🎯 目标计划','👤 我的数据'][i];
+  document.getElementById('barTitle').textContent = ['🏠 阿梓的森林','⏱ 专注计时','👗 换装衣柜','✅ 习惯追踪','🎯 目标计划','👤 我的数据'][i];
   if (i === 0) rHome();
   if (i === 2) rGallery();
   if (i === 3) rHabits();
