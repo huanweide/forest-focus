@@ -2,7 +2,7 @@
  * 依赖：core.js (AppState, EventBus)
  */
 
-// ==================== 商品定义 (33个) ====================
+// ==================== 商品定义 (30个) ====================
 const SHOP_ITEMS = [
   // 🎽 服装 (10) - 图标用像素风
   { id:'jk_uniform', name:'JK水手服', icon:'img:star.png', price:30, cat:'outfit', slot:'dress', rarity:'rare', desc:'经典JK制服，学院风满满', img:'src/images/azusa/outfits/jk_uniform.png' },
@@ -28,15 +28,12 @@ const SHOP_ITEMS = [
   { id:'ribbon', name:'蝴蝶结', icon:'img:suit_hearts.png', price:15, cat:'accessory', slot:'head', rarity:'common', desc:'可爱的蝴蝶结发饰', img:'' },
   { id:'necklace', name:'项链', icon:'img:gem.png', price:30, cat:'accessory', slot:'neck', rarity:'rare', desc:'精致的宝石项链', img:'' },
 
-  // 🎨 场景背景 (10张含阿梓的完整场景)
+  // 🎨 场景背景 (8张含阿梓的完整场景)
   { id:'bg_classroom', name:'教室里的阿梓', icon:'img:book.png', price:30, cat:'scene', slot:'bg', rarity:'rare', desc:'阿梓在教室等你下课', img:'src/images/azusa/outfits/bg_classroom.png' },
   { id:'bg_bedroom', name:'阿梓的卧室', icon:'img:heart.png', price:50, cat:'scene', slot:'bg', rarity:'epic', desc:'阿梓温馨的小窝', img:'src/images/azusa/outfits/bg_bedroom.png' },
-  { id:'bg_garden', name:'花园漫步', icon:'img:star.png', price:40, cat:'scene', slot:'bg', rarity:'rare', desc:'和阿梓在花海中', img:'src/images/azusa/outfits/bg_garden.png' },
-  { id:'bg_shrine', name:'神社祈福', icon:'img:star_gold.png', price:45, cat:'scene', slot:'bg', rarity:'rare', desc:'樱花树下的阿梓', img:'src/images/azusa/outfits/bg_shrine.png' },
   { id:'bg_library', name:'图书馆时光', icon:'img:gem.png', price:35, cat:'scene', slot:'bg', rarity:'rare', desc:'安静的图书馆约会', img:'src/images/azusa/outfits/bg_library.png' },
   { id:'bg_cafe', name:'咖啡馆约会', icon:'img:heart.png', price:40, cat:'scene', slot:'bg', rarity:'rare', desc:'和阿梓喝下午茶', img:'src/images/azusa/outfits/bg_cafe.png' },
   { id:'bg_rooftop', name:'天台夕阳', icon:'img:star_red.png', price:50, cat:'scene', slot:'bg', rarity:'epic', desc:'夕阳下的阿梓，风吹起她的头发', img:'src/images/azusa/outfits/bg_rooftop.png' },
-  { id:'bg_rain', name:'雨中等你', icon:'img:gem_large.png', price:55, cat:'scene', slot:'bg', rarity:'epic', desc:'透明雨伞下的阿梓', img:'src/images/azusa/outfits/bg_rain.png' },
   { id:'bg_festival', name:'夏日祭典', icon:'img:suit_hearts.png', price:50, cat:'scene', slot:'bg', rarity:'epic', desc:'烟火大会上的阿梓', img:'src/images/azusa/outfits/bg_festival.png' },
   { id:'bg_starry', name:'星空下的阿梓', icon:'img:star_gold.png', price:45, cat:'scene', slot:'bg', rarity:'epic', desc:'躺在草地上数星星', img:'src/images/azusa/outfits/bg_starry.png' },
   { id:'bg_azusa_casual', name:'阿梓的私服', icon:'img:suit_hearts.png', price:35, cat:'scene', slot:'bg', rarity:'rare', desc:'阿梓的日常私服装扮', img:'src/images/azusa/outfits/clothing_ref.png' },

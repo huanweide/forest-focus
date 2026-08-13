@@ -22,6 +22,7 @@
   },
   "homepage": "https://github.com/huanweide/forest-focus#readme",
   "dependencies": {
-    "@bubblewrap/core": "^1.24.1"
+    "@bubblewrap/core": "^1.24.1",
+    "heax": "^2.0.4"
   }
 }

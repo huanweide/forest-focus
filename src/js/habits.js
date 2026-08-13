@@ -11,6 +11,7 @@ function addHabit() {
     icon: '✅',
     streak: 0,
     health: 50,
+    tier: 'micro',
     dates: [],
     totalMins: 0,
     totalSessions: 0,
@@ -61,7 +62,7 @@ function toggleHabit(id) {
     h.dates = h.dates.filter(function(d) { return d !== today; });
     h.done = false;
     h.streak = Math.max(0, (h.streak || 1) - 1);
-    h.health = Math.max(0, (h.health || 50) - 5);
+    h.health = HabitHealth.calculateHealthScore(h.dates || [], 'daily', [1,2,3,4,5,6,7]);
     h.totalSessions = Math.max(0, (h.totalSessions || 1) - 1);
     AppState.save();
   } else {

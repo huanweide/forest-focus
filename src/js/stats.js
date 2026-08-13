@@ -516,6 +516,9 @@ function rProfile() {
     '<div class="phase-item"><span class="ph-icon">🔥</span><span class="ph-val">' + filtered.length + '</span>总次数</div>' +
     '<div class="phase-item"><span class="ph-icon">👗</span><span class="ph-val">' + (currentTreeIdx + 1) + '/' + AZUSA_TREES.length + '</span>衣装</div>';
 
+  // 我的森林（种树引擎）
+  if (window.TreeEngine) TreeEngine.mountForest('forestStats', 'forestGrid');
+
   // 成就（由achievements.js渲染）
   if (typeof renderAchievements === 'function') renderAchievements();
 }
@@ -534,6 +537,7 @@ function exportData() {
 function resetAll() {
   if (!confirm('确定删除所有数据？建议先导出备份。')) return;
   habits.length = 0; goals.length = 0; sessions.length = 0;
+  if (AppState.trees) AppState.trees.length = 0;
   AppState.score = 0; totalCompletions = 0; currentTreeIdx = 0;
   ['fh', 'fg', 'fs', 'fsc', 'fstate'].forEach(function(k) { localStorage.removeItem(k); });
   AppState.save();

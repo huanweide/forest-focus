@@ -101,6 +101,7 @@ const Storage = (function() {
       settings: AppState.settings,
       totalCompletions: AppState.totalCompletions,
       score: AppState.score,
+      trees: AppState.trees,
     };
 
     // 先存备份（单一真相源 fstate 的迁移前快照），便于异常时恢复
@@ -143,6 +144,7 @@ const Storage = (function() {
         settings: state.settings || {},
         totalCompletions: state.totalCompletions || 0,
         score: state.score || 0,
+        trees: state.trees || [],
       };
     }
     return _loadLegacy();
@@ -169,9 +171,10 @@ const Storage = (function() {
       streakFreezes: parseInt(localStorage.getItem('ffreeze') || '0'),
       darkMode: localStorage.getItem('fdark') === '1',
       settings: {},
-      totalCompletions: 0,
-      score: parseInt(localStorage.getItem('fsc') || '0'),
-    };
+        totalCompletions: 0,
+        score: parseInt(localStorage.getItem('fsc') || '0'),
+        trees: [],
+      };
   }
 
   function exportJSON() {
@@ -226,6 +229,7 @@ const AppState = (function() {
     settings: _loaded.settings,
     totalCompletions: _loaded.totalCompletions || _loaded.sessions.filter(function(s) { return s.completed; }).length,
     score: _loaded.score,
+    trees: _loaded.trees,
   };
 
   function get(key) {
@@ -292,7 +296,12 @@ const AppState = (function() {
     if (!h) return;
     h.done = true;
     h.streak = (h.streak || 0) + 1;
-    h.health = Math.min(100, (h.health || 50) + 5);
+    // 健康度：移植自 Flutter 的 70%近14天 + 30%历史 算法（替换原朴素 +5）
+    h.health = HabitHealth.calculateHealthScore(h.dates || [], 'daily', [1,2,3,4,5,6,7]);
+    // 微习惯阶梯：连续达标升级 / 健康过低(≈近期多次断签)降级
+    var curTier = h.tier || 'micro';
+    var nextTier = HabitHealth.calculateNextTier(curTier, (h.streak || 0), (h.health < 30 ? 7 : 0));
+    if (nextTier !== curTier) h.tier = nextTier;
     h.dates = h.dates || [];
     var today = Utils.today();
     if (!h.dates.includes(today)) h.dates.push(today);
@@ -364,6 +373,7 @@ const AppState = (function() {
     goals: _state.goals,
     totalCompletions: _state.totalCompletions,
     score: _state.score,
+    trees: _state.trees,
 
     // 币
     coins: _state.coins,

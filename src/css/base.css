@@ -1,32 +1,14 @@
 /* base.css - 通用组件：导航栏、TabBar、卡片、按钮、Toast、设置 */
-.appbar,.tabbar,.page{
-  display:none;padding:0 12px 90px;position:relative;z-index:1;
-  animation:fIn .25s ease;
-}
-.appbar{
-  background:var(--gd);color:#fff;padding:14px 16px;
-  text-align:center;font-weight:800;font-size:18px;
-  position:sticky;top:0;z-index:10;letter-spacing:1px;
-  box-shadow:0 2px 12px rgba(124,92,191,.2);
-}
-.tabbar{
-  position:fixed;bottom:0;left:0;right:0;background:var(--c);display:flex;
-  border-top:1px solid rgba(124,92,191,.1);z-index:10;
-  padding-bottom:env(safe-area-inset-bottom,0);
-  box-shadow:0 -2px 10px rgba(0,0,0,.04);
-}
-.tab{
-  flex:1;text-align:center;padding:8px 0 6px;font-size:11px;
-  color:var(--gr);transition:all .2s;cursor:pointer;position:relative;
-}
+/* 每个元素的display单独声明，避免级联冲突 */
+.appbar{padding:0 12px}
+.page{display:none!important}
+.appbar{background:var(--gd);color:#fff;padding:14px 16px;text-align:center;font-weight:800;font-size:18px;position:sticky;top:0;z-index:10;letter-spacing:1px;box-shadow:0 2px 12px rgba(124,92,191,.2);animation:fIn .25s ease}
+.tabbar{position:fixed;bottom:0;left:0;right:0;background:var(--c);display:flex!important;border-top:1px solid rgba(124,92,191,.1);z-index:10;padding-bottom:env(safe-area-inset-bottom,0);box-shadow:0 -2px 10px rgba(0,0,0,.04)}
+.tab{flex:1;text-align:center;padding:8px 0 6px;font-size:11px;color:var(--gr);transition:all .2s;cursor:pointer;position:relative;z-index:11;pointer-events:auto!important}
 .tab.on{color:var(--g);font-weight:700}
-.tab.on::after{
-  content:'';position:absolute;top:0;left:50%;transform:translateX(-50%);
-  width:20px;height:3px;border-radius:2px;background:var(--gd);
-}
+.tab.on::after{content:'';position:absolute;top:0;left:50%;transform:translateX(-50%);width:20px;height:3px;border-radius:2px;background:var(--gd)}
 .tab .ic{font-size:21px;display:block;margin-bottom:1px}
-
-.page.on{display:block}
+.page.on{display:block!important}
 
 /* 响应式容器：手机 360 上限，桌面由 desktop.css 放宽 */
 .container{ max-width:360px; margin:0 auto; }
@@ -162,3 +144,11 @@ html { scroll-behavior: smooth; }
 .share-btn{flex:1;padding:13px;border:none;border-radius:14px;font-size:14px;font-weight:700;cursor:pointer;background:#eee;color:#333}
 .share-btn.primary{background:var(--gd);color:#fff;box-shadow:0 4px 14px rgba(124,92,191,.3)}
 .share-tip{font-size:12px;color:var(--gr);text-align:center;margin-top:12px;min-height:16px}
+
+/* 我的森林（种树引擎） */
+.forest-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(84px,1fr));gap:10px;margin-top:10px}
+.forest-cell{background:linear-gradient(180deg,rgba(124,92,191,.06),rgba(124,92,191,.02));border-radius:14px;padding:8px 4px;text-align:center;box-shadow:var(--sh);transition:transform .15s}
+.forest-cell:hover{transform:translateY(-3px)}
+.forest-svg{width:100%;height:76px;display:flex;align-items:flex-end;justify-content:center}
+.forest-svg svg{width:auto;height:100%}
+.forest-cap{font-size:11px;color:var(--gr);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
