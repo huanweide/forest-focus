@@ -253,13 +253,59 @@
         var emoji = '🌳';
         for (var k = 0; k < TYPES.length; k++) if (TYPES[k].key === t.type) emoji = TYPES[k].emoji;
         var prog = (t.stage === 'mature' || t.stage === 'withered' || t.stage === 'damaged') ? 1 : 0.6;
-        html += '<div class="forest-cell" title="' + nm + ' · ' + (STAGE_NAME[t.stage] || t.stage) + ' · ' + (t.minutes || 0) + '分钟">' +
+        html += '<div class="forest-cell" data-tid="' + t.id + '" title="' + nm + ' · ' + (STAGE_NAME[t.stage] || t.stage) + ' · ' + (t.minutes || 0) + '分钟（点击看详情）">' +
           '<div class="forest-svg">' + renderTreeSVG(t.type, t.stage, prog) + '</div>' +
           '<div class="forest-cap">' + emoji + ' ' + nm + '</div>' +
           '</div>';
       }
       gridEl.innerHTML = html;
+      // 事件委托：点击单棵树弹出详情（只绑一次，innerHTML 重渲染不重复绑定）
+      if (!gridEl._detailBound) {
+        gridEl.addEventListener('click', function (e) {
+          var cell = e.target && e.target.closest ? e.target.closest('.forest-cell') : null;
+          if (!cell) return;
+          var id = cell.getAttribute('data-tid');
+          var tree = null, arr = AppState.trees || [];
+          for (var j = 0; j < arr.length; j++) if (arr[j].id === id) { tree = arr[j]; break; }
+          if (tree) TreeEngine.showTreeDetail(tree);
+        });
+        gridEl._detailBound = true;
+      }
     }
+  }
+
+  // ==================== 单棵树详情弹窗 ====================
+  function showTreeDetail(tree) {
+    var modal = document.getElementById('treeDetail');
+    if (!modal) return;
+    var nm = displayName(tree.type);
+    var emoji = '🌳';
+    for (var k = 0; k < TYPES.length; k++) if (TYPES[k].key === tree.type) emoji = TYPES[k].emoji;
+    var prog = (tree.stage === 'mature' || tree.stage === 'withered' || tree.stage === 'damaged') ? 1 : 0.6;
+    var elName = document.getElementById('tdName');
+    if (elName) elName.textContent = emoji + ' ' + nm;
+    var elSvg = document.getElementById('tdSvg');
+    if (elSvg) elSvg.innerHTML = renderTreeSVG(tree.type, tree.stage, prog);
+    var rows = document.getElementById('tdRows');
+    if (rows) {
+      var planted = new Date(tree.plantedAt);
+      var pad = function (n) { return String(n).padStart(2, '0'); };
+      var dateStr = planted.getFullYear() + '-' + pad(planted.getMonth() + 1) + '-' + pad(planted.getDate()) +
+        ' ' + pad(planted.getHours()) + ':' + pad(planted.getMinutes());
+      var isDead = (tree.stage === 'withered');
+      var statusTxt = isDead ? '🥀 枯萎（曾放弃）' : (tree.stage === 'damaged' ? '💔 受伤' : '🌳 已长成');
+      rows.innerHTML =
+        '<div class="td-row"><span>状态</span><b style="color:' + (isDead ? '#8D6E63' : '#66BB6A') + '">' + statusTxt + '</b></div>' +
+        '<div class="td-row"><span>阶段</span><b>' + (STAGE_NAME[tree.stage] || tree.stage) + '</b></div>' +
+        '<div class="td-row"><span>专注时长</span><b>' + (tree.minutes || 0) + ' 分钟</b></div>' +
+        '<div class="td-row"><span>获得积分</span><b>🌟 ' + (tree.earnedPoints || 0) + '</b></div>' +
+        '<div class="td-row"><span>种下时间</span><b>' + dateStr + '</b></div>';
+    }
+    modal.classList.add('show');
+  }
+  function closeTreeDetail() {
+    var modal = document.getElementById('treeDetail');
+    if (modal) modal.classList.remove('show');
   }
 
   // ==================== 事件订阅：专注完成/放弃 → 自动种树 ====================
@@ -285,6 +331,8 @@
     witheredCount: witheredCount,
     countByType: countByType,
     renderTreeSVG: renderTreeSVG,
-    mountForest: mountForest
+    mountForest: mountForest,
+    showTreeDetail: showTreeDetail,
+    closeTreeDetail: closeTreeDetail
   };
 })(window);

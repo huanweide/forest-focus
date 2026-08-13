@@ -147,8 +147,23 @@ html { scroll-behavior: smooth; }
 
 /* 我的森林（种树引擎） */
 .forest-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(84px,1fr));gap:10px;margin-top:10px}
-.forest-cell{background:linear-gradient(180deg,rgba(124,92,191,.06),rgba(124,92,191,.02));border-radius:14px;padding:8px 4px;text-align:center;box-shadow:var(--sh);transition:transform .15s}
-.forest-cell:hover{transform:translateY(-3px)}
+.forest-cell{background:linear-gradient(180deg,rgba(124,92,191,.06),rgba(124,92,191,.02));border-radius:14px;padding:8px 4px;text-align:center;box-shadow:var(--sh);transition:transform .15s;cursor:pointer}
+.forest-cell:hover{transform:translateY(-3px) scale(1.04);box-shadow:0 6px 18px rgba(124,92,191,.25)}
+.forest-cell:active{transform:scale(.97)}
 .forest-svg{width:100%;height:76px;display:flex;align-items:flex-end;justify-content:center}
 .forest-svg svg{width:auto;height:100%}
 .forest-cap{font-size:11px;color:var(--gr);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+/* 单棵树详情弹窗 */
+.tree-detail{position:fixed;inset:0;display:none;align-items:center;justify-content:center;z-index:500;padding:20px}
+.tree-detail.show{display:flex;animation:fIn .2s ease}
+.tree-detail .td-mask{position:absolute;inset:0;background:rgba(20,16,40,.5)}
+.tree-detail .td-card{position:relative;background:var(--c);border-radius:20px;padding:20px;max-width:320px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,.3)}
+.tree-detail .td-close{position:absolute;top:12px;right:12px;width:30px;height:30px;border-radius:50%;border:none;background:#eee;font-size:16px;cursor:pointer}
+.tree-detail .td-svg{height:200px;display:flex;align-items:flex-end;justify-content:center}
+.tree-detail .td-svg svg{height:100%;width:auto}
+.tree-detail .td-row{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid rgba(124,92,191,.1);font-size:14px}
+.tree-detail .td-row span{color:var(--gr)}
+
+/* 习惯健康度阶梯徽标（微习惯/普通/挑战） */
+.ht-tier{font-size:10px;color:#7C5CBF;background:rgba(124,92,191,.12);border-radius:8px;padding:1px 6px;margin-left:4px;vertical-align:middle;white-space:nowrap}

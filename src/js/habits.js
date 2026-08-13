@@ -24,6 +24,14 @@ function addHabit() {
   toast('✅ 习惯已添加！');
 }
 
+// 健康度 → 颜色（红/黄/绿），让低健康习惯一眼可辨「该补打卡了」
+// <30 红（危险）、30~70 黄（注意）、>=70 绿（健康）
+function healthColor(h) {
+  if (h < 30) return '#EF5350';
+  if (h < 70) return '#FFA726';
+  return '#66BB6A';
+}
+
 function rHabits() {
   var list = document.getElementById('habitsList');
   var active = habits.filter(function(h) { return !h.archived; });
@@ -34,18 +42,20 @@ function rHabits() {
   }
   var colors = ['#7C5CBF', '#FF7043', '#66BB6A', '#42A5F5', '#FFA726', '#AB47BC', '#26A69A', '#EF5350'];
   list.innerHTML = active.map(function(h, i) {
-    var color = colors[i % colors.length];
-    var healthPct = Math.max(0, h.health || 50);
+    var color = colors[i % colors.length];         // 每条习惯固定身份色（左侧色条）
+    var healthPct = Math.max(0, Math.min(100, h.health || 50));
+    var hc = healthColor(healthPct);               // 健康条按健康度着色
+    var tierName = (window.HabitHealth && HabitHealth.TIER_NAME) ? (HabitHealth.TIER_NAME[h.tier] || '') : '';
     var today = Utils.today();
     var todayDone = h.dates && h.dates.includes(today);
-    return '<div class="ht-row" style="margin-bottom:8px;padding:8px;background:var(--c);border-radius:12px;box-shadow:var(--sh)">' +
+    return '<div class="ht-row" style="margin-bottom:8px;padding:8px 8px 8px 12px;background:var(--c);border-radius:12px;box-shadow:var(--sh);border-left:5px solid ' + color + '">' +
       '<div class="ht-ck' + (todayDone ? ' done' : '') + '" onclick="toggleHabit(\'' + h.id + '\')">' + (todayDone ? '✅' : '○') + '</div>' +
       '<div class="ht-info">' +
-        '<div class="ht-n">' + Utils.esc(h.name) + '</div>' +
+        '<div class="ht-n">' + Utils.esc(h.name) + (tierName ? ' <span class="ht-tier">' + Utils.esc(tierName) + '</span>' : '') + '</div>' +
         '<div class="ht-d">🔥 ' + (h.streak || 0) + '天 · 总' + (h.totalSessions || 0) + '次' + (h.totalMins ? ' · ' + Utils.fmtMins(h.totalMins) : '') + '</div>' +
-        '<div class="ht-bar"><div class="ht-fill" style="width:' + healthPct + '%;background:' + color + '"></div></div>' +
+        '<div class="ht-bar"><div class="ht-fill" style="width:' + healthPct + '%;background:' + hc + '"></div></div>' +
       '</div>' +
-      '<div class="ht-s">' + healthPct + '<span>健康</span></div>' +
+      '<div class="ht-s" style="color:' + hc + '">' + healthPct + '<span>健康</span></div>' +
       '<button style="background:none;border:none;font-size:14px;cursor:pointer;padding:4px" onclick="editHabitName(\'' + h.id + '\')">✏️</button>' +
       '<button style="background:none;border:none;font-size:14px;cursor:pointer;padding:4px" onclick="deleteHabit(\'' + h.id + '\')">🗑</button>' +
       '</div>';

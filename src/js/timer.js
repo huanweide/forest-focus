@@ -31,6 +31,7 @@ var totalCompletions = AppState.totalCompletions;
 // ==================== 计时器状态 ====================
 const DURS = [20, 25, 30, 45, 60];
 var timerId = null, elapsed = 0, totalSec = 1500, isBreak = false, lockExits = 0;
+var startTs = 0, breakTs = 0; // 计时基准时间戳，避免后台标签页 setInterval 节流造成计时漂移
 var selectedTask = null;
 var timerMode = 'countdown';   // countdown | countup | custom
 var isCountup = false;
@@ -162,6 +163,7 @@ function start() {
     totalSec = 0;
   }
   elapsed = 0; isBreak = false; lockExits = 0;
+  startTs = Date.now(); // 计时基准：之后每秒按真实墙钟时间算 elapsed
   document.getElementById('btnGo').style.display = 'none';
   document.getElementById('btnStop').style.display = 'block';
   if (isCountup) {
@@ -185,7 +187,7 @@ function start() {
 }
 
 function tick() {
-  elapsed++;
+  elapsed = Math.floor((Date.now() - startTs) / 1000); // 用墙钟时间，免疫后台节流
   if (isCountup) {
     var em = Math.floor(elapsed / 60), es = elapsed % 60;
     document.getElementById('time').textContent = em + ':' + (es < 10 ? '0' : '') + es;
@@ -204,6 +206,8 @@ function tick() {
 }
 
 function onDone() {
+  // 按墙钟重算，避免后台标签页节流后点击结算时 elapsed 陈旧导致分钟数偏小
+  if (startTs) elapsed = Math.floor((Date.now() - startTs) / 1000);
   document.getElementById('status').textContent = '🎉 专注完成！';
   azusaCelebrate();
   document.getElementById('btnStop').style.display = 'none';
@@ -292,7 +296,7 @@ function finishCountup() {
 
 function startBreak() {
   if (timerId) return;
-  elapsed = 0; totalSec = 300; isBreak = true;
+  elapsed = 0; totalSec = 300; isBreak = true; breakTs = Date.now();
   document.getElementById('status').textContent = '歇一会 ☕';
   var char = document.getElementById('azusaChar');
   if (char) { char.classList.remove('full','growing'); char.classList.add('seed'); setExpression('sleepy'); }
@@ -301,7 +305,7 @@ function startBreak() {
   document.getElementById('btnGo').onclick = start;
   drawRing(0); updateAzusaGrowth(0);
   timerId = setInterval(function() {
-    elapsed++;
+    elapsed = Math.floor((Date.now() - breakTs) / 1000);
     var rem = Math.max(0, totalSec - elapsed);
     var m = Math.floor(rem / 60), s = rem % 60;
     document.getElementById('time').textContent = m + ':' + (s < 10 ? '0' : '') + s;
