@@ -2,7 +2,14 @@
  * 依赖：core.js (AppState, sessions)
  */
 
-var chatHistory = JSON.parse(localStorage.getItem('fchat') || '[]');
+var chatHistory;
+try {
+  chatHistory = JSON.parse(localStorage.getItem('fchat') || '[]');
+  if (!Array.isArray(chatHistory)) chatHistory = [];
+} catch (e) {
+  // localStorage 中 fchat 损坏（部分写入/手动编辑）→ 回退空历史，避免整个聊天模块初始化崩溃
+  chatHistory = [];
+}
 var dsApiKey = localStorage.getItem('ds_key') || '';
 var chatOpen = false;
 
