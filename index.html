@@ -211,9 +211,20 @@
 
 <!-- 我的森林（种树引擎） -->
 <div class="card" style="margin:10px 0;padding:12px">
-  <h3 class="sec-title" style="margin-bottom:8px">🌳 我的森林 <span class="tip">| 专注种树·放弃会枯萎</span></h3>
+  <h3 class="sec-title" style="margin-bottom:8px">🌳 我的森林 <span class="tip">| 专注种树·放弃会枯萎（点树看详情）</span></h3>
   <div class="stats-summary" id="forestStats"></div>
   <div class="forest-grid" id="forestGrid"></div>
+</div>
+
+<!-- 单棵树详情弹窗 -->
+<div class="tree-detail" id="treeDetail">
+  <div class="td-mask" onclick="TreeEngine.closeTreeDetail()"></div>
+  <div class="td-card">
+    <button class="td-close" onclick="TreeEngine.closeTreeDetail()">✕</button>
+    <div class="td-svg" id="tdSvg"></div>
+    <h3 id="tdName" style="text-align:center;margin:6px 0"></h3>
+    <div class="td-rows" id="tdRows"></div>
+  </div>
 </div>
 
 <!-- Canvas 图表区 -->
