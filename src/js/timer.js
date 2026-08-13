@@ -5,11 +5,11 @@
 // ==================== 阿梓树系统(衣装) ====================
 const AZUSA_TREES = [
   {id:'seed',name:'🌰 阿梓种子',img:'',emoji:'🌰',unlock:0,sub:'初始状态 · 种树解锁阿梓衣装',color:'#8D6E63'},
-  {id:'default',name:'🌸 默认衣装',img:'src/images/azusa/azusa_default_hd.jpg',unlock:1,sub:'🎯 完成1次专注解锁默认衣装',color:'#90CAF9'},
-  {id:'regular',name:'👘 常服阿梓',img:'src/images/azusa/azusa_regular.jpg',unlock:3,sub:'🎯 完成3次专注解锁常服',color:'#A5D6A7'},
+  {id:'default',name:'🌸 默认衣装',img:'src/images/azusa/azusa_default_hd_nobg.png',unlock:1,sub:'🎯 完成1次专注解锁默认衣装',color:'#90CAF9'},
+  {id:'regular',name:'👘 常服阿梓',img:'src/images/azusa/azusa_regular_nobg.png',unlock:3,sub:'🎯 完成3次专注解锁常服',color:'#A5D6A7'},
   {id:'newyear',name:'🎊 新年衣装',img:'src/images/azusa/azusa_newyear.png',unlock:5,sub:'🎯 完成5次专注解锁新年衣装',color:'#EF5350'},
   {id:'summer',name:'🏖 夏日祭',img:'src/images/azusa/azusa_summer_festival.jpg',unlock:10,sub:'🎯 完成10次专注解锁夏日祭衣装',color:'#FF7043'},
-  {id:'panda',name:'🐼 熊猫阿梓',img:'src/images/azusa/azusa_panda_outfit.jpg',unlock:18,sub:'🎯 完成18次专注解锁熊猫服',color:'#4CAF50'},
+  {id:'panda',name:'🐼 熊猫阿梓',img:'src/images/azusa/azusa_panda_outfit_nobg.png',unlock:18,sub:'🎯 完成18次专注解锁熊猫服',color:'#4CAF50'},
   {id:'rabbit',name:'🐰 六一兔梓',img:'src/images/azusa/azusa_rabbit_2024.jpg',unlock:28,sub:'🎯 完成28次专注解锁兔梓形象',color:'#FF80AB'},
   {id:'frog',name:'🐸 青蛙公主',img:'src/images/azusa/azusa_frog.jpg',unlock:38,sub:'🎯 完成38次专注解锁青蛙公主',color:'#66BB6A'},
   {id:'butterfly',name:'🦋 蝴蝶阿梓',img:'src/images/azusa/azusa_butterfly.jpg',unlock:50,sub:'🎯 完成50次专注解锁蝴蝶衣装',color:'#CE93D8'},

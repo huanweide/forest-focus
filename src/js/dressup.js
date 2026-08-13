@@ -313,7 +313,7 @@ function applyGlobalBackground(imgPath) {
   }
   style.textContent = imgPath
     ? 'body::before{opacity:0.02 !important}body{background-color:rgba(0,0,0,.3)}'
-    : 'body::before{opacity:.06}body{background-color:transparent}';
+    : 'body::before{opacity:.03}body{background-color:transparent}';
   EventBus.emit('background:changed', { src: imgPath });
 }
 

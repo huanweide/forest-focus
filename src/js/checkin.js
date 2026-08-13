@@ -174,21 +174,7 @@ function getHabitCheckinStreak(habitId) {
 }
 
 // ==================== 自动签到弹窗 ====================
-var _checkinShownToday = false;
-function autoShowCheckin() {
-  if (_checkinShownToday) return;
-  var today = Utils.today();
-  if (localStorage.getItem('fcheckinShown') === today) return;
-
-  var dates = AppState.checkinDates || [];
-  if (dates.includes(today)) return;
-
-  _checkinShownToday = true;
-  localStorage.setItem('fcheckinShown', today);
-  setTimeout(function() { showCheckinCard(); }, 1500);
-}
-
-// 监听第一次打开
-setTimeout(autoShowCheckin, 2000);
+// [maxloop] 不再自动弹出签到卡片，避免遮挡首页（用户可从「我的数据」手动签到）
+function autoShowCheckin() { return; }
 
 console.log('📅 签到系统已加载: 补签卡=' + makeupCards);

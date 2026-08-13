@@ -24,7 +24,12 @@ function rGoals() {
   var list = document.getElementById('goalsList');
   var active = goals.filter(function(g) { return !g.archived; });
   if (!active.length) {
-    list.innerHTML = '<div style="text-align:center;padding:30px;color:var(--gr)">还没有目标~ 点击上方"+ 新建"添加</div>';
+    list.innerHTML = '<div style="text-align:center;padding:40px 20px;background:var(--c);border-radius:var(--rad);box-shadow:var(--sh);margin:8px 0">' +
+      '<div style="font-size:48px;margin-bottom:8px">🎯</div>' +
+      '<div style="font-size:16px;font-weight:700;color:var(--t);margin-bottom:6px">还没有目标</div>' +
+      '<div style="font-size:13px;color:var(--gr);margin-bottom:16px;line-height:1.5">定个小目标，<br>用番茄钟一步步把它实现吧~</div>' +
+      '<button style="background:var(--gd);color:#fff;border:none;padding:10px 20px;border-radius:14px;font-size:14px;cursor:pointer" onclick="addGoal()">+ 新建第一个目标</button>' +
+      '</div>';
     return;
   }
   list.innerHTML = active.map(function(g) {

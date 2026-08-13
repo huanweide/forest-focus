@@ -7,10 +7,34 @@
 // ==================== 音效管理器 ====================
 var AudioCtx = null;
 var _audioMuted = false;
+// 浏览器策略：AudioContext 必须在用户手势后才能创建/恢复，
+// 否则每次播放都会打印 "was not allowed to start" 警告（加载即刷 25 条）。
+// 因此仅在首个真实手势后再创建，加载阶段保持静默。
+var _audioGestured = false;
+
+function _armAudioUnlock() {
+  function unlock() {
+    _audioGestured = true;
+    var ctx = getAudioCtx();
+    if (ctx && ctx.state === 'suspended') { try { ctx.resume(); } catch (e) {} }
+    window.removeEventListener('pointerdown', unlock);
+    window.removeEventListener('keydown', unlock);
+    window.removeEventListener('touchstart', unlock);
+  }
+  window.addEventListener('pointerdown', unlock);
+  window.addEventListener('keydown', unlock);
+  window.addEventListener('touchstart', unlock);
+}
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', _armAudioUnlock);
+} else {
+  _armAudioUnlock();
+}
 
 function getAudioCtx() {
-  if (!AudioCtx) {
-    try { AudioCtx = new (window.AudioContext || window.webkitAudioContext)(); } catch(e) {}
+  // 手势前不创建，避免 autoplay 警告刷屏；首次手势后由 _armAudioUnlock 触发创建
+  if (!AudioCtx && _audioGestured) {
+    try { AudioCtx = new (window.AudioContext || window.webkitAudioContext)(); } catch (e) {}
   }
   return AudioCtx;
 }
@@ -408,17 +432,13 @@ function randomBubble() {
 }
 
 function showBubble(msg) {
-  var wrap = document.getElementById('bubbleWrap');
-  var text = document.getElementById('bubbleText');
-  if (!wrap || !text) return;
-  text.textContent = msg;
-  wrap.style.display = 'block';
-  text.className = 'bubble bubble-fade';
+  var bubble = document.getElementById('homeAzusaBubble');
+  if (!bubble) return;
+  bubble.textContent = msg;
+  bubble.style.display = 'block';
   clearTimeout(bubbleTimer);
-  bubbleTimer = setTimeout(function() { wrap.style.display = 'none'; }, 5000);
+  bubbleTimer = setTimeout(function() { bubble.style.display = 'none'; }, 5000);
 }
-
-function periodicBubble() { randomBubble(); }
 
 // ==================== 通知提醒 ====================
 var notifyGranted = false;
