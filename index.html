@@ -8,7 +8,8 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="src/images/azusa/icon-192.png">
-<title>阿梓的森林</title>
+  <title>阿梓的森林</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E🌳%3C/text%3E%3C/svg%3E">
 <!-- BUILD:CSS -->
 <link rel="stylesheet" href="src/css/variables.css">
 <link rel="stylesheet" href="src/css/base.css">
@@ -34,7 +35,6 @@
   <button class="sb-item" onclick="goTab(4)"><span class="ic">🎯</span> 目标计划</button>
   <button class="sb-item" onclick="goTab(5)"><span class="ic">👤</span> 我的数据</button>
   <div class="sb-spacer"></div>
-  <button class="sb-item" onclick="openShare()"><span class="ic">📤</span> 分享</button>
   <div class="sb-foot">本地存储 · 离线可用<br>专注种树，静心成长 🌿</div>
 </nav>
 
@@ -58,9 +58,6 @@
 <button onclick="sendChat()">➤</button>
 </div>
 </div>
-
-<!-- ===== DIALOGUE BUBBLE ===== -->
-<div class="bubble-wrap" id="bubbleWrap" style="display:none"><div class="bubble" id="bubbleText"></div></div>
 
 <!-- ===== LOCK OVERLAY ===== -->
 <div class="lock-overlay" id="lockOverlay">
@@ -113,12 +110,8 @@
 <button class="home-btn primary" onclick="goTab(1)">🌱 开始专注</button>
 <button class="home-btn secondary" onclick="goTab(2)">👗 衣柜</button>
 <button class="home-btn secondary" onclick="showBackgroundPanel()">🖼 背景</button>
-</div>
-<div class="home-actions">
 <button class="home-btn secondary" onclick="goTab(5)">📊 统计</button>
-<button class="home-btn secondary" onclick="randomBubble()">💬 戳阿梓</button>
-<button class="home-btn secondary" onclick="window.open('download/','_blank')">📲 下载App</button>
-	</div>
+</div>
 </div>
 <div class="container" style="padding:12px;background:var(--c);border-radius:14px;box-shadow:var(--sh)" id="homeSettings">
 <div class="setting-row"><span style="font-size:13px">⏱ 计时页设为首页</span><div class="toggle" onclick="toggleTimerDefault()" id="timerToggle"></div></div>
@@ -284,16 +277,6 @@
 
 <!-- ===== REWARD BOX ===== -->
 <div class="box-overlay hidden" id="boxOverlay"><div class="box"><div class="chest">🎁</div><div class="reward" id="boxReward"></div><div class="reward-text" id="boxText"></div><button class="box-btn" onclick="closeBox()">收下！</button></div></div>
-
-<div class="tabbar" id="tabbar">
-<div class="tab on" onclick="try{goTab(0)}catch(e){document.getElementById('dbg').textContent+=' E0:'+e.message}" onpointerdown="this.style.outline='2px solid red';document.getElementById('dbg').textContent='TAB0-POINTER-DOWN'" style="z-index:999!important"><span class="ic">🏠</span>首页</div>
-<div class="tab" onclick="try{goTab(1)}catch(e){document.getElementById('dbg').textContent+=' E1:'+e.message}" style="z-index:999!important"><span class="ic">⏱</span>计时</div>
-<div class="tab" onclick="try{goTab(2)}catch(e){document.getElementById('dbg').textContent+=' E2:'+e.message}" style="z-index:999!important"><span class="ic">👗</span>衣柜</div>
-<div class="tab" onclick="try{goTab(3)}catch(e){document.getElementById('dbg').textContent+=' E3:'+e.message}" style="z-index:999!important"><span class="ic">✅</span>习惯</div>
-<div class="tab" onclick="try{goTab(4)}catch(e){document.getElementById('dbg').textContent+=' E4:'+e.message}" style="z-index:999!important"><span class="ic">🎯</span>目标</div>
-<div class="tab" onclick="try{goTab(5)}catch(e){document.getElementById('dbg').textContent+=' E5:'+e.message}" style="z-index:999!important"><span class="ic">👤</span>我的</div>
-</div>
-<div id="dbg" style="position:fixed;top:0;left:0;z-index:99999;background:#000;color:#0f0;font-size:10px;padding:4px;max-width:100%;word-break:break-all;opacity:.95">DBG:等待点击tab...</div>
 
 <div class="toast" id="toast"></div>
 
