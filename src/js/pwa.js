@@ -16,7 +16,7 @@ const PHYSICS = {
 };
 var chibiState = {
   x:0, y:0, oldX:0, oldY:0, vx:0, vy:0,  // Verlet: oldX/Y存储上一帧位置
-  dragging:false, flying:false, settled:true,
+  dragging:false, flying:false, settled:true, onFloor:false,
   startX:0, startY:0, origX:0, origY:0,
   lastX:0, lastY:0, lastT:0,
   velHistory:[]  // 速度平滑：存储最近N帧(dx,dy,dt)
@@ -93,7 +93,7 @@ function initChibiPhysics() {
     chibiState.lastX = e.clientX;
     chibiState.lastY = e.clientY;
     chibiState.lastT = now;
-    wrap.style.transform = 'translate(' + chibiState.x + 'px,' + chibiState.y + 'px)';
+    wrap.style.transform = 'translate(calc(-50% + ' + chibiState.x + 'px), calc(-50% + ' + chibiState.y + 'px))';
   });
 
   wrap.addEventListener('pointerup', function(e) {
@@ -243,12 +243,15 @@ function startChibiPhysics() {
       hitWall = true;
     }
     if (chibiState.y > floorY) {
+      if (!chibiState.onFloor) chibiState.onFloor = true;
       chibiState.y = floorY;
       chibiState.vy = -Math.abs(chibiState.vy)*PHYSICS.FLOOR_BOUNCE;
       chibiState.vx *= PHYSICS.GROUND_FRICTION;
       chibiState.oldY = chibiState.y + chibiState.vy;
       hitWall = true;
       if (Math.abs(chibiState.vy) < 0.4) { chibiState.vy = 0; chibiState.vx *= 0.7; chibiState.oldY = chibiState.y; }
+    } else {
+      chibiState.onFloor = false;
     }
     if (chibiState.y < ceilY) {
       var overshoot = ceilY - chibiState.y;
@@ -257,8 +260,8 @@ function startChibiPhysics() {
       chibiState.oldY = chibiState.y - chibiState.vy;
       hitWall = true;
     }
-    // 碰撞火花
-    if (hitWall) {
+    // 碰撞火花：仅当速度足够或刚触地瞬间，避免贴地每帧刷屏
+    if (hitWall && (Math.abs(chibiState.vx) > 1.2 || Math.abs(chibiState.vy) > 1.2 || !chibiState.onFloor)) {
       var ci = wrap.querySelector('.azusa-chibi');
       if (ci) { ci.classList.add('squashing'); setTimeout(function(){ ci.classList.remove('squashing'); }, 350); }
       spawnChibiSpark(wrap);
@@ -271,7 +274,7 @@ function startChibiPhysics() {
       wrap.classList.remove('thrown');
       wrap.style.setProperty('--rot', '0deg'); wrap.style.setProperty('--scl', '1');
       chibiAnimId = null;
-      wrap.style.transform = 'translate(' + chibiState.x + 'px,' + chibiState.y + 'px)';
+      wrap.style.transform = 'translate(calc(-50% + ' + chibiState.x + 'px), calc(-50% + ' + chibiState.y + 'px))';
       startChibiWander();
       return;
     }
@@ -281,7 +284,7 @@ function startChibiPhysics() {
     wrap.style.setProperty('--rot', rot+'deg');
     wrap.style.setProperty('--scl', Math.min(1.3, 1+speed*0.006));
 
-    wrap.style.transform = 'translate('+chibiState.x+'px,'+chibiState.y+'px)';
+    wrap.style.transform = 'translate(calc(-50% + '+chibiState.x+'px), calc(-50% + '+chibiState.y+'px))';
     chibiAnimId = requestAnimationFrame(step);
   }
   chibiAnimId = requestAnimationFrame(step);
@@ -329,7 +332,7 @@ function resetChibi() {
     p = 1 - Math.pow(1 - p, 3);
     chibiState.x = sx + (0 - sx) * p;
     chibiState.y = sy + (0 - sy) * p;
-    wrap.style.transform = 'translate(' + chibiState.x + 'px,' + chibiState.y + 'px)';
+    wrap.style.transform = 'translate(calc(-50% + ' + chibiState.x + 'px), calc(-50% + ' + chibiState.y + 'px))';
     wrap.style.setProperty('--rot', '0deg');
     wrap.style.setProperty('--scl', '1');
     if (p < 1) {
@@ -340,7 +343,7 @@ function resetChibi() {
       chibiState.oldX = 0; chibiState.oldY = 0;
       chibiState.settled = true;
       chibiResetAnimId = null;
-      wrap.style.transform = 'translate(0px, 0px)';
+      wrap.style.transform = 'translate(-50%, -50%)';
       startChibiWander();
     }
   }

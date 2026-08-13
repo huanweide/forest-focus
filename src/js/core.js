@@ -363,10 +363,12 @@ const AppState = (function() {
     habits: _state.habits,
     goals: _state.goals,
     totalCompletions: _state.totalCompletions,
-    score: _state.score,
+    get score() { return _state.score; },
+    set score(v) { _state.score = v; },
 
-    // 币
-    coins: _state.coins,
+    // 币（getter/setter 代理 _state，避免基本类型值拷贝导致读写不同步）
+    get coins() { return _state.coins; },
+    set coins(v) { _state.coins = v; },
     coinLog: _state.coinLog,
     addCoins: addCoins,
     spendCoins: spendCoins,
@@ -395,8 +397,10 @@ const AppState = (function() {
     betHistory: _state.betHistory,
 
     // 其他
-    mood: _state.mood,
-    streakFreezes: _state.streakFreezes,
+    get mood() { return _state.mood; },
+    set mood(v) { _state.mood = v; },
+    get streakFreezes() { return _state.streakFreezes; },
+    set streakFreezes(v) { _state.streakFreezes = v; },
     darkMode: _state.darkMode,
     settings: _state.settings,
 
