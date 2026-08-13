@@ -1,4 +1,4 @@
-﻿{
+{
   "name": "阿梓的森林 - 番茄钟 · 衣装收集",
   "short_name": "阿梓森林",
   "description": "番茄钟计时 · 种树收集阿梓全部衣装+习惯打卡+成就系统。每次完成专注解锁阿梓新皮肤！",
@@ -6,12 +6,12 @@
   "display": "standalone",
   "background_color": "#f5f3fa",
   "theme_color": "#7C5CBF",
-  "orientation": "portrait",
+  "orientation": "any",
   "lang": "zh-CN",
   "dir": "ltr",
   "scope": ".",
   "categories": ["productivity", "lifestyle"],
-  "iarc_rating_id": "e.g. IARC rating ID",
+  "iarc_rating_id": "",
   "prefer_related_applications": false,
   "icons": [
     {

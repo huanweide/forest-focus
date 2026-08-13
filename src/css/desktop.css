@@ -1,0 +1,91 @@
+/* desktop.css - 桌面优先响应式布局（电脑版为主·日致命）
+ * 仅在 >=860px 视口生效；手机端保持原底部 tabbar 体验不变。
+ * 设计原则：左侧固定导航栏 + 居中宽容器 + 多列栅格 + 卡片悬浮质感。
+ */
+
+/* 侧栏默认隐藏（手机不显示），桌面显示 */
+.sidebar { display: none; }
+
+@media (min-width: 860px) {
+  /* —— 解除手机硬约束 —— */
+  body { padding-bottom: 0; font-size: 15px; }
+  .tabbar { display: none !important; }            /* 桌面隐藏底部 tab */
+  .container { max-width: 1120px !important; }     /* 解除 360px 硬壳 */
+
+  /* —— 左侧固定导航 —— */
+  .sidebar {
+    display: flex; flex-direction: column; gap: 4px;
+    position: fixed; top: 0; left: 0; bottom: 0; width: 232px;
+    background: linear-gradient(180deg, #2a2150, #1d1838);
+    color: #e9e4ff; padding: 20px 14px; z-index: 30;
+    box-shadow: 4px 0 24px rgba(0,0,0,.18);
+  }
+  .sb-brand {
+    font-size: 18px; font-weight: 800; letter-spacing: 1px;
+    padding: 6px 10px 16px; color: #fff; display: flex; align-items: center; gap: 8px;
+  }
+  .sb-brand .sb-logo { font-size: 22px; }
+  .sb-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 11px 14px; border: none; background: transparent;
+    color: #cfc6ef; font-size: 14px; font-weight: 600; cursor: pointer;
+    border-radius: 12px; text-align: left; transition: all .18s;
+  }
+  .sb-item .ic { font-size: 19px; }
+  .sb-item:hover { background: rgba(255,255,255,.08); color: #fff; }
+  .sb-item.on { background: linear-gradient(135deg,#7C5CBF,#9575CD); color: #fff; box-shadow: 0 4px 14px rgba(124,92,191,.4); }
+  .sb-spacer { flex: 1; }
+  .sb-foot { font-size: 11px; color: #8c84b8; padding: 10px; line-height: 1.5; }
+
+  /* —— 顶栏与内容区让出侧栏空间 —— */
+  .appbar {
+    left: 232px; right: 0; padding: 16px 28px; font-size: 20px;
+    text-align: left; display: flex; align-items: center; justify-content: space-between;
+  }
+  .appbar #barTitle { flex: 1; }
+  .page { max-width: 1120px; margin: 0 auto; padding: 18px 28px 40px 260px; }
+
+  /* —— 首页：场景 + 操作双列 —— */
+  #pg5 > .container:first-child { display: grid; grid-template-columns: 1.1fr 1fr; gap: 20px; align-items: start; }
+  #pg5 .home-scene { margin: 0; min-height: 320px; }
+  #pg5 .home-actions { display: flex; flex-wrap: wrap; gap: 10px; }
+  #pg5 .home-actions .home-btn { flex: 1 1 calc(50% - 10px); margin: 0; }
+  #pg5 .daily-quote { margin-top: 0; }
+
+  /* —— 计时页：放大居中 —— */
+  #pg0 > .container { display: flex; flex-direction: column; align-items: center; max-width: 720px; }
+  #pg0 .ring-wrap { transform: scale(1.25); margin: 24px 0; }
+  #pg0 .chips, #pg0 .task-sel, #pg0 .bet-row { width: 100%; max-width: 420px; }
+  #pg0 .btn { max-width: 420px; }
+
+  /* —— 衣柜：多列卡片 —— */
+  #pg1 .tree-gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px,1fr)); gap: 14px; }
+  #pg1 .tg-card { margin: 0; }
+
+  /* —— 习惯/目标：两列 —— */
+  #pg2 #habitsList, #pg3 #goalsList { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  #pg2 .h-row, #pg3 .g-row { margin: 0 !important; }
+
+  /* —— 统计页：多列 —— */
+  #pg4 .charts-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  #pg4 .chart-card { margin: 0; }
+  #pg4 #trendCard { grid-column: 1 / -1; }
+  #pg4 .stats-summary { display: grid; grid-template-columns: repeat(4,1fr); gap: 12px; }
+  #pg4 > div[style*="display:flex;gap:8px"] { display: grid !important; grid-template-columns: 1fr 1fr; }
+  #pg4 .phase-grid { grid-template-columns: repeat(auto-fill, minmax(150px,1fr)); }
+
+  /* —— 卡片悬浮质感（日致命） —— */
+  .card:hover { transform: translateY(-2px); box-shadow: var(--sh-lg); }
+  .home-btn { transition: transform .15s, box-shadow .15s; }
+  .home-btn:hover { transform: translateY(-2px); box-shadow: var(--sh-lg); }
+  .tg-card:hover { transform: translateY(-3px); box-shadow: var(--sh-lg); }
+
+  /* 聊天浮窗在桌面也合理停靠 */
+  .chat-modal { max-width: 420px; right: 24px; left: auto; }
+}
+
+/* 超大屏再放宽一点 */
+@media (min-width: 1400px) {
+  .page { max-width: 1280px; }
+  #pg5 > .container:first-child { grid-template-columns: 1.2fr 1fr; }
+}

@@ -17,11 +17,26 @@
 <link rel="stylesheet" href="src/css/stats.css">
 <link rel="stylesheet" href="src/css/chat.css">
 <link rel="stylesheet" href="src/css/effects.css">
+<link rel="stylesheet" href="src/css/desktop.css">
 <!-- /BUILD:CSS -->
 </head>
 <body>
 
-<div class="appbar" id="bar"><span class="mood-face azusa-live" id="moodIcon" style="font-size:22px;margin-right:4px">😊</span><span id="barTitle">阿梓的森林</span><span style="float:right;display:flex;align-items:center;gap:6px"><span class="coin-display" id="coinDisplay" style="font-size:11px">🪙<span id="coinVal">0</span></span><span style="cursor:pointer;font-size:18px" onclick="toggleDark()" id="darkIcon">🌙</span></span></div>
+<div class="appbar" id="bar"><span class="mood-face azusa-live" id="moodIcon" style="font-size:22px;margin-right:4px">😊</span><span id="barTitle">阿梓的森林</span><span style="float:right;display:flex;align-items:center;gap:6px"><span class="coin-display" id="coinDisplay" style="font-size:11px">🪙<span id="coinVal">0</span></span><span style="cursor:pointer;font-size:18px" onclick="openShare()" title="分享">📤</span><span style="cursor:pointer;font-size:18px" onclick="toggleDark()" id="darkIcon">🌙</span></span></div>
+
+<!-- ===== SIDEBAR (桌面优先导航·手机隐藏) ===== -->
+<nav class="sidebar" id="sidebar">
+  <div class="sb-brand"><span class="sb-logo">🌳</span> 专注森林</div>
+  <button class="sb-item on" onclick="goTab(0)"><span class="ic">🏠</span> 首页</button>
+  <button class="sb-item" onclick="goTab(1)"><span class="ic">⏱</span> 专注计时</button>
+  <button class="sb-item" onclick="goTab(2)"><span class="ic">👗</span> 换装衣柜</button>
+  <button class="sb-item" onclick="goTab(3)"><span class="ic">✅</span> 习惯追踪</button>
+  <button class="sb-item" onclick="goTab(4)"><span class="ic">🎯</span> 目标计划</button>
+  <button class="sb-item" onclick="goTab(5)"><span class="ic">👤</span> 我的数据</button>
+  <div class="sb-spacer"></div>
+  <button class="sb-item" onclick="openShare()"><span class="ic">📤</span> 分享</button>
+  <div class="sb-foot">本地存储 · 离线可用<br>专注种树，静心成长 🌿</div>
+</nav>
 
 <!-- ===== CHAT FAB ===== -->
 <button class="chat-fab" id="chatFab" onclick="toggleChat()">💬<span class="badge" id="chatBadge" style="display:none">1</span></button>
@@ -50,23 +65,23 @@
 <!-- ===== LOCK OVERLAY ===== -->
 <div class="lock-overlay" id="lockOverlay">
 <div class="lo-icon">🌳</div>
-<div class="lo-title" id="lockTitle">阿梓在等你...</div>
-<div class="lo-sub" id="lockMsg">你离开了专注页面<br>阿梓还在等你回来呀~ 🌸</div>
-<button class="lo-btn" style="background:#4CAF50;color:#fff" onclick="resumeFocus()">🌱 回去陪阿梓</button>
+<div class="lo-title" id="lockTitle">专注进行中</div>
+<div class="lo-sub" id="lockMsg">你离开了专注页面<br>回来继续种下这一分钟吧~ 🌿</div>
+<button class="lo-btn" style="background:#4CAF50;color:#fff" onclick="resumeFocus()">🌱 回去继续</button>
 <button class="lo-btn" style="background:rgba(255,255,255,.15);color:#fff" id="lockAbort" onclick="lockAbort()">放弃（还剩 <span id="lockLeft">0</span> 分钟）</button>
-<div class="lock-count">今天已离开 <span id="lockCount">0</span>/3 次 · 超过3次阿梓会伤心的 😢</div>
+<div class="lock-count">今天已离开 <span id="lockCount">0</span>/3 次 · 超过3次本次专注将结束 😢</div>
 </div>
 
 <!-- BUILD:HTML -->
 <!-- ===== HOME PAGE (pg5) ===== -->
 <div class="page on" id="pg5">
-<div style="max-width:360px;margin:0 auto">
+<div class="container">
 <div class="home-scene" id="homeScene">
 <div class="scene-bg-inner">
   <div class="sky-stars" id="homeStars"></div>
   <div class="ground"></div>
 </div>
-<div class="home-mood-badge" id="homeMoodBadge">😊 阿梓心情很好</div>
+<div class="home-mood-badge" id="homeMoodBadge">😊 状态不错</div>
 <!-- 两个角色并排→小精灵+换装阿梓 -->
 <div class="home-chars" id="homeChars">
   <div class="azusa-interactive" id="homeAzusaWrap">
@@ -78,7 +93,7 @@
 	</div>
 
 </div>
-<div class="daily-quote" id="dailyQuote">"阿梓在等你开始今天的专注呢~"</div>
+<div class="daily-quote" id="dailyQuote">"今天也要好好专注呀~"</div>
 <div class="quick-stats" id="quickStats"></div>
 <div id="duoWarning"></div>
 <div class="install-bar hidden" id="installBar" onclick="installApp()">
@@ -105,7 +120,7 @@
 <button class="home-btn secondary" onclick="window.open('download/','_blank')">📲 下载App</button>
 	</div>
 </div>
-<div style="max-width:360px;margin:12px auto;padding:12px;background:var(--c);border-radius:14px;box-shadow:var(--sh)" id="homeSettings">
+<div class="container" style="padding:12px;background:var(--c);border-radius:14px;box-shadow:var(--sh)" id="homeSettings">
 <div class="setting-row"><span style="font-size:13px">⏱ 计时页设为首页</span><div class="toggle" onclick="toggleTimerDefault()" id="timerToggle"></div></div>
 <div style="font-size:11px;color:var(--gr);margin-top:4px">开启后每次打开直接进入计时页面</div>
 </div>
@@ -113,7 +128,7 @@
 
 <!-- ===== FOCUS PAGE ===== -->
 <div class="page" id="pg0">
-<div style="max-width:360px;margin:0 auto">
+<div class="container">
 <!-- 分层角色容器 -->
 <div class="azusa-character seed" id="azusaChar">
   <div class="layer-scene" id="layerScene"></div>
@@ -130,8 +145,16 @@
   <div class="speech-bubble" id="speechBubble" style="display:none"></div>
 </div>
 
-<div class="ring-wrap"><canvas id="ring"></canvas><div class="ring-t"><div class="tm" id="time">25:00</div><div class="lb" id="status">选个目标，阿梓陪你一起种树吧 🌸</div></div></div>
+<div class="ring-wrap"><canvas id="ring"></canvas><div class="ring-t"><div class="tm" id="time">25:00</div><div class="lb" id="status">选个目标，开始专注种树吧 🌿</div></div></div>
 <div class="chips" id="chips"></div>
+<div class="mode-row" id="modeRow">
+  <span class="mode-seg sel" data-mode="countdown" onclick="setTimerMode('countdown')">⏳ 倒数</span>
+  <span class="mode-seg" data-mode="countup" onclick="setTimerMode('countup')">⏱ 正计时</span>
+  <span class="mode-seg" data-mode="custom" onclick="setTimerMode('custom')">🎚 自定义</span>
+</div>
+<div class="custom-row" id="customRow" style="display:none">
+  <label>自定义时长 <input type="number" id="customMin" min="1" max="600" value="25" style="width:72px"> 分钟</label>
+</div>
 <div class="task-sel">
 <select id="taskType" onchange="onTaskType()"><option value="">-- 选任务类型 --</option><option value="habit">✅ 习惯</option><option value="goal">🎯 目标</option><option value="free">🌸 自由种树</option></select>
 <select id="taskPick" style="display:none" onchange="onTaskPick()"></select>
@@ -273,6 +296,21 @@
 <div id="dbg" style="position:fixed;top:0;left:0;z-index:99999;background:#000;color:#0f0;font-size:10px;padding:4px;max-width:100%;word-break:break-all;opacity:.95">DBG:等待点击tab...</div>
 
 <div class="toast" id="toast"></div>
+
+<!-- ===== SHARE MODAL (微信/链接分享) ===== -->
+<div class="share-modal" id="shareModal" onclick="if(event.target===this)closeShare()">
+  <div class="share-card">
+    <button class="ch-close" onclick="closeShare()">✕</button>
+    <div class="share-title">📤 分享今日专注</div>
+    <div class="share-preview" id="sharePreview"></div>
+    <div class="share-actions">
+      <button class="share-btn primary" onclick="shareToWeChat()">💬 分享到微信</button>
+      <button class="share-btn" onclick="copyShareLink()">🔗 复制链接</button>
+    </div>
+    <div class="share-tip" id="shareTip"></div>
+  </div>
+</div>
+<!-- /BUILD:HTML -->
 <!-- /BUILD:HTML -->
 
 <!-- BUILD:JS_CORE -->
@@ -293,6 +331,7 @@
 <script src="src/js/effects.js"></script>
 <script src="src/js/diary.js"></script>
 <script src="src/js/chat.js"></script>
+<script src="src/js/share.js"></script>
 <script src="src/js/pwa.js"></script>
 <!-- /BUILD:JS_MODULES -->
 

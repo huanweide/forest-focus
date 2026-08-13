@@ -32,6 +32,8 @@ var totalCompletions = AppState.totalCompletions;
 const DURS = [20, 25, 30, 45, 60];
 var timerId = null, elapsed = 0, totalSec = 1500, isBreak = false, lockExits = 0;
 var selectedTask = null;
+var timerMode = 'countdown';   // countdown | countup | custom
+var isCountup = false;
 var currentOutfit = parseInt(localStorage.getItem('foutfit') || '-1');
 if (currentOutfit < 0 || currentOutfit > currentTreeIdx) currentOutfit = currentTreeIdx;
 var currentOutfitFile = localStorage.getItem('foutfitfile') || 'azusa_default_hd';
@@ -59,6 +61,8 @@ function goTab(i) {
   if (fxCanvas) { var ctx = fxCanvas.getContext('2d'); ctx.clearRect(0, 0, fxCanvas.width, fxCanvas.height); }
   document.querySelectorAll('.page').forEach(function(p) { p.classList.remove('on'); });
   document.querySelectorAll('.tab').forEach(function(t, j) { t.classList.toggle('on', j === i); });
+  // 桌面侧栏同步高亮（前 6 个 sb-item 对应 0~5 页）
+  document.querySelectorAll('.sb-item').forEach(function(b, idx) { if (idx < 6) b.classList.toggle('on', idx === i); });
   document.getElementById(['pg5','pg0','pg1','pg2','pg3','pg4'][i]).classList.add('on');
   document.getElementById('bar').textContent = ['🏠 阿梓的森林','⏱ 专注计时','👗 换装衣柜','✅ 习惯追踪','🎯 目标计划','👤 我的数据'][i];
   if (i === 0) rHome();
@@ -88,6 +92,25 @@ function goTab(i) {
   drawRing(0);
   document.getElementById('lockLeft').textContent = Math.floor(totalSec / 60);
 })();
+
+// ==================== 计时模式切换 ====================
+function setTimerMode(mode) {
+  timerMode = mode;
+  document.querySelectorAll('.mode-seg').forEach(function(s) { s.classList.toggle('sel', s.dataset.mode === mode); });
+  var cr = document.getElementById('customRow');
+  if (cr) cr.style.display = (mode === 'custom') ? 'block' : 'none';
+  if (timerId) return; // 计时进行中不允许切换
+  if (mode === 'countup') {
+    totalSec = 0;
+    document.getElementById('time').textContent = '00:00';
+    document.getElementById('lockLeft').textContent = '--';
+  } else if (mode === 'custom') {
+    var m = parseInt(document.getElementById('customMin').value) || 25;
+    totalSec = m * 60;
+    document.getElementById('time').textContent = m + ':00';
+    document.getElementById('lockLeft').textContent = m;
+  }
+}
 
 function onTaskType() {
   var t = document.getElementById('taskType').value;
@@ -131,24 +154,46 @@ function updateTaskSelects() { onTaskType(); }
 
 function start() {
   if (timerId || isBreak) return;
+  isCountup = (timerMode === 'countup');
+  if (timerMode === 'custom') {
+    var cm = parseInt(document.getElementById('customMin').value) || 25;
+    totalSec = cm * 60;
+  } else if (isCountup) {
+    totalSec = 0;
+  }
   elapsed = 0; isBreak = false; lockExits = 0;
   document.getElementById('btnGo').style.display = 'none';
   document.getElementById('btnStop').style.display = 'block';
-  document.getElementById('status').textContent = selectedTask ? '阿梓陪你一起 · ' + selectedTask.name : '阿梓陪你一起专注 🌸';
+  if (isCountup) {
+    document.getElementById('btnStop').textContent = '✅ 完成打卡';
+    document.getElementById('btnStop').onclick = finishCountup;
+  } else {
+    document.getElementById('btnStop').textContent = '放弃（树会受伤的 😢）';
+    document.getElementById('btnStop').onclick = abort;
+  }
+  document.getElementById('status').textContent = selectedTask ? '专注种树 · ' + selectedTask.name : '静心成长，专注当下 🌿';
   var char = document.getElementById('azusaChar');
   if (char) { char.classList.remove('full','celebrate','wilt','angry','surprised'); char.classList.add('seed'); setExpression('sleepy'); }
   document.querySelectorAll('#chips .chip').forEach(function(c) { c.style.pointerEvents = 'none'; });
   document.getElementById('taskType').disabled = true;
   document.getElementById('taskPick').disabled = true;
-  document.getElementById('lockLeft').textContent = Math.floor(totalSec / 60);
+  document.getElementById('lockLeft').textContent = isCountup ? '--' : Math.floor(totalSec / 60);
   document.getElementById('lockCount').textContent = '0';
   drawRing(0); updateAzusaGrowth(0);
   timerId = setInterval(tick, 1000);
-  EventBus.emit('focus:started', { duration: totalSec });
+  EventBus.emit('focus:started', { duration: totalSec, mode: timerMode });
 }
 
 function tick() {
   elapsed++;
+  if (isCountup) {
+    var em = Math.floor(elapsed / 60), es = elapsed % 60;
+    document.getElementById('time').textContent = em + ':' + (es < 10 ? '0' : '') + es;
+    document.getElementById('lockLeft').textContent = em;
+    var ep = totalSec > 0 ? Math.min(elapsed / totalSec, 1) : 0;
+    drawRing(ep); updateAzusaGrowth(ep);
+    return; // 正计时不自动结束，由“完成打卡”主动结算
+  }
   var rem = Math.max(0, totalSec - elapsed);
   var m = Math.floor(rem / 60), s = rem % 60;
   document.getElementById('time').textContent = m + ':' + (s < 10 ? '0' : '') + s;
@@ -159,17 +204,17 @@ function tick() {
 }
 
 function onDone() {
-  document.getElementById('status').textContent = '🎉 阿梓为你骄傲！';
+  document.getElementById('status').textContent = '🎉 专注完成！';
   azusaCelebrate();
   document.getElementById('btnStop').style.display = 'none';
   document.getElementById('btnGo').style.display = 'block';
-  document.getElementById('btnGo').textContent = '☕ 阿梓陪你休息';
+  document.getElementById('btnGo').textContent = '☕ 休息一下';
   document.getElementById('btnGo').onclick = startBreak;
   document.querySelectorAll('#chips .chip').forEach(function(c) { c.style.pointerEvents = 'auto'; });
   document.getElementById('taskType').disabled = false;
   document.getElementById('taskPick').disabled = false;
 
-  var mins = Math.round(totalSec / 60);
+  var mins = isCountup ? Math.max(1, Math.round(elapsed / 60)) : Math.round(totalSec / 60);
   var session = {
     date: Utils.today(),
     minutes: mins,
@@ -239,10 +284,16 @@ function onDone() {
   try { navigator.vibrate && navigator.vibrate([200, 100, 200]); } catch(e) {}
 }
 
+function finishCountup() {
+  if (!timerId) return;
+  clearInterval(timerId); timerId = null;
+  onDone(); // 复用完成结算（isCountup 已置真，分钟按实际 elapsed 计）
+}
+
 function startBreak() {
   if (timerId) return;
   elapsed = 0; totalSec = 300; isBreak = true;
-  document.getElementById('status').textContent = '阿梓陪你歇一会 ☕';
+  document.getElementById('status').textContent = '歇一会 ☕';
   var char = document.getElementById('azusaChar');
   if (char) { char.classList.remove('full','growing'); char.classList.add('seed'); setExpression('sleepy'); }
   document.getElementById('btnGo').style.display = 'none';
@@ -257,7 +308,7 @@ function startBreak() {
     drawRing(elapsed / totalSec);
     if (elapsed >= totalSec) {
       clearInterval(timerId); timerId = null; isBreak = false;
-      document.getElementById('status').textContent = '阿梓在等你开始呢~';
+      document.getElementById('status').textContent = '准备好就开始吧~';
       var chr = document.getElementById('azusaChar');
       if (chr) { chr.classList.remove('full','celebrate','wilt','angry','surprised'); chr.classList.add('seed'); setExpression('sleepy'); }
       document.getElementById('btnGo').style.display = 'block';
@@ -276,7 +327,7 @@ function abort() {
   clearInterval(timerId); timerId = null;
   document.getElementById('btnGo').style.display = 'block';
   document.getElementById('btnStop').style.display = 'none';
-  document.getElementById('status').textContent = '没关系，下次一定可以的 🌸';
+  document.getElementById('status').textContent = '没关系，下次一定可以的 🌿';
   azusaWilt();
   document.getElementById('btnGo').textContent = '🌱 和阿梓重新开始';
   document.getElementById('btnGo').onclick = start;
@@ -314,7 +365,7 @@ function abort() {
     setTimeout(function() { betResult.remove(); }, 3000);
   }
   updateBetInfo();
-  toast('🌸 没关系，阿梓会等你');
+  toast('🌸 没关系，下次继续');
 }
 
 function drawRing(p) {
@@ -345,6 +396,7 @@ function drawRing(p) {
 }
 
 function resumeFocus() {
+  _awayStart = 0;
   document.getElementById('lockOverlay').classList.remove('show');
   document.body.classList.remove('locked');
 }
@@ -439,7 +491,7 @@ function azusaWilt() {
   if (!char) return;
   char.classList.add('wilt');
   setExpression('cry');
-  showAzusaSpeech('怎么可以放弃... 😢', 2500);
+  showAzusaSpeech('没关系的，下次继续 🌿', 2500);
   setTimeout(function() { char.classList.remove('wilt'); char.classList.add('full'); }, 2500);
 }
 

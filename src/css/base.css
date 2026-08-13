@@ -28,6 +28,9 @@
 
 .page.on{display:block}
 
+/* 响应式容器：手机 360 上限，桌面由 desktop.css 放宽 */
+.container{ max-width:360px; margin:0 auto; }
+
 /* 卡片 */
 .card{
   background:var(--c);border-radius:var(--rad);padding:16px;margin:10px 0;
@@ -140,3 +143,22 @@
 html { scroll-behavior: smooth; }
 ::selection { background: #7C5CBF; color: #fff; }
 :focus-visible { outline: 2px solid #7C5CBF; outline-offset: 2px; border-radius: 4px; }
+
+/* 计时模式切换（倒数 / 正计时 / 自定义） */
+.mode-row{display:flex;gap:6px;justify-content:center;margin:6px 0}
+.mode-seg{flex:1;max-width:120px;text-align:center;padding:8px 0;border-radius:14px;background:var(--c);border:1px solid rgba(124,92,191,.15);font-size:13px;font-weight:600;color:var(--gr);cursor:pointer;transition:all .18s}
+.mode-seg.sel{background:var(--gd);color:#fff;border-color:transparent;box-shadow:0 3px 10px rgba(124,92,191,.25)}
+.custom-row{text-align:center;font-size:13px;color:var(--gr);margin:4px 0}
+.custom-row input{text-align:center;border:1px solid #ddd;border-radius:8px;padding:4px}
+
+/* 分享弹窗（微信 / 链接） */
+.share-modal{position:fixed;inset:0;background:rgba(20,16,40,.55);display:none;align-items:center;justify-content:center;z-index:500;padding:20px}
+.share-modal.show{display:flex;animation:fIn .2s ease}
+.share-card{background:var(--c);border-radius:20px;padding:24px;max-width:380px;width:100%;position:relative;box-shadow:0 20px 60px rgba(0,0,0,.3)}
+.share-card .ch-close{position:absolute;top:14px;right:14px;width:30px;height:30px;border-radius:50%;border:none;background:#eee;font-size:16px;cursor:pointer}
+.share-title{font-size:18px;font-weight:800;margin-bottom:14px}
+.share-preview{background:linear-gradient(135deg,#7C5CBF,#9575CD);color:#fff;border-radius:16px;padding:18px;font-size:14px;line-height:1.7;margin-bottom:16px;white-space:pre-wrap}
+.share-actions{display:flex;gap:10px}
+.share-btn{flex:1;padding:13px;border:none;border-radius:14px;font-size:14px;font-weight:700;cursor:pointer;background:#eee;color:#333}
+.share-btn.primary{background:var(--gd);color:#fff;box-shadow:0 4px 14px rgba(124,92,191,.3)}
+.share-tip{font-size:12px;color:var(--gr);text-align:center;margin-top:12px;min-height:16px}

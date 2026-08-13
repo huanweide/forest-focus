@@ -583,13 +583,15 @@ function rHome() {
   var todayMins = todaySessions.reduce(function(a, s) { return a + s.minutes; }, 0);
   var todayCount = todaySessions.length;
   var dates = completedDates();
+  var totalMins = sessions.filter(function(s) { return s.completed; })
+    .reduce(function(a, s) { return a + (s.minutes || 0); }, 0);
 
-  // 快捷统计
+  // 快捷统计（统一时间积累 · 可观测记录）
   document.getElementById('quickStats').innerHTML =
     '<div class="quick-stat"><div class="qs-val">' + Utils.fmtMins(todayMins) + '</div><div class="qs-lbl">📅 今日专注</div></div>' +
     '<div class="quick-stat"><div class="qs-val">' + todayCount + '</div><div class="qs-lbl">🌳 完成次数</div></div>' +
-    '<div class="quick-stat"><div class="qs-val">' + AppState.coins + '</div><div class="qs-lbl">🪙 阿梓币</div></div>' +
-    '<div class="quick-stat"><div class="qs-val">🔥 ' + Utils.calcStreak(dates) + '</div><div class="qs-lbl">连续天数</div></div>';
+    '<div class="quick-stat"><div class="qs-val">🔥 ' + Utils.calcStreak(dates) + '</div><div class="qs-lbl">连续天数</div></div>' +
+    '<div class="quick-stat"><div class="qs-val">' + Utils.fmtMins(totalMins) + '</div><div class="qs-lbl">⏳ 累计专注</div></div>';
 
   // 首页精灵——用完整单图(不切帧，避免裁切)
   var curTree = AZUSA_TREES[currentTreeIdx] || AZUSA_TREES[0];
@@ -603,17 +605,17 @@ function rHome() {
 
   // 心情
   var mood = AppState.mood;
-  var moodText = mood >= 80 ? '😄 阿梓心情超好' : mood >= 60 ? '😊 阿梓心情不错' : mood >= 40 ? '😐 阿梓心情一般' : mood >= 20 ? '😔 阿梓有点低落' : '😢 阿梓很伤心';
+  var moodText = mood >= 80 ? '😄 状态超好' : mood >= 60 ? '😊 状态不错' : mood >= 40 ? '😐 状态一般' : mood >= 20 ? '😔 有点疲惫' : '😢 需要休息';
   var moodBadge = document.getElementById('homeMoodBadge');
   if (moodBadge) moodBadge.textContent = moodText;
 
   // 每日格言
   var quotes = [
-    '"阿梓在等你开始今天的专注呢~"',
+    '"今天也要好好专注呀~"',
     '"每一棵树都是你努力的证明 🌳"',
-    '"今天也要和阿梓一起加油哦！"',
-    '"专注的你最帅了 💪"',
-    '"阿梓相信，你今天一定能行！"',
+    '"专注当下，静心成长 🌿"',
+    '"专注的你最棒了 💪"',
+    '"相信今天的你一定能行！"',
   ];
   var quoteEl = document.getElementById('dailyQuote');
   if (quoteEl) quoteEl.textContent = quotes[Math.floor(Math.random() * quotes.length)];
@@ -640,7 +642,7 @@ function rHome() {
   var duoEl = document.getElementById('duoWarning');
   if (duoEl) {
     if (lastDate && Utils.daysBetween(today, lastDate) >= 2) {
-      duoEl.innerHTML = '<div class="duo-reminder"><div class="duo-title">⚠️ 连续记录危在旦夕！</div><div class="duo-msg">你已经' + Utils.daysBetween(today, lastDate) + '天没有专注了。阿梓很担心你...</div><button class="duo-action" onclick="goTab(1)">🌱 现在去种树</button></div>';
+      duoEl.innerHTML = '<div class="duo-reminder"><div class="duo-title">⚠️ 连续记录危在旦夕！</div><div class="duo-msg">你已经' + Utils.daysBetween(today, lastDate) + '天没有专注了，别让记录断在这里...</div><button class="duo-action" onclick="goTab(1)">🌱 现在去种树</button></div>';
     } else {
       duoEl.innerHTML = '';
     }
@@ -770,20 +772,46 @@ if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.
   navigator.serviceWorker.register('sw.js').catch(function() {});
 }
 
-// 页面隐藏锁屏
-document.addEventListener('visibilitychange', function() {
-  if (document.hidden && timerId && !isBreak) {
-    lockExits++;
-    document.getElementById('lockCount').textContent = lockExits;
-    document.getElementById('lockLeft').textContent = Math.floor((totalSec - elapsed) / 60);
-    document.getElementById('lockOverlay').classList.add('show');
-    document.body.classList.add('locked');
-    if (lockExits >= 3) {
-      lockAbort();
-      toast('😢 阿梓伤心了...树枯萎了');
-    }
+// ==================== 严格锁机（离开即锁 + 分级惩罚） ====================
+// 网页无法做 OS 级锁屏，这里做到：切走/失焦即弹遮罩阻断操作、累计离开次数、
+// 离开过久（>2分钟）或累计 3 次直接判定放弃并扣减奖励。
+var _awayStart = 0;
+function _enterLock() {
+  var ov = document.getElementById('lockOverlay');
+  if (!ov || ov.classList.contains('show')) return;
+  if (!(timerId && !isBreak)) return;
+  if (!_awayStart) _awayStart = Date.now();
+  lockExits++;
+  document.getElementById('lockCount').textContent = lockExits;
+  var left = isCountup ? '进行中' : Math.max(0, Math.floor((totalSec - elapsed) / 60));
+  document.getElementById('lockLeft').textContent = left;
+  ov.classList.add('show');
+  document.body.classList.add('locked');
+  if (lockExits >= 3) { lockAbort(); toast('⚠️ 离开次数过多，本次专注已结束'); }
+}
+function _leaveCheck() {
+  if (document.hidden) { _enterLock(); return; }
+  // 窗口失焦（仍“可见”但切到别的程序）：延迟确认，避免点页面内元素误触
+  if (!document.hasFocus()) {
+    setTimeout(function() { if (!document.hasFocus() && timerId && !isBreak) _enterLock(); }, 120);
   }
+}
+function _onReturn() {
+  var ov = document.getElementById('lockOverlay');
+  if (!ov || !ov.classList.contains('show')) return;
+  var away = _awayStart ? (Date.now() - _awayStart) : 0;
+  _awayStart = 0;
+  if (away > 120000 && timerId && !isBreak) {
+    lockAbort();
+    toast('⏰ 离开过久，本次专注已结束');
+  }
+  // 否则保留遮罩，等用户主动点“回去”恢复（resumeFocus）
+}
+document.addEventListener('visibilitychange', function() {
+  if (document.hidden) _enterLock(); else _onReturn();
 });
+window.addEventListener('blur', _leaveCheck);
+window.addEventListener('focus', _onReturn);
 
 // 启动应用
 initAll();
