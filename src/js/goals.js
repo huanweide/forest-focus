@@ -24,7 +24,12 @@ function rGoals() {
   var list = document.getElementById('goalsList');
   var active = goals.filter(function(g) { return !g.archived; });
   if (!active.length) {
-    list.innerHTML = '<div style="text-align:center;padding:30px;color:var(--gr)">还没有目标~ 点击上方"+ 新建"添加</div>';
+    list.innerHTML = '<div style="text-align:center;padding:36px 20px 28px;color:var(--gr)">' +
+      '<div style="font-size:52px;margin-bottom:10px">🎯</div>' +
+      '<div style="font-size:15px;font-weight:700;color:var(--t);margin-bottom:6px">还没有目标</div>' +
+      '<div style="font-size:12px;line-height:1.5;margin-bottom:16px">把大目标拆成番茄钟，和阿梓一起完成吧~</div>' +
+      '<button style="background:var(--gd);color:#fff;border:none;padding:9px 18px;border-radius:20px;font-size:13px;font-weight:600;cursor:pointer;box-shadow:var(--sh)" onclick="addGoal()">+ 新建目标</button>' +
+      '</div>';
     return;
   }
   list.innerHTML = active.map(function(g) {

@@ -58,7 +58,8 @@ function initChibiPhysics() {
   wrap.style.left = '50%'; wrap.style.top = '50%';
   wrap.style.transform = 'translate(-50%,-50%)';
   chibiState.x = 0; chibiState.y = 0;
-  startChibiWander();
+  // 关闭自动漫游/蹦蹦哒哒，保留用户拖拽抛掷和点击气泡
+  // startChibiWander();
 
   wrap.addEventListener('pointerdown', function(e) {
     e.preventDefault(); e.stopPropagation();
@@ -192,7 +193,8 @@ function handleChibiTap(e) {
     if (i === 0 && typeof playPopSound === 'function') playPopSound();
     particle.style.setProperty('--dy', -(60 + Math.random() * 100) + 'px');
     particle.style.animationDuration = (0.5 + Math.random()) + 's';
-    document.body.appendChild(particle);
+    // 粒子限制在首页场景内，避免切换页面后残留
+    if (scene) scene.appendChild(particle);
     setTimeout(function() { particle.remove(); }, 1000);
   }
 
@@ -304,7 +306,9 @@ function spawnChibiSpark(wrap) {
     p.style.setProperty('--dx', (Math.random()-0.5)*100+'px');
     p.style.setProperty('--dy', (Math.random()-0.5)*80+'px');
     p.style.animationDuration = (0.3+Math.random()*0.3)+'s';
-    document.body.appendChild(p);
+    // 火花限制在首页场景内
+    var scene2 = document.getElementById('homeScene');
+    if (scene2) scene2.appendChild(p);
     setTimeout(function(){ p.remove(); }, PHYSICS.SPARK_LIFE);
   }
 }
@@ -740,9 +744,10 @@ function initAll() {
   checkStreakRecovery();
   updateMoodUI();
   checkNewbieGift();
-  setInterval(periodicBubble, 300000);
+  // 自动全局气泡已关闭，避免切换页面后残留；保留"戳阿梓"按钮手动触发
+  // setInterval(periodicBubble, 300000);
   setInterval(checkReminder, 600000);
-  setTimeout(randomBubble, 10000);
+  // setTimeout(randomBubble, 10000);
   checkStreakDanger();
 
   var timerDefault = localStorage.getItem('ftimerDefault') === '1';

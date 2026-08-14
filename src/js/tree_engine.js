@@ -242,7 +242,7 @@
     var gridEl = document.getElementById(gridId);
     if (gridEl) {
       if (!trees.length) {
-        gridEl.innerHTML = '<div style="text-align:center;padding:24px;color:var(--gr);font-size:13px">还没有种下树~ 完成一次专注就会长出一棵🌱（放弃会枯萎哦）</div>';
+        gridEl.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:24px;color:var(--gr);font-size:13px">还没有种下树~ 完成一次专注就会长出一棵🌱（放弃会枯萎哦）</div>';
         return;
       }
       var shown = trees.slice(-60).reverse(); // 最多展示最近60棵，避免无限增长卡顿

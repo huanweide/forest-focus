@@ -411,6 +411,9 @@ function showBubble(msg) {
   var wrap = document.getElementById('bubbleWrap');
   var text = document.getElementById('bubbleText');
   if (!wrap || !text) return;
+  // 气泡只在首页显示，避免切页后残留
+  var homePage = document.getElementById('pg5');
+  if (!homePage || !homePage.classList.contains('on')) return;
   text.textContent = msg;
   wrap.style.display = 'block';
   text.className = 'bubble bubble-fade';
