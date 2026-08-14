@@ -21,8 +21,9 @@ body{
 }
 body::before{
   content:'';position:fixed;top:0;left:0;right:0;bottom:0;
-  background:url(src/images/azusa/azusa_transparent.png) center/contain no-repeat;
-  opacity:.06;pointer-events:none;z-index:0;filter:blur(1px);
+  background:url(../images/azusa/azusa_transparent.png) center/contain no-repeat;
+  opacity:.03;pointer-events:none;z-index:0;filter:blur(2px) brightness(1.05);
+  transform:scale(.85);
 }
 body.dark{
   --bg:#1a1a2e;--c:#16213e;--t:#e0e0e0;--gr:#999;

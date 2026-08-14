@@ -8,6 +8,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="src/images/azusa/icon-192.png">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E🌳%3C/text%3E%3C/svg%3E">
 <title>阿梓的森林</title>
 <!-- BUILD:CSS -->
 <link rel="stylesheet" href="src/css/variables.css">
@@ -34,7 +35,6 @@
   <button class="sb-item" onclick="goTab(4)"><span class="ic">🎯</span> 目标计划</button>
   <button class="sb-item" onclick="goTab(5)"><span class="ic">👤</span> 我的数据</button>
   <div class="sb-spacer"></div>
-  <button class="sb-item" onclick="openShare()"><span class="ic">📤</span> 分享</button>
   <div class="sb-foot">本地存储 · 离线可用<br>专注种树，静心成长 🌿</div>
 </nav>
 
@@ -59,8 +59,7 @@
 </div>
 </div>
 
-<!-- ===== DIALOGUE BUBBLE ===== -->
-<div class="bubble-wrap" id="bubbleWrap" style="display:none"><div class="bubble" id="bubbleText"></div></div>
+<!-- ===== DIALOGUE BUBBLE (全局气泡已改为首页内) ===== -->
 
 <!-- ===== LOCK OVERLAY ===== -->
 <div class="lock-overlay" id="lockOverlay">
@@ -83,7 +82,7 @@
 </div>
 <div class="home-mood-badge" id="homeMoodBadge">😊 状态不错</div>
 <!-- 两个角色并排→小精灵+换装阿梓 -->
-<div class="home-chars" id="homeChars">
+  <div class="home-chars" id="homeChars">
   <div class="azusa-interactive" id="homeAzusaWrap">
     <img class="azusa-chibi" id="homeAzusaImg" src="src/images/azusa/chibi_home.png" alt="小精灵"
       onerror="this.style.display='none';this.parentElement.innerHTML='<span style=font-size:60px>🌰</span>'">
@@ -91,6 +90,9 @@
     <div class="char-label-mini">小精灵</div>
   </div>
 	</div>
+
+<!-- ===== DIALOGUE BUBBLE ===== -->
+<div class="bubble-wrap" id="bubbleWrap" style="display:none"><div class="bubble" id="bubbleText"></div></div>
 
 </div>
 <div class="daily-quote" id="dailyQuote">"今天也要好好专注呀~"</div>
@@ -116,8 +118,7 @@
 </div>
 <div class="home-actions">
 <button class="home-btn secondary" onclick="goTab(5)">📊 统计</button>
-<button class="home-btn secondary" onclick="randomBubble()">💬 戳阿梓</button>
-<button class="home-btn secondary" onclick="window.open('download/','_blank')">📲 下载App</button>
+<button class="home-btn secondary" onclick="goTab(3)">✅ 习惯</button>
 	</div>
 </div>
 <div class="container" style="padding:12px;background:var(--c);border-radius:14px;box-shadow:var(--sh)" id="homeSettings">
@@ -130,7 +131,7 @@
 <div class="page" id="pg0">
 <div class="container">
 <!-- 分层角色容器 -->
-<div class="azusa-character seed" id="azusaChar">
+<div class="azusa-character full" id="azusaChar">
   <div class="layer-scene" id="layerScene"></div>
   <img class="layer layer-body" id="layerBody" src="" alt="身体" style="display:none">
   <img class="layer layer-bottom" id="layerBottom" src="" alt="下装" style="display:none">
@@ -214,6 +215,16 @@
   <h3 class="sec-title" style="margin-bottom:8px">🌳 我的森林 <span class="tip">| 专注种树·放弃会枯萎（点树看详情）</span></h3>
   <div class="stats-summary" id="forestStats"></div>
   <div class="forest-grid" id="forestGrid"></div>
+</div>
+
+<!-- 数据管理（导出/导入备份，防丢失） -->
+<div class="card" style="margin:10px 0;padding:12px">
+  <h3 class="sec-title" style="margin-bottom:8px">💾 数据管理 <span class="tip">| 定期备份，换设备不丢</span></h3>
+  <div style="display:flex;gap:8px;flex-wrap:wrap">
+    <button class="home-btn primary" onclick="exportData()" style="font-size:14px;padding:10px 14px">⬇️ 导出备份</button>
+    <button class="home-btn secondary" onclick="importData()" style="font-size:14px;padding:10px 14px">⬆️ 导入备份</button>
+  </div>
+  <div style="font-size:12px;color:var(--gr);margin-top:6px">导出会把全部专注记录/习惯/森林/签到存成 JSON 文件；导入会覆盖当前数据并自动刷新。</div>
 </div>
 
 <!-- 单棵树详情弹窗 -->
@@ -304,14 +315,13 @@
 <div class="box-overlay hidden" id="boxOverlay"><div class="box"><div class="chest">🎁</div><div class="reward" id="boxReward"></div><div class="reward-text" id="boxText"></div><button class="box-btn" onclick="closeBox()">收下！</button></div></div>
 
 <div class="tabbar" id="tabbar">
-<div class="tab on" onclick="try{goTab(0)}catch(e){document.getElementById('dbg').textContent+=' E0:'+e.message}" onpointerdown="this.style.outline='2px solid red';document.getElementById('dbg').textContent='TAB0-POINTER-DOWN'" style="z-index:999!important"><span class="ic">🏠</span>首页</div>
-<div class="tab" onclick="try{goTab(1)}catch(e){document.getElementById('dbg').textContent+=' E1:'+e.message}" style="z-index:999!important"><span class="ic">⏱</span>计时</div>
-<div class="tab" onclick="try{goTab(2)}catch(e){document.getElementById('dbg').textContent+=' E2:'+e.message}" style="z-index:999!important"><span class="ic">👗</span>衣柜</div>
-<div class="tab" onclick="try{goTab(3)}catch(e){document.getElementById('dbg').textContent+=' E3:'+e.message}" style="z-index:999!important"><span class="ic">✅</span>习惯</div>
-<div class="tab" onclick="try{goTab(4)}catch(e){document.getElementById('dbg').textContent+=' E4:'+e.message}" style="z-index:999!important"><span class="ic">🎯</span>目标</div>
-<div class="tab" onclick="try{goTab(5)}catch(e){document.getElementById('dbg').textContent+=' E5:'+e.message}" style="z-index:999!important"><span class="ic">👤</span>我的</div>
+<div class="tab on" onclick="goTab(0)" style="z-index:999!important"><span class="ic">🏠</span>首页</div>
+<div class="tab" onclick="goTab(1)" style="z-index:999!important"><span class="ic">⏱</span>计时</div>
+<div class="tab" onclick="goTab(2)" style="z-index:999!important"><span class="ic">👗</span>衣柜</div>
+<div class="tab" onclick="goTab(3)" style="z-index:999!important"><span class="ic">✅</span>习惯</div>
+<div class="tab" onclick="goTab(4)" style="z-index:999!important"><span class="ic">🎯</span>目标</div>
+<div class="tab" onclick="goTab(5)" style="z-index:999!important"><span class="ic">👤</span>我的</div>
 </div>
-<div id="dbg" style="position:fixed;top:0;left:0;z-index:99999;background:#000;color:#0f0;font-size:10px;padding:4px;max-width:100%;word-break:break-all;opacity:.95">DBG:等待点击tab...</div>
 
 <div class="toast" id="toast"></div>
 

@@ -28,8 +28,13 @@ CSS_FILES = [
 ]
 
 # JS文件加载顺序（core.js必须第一，pwa.js必须最后）
+# 注意：必须与 index.html 的 BUILD:JS_CORE / BUILD:JS_MODULES 段引用的文件保持一致，
+# 否则 build 内联版会缺失文件（dist 部署版功能残缺）。habit_health/tree_engine 由 Round6
+# 新增（种树引擎+健康度），share 由微信分享新增 —— 此前遗漏导致 dist 缺失这三块功能。
 JS_FILES = [
     'core.js',
+    'habit_health.js',
+    'tree_engine.js',
     'timer.js',
     'habits.js',
     'goals.js',
@@ -43,6 +48,7 @@ JS_FILES = [
     'effects.js',
     'diary.js',
     'chat.js',
+    'share.js',
     'pwa.js',
 ]
 

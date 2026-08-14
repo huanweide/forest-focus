@@ -74,6 +74,13 @@
   #pg4 > div[style*="display:flex;gap:8px"] { display: grid !important; grid-template-columns: 1fr 1fr; }
   #pg4 .phase-grid { grid-template-columns: repeat(auto-fill, minmax(150px,1fr)); }
 
+  /* —— 森林网格桌面密度 + 数据卡片间距（日致命） —— */
+  #pg4 .forest-grid { grid-template-columns: repeat(auto-fill, minmax(100px,1fr)); gap: 14px; }
+  #pg4 .forest-svg { height: 92px; }
+  #pg4 .forest-cell { padding: 10px 4px; }
+  #pg4 > .card { margin: 14px 0; }
+  #pg4 .home-btn { flex: 0 1 auto; }
+
   /* —— 卡片悬浮质感（日致命） —— */
   .card:hover { transform: translateY(-2px); box-shadow: var(--sh-lg); }
   .home-btn { transition: transform .15s, box-shadow .15s; }

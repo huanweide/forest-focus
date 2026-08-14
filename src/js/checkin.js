@@ -183,6 +183,10 @@ function autoShowCheckin() {
   var dates = AppState.checkinDates || [];
   if (dates.includes(today)) return;
 
+  // 只在首页显示签到弹窗，避免覆盖其他页面
+  var homePage = document.getElementById('pg5');
+  if (!homePage || !homePage.classList.contains('on')) return;
+
   _checkinShownToday = true;
   localStorage.setItem('fcheckinShown', today);
   setTimeout(function() { showCheckinCard(); }, 1500);

@@ -549,3 +549,46 @@ EventBus.on('coin:changed', function() { updateCoinDisplay(); });
 console.log('🌳 阿梓的森林 v4.0 · core.js 已加载');
 console.log('   EventBus:', Object.keys(EventBus));
 console.log('   AppState: 币=' + AppState.coins + ' 会话=' + AppState.sessions.length + ' 成就=' + AppState.unlockedAchievements.length);
+
+// ==================== 数据导出/导入（防丢失·成品安全感） ====================
+// 底层 Storage.exportJSON/importJSON 已在 Storage 模块中实现；
+// 这里暴露 UI 入口：导出=下载 JSON 备份文件，导入=读文件覆盖并刷新。
+function exportData() {
+  try {
+    var json = Storage.exportJSON();
+    var blob = new Blob([json], { type: 'application/json' });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url;
+    a.download = 'forest-focus-backup-' + Utils.today() + '.json';
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(function() { URL.revokeObjectURL(url); }, 1000);
+    toast('✅ 数据已导出备份');
+  } catch (e) {
+    console.error('[exportData]', e);
+    toast('❌ 导出失败');
+  }
+}
+function importData() {
+  var input = document.createElement('input');
+  input.type = 'file';
+  input.accept = 'application/json,.json';
+  input.onchange = function() {
+    var f = input.files && input.files[0];
+    if (!f) return;
+    var reader = new FileReader();
+    reader.onload = function() {
+      if (Storage.importJSON(reader.result)) {
+        toast('✅ 导入成功，正在刷新…');
+        setTimeout(function() { location.reload(); }, 800);
+      } else {
+        toast('❌ 导入失败：文件格式错误');
+      }
+    };
+    reader.onerror = function() { toast('❌ 读取文件失败'); };
+    reader.readAsText(f);
+  };
+  input.click();
+}
