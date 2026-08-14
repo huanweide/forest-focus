@@ -13,19 +13,16 @@ on:
       - '.github/workflows/deploy.yml'
   workflow_dispatch: # 允许在 Actions 页面手动触发
 
-# 授予部署到 GitHub Pages 所需的最小权限
 permissions:
-  contents: read
-  pages: write
-  id-token: write
+  contents: write # 允许把构建产物推送到 gh-pages 分支
 
-# 同一时间只允许一个 Pages 部署排队，避免并发冲突
-concurrency:
-  group: pages
-  cancel-in-progress: true
+# 部署策略说明：
+# GitHub REST API 无法把 Pages 源切到 "GitHub Actions" 方式（创建接口强制要求 branch 字段），
+# 因此改用「gh-pages 分支 + legacy branch 源」方案：本 workflow 把内联打包后的 dist/ 推到
+# gh-pages 分支，再用 gh api 把 Pages Source 设为 gh-pages 分支即可上线（已自动化处理）。
 
 jobs:
-  build:
+  deploy:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -41,18 +38,10 @@ jobs:
       - name: Build PWA（内联打包 dist/index.html）
         run: python3 build.py
 
-      - name: Upload Pages artifact
-        uses: actions/upload-pages-artifact@v3
+      - name: Deploy to gh-pages branch
+        uses: peaceiris/actions-gh-pages@v4
         with:
-          path: dist
-
-  deploy:
-    needs: build
-    runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    steps:
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./dist
+          publish_branch: gh-pages
+          force_orphan: true
