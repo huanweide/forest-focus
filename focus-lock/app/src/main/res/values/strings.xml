@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">阿梓的专注锁</string>
+    <string name="accessibility_desc">用于专注模式检测你打开了哪个 App，若打开非白名单应用会自动把你拉回专注界面。本功能仅用于自律专注，不会收集或上传任何数据。</string>
+    <string name="accessibility_summary">专注模式锁机 · 前台检测</string>
+</resources>
