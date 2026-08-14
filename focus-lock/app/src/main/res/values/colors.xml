@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- 暗色森林主题：保证在 Theme.Material.NoActionBar 下文字/按钮清晰可读 -->
+    <color name="bg">#0F1B14</color>
+    <color name="surface">#16271D</color>
+    <color name="accent">#5BD6A0</color>
+    <color name="accent_dark">#2E8B62</color>
+    <color name="text_primary">#EAF6EF</color>
+    <color name="text_secondary">#9DB7A8</color>
+    <color name="danger">#E07A5F</color>
+</resources>

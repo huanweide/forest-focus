@@ -37,6 +37,18 @@ public class WhitelistStore {
         return base;
     }
 
+    /** 纯用户自定义白名单（不含默认刚需），供白名单 UI 区分显示 */
+    public Set<String> getCustom() {
+        return new HashSet<>(sp.getStringSet(KEY, new HashSet<>()));
+    }
+
+    /** 是否为默认刚需（电话/短信/微信/支付/桌面），锁定不可取消 */
+    public boolean isDefaultRequired(String pkg) {
+        if (pkg == null) return false;
+        for (String d : DEFAULTS) if (d.equals(pkg)) return true;
+        return false;
+    }
+
     public void add(String pkg) {
         Set<String> cur = new HashSet<>(sp.getStringSet(KEY, new HashSet<>()));
         cur.add(pkg);

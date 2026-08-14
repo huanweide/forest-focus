@@ -2,4 +2,32 @@
     <string name="app_name">阿梓的专注锁</string>
     <string name="accessibility_desc">用于专注模式检测你打开了哪个 App，若打开非白名单应用会自动把你拉回专注界面。本功能仅用于自律专注，不会收集或上传任何数据。</string>
     <string name="accessibility_summary">专注模式锁机 · 前台检测</string>
+
+    <!-- 主界面 -->
+    <string name="title_main">阿梓的专注锁</string>
+    <string name="status_idle">未开始 · 随时开始你的专注</string>
+    <string name="status_active_soft">专注中 · 软锁弹回</string>
+    <string name="status_active_pinned">专注中 · 应用固定</string>
+    <string name="label_mode">锁机模式</string>
+    <string name="mode_soft">软锁（无障碍弹回，推荐）</string>
+    <string name="mode_pinned">应用固定（系统级，可手动退出）</string>
+    <string name="btn_start">开始专注</string>
+    <string name="btn_stop">停止专注</string>
+    <string name="btn_whitelist">管理白名单</string>
+    <string name="hint_accessibility_off">请先在系统设置开启无障碍权限</string>
+    <string name="toast_bounced">你分心了，已拉回专注界面</string>
+    <string name="toast_started">专注已开始 · 默认 25 分钟自动解锁</string>
+    <string name="toast_stopped">专注已结束</string>
+    <string name="toast_pinned_fallback">未设为设备所有者，已退化为软锁弹回</string>
+    <string name="toast_low_battery_skip">低电量，已自动放行</string>
+
+    <!-- 白名单页 -->
+    <string name="title_whitelist">管理白名单</string>
+    <string name="hint_whitelist">勾选允许在专注时打开的 App。电话/短信/微信/支付为刚需，已锁定不可取消。</string>
+    <string name="btn_whitelist_done">完成</string>
+    <string name="label_locked">（刚需·锁定）</string>
+    <string name="empty_whitelist">没有可显示的 App</string>
+
+    <!-- 深链 -->
+    <string name="toast_deeplink_mode">已通过网页唤起 · 模式：%1$s</string>
 </resources>
