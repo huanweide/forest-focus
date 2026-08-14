@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>阿梓专注锁 · PWA 深链测试</title>
+<style>
+  body{font-family:system-ui,-apple-system,sans-serif;background:#0F1B14;color:#EAF6EF;margin:0;padding:24px}
+  h1{color:#5BD6A0;margin-top:0}
+  p{color:#9DB7A8;line-height:1.7}
+  button{display:block;width:100%;margin:12px 0;padding:14px;font-size:16px;border:0;border-radius:10px;font-weight:700}
+  .soft{background:#5BD6A0;color:#0F1B14}
+  .pinned{background:#2E8B62;color:#EAF6EF}
+  code{background:#16271D;padding:2px 6px;border-radius:4px;color:#5BD6A0}
+</style>
+</head>
+<body>
+<h1>阿梓的专注锁 · 深链测试</h1>
+<p>在已安装「阿梓的专注锁」的 Android 手机上用浏览器打开本页，点击按钮即可唤起 App 并直接开始对应模式的专注。</p>
+<p>深链格式：<code>aziforest://start?mode=soft|pinned</code></p>
+<button class="soft" onclick="location.href='aziforest://start?mode=soft'">软锁模式开始（soft）</button>
+<button class="pinned" onclick="location.href='aziforest://start?mode=pinned'">应用固定模式开始（pinned）</button>
+<p>若系统弹出「用以下应用打开」，选择「阿梓的专注锁」即可。这正是 PWA 网页与手机 App 打通专注状态的握手方式：网页负责激励与数据，App 负责真锁机。</p>
+</body>
+</html>

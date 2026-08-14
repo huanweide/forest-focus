@@ -4,11 +4,15 @@
 
     <!-- 覆盖层提醒（弹回时显示悬浮提示）需要此权限，运行时动态申请 -->
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+    <!-- 列出全部已装 App 供白名单勾选（Android 11+ 包可见性限制所需；自用/侧载场景） -->
+    <uses-permission android:name="android.permission.QUERY_ALL_PACKAGES"
+        tools:ignore="QueryAllPackagesPermission" />
 
     <application
         android:allowBackup="false"
         android:label="阿梓的专注锁"
-        android:supportsRtl="true">
+        android:supportsRtl="true"
+        android:theme="@android:style/Theme.Material.NoActionBar">
 
         <!-- 专注锁机核心：无障碍服务，检测前台 App 并弹回 -->
         <service
@@ -44,6 +48,20 @@
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+            <!-- 来自 PWA / 网页的深链：aziforest://start?mode=soft|pinned -->
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="aziforest" />
+            </intent-filter>
         </activity>
+
+        <!-- 白名单可视化页 -->
+        <activity
+            android:name=".WhitelistActivity"
+            android:exported="false"
+            android:label="@string/title_whitelist" />
+
     </application>
 </manifest>
