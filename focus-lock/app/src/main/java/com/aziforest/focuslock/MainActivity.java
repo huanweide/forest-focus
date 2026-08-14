@@ -94,13 +94,19 @@ public class MainActivity extends Activity {
 
         String mode = uri.getQueryParameter("mode");
         int m = "pinned".equals(mode) ? MODE_PINNED : MODE_SOFT;
+        int min = 25;
+        try { String minStr = uri.getQueryParameter("min"); if (minStr != null) min = Math.max(1, Integer.parseInt(minStr)); } catch (Exception ignore) {}
         modeGroup.check(m == MODE_PINNED ? R.id.modePinned : R.id.modeSoft);
         Toast.makeText(this, getString(R.string.toast_deeplink_mode, mode == null ? "soft" : mode),
                 Toast.LENGTH_SHORT).show();
-        startFocus(m);
+        startFocus(m, min);
     }
 
     private void startFocus(int mode) {
+        startFocus(mode, 25);
+    }
+
+    private void startFocus(int mode, int durationMin) {
         // 前置检查：无障碍是否开启
         if (!isAccessibilityOn()) {
             Toast.makeText(this, R.string.hint_accessibility_off, Toast.LENGTH_LONG).show();
@@ -128,8 +134,8 @@ public class MainActivity extends Activity {
                 startLockTask(); // 弹确认，用户可按最近+Home退出
             }
         }
-        // 逃生口之一：定时自动解锁（25 分钟番茄钟）
-        scheduleAutoUnlock(25 * 60 * 1000L);
+        // 逃生口之一：定时自动解锁（与 PWA 选择的专注时长对齐）
+        scheduleAutoUnlock(durationMin * 60 * 1000L);
         Toast.makeText(this, R.string.toast_started, Toast.LENGTH_SHORT).show();
     }
 
