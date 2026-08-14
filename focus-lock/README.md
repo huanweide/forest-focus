@@ -18,7 +18,7 @@
 |------|------|-----------|---------|
 | SOFT（默认） | AccessibilityService 检测前台包名 → 非白名单弹回 | 否（可手动退出） | 低，授权即用 |
 | PINNED | `startLockTask()` 应用固定 | 普通用户可退出；Device Owner 下不可退出 | 中（开系统固定） |
-| DEVICE_OWNER | `adb dpm set-device-owner` + `setLockTaskFeatures(NO_HOME\|NO_RECENTS\|NO_BACK)` | 是（真锁死） | 高（需出厂重置） |
+| DEVICE_OWNER | PINNED 模式 + `adb dpm set-device-owner` + `setLockTaskFeatures(NONE)` | 是（真锁死） | 高（需出厂重置） |
 
 ## 编译运行
 
@@ -80,8 +80,9 @@ aziforest://start?mode=soft|pinned
 adb shell dpm set-device-owner com.aziforest.focuslock/.AdminReceiver
 ```
 
-设置成功后，PINNED 模式会调用 `setLockTaskFeatures(NO_HOME | NO_RECENTS | NO_BACK)`，
-Home / 最近任务 / 返回键全部失效，只有本应用能退出（代码中 `stopFocus()`）。
+设置成功后，PINNED 模式会调用 `setLockTaskFeatures(LOCK_TASK_FEATURE_NONE)`，
+Home / 最近任务 / 返回 / 全局动作全部失效，只有本应用能退出；
+`stopFocus()` 在退出时自动恢复默认锁任务特性，不会退出后仍锁死。
 
 ## 逃生口（必备，无逃生口不发布）
 
@@ -102,3 +103,20 @@ Home / 最近任务 / 返回键全部失效，只有本应用能退出（代码�
 
 Web 版**无法**锁机（浏览器沙盒限制），本原生 App 补齐「锁机 + 白名单」能力。
 建议架构：PWA 负责游戏化激励与数据，原生 App 负责锁机引擎，通过深链打通专注状态。
+
+## Windows 端专注锁原型（软锁）
+
+文件：`windows-focus-lock.py`（纯标准库，仅 Windows 运行）。
+
+```
+python windows-focus-lock.py          # 默认 25 分钟
+python windows-focus-lock.py 50       # 50 分钟
+```
+
+- 全屏专注计时 + 低层键盘钩子（ctypes）拦截 **Win / Alt+Tab / Ctrl+Esc / Alt+Esc**。
+- 逃生口（均放行）：**Esc**、**Alt+F4**、界面「停止专注」按钮、鼠标点击。
+- 钩子随进程退出自动卸载（Windows 在进程结束时移除其钩子），不会造成永久锁死。
+- 这是「软锁」，符合「电脑端就是一个专注」的定位：保留逃生口，不阻断系统。
+
+> 若要真正不可退出（kiosk 多用户固定），见 `会议/专注模式锁机调研/05-Windows思路.md`
+> 的 **Assigned Access（Windows 专业版/企业版 + 单独账户 + 锁任务应用）** 方案。

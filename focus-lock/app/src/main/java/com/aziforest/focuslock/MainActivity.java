@@ -120,6 +120,8 @@ public class MainActivity extends Activity {
             // 应用固定：Device Owner 下不可退出；否则系统弹确认，用户可退出（保留逃生口）
             if (dpm != null && dpm.isDeviceOwnerApp(getPackageName())) {
                 dpm.setLockTaskPackages(adminComponent, new String[]{getPackageName()});
+                // 真锁死：禁用 Home / 最近任务 / 返回 / 全局动作等全部锁任务特性
+                dpm.setLockTaskFeatures(adminComponent, DevicePolicyManager.LOCK_TASK_FEATURE_NONE);
                 startLockTask();
             } else {
                 Toast.makeText(this, R.string.toast_pinned_fallback, Toast.LENGTH_LONG).show();
@@ -133,7 +135,18 @@ public class MainActivity extends Activity {
 
     private void stopFocus() {
         state.edit().putBoolean("focus_active", false).apply();
-        if (isInLockTaskMode()) stopLockTask();
+        if (isInLockTaskMode()) {
+            stopLockTask();
+            // 设备所有者：恢复默认锁任务特性，避免退出后仍锁死 Home / 最近任务
+            if (dpm != null && dpm.isDeviceOwnerApp(getPackageName())) {
+                dpm.setLockTaskFeatures(adminComponent,
+                        DevicePolicyManager.LOCK_TASK_FEATURE_HOME
+                                | DevicePolicyManager.LOCK_TASK_FEATURE_OVERVIEW
+                                | DevicePolicyManager.LOCK_TASK_FEATURE_GLOBAL_ACTIONS
+                                | DevicePolicyManager.LOCK_TASK_FEATURE_KEYGUARD
+                                | DevicePolicyManager.LOCK_TASK_FEATURE_SYSTEM_INFO);
+            }
+        }
         ui.removeCallbacksAndMessages(null);
         refreshStatus();
         Toast.makeText(this, R.string.toast_stopped, Toast.LENGTH_SHORT).show();
