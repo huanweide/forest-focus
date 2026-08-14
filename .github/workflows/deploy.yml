@@ -1,0 +1,58 @@
+name: Deploy PWA to GitHub Pages
+
+# 触发：push 到 main 且动了 PWA 相关源文件时，自动重新构建并部署
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'index.html'
+      - 'src/**'
+      - 'build.py'
+      - 'manifest.json'
+      - 'sw.js'
+      - '.github/workflows/deploy.yml'
+  workflow_dispatch: # 允许在 Actions 页面手动触发
+
+# 授予部署到 GitHub Pages 所需的最小权限
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# 同一时间只允许一个 Pages 部署排队，避免并发冲突
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      # build.py 是纯标准库脚本：把 src/ 下的 CSS/JS 内联进 dist/index.html
+      # 同时复制 manifest.json / sw.js / src/images / src/audio 到 dist/
+      - name: Build PWA（内联打包 dist/index.html）
+        run: python3 build.py
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
