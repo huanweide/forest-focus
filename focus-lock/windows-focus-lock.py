@@ -71,11 +71,14 @@ def main():
     def is_down(vk):
         return bool(user32.GetAsyncKeyState(vk) & 0x8000)
 
+    LLKHF_ALTDOWN = 0x20  # KBDLLHOOKSTRUCT.flags 的 Alt 按下标志位
+
     def low_level_keyboard_proc(nCode, wParam, lParam):
         if nCode >= 0 and wParam == WM_KEYDOWN:
             kb = ctypes.cast(lParam, ctypes.POINTER(KBDLLHOOKSTRUCT)).contents
             vk = kb.vkCode
-            alt = is_down(VK_MENU)
+            # Alt 状态优先用系统给的 flags 位（比异步轮询 GetAsyncKeyState 更可靠）
+            alt = bool(kb.flags & LLKHF_ALTDOWN)
             ctrl = is_down(VK_CONTROL)
             # 吞掉分心快捷键，其余放行
             if (

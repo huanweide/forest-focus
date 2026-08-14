@@ -551,7 +551,16 @@ function startPhoneLock() {
     phoneLockHint('「用手机 App 锁机」需在安卓手机上打开本页，并已安装「阿梓的专注锁」App。网页本身无法锁机。');
     return;
   }
-  window.location.href = 'aziforest://start?mode=soft';
+  // 把当前专注时长传给 App，让它对齐自动解锁时间（默认 25 分）
+  var min = Math.max(1, Math.round(totalSec / 60)) || 25;
+  var deep = 'aziforest://start?mode=soft&min=' + min;
+  window.location.href = deep;
+  // 唤起失败检测：若 1.6s 后页面仍可见，说明 App 未安装/未跳走，给安装引导
+  setTimeout(function() {
+    if (!document.hidden) {
+      phoneLockHint('未检测到「阿梓的专注锁」App，已忽略锁机。请先安装：github.com/huanweide/forest-focus（网页本身无法锁机）');
+    }
+  }, 1600);
 }
 function phoneLockHint(msg) {
   var t = document.getElementById('phoneLockHint');
