@@ -542,3 +542,25 @@ function updateBetInfo() {
     info.textContent = '';
   }
 }
+
+// 用手机 App 锁机：唤起安卓端「阿梓的专注锁」直接开始软锁专注
+// 深链协议见 focus-lock/PWA_DEEPLINK.md
+function startPhoneLock() {
+  var ua = navigator.userAgent || '';
+  if (!/Android/i.test(ua)) {
+    phoneLockHint('「用手机 App 锁机」需在安卓手机上打开本页，并已安装「阿梓的专注锁」App。网页本身无法锁机。');
+    return;
+  }
+  window.location.href = 'aziforest://start?mode=soft';
+}
+function phoneLockHint(msg) {
+  var t = document.getElementById('phoneLockHint');
+  if (!t) {
+    t = document.createElement('div');
+    t.id = 'phoneLockHint';
+    t.style.cssText = 'text-align:center;font-size:12px;color:#E07A5F;margin:8px 0;min-height:16px';
+    var btn = document.getElementById('btnPhoneLock');
+    if (btn && btn.parentNode) btn.parentNode.insertBefore(t, btn.nextSibling);
+  }
+  t.textContent = msg;
+}
