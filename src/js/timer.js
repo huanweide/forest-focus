@@ -29,12 +29,53 @@ var currentTreeIdx = 0;
 var totalCompletions = AppState.totalCompletions;
 
 // ==================== 计时器状态 ====================
-const DURS = [20, 25, 30, 45, 60];
+const DURS = [15, 20, 25, 30, 45, 60];
 var timerId = null, elapsed = 0, totalSec = 1500, isBreak = false, lockExits = 0;
 var startTs = 0, breakTs = 0; // 计时基准时间戳，避免后台标签页 setInterval 节流造成计时漂移
 var selectedTask = null;
 var timerMode = 'countdown';   // countdown | countup | custom
 var isCountup = false;
+
+// ===== Flowmodoro 注意力标记（合并自 self-discipline-forest）=====
+var attnLevel = 'focused';      // deep | focused | drifting | distracted
+var attnHist = [];              // 注意力标记历史
+var attnDistractedCount = 0;    // 累计分心次数
+var ATTENTION = [
+  { key: 'deep', label: '🔥 深度专注', color: '#7C5CBF' },
+  { key: 'focused', label: '👍 专注', color: '#43A047' },
+  { key: 'drifting', label: '😐 走神', color: '#FB8C00' },
+  { key: 'distracted', label: '📱 分心', color: '#E53935' }
+];
+function paintAttn(level) {
+  document.querySelectorAll('.attn-btn').forEach(function(b) {
+    var on = b.dataset.attn === level;
+    b.classList.toggle('sel', on);
+    var a = ATTENTION.filter(function(x) { return x.key === b.dataset.attn; })[0];
+    b.style.background = on && a ? a.color : '';
+    b.style.borderColor = on ? 'transparent' : '';
+    b.style.color = on ? '#fff' : '';
+  });
+  var now = document.getElementById('attnNow');
+  var a = ATTENTION.filter(function(x) { return x.key === level; })[0];
+  if (now && a) now.textContent = a.label;
+}
+function markAttn(level) {
+  if (!timerId) return;        // 仅计时进行中可标记
+  attnLevel = level;
+  attnHist.push(level);
+  if (level === 'distracted') {
+    attnDistractedCount++;
+    if (attnDistractedCount === 3) toast('⚠️ 分心已达 3 次，本次专注质量会下降');
+  }
+  paintAttn(level);
+}
+function computeFocusQuality() {
+  if (!attnHist.length) return 1;   // 未标记则中性
+  var w = { deep: 1, focused: 0.9, drifting: 0.6, distracted: 0.3 };
+  var sum = 0;
+  attnHist.forEach(function(k) { sum += (w[k] != null ? w[k] : 0.9); });
+  return Math.max(0.5, Math.min(1, sum / attnHist.length));
+}
 var currentOutfit = parseInt(localStorage.getItem('foutfit') || '-1');
 if (currentOutfit < 0 || currentOutfit > currentTreeIdx) currentOutfit = currentTreeIdx;
 var currentOutfitFile = localStorage.getItem('foutfitfile') || 'azusa_default_hd';
@@ -79,7 +120,7 @@ function goTab(i) {
   var c = document.getElementById('chips');
   DURS.forEach(function(d, i) {
     var e = document.createElement('div');
-    e.className = 'chip' + (i === 1 ? ' sel' : '');
+    e.className = 'chip' + (i === DURS.indexOf(25) ? ' sel' : '');
     e.textContent = d + '分钟';
     e.onclick = function() {
       c.querySelectorAll('.chip').forEach(function(x) { x.classList.remove('sel'); });
@@ -163,6 +204,9 @@ function start() {
     totalSec = 0;
   }
   elapsed = 0; isBreak = false; lockExits = 0;
+  attnLevel = 'focused'; attnHist = []; attnDistractedCount = 0;
+  var ab = document.getElementById('attnBar'); if (ab) ab.style.display = 'block';
+  paintAttn('focused');
   startTs = Date.now(); // 计时基准：之后每秒按真实墙钟时间算 elapsed
   document.getElementById('btnGo').style.display = 'none';
   document.getElementById('btnStop').style.display = 'block';
@@ -217,6 +261,7 @@ function onDone() {
   document.querySelectorAll('#chips .chip').forEach(function(c) { c.style.pointerEvents = 'auto'; });
   document.getElementById('taskType').disabled = false;
   document.getElementById('taskPick').disabled = false;
+  var ab = document.getElementById('attnBar'); if (ab) ab.style.display = 'none';
 
   var mins = isCountup ? Math.max(1, Math.round(elapsed / 60)) : Math.round(totalSec / 60);
   var session = {
@@ -228,9 +273,11 @@ function onDone() {
     taskName: (selectedTask && selectedTask.name) ? selectedTask.name : '自由种树'
   };
   AppState.addSession(session);
-  updateScore(10);
+  var fq = computeFocusQuality();
+  session.focusQuality = Math.round(fq * 100);
+  updateScore(Math.round(10 * fq));
   AppState.updateMood(10);
-  AppState.addCoins(5, 'focus_complete');
+  AppState.addCoins(Math.round(5 * fq), 'focus_complete');
 
   totalCompletions = AppState.totalCompletions;
   if (currentOutfit < 0 || currentOutfit > currentTreeIdx) currentOutfit = currentTreeIdx;
@@ -284,6 +331,7 @@ function onDone() {
   updateBetInfo();
   setTimeout(function() { if (!openRewardBox()) { randomBubble(); } }, 800);
   if (newTree) toast('🌸 新衣装解锁！' + newTree.name);
+  else if (fq < 0.7) toast('🎉 专注完成！质量 ' + Math.round(fq * 100) + '% · 离下一件衣装更近了');
   else toast('🎉 专注完成！离下一件衣装更近了');
   try { navigator.vibrate && navigator.vibrate([200, 100, 200]); } catch(e) {}
 }
@@ -338,6 +386,7 @@ function abort() {
   document.querySelectorAll('#chips .chip').forEach(function(c) { c.style.pointerEvents = 'auto'; });
   document.getElementById('taskType').disabled = false;
   document.getElementById('taskPick').disabled = false;
+  var ab = document.getElementById('attnBar'); if (ab) ab.style.display = 'none';
 
   var session = {
     date: Utils.today(),
