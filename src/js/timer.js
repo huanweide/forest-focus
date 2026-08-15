@@ -206,6 +206,7 @@ function start() {
   elapsed = 0; isBreak = false; lockExits = 0;
   attnLevel = 'focused'; attnHist = []; attnDistractedCount = 0;
   var ab = document.getElementById('attnBar'); if (ab) ab.style.display = 'block';
+  var pl = document.getElementById('btnPhoneLock'); if (pl) pl.style.display = 'block';
   paintAttn('focused');
   startTs = Date.now(); // 计时基准：之后每秒按真实墙钟时间算 elapsed
   document.getElementById('btnGo').style.display = 'none';
@@ -262,6 +263,7 @@ function onDone() {
   document.getElementById('taskType').disabled = false;
   document.getElementById('taskPick').disabled = false;
   var ab = document.getElementById('attnBar'); if (ab) ab.style.display = 'none';
+  var pl = document.getElementById('btnPhoneLock'); if (pl) pl.style.display = 'none';
 
   var mins = isCountup ? Math.max(1, Math.round(elapsed / 60)) : Math.round(totalSec / 60);
   var session = {
@@ -387,6 +389,7 @@ function abort() {
   document.getElementById('taskType').disabled = false;
   document.getElementById('taskPick').disabled = false;
   var ab = document.getElementById('attnBar'); if (ab) ab.style.display = 'none';
+  var pl = document.getElementById('btnPhoneLock'); if (pl) pl.style.display = 'none';
 
   var session = {
     date: Utils.today(),

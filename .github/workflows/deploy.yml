@@ -1,4 +1,4 @@
-name: Deploy to GitHub Pages
+name: Deploy forest-focus to GitHub Pages
 
 on:
   push:
@@ -8,28 +8,27 @@ on:
 permissions:
   contents: write
 
-concurrency:
-  group: pages-deploy
-  cancel-in-progress: true
-
 jobs:
   build-deploy:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
 
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.13'
+          python-version: '3.11'
 
-      - name: Build inline PWA
+      - name: Build inline bundle (dist/index.html)
         run: python build.py
 
       - name: Deploy to gh-pages
-        uses: peaceiris/actions-gh-pages@v4
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./dist
-          publish_branch: gh-pages
-          commit_message: "deploy: ${{ github.sha }}"
+        run: |
+          cd dist
+          git init
+          git config user.name "github-actions"
+          git config user.email "actions@github.com"
+          git add -A
+          git commit -m "deploy: build from master ${{ github.sha }}"
+          git push --force "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/huanweide/forest-focus.git" HEAD:gh-pages

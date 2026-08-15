@@ -93,3 +93,5 @@
 .g-bar{flex:1;height:7px;border-radius:4px;background:#e8e8e8;overflow:hidden}
 .g-fill{height:100%;border-radius:4px;background:var(--g);transition:.4s}
 
+/* 手机锁按钮（合并自 self-discipline-forest 收尾） */
+.btn-b{background:#5C6BC0;color:#fff}

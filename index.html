@@ -174,6 +174,17 @@
 </div>
 <button class="btn btn-g" id="btnGo" onclick="start()">🌱 开始种树</button>
 <button class="btn btn-r" id="btnStop" onclick="abort()" style="display:none">放弃（树会受伤的 😢）</button>
+<button class="btn btn-r" id="btnStop" onclick="abort()" style="display:none">放弃（树会受伤的 😢）</button>
+<button class="btn btn-b" id="btnPhoneLock" onclick="startPhoneLock()" style="display:none">📱 手机锁机（安卓 App）</button>
+<div class="attn-bar" id="attnBar" style="display:none">
+  <div class="attn-now">🌊 Flowmodoro · 此刻：<span id="attnNow">👍 专注</span></div>
+  <div class="attn-btns">
+    <button class="attn-btn sel" data-attn="deep" onclick="markAttn('deep')">🔥 深度</button>
+    <button class="attn-btn" data-attn="focused" onclick="markAttn('focused')">👍 专注</button>
+    <button class="attn-btn" data-attn="drifting" onclick="markAttn('drifting')">😐 走神</button>
+    <button class="attn-btn" data-attn="distracted" onclick="markAttn('distracted')">📱 分心</button>
+  </div>
+</div>
 </div>
 </div>
 
