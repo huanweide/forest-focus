@@ -16,9 +16,9 @@ android {
     signingConfigs {
         release {
             storeFile file("release.keystore")
-            storePassword System.getenv("KEYSTORE_PASSWORD") ?: "azusa2026"
+            storePassword System.getenv("KEYSTORE_PASSWORD") ?: ""
             keyAlias System.getenv("KEY_ALIAS") ?: "azusaforest"
-            keyPassword System.getenv("KEY_PASSWORD") ?: "azusa2026"
+            keyPassword System.getenv("KEY_PASSWORD") ?: ""
         }
     }
 

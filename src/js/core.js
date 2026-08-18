@@ -279,6 +279,7 @@ const AppState = (function() {
   function addSession(session) {
     _state.sessions.push(session);
     if (session.completed) _state.totalCompletions++;
+    if (typeof window !== 'undefined') { try { window.totalCompletions = _state.totalCompletions; } catch (e) {} }
     Storage.saveState();
     if (session.completed) {
       EventBus.emit('focus:completed', session);
@@ -362,7 +363,7 @@ const AppState = (function() {
     sessions: _state.sessions,
     habits: _state.habits,
     goals: _state.goals,
-    totalCompletions: _state.totalCompletions,
+    get totalCompletions() { return _state.totalCompletions; },
     get score() { return _state.score; },
     set score(v) { _state.score = v; },
 

@@ -227,8 +227,8 @@ function onDone() {
   updateScore(10);
   AppState.updateMood(10);
   AppState.addCoins(5, 'focus_complete');
-
   totalCompletions = AppState.totalCompletions;
+
   if (currentOutfit < 0 || currentOutfit > currentTreeIdx) currentOutfit = currentTreeIdx;
   updateCurrentTree();
 
