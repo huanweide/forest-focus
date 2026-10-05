@@ -1,9 +1,77 @@
 # 阿梓的森林 .gitignore
+
+# ---- 构建产物 ----
+dist/
+twa-project/          # bubblewrap 生成的 Android 工程（含签名配置，不入库）
+_shots/
 __pycache__/
 *.pyc
-node_modules/
-.DS_Store
 *.tmp
-dist/
 *.crdownload
-_shots/
+.DS_Store
+
+# ---- 依赖 ----
+node_modules/
+
+# ---- 安卓签名产物：私钥一律不得入 Git ----
+# build-apk.yml 会在仓库根目录生成 forest-focus.keystore，
+# 一旦被提交就等于把应用签名私钥公开，任何人都能伪造同名应用更新。
+*.apk
+*.aab
+*.keystore
+*.jks
+
+# ==== 凭据类：永久禁止入 Git ====
+# 环境变量（真实密钥只准放 GitHub Secrets）
+.env
+.env.*
+!.env.example
+!.env.template
+
+# 密钥 / 证书 / 私钥
+*.pem
+*.key
+*.p12
+*.pfx
+*.crt
+*.cer
+*.der
+*.priv
+id_rsa
+id_ecdsa
+id_ed25519
+id_dsa
+.ssh/
+*.pub
+
+# 云平台凭据目录
+.aws/
+.azure/
+.gcp/
+.gcloud/
+.kube/
+kubeconfig*
+
+# 通用凭据文件
+credentials.json
+credentials.yaml
+credentials.yml
+service-account*.json
+auth.json
+tokens.json
+token.json
+secrets.json
+secret*.json
+*.secret
+*.token
+*.session
+cookies.json
+*.cookies
+
+# 包管理器 / 认证凭据
+.npmrc
+.pypirc
+.pip.conf
+.netrc
+.git-credentials
+.github-token

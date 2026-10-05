@@ -1,14 +1,56 @@
 name: CI
 
-on: [push, pull_request]
+# 说明：本仓库是纯前端 PWA（index.html + 全局 JS + Service Worker），没有 Flutter 代码。
+# 旧版 ci.yml 跑的是 `flutter analyze || true`，对本仓库毫无意义且永远绿，属于假门禁。
+# 现改为真正能拦住线上事故的四道检查：源码审计 → 单元测试 → 构建 → 产物校验。
+
+on:
+  push:
+    branches: [main]
+  pull_request:
 
 jobs:
-  analyze:
+  verify:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: subosito/flutter-action@v2
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
         with:
-          channel: stable
-      - run: flutter pub get || true
-      - run: flutter analyze || true
+          node-version: '20'
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: 源码静态审计
+        # 检查：JS 语法、资源引用是否 404、HTML 内联 onclick 绑定的函数是否真的定义了、
+        # 全局函数是否重名互相覆盖、index.html 的打包清单是否与磁盘文件一致。
+        # 这几项分别对应历史上真实发生过的三次线上静默失效。
+        run: node scripts/audit.mjs
+
+      - name: 单元测试
+        run: node --test
+
+      - name: 构建（内联打包 dist/index.html）
+        run: python build.py
+
+      - name: 构建产物校验
+        run: node scripts/audit.mjs --dist
+
+      - name: 产出审计报告
+        if: always()
+        run: |
+          {
+            echo "## 🌳 CI 结果"
+            echo ""
+            echo "| 检查项 | 内容 |"
+            echo "|------|------|"
+            echo "| 源码审计 | 语法 / 资源 404 / 死按钮 / 函数重名 / 打包清单 |"
+            echo "| 单元测试 | 金币收支 / 专注记录 / 习惯打卡 / 押注倍率 / 持久化 |"
+            echo "| 构建 | dist/index.html 内联打包 |"
+            echo "| 产物校验 | 全部内联、无残留外链、图标与 SW 齐备 |"
+          } >> "$GITHUB_STEP_SUMMARY"

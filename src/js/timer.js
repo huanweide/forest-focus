@@ -530,18 +530,10 @@ function initAzusaClick() {
   if (body && currentOutfitFile) body.src = 'src/images/azusa/' + currentOutfitFile;
 })();
 
-function updateBetInfo() {
-  var sel = document.getElementById('betAmount');
-  if (!sel) return;
-  var currentBet = parseInt(sel.value);
-  var info = document.getElementById('betInfo');
-  if (currentBet > 0) {
-    info.textContent = '完成得🪙' + Math.floor(currentBet * 1.5) + ' | 放弃-🪙' + currentBet;
-    info.style.color = '#f57f17';
-  } else {
-    info.textContent = '';
-  }
-}
+// updateBetInfo 由 src/js/betting.js 提供（唯一权威实现）。
+// 此处原先有一份重复定义：用固定 1.5 倍率、且用 var currentBet 局部遮蔽了 betting.js
+// 的全局押注额。两份同名函数按加载顺序互相覆盖，属于隐性死代码，已移除。
+// scripts/audit.mjs 的「全局符号重复定义」检查会阻止此类问题再次出现。
 
 // 用手机 App 锁机：唤起安卓端「阿梓的专注锁」直接开始软锁专注
 // 深链协议见 focus-lock/PWA_DEEPLINK.md

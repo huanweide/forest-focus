@@ -1,21 +1,27 @@
 name: Build APK
 
+# 说明：APK 不再 commit 进仓库。旧流程每次构建都把 2.3MB 的二进制文件
+# git add 进 docs/download/，仓库体积只增不减；现改为发布到 GitHub Release。
+permissions:
+  contents: write
+
 on:
   workflow_dispatch:
   push:
     branches: [main]
     paths:
-      - 'docs/**'
       - 'src/**'
       - 'index.html'
       - 'manifest.json'
+      - 'sw.js'
+      - '.github/workflows/build-apk.yml'
 
 jobs:
   build-apk:
     runs-on: ubuntu-latest
     timeout-minutes: 45
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: Setup Java
         uses: actions/setup-java@v6
@@ -68,21 +74,28 @@ jobs:
         working-directory: twa-project
         run: bubblewrap build
 
-      - name: Copy APK
-        run: |
-          mkdir -p docs/download
-          find twa-project -name "*.apk" -exec cp {} docs/download/forest-focus.apk \;
+      - name: 收集 APK
+        run: find twa-project -name "*.apk" -exec cp {} forest-focus.apk \;
 
       - name: Upload APK artifact
         uses: actions/upload-artifact@v7
         with:
           name: forest-focus-apk
-          path: docs/download/forest-focus.apk
+          path: forest-focus.apk
 
-      - name: Commit APK to repo
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add docs/download/forest-focus.apk
-          git diff --staged --quiet || git commit -m "auto: build APK [skip ci]"
-          git push
+      - name: 发布到 GitHub Release
+        # 旧做法把 APK 直接 commit 进仓库，每次构建都往 git 历史里塞二进制大文件。
+        # 改为发布到 Release：仓库保持轻量，用户下载体验也更好。
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: apk-${{ github.run_number }}
+          name: 阿梓的森林 APK · #${{ github.run_number }}
+          body: |
+            由 Build APK workflow 自动打包（对应提交 ${{ github.sha }}）。
+
+            安装前请先卸载旧版本：本 APK 使用 workflow 内临时生成的签名，
+            与手工签名版本签名不一致，直接覆盖安装会失败。
+          files: forest-focus.apk
+          generate_release_notes: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
