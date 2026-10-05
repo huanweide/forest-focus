@@ -26,17 +26,27 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Set up Python
-        uses: actions/setup-python@v7
+        uses: actions/setup-python@v5
         with:
-          python-version: '3.x'
+          python-version: '3.12'
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
 
       # build.py 是纯标准库脚本：把 src/ 下的 CSS/JS 内联进 dist/index.html
       # 同时复制 manifest.json / sw.js / src/images / src/audio 到 dist/
       - name: Build PWA（内联打包 dist/index.html）
-        run: python3 build.py
+        run: python build.py
+
+      # 部署前拦截坏产物。历史上曾把漏打包 desktop.css / share.js 的版本
+      # 直接推上线，本地看不出来，线上却是桌面布局失效 + 分享按钮无响应。
+      - name: 产物校验（部署门禁）
+        run: node scripts/audit.mjs --dist
 
       - name: Deploy to gh-pages branch
         uses: peaceiris/actions-gh-pages@v4

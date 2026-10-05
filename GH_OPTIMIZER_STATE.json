@@ -1,0 +1,51 @@
+{
+  "repo": "huanweide/forest-focus",
+  "status": "optimized",
+  "round": 1,
+  "lastRun": "2026-10-06",
+  "survival": {
+    "verdict": "keep",
+    "reason": "通用番茄钟赛道有 pomotroid(5526)/marinara(2457)/PomodoroLogger(1161) 碾压级替代，正面竞争必输；但「角色陪伴+衣装收集+养成闭环」交叉赛道最高竞品仅 4 stars，是空地。真稀缺资产是 14 级衣装路线与分层换装引擎，而非计时器。",
+    "action": "转向定位叙事（番茄钟 → 陪伴式专注养成），不删项目"
+  },
+  "direction": {
+    "type": "pivot_and_specialize",
+    "pivot": "对外定位从「番茄钟自律 PWA」改为「陪伴式专注养成 PWA」",
+    "specialize": "对内把零依赖单页应用的防回归能力做成特色：源码审计 + 单测 + 构建自检 + 线上体检"
+  },
+  "fixed": [
+    "build.py 漏打包 desktop.css —— 线上桌面端布局全部失效",
+    "build.py 漏打包 share.js —— 线上分享按钮抛 ReferenceError",
+    "updateBetInfo 在 betting.js 与 timer.js 重复定义，后者为死代码且算法不一致",
+    "AppState 引用型状态为导出快照，整体替换后读写不同步",
+    "build-apk.yml 生成的 .keystore 无 gitignore 保护，存在签名私钥泄露风险",
+    "package.json license=ISC 与 LICENSE=MIT 冲突"
+  ],
+  "added": [
+    "scripts/audit.mjs（7 类静态审计，支持 --dist）",
+    "tests/app.test.mjs（12 项单测）",
+    "tests/e2e/（Playwright 端到端套件，由根目录一次性脚本整理而来）",
+    "CHANGELOG.md / OPTIMIZER_LOG.md",
+    "npm scripts: audit / test / build / verify"
+  ],
+  "changed": [
+    "ci.yml：flutter 假门禁 → 审计+单测+构建+产物校验",
+    "deploy.yml：部署前增加产物校验",
+    "maintenance.yml：表演型报告 → 每周真体检 + 线上校验 + 自动开 issue",
+    "build-apk.yml：APK 由 commit 入库改为发布到 Release",
+    "删除 docs/（34MB 重复产物），工作区 98MB → 65MB",
+    "README.md：重写定位与结构，删除重复章节与模板残留"
+  ],
+  "metrics": {
+    "tests": 12,
+    "auditChecks": 7,
+    "mutationTestsPassed": "4/4",
+    "workspaceSizeBefore": "98MB",
+    "workspaceSizeAfter": "65MB"
+  },
+  "nextRound": [
+    "角色包化：把 azusa 立绘与衣装数据抽成 characters/<id>/，换装引擎可换角色",
+    "sw.js 缓存版本改为构建时注入，不再手工 bump",
+    "押注/商店数值集中为一份配置"
+  ]
+}

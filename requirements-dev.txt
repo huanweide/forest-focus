@@ -1,0 +1,4 @@
+# 本地端到端体验验证（真浏览器）所需依赖。
+# CI 不跑这几项 —— 它们依赖本机安装的 Chrome，CI 环境没有；
+# CI 只跑 scripts/audit.mjs 静态审计与 tests/ 下的 Node 单元测试。
+playwright>=1.44.0

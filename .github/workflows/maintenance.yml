@@ -1,52 +1,106 @@
-﻿name: 定期维护优化
+﻿name: 每周体检
+
+# 旧版 maintenance.yml 只是把文件数、行数打印到 summary，然后永远输出
+# "本次检查无需优化" —— 不管仓库什么状态都报健康，属于没有价值的表演型任务。
+# 现改为真正会失败的体检：源码审计 + 单测 + 构建 + 产物校验 + 线上站点校验，
+# 任一环节不通过就自动开 issue，把问题真正推到人面前。
 
 on:
   schedule:
-    - cron: '0 4 */3 * *'  # 每3天 北京时间12:00
+    - cron: '0 4 * * 1' # 每周一 UTC 04:00（北京时间 12:00）
   workflow_dispatch:
 
+permissions:
+  contents: read
+  issues: write
+
 jobs:
-  maintenance:
+  health:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 15
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v5
 
-      - name: 检查项目状态
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: 源码审计
+        run: node scripts/audit.mjs
+
+      - name: 单元测试
+        run: node --test
+
+      - name: 构建与产物校验
         run: |
-          echo "## 🌳 阿梓的森林 · 定期维护报告" >> $GITHUB_STEP_SUMMARY
-          echo "**时间**: $(date -u '+%Y-%m-%d %H:%M UTC')" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
+          python build.py
+          node scripts/audit.mjs --dist
 
-          # 检查文件大小
-          echo "### 📊 项目规模" >> $GITHUB_STEP_SUMMARY
-          echo "- JS 文件: $(find src/js -name '*.js' | wc -l) 个" >> $GITHUB_STEP_SUMMARY
-          echo "- CSS 文件: $(find src/css -name '*.css' | wc -l) 个" >> $GITHUB_STEP_SUMMARY
-          echo "- HTML: $(wc -c < index.html) 字节" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
+      - name: 线上站点校验
+        # 守护真实用户访问的那份产物：历史上曾出现桌面样式与分享功能
+        # 被漏打包、本地一切正常但线上失效的情况，只有查线上才能发现。
+        run: |
+          set -u
+          BASE="https://huanweide.github.io/forest-focus/"
+          curl -fsSL "$BASE" -o /tmp/live.html
+          fail=0
+          check() {
+            if grep -q "$1" /tmp/live.html; then
+              echo "  ✅ 线上包含 $2"
+            else
+              echo "  ❌ 线上缺少 $2"
+              echo "::error::线上产物缺少 $2"
+              fail=1
+            fi
+          }
+          check "=== desktop.css ===" "桌面端样式 desktop.css"
+          check "function openShare" "分享功能 openShare"
 
-          # 检查冗余文件
-          echo "### 🧹 冗余文件检查" >> $GITHUB_STEP_SUMMARY
-          BAK_COUNT=$(find . -name "*.bak" -not -path "./node_modules/*" | wc -l)
-          if [ "$BAK_COUNT" -gt 0 ]; then
-            echo "⚠️ 发现 $BAK_COUNT 个备份文件:" >> $GITHUB_STEP_SUMMARY
-            find . -name "*.bak" -not -path "./node_modules/*" >> $GITHUB_STEP_SUMMARY
-          else
-            echo "✅ 无冗余备份文件" >> $GITHUB_STEP_SUMMARY
+          for p in manifest.json sw.js src/images/azusa/icon-192.png src/images/azusa/icon-512.png; do
+            code=$(curl -o /dev/null -s -w "%{http_code}" "$BASE$p")
+            if [ "$code" = "200" ]; then
+              echo "  ✅ 线上资源可访问 $p"
+            else
+              echo "  ❌ 线上资源 $p 返回 HTTP $code"
+              echo "::error::线上资源 $p 返回 HTTP $code"
+              fail=1
+            fi
+          done
+
+          size=$(wc -c < /tmp/live.html)
+          echo "  ℹ️ 线上 index.html 大小：${size} 字节"
+
+          if [ "$fail" -ne 0 ]; then
+            echo "LIVE_FAIL=1" >> "$GITHUB_ENV"
+            exit 1
           fi
-          echo "" >> $GITHUB_STEP_SUMMARY
 
-          # 罗列链接（仅检查，不做连通性验证）
-          echo "### 🔗 链接罗列" >> $GITHUB_STEP_SUMMARY
-          grep -rn "https://" src/ docs/ --include="*.html" --include="*.js" | head -20 >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-
-          # 代码行数统计
-          echo "### 📏 代码统计" >> $GITHUB_STEP_SUMMARY
-          echo "- 总 JS 行数: $(find src/js -name '*.js' -exec cat {} + | wc -l)" >> $GITHUB_STEP_SUMMARY
-          echo "- 总 CSS 行数: $(find src/css -name '*.css' -exec cat {} + | wc -l)" >> $GITHUB_STEP_SUMMARY
-
-      - name: 无优化点则跳过
+      - name: 失败时开 issue
+        if: failure()
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          echo "✅ 本次检查无需优化——项目健康运行"
-          echo "如有需求可手动触发 workflow_dispatch 进行深度维护"
+          TITLE="🌳 每周体检未通过（$(date -u '+%Y-%m-%d')）"
+          # 已有未关闭的同名 issue 就追加评论，避免每次定时任务都刷一个新 issue
+          EXISTING=$(gh issue list --state open --search "$TITLE in:title" --json number --jq '.[0].number' || true)
+          BODY="每周体检在本次运行中失败。
+
+          运行记录：${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}
+
+          可能原因：源码审计未通过、单测失败、构建产物不完整，或线上站点缺少关键内容。
+          请点上方链接查看具体失败步骤。"
+          if [ -n "$EXISTING" ]; then
+            gh issue comment "$EXISTING" --body "$BODY"
+            echo "已在既有 issue #$EXISTING 上追加评论"
+          else
+            gh issue create --title "$TITLE" --body "$BODY" --label "bug" || \
+              gh issue create --title "$TITLE" --body "$BODY"
+            echo "已创建新 issue"
+          fi
