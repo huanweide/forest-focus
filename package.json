@@ -1,27 +1,38 @@
 {
   "name": "forest-focus",
-  "version": "1.0.0",
-  "description": "> 🍅 番茄钟自律PWA — 专注种树，收集阿梓(VTuber)全部14套衣装皮肤",
+  "version": "1.1.0",
+  "description": "阿梓的森林 · 陪伴式专注养成 PWA：番茄钟 + 衣装收集 + 习惯打卡 + 成就系统，离线可用、可安装到桌面与手机",
+  "private": true,
   "main": "sw.js",
   "directories": {
     "doc": "docs"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "node --test",
+    "audit": "node scripts/audit.mjs",
+    "build": "python build.py",
+    "verify": "npm run audit && npm test && npm run build && node scripts/audit.mjs --dist",
+    "build:apk": "node build-apk.js"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/huanweide/forest-focus.git"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "type": "commonjs",
+  "keywords": [
+    "pomodoro",
+    "pwa",
+    "focus",
+    "番茄钟",
+    "vtuber",
+    "阿梓"
+  ],
+  "author": "ReTr · 樊斯瑞",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/huanweide/forest-focus/issues"
   },
-  "homepage": "https://github.com/huanweide/forest-focus#readme",
-  "dependencies": {
+  "homepage": "https://huanweide.github.io/forest-focus/",
+  "devDependencies": {
     "@bubblewrap/core": "^1.25.0"
   }
 }

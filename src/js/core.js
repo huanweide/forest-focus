@@ -354,7 +354,7 @@ const AppState = (function() {
     EventBus.emit('mood:changed', { mood: _state.mood, delta: delta });
   }
 
-  return {
+  var api = {
     // 基础读写
     get: get,
     set: set,
@@ -412,6 +412,27 @@ const AppState = (function() {
     completeHabit: completeHabit,
     save: Storage.saveState,
   };
+
+  // 引用型状态（数组 / 对象）统一改为 _state 读写代理。
+  //
+  // 旧写法是 `sessions: _state.sessions` 这种「导出瞬间的引用快照」：一旦某处
+  // 整体替换了 _state.sessions（例如导入备份、重置数据、或 set('habits', 新数组)），
+  // 外部通过 AppState.sessions 拿到的仍是旧数组 —— 读的是旧值、写也写不回去，
+  // 而 saveState() 持久化的又是 _state 里的新值，于是出现「改了但刷新后丢失」。
+  // 改成代理后，读写始终落在 _state 上，与 coins / mood 的既有写法保持一致。
+  ['sessions', 'habits', 'goals', 'coinLog', 'checkinDates', 'habitCheckins',
+   'unlockedAchievements', 'dailyAchievements', 'currentOutfit', 'savedOutfits',
+   'inventory', 'activeBuffs', 'betHistory', 'darkMode', 'settings',
+  ].forEach(function(k) {
+    Object.defineProperty(api, k, {
+      get: function() { return _state[k]; },
+      set: function(v) { _state[k] = v; },
+      enumerable: true,
+      configurable: true,
+    });
+  });
+
+  return api;
 })();
 
 // ==================== 工具函数 ====================
