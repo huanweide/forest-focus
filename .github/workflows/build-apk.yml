@@ -86,7 +86,7 @@ jobs:
       - name: 发布到 GitHub Release
         # 旧做法把 APK 直接 commit 进仓库，每次构建都往 git 历史里塞二进制大文件。
         # 改为发布到 Release：仓库保持轻量，用户下载体验也更好。
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         with:
           tag_name: apk-${{ github.run_number }}
           name: 阿梓的森林 APK · #${{ github.run_number }}
