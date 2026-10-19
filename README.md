@@ -188,3 +188,11 @@ npm run verify    # 以上三步 + 产物校验，一条命令跑完
 
 如果这个项目帮到了你，欢迎 [点 Star](https://github.com/huanweide/forest-focus) 支持；
 也可微信扫码自愿赞助（收款码见 `sponsor/wechat-qr.png`，纯静态图片、不含任何密钥）。
+---
+
+## 便携性 · 离线 PWA
+
+- 纯静态站点，可安装、离线可用，专注 / 习惯 / 成就数据本地优先。
+- 与 self-discipline-forest（Flutter 原生版）共享同一套养成方法论，可任选平台。
+
+← [更多开源工具 · huanweide](https://github.com/huanweide)
