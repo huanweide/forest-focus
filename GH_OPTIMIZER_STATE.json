@@ -1,7 +1,7 @@
 {
   "repo": "huanweide/forest-focus",
   "status": "optimized",
-  "round": 1,
+  "round": 2,
   "lastRun": "2026-10-06",
   "survival": {
     "verdict": "keep",
@@ -47,5 +47,9 @@
     "角色包化：把 azusa 立绘与衣装数据抽成 characters/<id>/，换装引擎可换角色",
     "sw.js 缓存版本改为构建时注入，不再手工 bump",
     "押注/商店数值集中为一份配置"
+  ],
+  "lastOptimized": "2026-10-25",
+  "improvements": [
+    "S1/S2/L11 自动修复(引擎)"
   ]
 }
