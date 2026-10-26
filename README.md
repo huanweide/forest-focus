@@ -1,3 +1,11 @@
+<p align="center">
+  <img src="assets/banner.svg" alt="Forest Focus">
+</p>
+
+<p align="center">
+  <a href="#它和普通番茄钟有什么不一样">30 秒看懂</a> · <a href="#核心特性">特性</a> · <a href="#快速开始">快速开始</a> · <a href="#工作原理">架构</a> · <a href="#贡献指南">贡献</a>
+</p>
+
 [![License](https://img.shields.io/github/license/huanweide/forest-focus)](LICENSE)
 [![CI](https://github.com/huanweide/forest-focus/actions/workflows/ci.yml/badge.svg)](https://github.com/huanweide/forest-focus/actions/workflows/ci.yml)
 [![Stars](https://github.com/huanweide/forest-focus/stargazers)](https://github.com/huanweide/forest-focus/stargazers)
