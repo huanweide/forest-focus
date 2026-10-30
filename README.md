@@ -2,7 +2,7 @@
   <img src="assets/banner.svg" alt="Forest Focus">
 </p>
 
-<p align="center"><sub>English: 暂未提供（No English docs yet）</sub></p>
+<p align="center"><sub>**English** · [README_EN.md](./README_EN.md)</sub></p>
 
 <p align="center">
   <a href="#它和普通番茄钟有什么不一样">30 秒看懂</a> · <a href="#核心特性">特性</a> · <a href="#快速开始">快速开始</a> · <a href="#工作原理">架构</a> · <a href="#贡献指南">贡献</a>
