@@ -2,6 +2,8 @@
   <img src="assets/banner.svg" alt="Forest Focus">
 </p>
 
+<p align="center"><sub>English: 暂未提供（No English docs yet）</sub></p>
+
 <p align="center">
   <a href="#它和普通番茄钟有什么不一样">30 秒看懂</a> · <a href="#核心特性">特性</a> · <a href="#快速开始">快速开始</a> · <a href="#工作原理">架构</a> · <a href="#贡献指南">贡献</a>
 </p>
@@ -14,7 +16,7 @@
 
 # 阿梓的森林 · Forest Focus
 
-> **不是又一个番茄钟 —— 是「专注 → 换装 → 养成」的完整闭环。**
+> **不是又一个番茄钟 —— 是「专注 → 换装 → 养成」的完整循环。**
 > 每完成一次专注，就为阿梓种下一棵树、解锁一件新衣装。把枯燥的自律变成一场看得见的收集旅程。
 
 立刻使用：**https://huanweide.github.io/forest-focus/**
@@ -201,7 +203,7 @@ npm run verify    # 以上三步 + 产物校验，一条命令跑完
 
 ## 作者
 
-由 **ReTr · huanweide** 维护 · [GitHub 主页](https://github.com/huanweide)
+由 **huanweide** 维护 · [GitHub 主页](https://github.com/huanweide)
 
 如果这个项目帮到了你，欢迎 [点 Star](https://github.com/huanweide/forest-focus) 支持；
 ---
