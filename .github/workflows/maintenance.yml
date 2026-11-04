@@ -1,4 +1,4 @@
-﻿name: 每周体检
+name: 每周体检
 
 # 旧版 maintenance.yml 只是把文件数、行数打印到 summary，然后永远输出
 # "本次检查无需优化" —— 不管仓库什么状态都报健康，属于没有价值的表演型任务。
@@ -28,7 +28,7 @@ jobs:
           node-version: '20'
 
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v7
         with:
           python-version: '3.12'
 
